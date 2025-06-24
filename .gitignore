@@ -24,6 +24,8 @@
 hs_err_pid*
 replay_pid*
 
+# Maven build directory (추가) 
+/target/
 
 # Node.js / React Project Files #
 # Node.js project's installed dependencies directory (very large, generated from package.json)
@@ -36,12 +38,17 @@ build/
 # Environment variable files (can contain sensitive information like API keys, database credentials)
 .env
 
+# Specific environment variable files (추가)
+.env.development
+.env.production
+.env.*.local # 이건 이미 있음
+
 # Package manager (npm, yarn) debug logs, often generated on errors
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-#  Vite Specific Files
+# Vite Specific Files
 .vite/
 .vscode-debugger/
 
@@ -112,3 +119,7 @@ out/
 # Windows OS specific files #
 # Windows image file caches for thumbnails
 Thumbs.db
+
+# Temporary files (추가)
+*.tmp
+*.bak
