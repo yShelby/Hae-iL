@@ -1,4 +1,4 @@
-export default function Chart(){
+export default function ContentRecommendations(){
     return(
         <div>
 

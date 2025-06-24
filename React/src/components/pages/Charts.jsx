@@ -1,8 +1,8 @@
-export default function EmotionTag(){
-
+export default function Charts(){
     return(
         <div>
 
         </div>
     )
 }
+

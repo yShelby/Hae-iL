@@ -1,8 +1,8 @@
-export default function ContentRecommendation(){
+export default function EmotionsTags(){
+
     return(
         <div>
 
         </div>
     )
 }
-

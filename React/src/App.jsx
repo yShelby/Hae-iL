@@ -1,9 +1,9 @@
 import Dashboard from "./components/pages/Dashboard.jsx";
 import Diary from "./components/pages/Diary.jsx";
 import Calender from "./components/pages/Calender.jsx";
-import ContentRecommendation from "./components/pages/ContentRecommendation.jsx";
+import ContentRecommendations from "./components/pages/ContentRecommendations.jsx";
 import Journal from "./components/pages/Journal.jsx";
-import Chart from "./components/pages/Chart.jsx";
+import Charts from "./components/pages/Charts.jsx";
 import Settings from "./components/pages/Settings.jsx";
 
 function App() {
@@ -12,9 +12,9 @@ function App() {
         <Dashboard/>
         <Diary/>
         <Calender/>
-        <ContentRecommendation/>
+        <ContentRecommendations/>
         <Journal/>
-        <Chart/>
+        <Charts/>
         <Settings/>
     </>
   )
