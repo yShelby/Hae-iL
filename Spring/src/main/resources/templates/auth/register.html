@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Kosmo 154 Mall :: register</title>
+</head>
+<body>
+<form action="/register/newUser" method="POST">
+<!--    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">-->
+    <input name="email" placeholder="이메일">
+    <input name="nickname" placeholder="닉네임">
+    <input name="password" placeholder="비밀번호" type="password">
+    <input name="profileImage" type="image" style="display : none">
+    <button type="submit">전송</button>
+</form>
+</body>
+</html>
