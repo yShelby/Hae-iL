@@ -2,10 +2,16 @@ package com.heaildairy.www.auth.controller;
 
 import com.heaildairy.www.auth.dto.RegisterRequestDto;
 import com.heaildairy.www.auth.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -15,21 +21,32 @@ public class AuthController {
 //    private final JwtUtil jwtUtil; // JWT 생성/검증 유틸
     // private final MyUserDetailService myUserDetailService; // 필요에 따라 직접 사용 가능하나, AuthService를 통하는 것이 일반적
 
+    // 메인 메이지
     @GetMapping("/")
     String index(){ return "index.html";}
 
+    // 회원가입 폼 페이지
     @GetMapping("/register")
     String register(Model model) {
 
         return "auth/register.html";
     }
 
+    // 회원가입 - 회원 저장 페이지 (유효성 검사 활성화)
     @PostMapping("/register/newUser")
-    String newUser(@ModelAttribute RegisterRequestDto requestDto) {
+    String newUser(@ModelAttribute @Valid RegisterRequestDto requestDto, BindingResult bindingResult, Model model) {
 
-        System.out.println("Display email (DTO): " + requestDto.getEmail());
-        System.out.println("Username Nickname (DTO): " + requestDto.getNickname());
-        System.out.println("Password Password (DTO): " + requestDto.getPassword());
+        // @Valid 어노테이션에 의한 DTO 유효성 검사 오류 처리
+        if (bindingResult.hasErrors()) {
+            System.out.println("DTO 유효성 검사 오류 발생:");
+            bindingResult.getAllErrors().forEach(error -> System.out.println(error.getDefaultMessage()));
+            model.addAttribute("errors", bindingResult.getAllErrors());
+            return "register";
+        }
+
+//        System.out.println("Display email (DTO): " + requestDto.getEmail());
+//        System.out.println("Username Nickname (DTO): " + requestDto.getNickname());
+//        System.out.println("Password Password (DTO): " + requestDto.getPassword());
 
         userService.addNewUser(requestDto);
 
