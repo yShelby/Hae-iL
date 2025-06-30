@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Kosmo 154 Mall :: register</title>
-    <link rel="stylesheet" href="/auth/register.css">
+    <link rel="stylesheet" href="/css/register.css">
 </head>
 <body>
 <form action="/register/newUser" method="POST" onsubmit="return validateForm()">
@@ -65,6 +65,6 @@
 <script th:inline="javascript">
     const serverErrorMessages = /*[[${errors}]]*/ [];
 </script>
-<script src="/auth/registerValidation.js" defer></script>
+<script src="/js/registerValidation.js" defer></script>
 </body>
 </html>
