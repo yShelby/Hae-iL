@@ -40,13 +40,33 @@ public class UserService {
         userRepository.save(newUser);
     }
 
+    public UserEntity getUserByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("사용자 정보가 없습니다."));
+    }
+
     // 로그인 성공 시 Refresh Token을 DB에 저장 (또는 기존 Refresh Token이 있으면 갱신)
+//    @Transactional
+//    public void saveOrUpdateRefreshToken(String email, String refreshToken) {
+//        // 기존에 Refresh Token이 있으면 삭제
+//        refreshTokenRepository.deleteByEmail(email);
+//        // 새로 저장
+//        refreshTokenRepository.save(new RefreshToken(email, refreshToken));
+//    }
+
     @Transactional
     public void saveOrUpdateRefreshToken(String email, String refreshToken) {
-        // 기존에 Refresh Token이 있으면 삭제
-        refreshTokenRepository.deleteByEmail(email);
-        // 새로 저장
-        refreshTokenRepository.save(new RefreshToken(email, refreshToken));
+
+        Optional<RefreshToken> tokenOpt = refreshTokenRepository.findByEmail(email);
+
+        if (tokenOpt.isPresent()) {
+            RefreshToken token = tokenOpt.get();
+            token.setRefreshToken(refreshToken);
+            refreshTokenRepository.save(token); // update
+
+        } else {
+            refreshTokenRepository.save(new RefreshToken(email, refreshToken)); // insert
+        }
     }
 
     // Access Token 재발급
@@ -81,6 +101,10 @@ public class UserService {
         return newAccessToken;
     }
 
-
+    // 로그아웃
+    @Transactional
+    public void logout(String email) {
+        refreshTokenRepository.deleteByEmail(email);
+    }
 
 }

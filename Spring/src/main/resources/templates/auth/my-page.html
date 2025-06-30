@@ -1,10 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>:: 해일 :: 마이페이지</title>
 </head>
 <body>
-<h2>my-page</h2>
+<h1>마이페이지</h1>
+<div>
+    <p>이메일: <span th:text="${user.email}"></span></p>
+    <p>닉네임: <span th:text="${user.nickname}"></span></p>
+    <p>프로필 이미지: <img th:src="${user.profileImage}" alt="프로필 이미지" width="100"></p>
+</div>
 </body>
 </html>

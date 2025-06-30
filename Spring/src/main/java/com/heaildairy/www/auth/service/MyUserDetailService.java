@@ -20,10 +20,10 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class MyUserDetailService implements UserDetailsService {
 
-    private final UserRepository userRepository; // UserRepository 주입
+    private final UserRepository userRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException { // 파라미터 이름을 email로 변경 권장
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         // DB에서 email(유저ID) 찾아서
         // return new User(유저이메일, 비번, 권한)
 

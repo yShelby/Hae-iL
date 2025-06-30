@@ -30,8 +30,8 @@ public class JwtProvider {
     // JWT 사용할 암호화 키
     private SecretKey key;
 
-    // Access Token의 만료 시간(30분, 밀리초 단위)
-    private long accessTokenValidityInMilliseconds = 1000 * 60 * 30;
+    // Access Token의 만료 시간(5분, 밀리초 단위)
+    private long accessTokenValidityInMilliseconds = 1000 * 60 * 5;
     // Refresh Token의 만료 시간(7일, 밀리초 단위)
     private long refreshTokenValidityInMilliseconds = 1000 * 60 * 60 * 24 * 7;
 

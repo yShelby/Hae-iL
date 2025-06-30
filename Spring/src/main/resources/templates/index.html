@@ -1,12 +1,78 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>:: 해일 :: 해석하는 감정 일기</title>
 </head>
 <body>
-    <h1>해일 :: 메인 페이지</h1>
-<!--    <button onclick="location.href='/login'">로그인</button>-->
+<h1>해일 :: 메인 페이지</h1>
+
+<!-- 로그인 상태가 아닐 때 보여줄 영역 -->
+<div th:unless="${session.user != null}">
+    <form id="loginForm">
+        <input type="email" id="email" name="email" placeholder="이메일" required>
+        <input type="password" id="password" name="password" placeholder="비밀번호" required>
+        <button type="submit">로그인</button>
+    </form>
+<!--로그인 에러 표시 -->
+    <div id="loginError" style="color:red;"></div>
     <button onclick="location.href='/register'">회원가입</button>
+</div>
+
+<!-- 로그인 상태일 때 보여줄 영역 -->
+<div th:if="${session.user != null}">
+    <h2 th:text="'로그인한 사용자: ' + ${session.user.nickname} + '님 반갑습니다!'"></h2>
+    <button onclick="location.href='/my-page'">마이 페이지</button>
+    <button onclick="logout()">로그아웃</button>
+</div>
+
+<script>
+    // 로그인 요청 성공 시 -> 메인 페이지로 이동
+   document.getElementById('loginForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        fetch('/login/jwt', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                email: document.querySelector('#email').value,
+                password: document.querySelector('#password').value
+            })
+        })
+        .then(response => {
+            if (response.ok) {
+                // 로그인 성공 시 쿠키 확인 (디버깅용)
+                console.log('쿠키 : ', document.cookie);
+                window.location.reload();
+            } else {
+                document.getElementById('loginError').textContent = '이메일 또는 비밀번호가 잘못되었습니다.';
+            }
+        })
+        .catch(err => document.getElementById('loginError').textContent = '로그인 중 오류 발생');
+    });
+
+    function logout() { // 1. /user/logout - controller 2. /logout - logoutDSL
+    // /user/logout 호출 (Refresh Token DB 삭제)
+    fetch('/user/logout', {
+        method: 'POST',
+        credentials: 'include' // 쿠키 포함
+    })
+    .then(response => {
+        if (!response.ok) throw new Error('로그아웃 실패');
+        // /logout 호출 (Spring Security 로그아웃)
+        return fetch('/logout', {
+            method: 'POST',
+            credentials: 'include' // 쿠키 포함
+        });
+    })
+    .then(response => {
+        if (!response.ok) throw new Error('로그아웃 실패');
+        // 로그아웃 성공 시 메인 페이지로 이동
+        window.location.href = '/';
+    })
+    .catch(err => {
+        alert('로그아웃 중 오류 발생');
+    });
+}
+</script>
 </body>
 </html>
