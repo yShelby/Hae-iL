@@ -9,6 +9,8 @@
     const passwordConfirmError = document.getElementById('passwordConfirmError');
     const profileImageInput = document.getElementById('profileImage');
     const profileImageError = document.getElementById('profileImageError');
+    const phoneInput = document.getElementById('phone');
+    const phoneError = document.getElementById('phoneError');
 
   // 팝업 관련 요소들
     const errorModal = document.getElementById('errorModal');
@@ -21,8 +23,6 @@
             emailError.textContent = '이메일을 입력해주세요.';
         } else if (emailInput.validity.typeMismatch) { // 이메일 형식 검사 (type="email"에 의해 자동 검사)
             emailError.textContent = '유효한 이메일 주소를 입력해주세요.';
-        } else if (emailInput.validity.patternMismatch) { // 정규식 패턴 검사
-            emailError.textContent = '이메일 형식(예: user@example.com)에 맞게 입력해주세요.';
         } else {
             emailError.textContent = ''; // 오류 없으면 메시지 제거
         }
@@ -86,6 +86,22 @@
         }
     }
 
+    // 핸드폰 번호 포맷팅 함수
+    function formatPhoneNumber(phone) {
+      // 하이픈(-), 공백 등 제거
+      const cleaned = phone.replace(/\D/g, '');
+      // 01012345678 → +821012345678
+      if (cleaned.startsWith('010')) {
+        return '+82' + cleaned.substring(1);
+      }
+      // 이미 +82로 시작하면 그대로 반환
+      if (cleaned.startsWith('+82')) {
+        return cleaned;
+      }
+      // 그 외의 경우는 그대로 반환 (추가적인 변환 필요시 확장)
+      return cleaned;
+    }
+
 
     // 폼 제출 시 전체 유효성 검사
     function validateForm() {
@@ -95,6 +111,8 @@
         const isPasswordValid = validatePassword();
         const isPasswordMatch = checkPasswordMatch();
         const isProfileImageValid = validateProfileImage(); // 선택 사항이지만 형식이 맞는지 확인
+        // 전화번호 포맷팅
+        phoneInput.value = formatPhoneNumber(phoneInput.value);
 
         // 모든 검사를 통과해야 폼 제출 허용
         if (isEmailValid && isNicknameValid && isPasswordValid && isPasswordMatch && isProfileImageValid) {

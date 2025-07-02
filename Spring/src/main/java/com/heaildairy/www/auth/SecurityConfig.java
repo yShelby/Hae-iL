@@ -38,13 +38,11 @@ public class SecurityConfig {
         // 개발단계이므로 csrf 보안기능 off
             http.csrf(AbstractHttpConfigurer::disable);
 
-        // 세션 데이터 생성 방지
-//        http.sessionManagement((session) -> session
-//                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-//        );
-        // 세션 데이터 생성
+        // 세션 데이터 설정
         http.sessionManagement((session) -> session
-                .sessionCreationPolicy(SessionCreationPolicy.ALWAYS) // 세션 허용 (Thymeleaf 사용시 필수)
+//                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // 세션 데이터 생성 방지
+                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED) // 필요할 때만 세션 생성
+//                .sessionCreationPolicy(SessionCreationPolicy.ALWAYS) // 세션 데이터 생성 허용
         );
 
         // 필터 실행위치 설정
@@ -54,9 +52,16 @@ public class SecurityConfig {
         // 로그인 여부 확인 설정
         http.authorizeHttpRequests((authorize)-> authorize
 //                .requestMatchers("/**").permitAll() // 항상 허용
-                .requestMatchers("/", "/login/jwt", "/register", "/register/newUser", "/reissue").permitAll() // 인증 불필요 경로
+                .requestMatchers("/", "/login/jwt","/need-login", "/register", "/register/newUser", "/reissue", "/find-email", "/find-email/verify").permitAll() // 인증 불필요 경로
                 .requestMatchers("/css/**","/js/**","/image/**").permitAll() // 정적 리소스 허용
                 .anyRequest().authenticated() // 나머지 모든 요청은 반드시 인증 필요
+        );
+
+        // 인증되지 않은 사용자가 보호된 경로에 접근하면 메인 페이지로 리다이렉트
+        http.exceptionHandling(exception -> exception
+                .authenticationEntryPoint((request, response, authException) -> {
+                    response.sendRedirect("/need-login");
+                })
         );
 
         // 로그아웃 DSL

@@ -1,5 +1,6 @@
 package com.heaildairy.www.auth.service;
 
+import com.heaildairy.www.auth.config.AESUtil;
 import com.heaildairy.www.auth.dto.RegisterRequestDto;
 import com.heaildairy.www.auth.entity.RefreshToken;
 import com.heaildairy.www.auth.entity.UserEntity;
@@ -29,30 +30,58 @@ public class UserService {
     public void addNewUser(RegisterRequestDto requestDto) {
         // 유저 등록 - /register/addNewUser
 
+        // 전화번호 암호화
+        String encryptedPhone = null;
+        try {
+            encryptedPhone = AESUtil.encrypt(requestDto.getPhone());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
         UserEntity newUser = new UserEntity();
         String hashPassword = passwordEncoder.encode(requestDto.getPassword());
 
         newUser.setEmail(requestDto.getEmail());
         newUser.setPassword(hashPassword);
+        newUser.setName(requestDto.getName());
+        newUser.setEncryptedPhoneNumber(encryptedPhone);
         newUser.setNickname(requestDto.getNickname());
         newUser.setProfileImage(requestDto.getProfileImage());
 
         userRepository.save(newUser);
     }
 
+    // email 로 사용자 조회
     public UserEntity getUserByEmail(String email) {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("사용자 정보가 없습니다."));
     }
 
-    // 로그인 성공 시 Refresh Token을 DB에 저장 (또는 기존 Refresh Token이 있으면 갱신)
-//    @Transactional
-//    public void saveOrUpdateRefreshToken(String email, String refreshToken) {
-//        // 기존에 Refresh Token이 있으면 삭제
-//        refreshTokenRepository.deleteByEmail(email);
-//        // 새로 저장
-//        refreshTokenRepository.save(new RefreshToken(email, refreshToken));
-//    }
+    // email 중복 확인
+    public boolean isEmailDuplicated(String email) {
+        return userRepository.existsByEmail(email);
+    }
+
+    // 전화번호 복호화
+    public String findPhone(String encryptedPhone) {
+        try {
+            return AESUtil.decrypt(encryptedPhone);
+        } catch (Exception e) {
+            throw new RuntimeException("전화번호 복호화 실패", e);
+        }
+    }
+
+    // 암호화된 전화번호로 회원 조회
+    public Optional<UserEntity> findByEncryptedPhoneNumber(String encryptedPhoneNumber) {
+        return userRepository.findByEncryptedPhoneNumber(encryptedPhoneNumber);
+    }
+
+    // 이메일 찾기
+    public Optional<UserEntity> findUserByPhone(String phone) throws Exception {
+        String encryptedPhone = AESUtil.encrypt(phone);
+        return userRepository.findByEncryptedPhoneNumber(encryptedPhone);
+    }
+
 
     @Transactional
     public void saveOrUpdateRefreshToken(String email, String refreshToken) {

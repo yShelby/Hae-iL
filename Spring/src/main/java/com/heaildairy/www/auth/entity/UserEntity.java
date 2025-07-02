@@ -22,6 +22,12 @@ public class UserEntity {
     @Column(name = "password", nullable = false)
     private String password;
 
+    @Column(name = "name", nullable = true)
+    private String name;
+
+    @Column(name = "phone_number", nullable = true)
+    private String encryptedPhoneNumber;
+
     @Column(name = "nickname", nullable = false)
     private String nickname;
 

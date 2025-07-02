@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>이메일 찾기</title>
+  <!-- Firebase SDK 추가 -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.2/firebase-auth-compat.js"></script>
+  <script>
+    // Firebase 초기화 (Firebase 콘솔에서 복사한 값으로 대체)
+    const firebaseConfig = {
+      apiKey: "AIzaSyCdBS26hIe7eI1DMecfdOlB8SFH8wYzvGk",
+      authDomain: "haeil-305e0.firebaseapp.com",
+      projectId: "haeil-305e0",
+      storageBucket: "haeil-305e0.firebasestorage.app",
+      messagingSenderId: "1013762005180",
+      appId: "1:1013762005180:web:dfff2a9208d20aa94a18b9",
+      measurementId: "G-GNV36164BS"
+    };
+    firebase.initializeApp(firebaseConfig);
+  </script>
+  <style>
+    body { font-family: sans-serif; }
+    #result { margin-top: 20px; }
+    #code, #verify-code { display: none; }
+  </style>
+</head>
+<body>
+<h2>이메일 찾기</h2>
+<!-- reCAPTCHA 컨테이너 -->
+<div id="recaptcha-container"></div>
+<!-- 전화번호 입력 -->
+<input type="tel" id="phone" placeholder="전화번호 (예: 010-1234-5678 또는 +821012345678)" required>
+<button id="send-sms" type="button">인증번호 발송</button>
+<!-- 인증번호 입력 (처음엔 숨김) -->
+<input type="text" id="code" placeholder="인증번호">
+<button id="verify-code" type="button">인증번호 확인</button>
+<!-- 결과 표시 영역 -->
+<div id="result"></div>
+<a href="/">로그인 하러가기</a>
+
+<script>
+  const phoneInput = document.getElementById('phone');
+  const codeInput = document.getElementById('code');
+  const sendBtn = document.getElementById('send-sms');
+  const verifyBtn = document.getElementById('verify-code');
+  const resultDiv = document.getElementById('result');
+  let confirmationResult = null;
+
+  // 전화번호 포맷팅 함수
+  function formatPhoneNumber(phone) {
+    const cleaned = phone.replace(/\D/g, '');
+    // 01012345678 → +821012345678
+    if (cleaned.startsWith('010') && cleaned.length === 11) {
+      return '+82' + cleaned.substring(1);
+    }
+    // 이미 +82로 시작하면 그대로 반환
+    if (phone.startsWith('+82')) {
+      return phone;
+    }
+    // 그 외의 경우는 그대로 반환 (추가적인 변환 필요시 확장)
+    return phone;
+  }
+
+  // 인증번호 발송 버튼 클릭
+  sendBtn.addEventListener('click', function() {
+    // 전화번호 포맷팅
+    const phoneNumber = formatPhoneNumber(phoneInput.value);
+    phoneInput.value = phoneNumber; // 입력창에도 반영
+
+    // reCAPTCHA 인스턴스 생성 (매번 새로)
+    if (window.recaptchaVerifier) {
+      window.recaptchaVerifier.clear();
+    }
+    window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
+      'size': 'invisible',
+      'callback': (response) => {
+        // reCAPTCHA가 풀리면 실행
+        sendSMS(phoneNumber, window.recaptchaVerifier);
+      },
+      'expired-callback': () => {
+        resultDiv.innerHTML = "reCAPTCHA가 만료되었습니다. 다시 시도해 주세요.";
+      }
+    });
+
+    // reCAPTCHA 렌더링 및 verify
+      window.recaptchaVerifier.render().then(() => {
+      window.recaptchaVerifier.verify();
+    });
+  });
+
+  // SMS 발송 함수
+  function sendSMS(phoneNumber, recaptchaVerifier) {
+    firebase.auth().signInWithPhoneNumber(phoneNumber, recaptchaVerifier)
+      .then(function(result) {
+        confirmationResult = result;
+        codeInput.style.display = 'inline-block';
+        verifyBtn.style.display = 'inline-block';
+        sendBtn.style.display = 'none';
+        resultDiv.innerHTML = '인증번호가 발송되었습니다.';
+      })
+      .catch(function(error) {
+        resultDiv.innerHTML = '인증번호 발송 실패: ' + error.message;
+        console.error(error);
+      });
+  }
+
+  // 인증번호 확인 버튼 클릭
+  verifyBtn.addEventListener('click', function() {
+    const code = codeInput.value;
+    if (!confirmationResult) {
+      resultDiv.innerHTML = '먼저 인증번호를 발송하세요.';
+      return;
+    }
+    confirmationResult.confirm(code)
+      .then(function(result) {
+        resultDiv.innerHTML = '인증 성공! 서버로 전화번호를 전송합니다.';
+        // 서버로 전화번호 전송
+        fetch('/find-email/verify', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ phone: phoneInput.value })
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.maskedEmail) {
+            resultDiv.innerHTML = '가입된 이메일: ' + data.maskedEmail;
+          } else {
+            resultDiv.innerHTML = '가입된 이메일이 없습니다.';
+          }
+        })
+        .catch(error => {
+          resultDiv.innerHTML = '서버 오류: ' + error;
+        });
+      })
+      .catch(function(error) {
+        resultDiv.innerHTML = '인증번호 확인 실패: ' + error.message;
+        console.error(error);
+      });
+  });
+
+  // 인증번호 입력 UI는 처음엔 숨김
+  codeInput.style.display = 'none';
+  verifyBtn.style.display = 'none';
+
+  // 인증번호 발송 성공 시에만 보이도록 처리 (sendSMS 함수에서)
+</script>
+</body>
+</html>

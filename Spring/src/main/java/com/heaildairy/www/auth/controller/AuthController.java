@@ -1,5 +1,6 @@
 package com.heaildairy.www.auth.controller;
 
+import com.heaildairy.www.auth.config.AESUtil;
 import com.heaildairy.www.auth.dto.LoginRequestDto;
 import com.heaildairy.www.auth.dto.RegisterRequestDto;
 import com.heaildairy.www.auth.entity.UserEntity;
@@ -12,7 +13,9 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.catalina.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -25,6 +28,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
+import java.util.Optional;
 
 @Slf4j
 @Controller
@@ -42,7 +46,7 @@ public class AuthController {
         if (session.getAttribute("user") != null) {
             model.addAttribute("user", session.getAttribute("user"));
         }
-        return "index.html"; // index.html 반환
+        return "index.html";
 
     }
 
@@ -89,6 +93,12 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "로그인 실패"));
         }
     }
+    // 비로그인 유저가 로그인 필요한 페이지 접속시
+    @GetMapping("/need-login")
+    public String needLogin(Model model) {
+        model.addAttribute("message", "로그인이 필요한 페이지입니다.");
+        return "auth/need-login.html";
+    }
 
     // 로그아웃 페이지
     @PostMapping("/user/logout")
@@ -119,6 +129,35 @@ public class AuthController {
         return ResponseEntity.ok().build();
     }
 
+    // 이메일 찾기 페이지
+    @GetMapping("/find-email")
+    public String findEmailPage() {
+        return "auth/find-email.html";
+    }
+
+
+    // 암호화 전화번호로 email 정보 확인 페이지
+    @PostMapping("/find-email/verify")
+    public ResponseEntity<?> verifyPhone(@RequestBody Map<String, String> request) throws Exception {
+
+        String phone = request.get("phone");
+        Optional<UserEntity> user = userService.findUserByPhone(phone);
+
+        if (user.isEmpty()) {
+            return ResponseEntity.ok(Map.of("maskedEmail", null));
+        }
+
+        // 이메일 마스킹 처리
+        String maskedEmail = maskEmail(user.get().getEmail());
+        return ResponseEntity.ok(Map.of("maskedEmail", maskedEmail));
+    }
+    // email 마스킹 기능
+    private String maskEmail(String email) {
+        int atIdx = email.indexOf('@');
+        if (atIdx < 3) return "***" + email.substring(atIdx);
+        return email.substring(0, 3) + "***" + email.substring(atIdx);
+    }
+
 
     // 회원가입 폼 페이지
     @GetMapping("/register")
@@ -127,21 +166,22 @@ public class AuthController {
         return "auth/register.html";
     }
 
+
     // 회원가입 - 회원 저장 페이지 (유효성 검사 활성화)
     @PostMapping("/register/newUser")
-    String newUser(@ModelAttribute @Valid RegisterRequestDto requestDto, BindingResult bindingResult, Model model) {
-
+    public String newUser(@ModelAttribute @Valid RegisterRequestDto requestDto,
+                          BindingResult bindingResult, Model model) {
         // @Valid 어노테이션에 의한 DTO 유효성 검사 오류 처리
         if (bindingResult.hasErrors()) {
-            System.out.println("DTO 유효성 검사 오류 발생:");
-            bindingResult.getAllErrors().forEach(error -> System.out.println(error.getDefaultMessage()));
             model.addAttribute("errors", bindingResult.getAllErrors());
             return "auth/register.html";
         }
+        // 이메일 중복 체크
+        if (userService.isEmailDuplicated(requestDto.getEmail())) {
+            model.addAttribute("emailError", "이미 존재하는 이메일입니다");
 
-//        System.out.println("Display email (DTO): " + requestDto.getEmail());
-//        System.out.println("Username Nickname (DTO): " + requestDto.getNickname());
-//        System.out.println("Password Password (DTO): " + requestDto.getPassword());
+            return "auth/register.html";
+        }
 
         userService.addNewUser(requestDto);
 
@@ -154,7 +194,7 @@ public class AuthController {
 
         String refreshToken = request.get("refreshToken");
         if (refreshToken == null) {
-            return ResponseEntity.badRequest().body("Refresh Token이 필요합니다.");
+            return ResponseEntity.badRequest().body(Map.of("error", "Refresh Token이 필요합니다."));
         }
         try {
             String newAccessToken = userService.reissueAccessToken(refreshToken);
@@ -170,7 +210,7 @@ public class AuthController {
         UserEntity user = (UserEntity) session.getAttribute("user");
         model.addAttribute("user", user);
 
-        return "/auth/my-page.html";
+        return "auth/my-page.html";
     }
 
 }

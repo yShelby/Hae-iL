@@ -4,6 +4,13 @@
     <meta charset="UTF-8">
     <title>Kosmo 154 Mall :: register</title>
     <link rel="stylesheet" href="/css/register.css">
+    <style>
+        .error-message {
+            color: red;
+            margin-top: 10px;
+            display: block;
+        }
+    </style>
 </head>
 <body>
 <form action="/register/newUser" method="POST" onsubmit="return validateForm()">
@@ -12,19 +19,9 @@
         <label for="email">이메일:</label>
         <input type="email" id="email" name="email"
                placeholder="이메일 주소" required
-               pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
                onkeyup="validateEmail()" onblur="validateEmail()">
         <span id="emailError" class="error-message"></span>
     </div>
-
-    <div>
-        <label for="nickname">닉네임:</label>
-        <input type="text" id="nickname" name="nickname"
-               placeholder="닉네임" required minlength="2" maxlength="15"
-               onkeyup="validateNickname()" onblur="validateNickname()">
-        <span id="nicknameError" class="error-message"></span>
-    </div>
-
     <div>
         <label for="password">비밀번호:</label>
         <input type="password" id="password" name="password"
@@ -36,7 +33,6 @@
         적어도 하나의 특수문자 (@$!%*?&) (?=.*[@$!%*?&])를 포함해야 합니다. -->
         <span id="passwordError" class="error-message"></span>
     </div>
-
     <div>
         <label for="passwordConfirm">비밀번호 확인:</label>
         <input type="password" id="passwordConfirm" name="passwordConfirm"
@@ -44,7 +40,28 @@
                onkeyup="checkPasswordMatch()">
         <span id="passwordConfirmError" class="error-message"></span>
     </div>
+    <div>
+        <label for="name">이름:</label>
+        <input name="name" placeholder="이름" id="name" required>
+        <!--               onkeyup="validateName()" onblur="validateName()"-->
+        <span id="nameError" class="error-message"></span>
+    </div>
+    <div>
 
+        <label for="phone">핸드폰 번호:</label>
+        <input name="phone" placeholder="핸드폰 번호(010-1234-5678)" id="phone" required>
+        <!--               onkeyup="validateName()" onblur="validateName()"-->
+        <span id="phoneError" class="error-message"></span>
+    </div>
+
+
+    <div>
+        <label for="nickname">닉네임:</label>
+        <input type="text" id="nickname" name="nickname"
+               placeholder="닉네임" required minlength="2" maxlength="15"
+               onkeyup="validateNickname()" onblur="validateNickname()">
+        <span id="nicknameError" class="error-message"></span>
+    </div>
     <div>
         <label for="profileImage">프로필 이미지 URL (선택 사항):</label>
         <input type="url" id="profileImage" name="profileImage" placeholder="프로필 이미지 URL (선택)">
@@ -62,8 +79,35 @@
         </ul>
     </div>
 </div>
+
+<div id="emailErrorModal" class="modal">
+    <div class="modal-body">
+        <p id="errorMessage"></p>
+    </div>
+    <button onclick="closeErrorModal()"
+            id="closeBtn">닫기</button>
+</div>
 <script th:inline="javascript">
-    const serverErrorMessages = /*[[${errors}]]*/ [];
+  const serverErrorMessages = /*[[${errors}]]*/ [];
+
+    window.onload = function() {
+      /* [[${emailError}]] : Thymeleaf 변수 */
+      var errorMessage = [[${emailError}]];
+      if (errorMessage) {
+          showErrorModal(errorMessage);
+      }
+  };
+
+
+  function showErrorModal(message) {
+  document.getElementById('errorMessage').textContent = message;
+  document.getElementById('emailErrorModal').style.display = 'block';
+}
+
+function closeErrorModal() {
+  document.getElementById('emailErrorModal').style.display = 'none';
+<!--  document.getElementById('modalOverlay').style.display = 'none';-->
+}
 </script>
 <script src="/js/registerValidation.js" defer></script>
 </body>
