@@ -8,8 +8,113 @@
 <h1>마이페이지</h1>
 <div>
     <p>이메일: <span th:text="${user.email}"></span></p>
+
+    <!-- 마이페이지 내에 비밀번호 변경 버튼 -->
+    <button id="change-password-btn" type="button">비밀번호 변경</button>
+
+    <!-- 비밀번호 변경 모달-->
+    <div id="password-modal" style="display:none; position:fixed; left:0; top:0; width:100vw; height:100vh; background:rgba(0,0,0,0.4); z-index:9999;">
+        <div style="background:#fff; margin:100px auto; padding:30px; width:350px; border-radius:8px; position:relative;">
+            <h3>비밀번호 변경</h3>
+            <form id="password-change-form">
+                <label>현재 비밀번호<br>
+                    <input type="password" id="current-password" required>
+                </label><br>
+                <label>새 비밀번호<br>
+                    <input type="password" id="new-password" required minlength="8" maxlength="20">
+                </label><br>
+                <label>새 비밀번호 확인<br>
+                    <input type="password" id="new-password-confirm" required>
+                </label><br>
+                <div id="pw-error" style="color:red; margin-top:10px;"></div>
+                <button type="submit">변경하기</button>
+                <button type="button" id="cancel-pw-change">취소</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 결과 팝업 모달 -->
+    <div id="popup-modal" style="display:none; position:fixed; left:0; top:0; width:100vw; height:100vh; background:rgba(0,0,0,0.4); z-index:10000;">
+        <div style="background:#fff; margin:200px auto; padding:30px; width:300px; border-radius:8px; text-align:center;">
+            <p id="popup-message"></p>
+            <button id="popup-close-btn">확인</button>
+        </div>
+    </div>
+
     <p>닉네임: <span th:text="${user.nickname}"></span></p>
     <p>프로필 이미지: <img th:src="${user.profileImage}" alt="프로필 이미지" width="100"></p>
 </div>
+<script>
+    // PW 변경 모달 열기
+    document.getElementById('change-password-btn').addEventListener('click', function() {
+        document.getElementById('password-modal').style.display = 'block';
+    });
+
+    // PW 변경 모달 닫기
+    document.getElementById('cancel-pw-change').addEventListener('click', function() {
+        document.getElementById('password-modal').style.display = 'none';
+        document.getElementById('pw-error').textContent = '';
+    });
+
+
+    // 팝업 모달 함수
+    function showPopup(message, callback) {
+        document.getElementById('popup-message').textContent = message;
+        document.getElementById('popup-modal').style.display = 'block';
+        document.getElementById('popup-close-btn').onclick = function() {
+            document.getElementById('popup-modal').style.display = 'none';
+            if (callback) callback();
+        };
+    }
+
+    // 폼 제출 이벤트
+    document.getElementById('password-change-form').addEventListener('submit', function(e) {
+        e.preventDefault(); // 기본 폼 제출 동작 막기
+
+    const currentPw = document.getElementById('current-password').value;
+    const newPw = document.getElementById('new-password').value;
+    const newPwConfirm = document.getElementById('new-password-confirm').value;
+
+    // 새 비밀번호 일치 확인
+    if (newPw !== newPwConfirm) {
+        document.getElementById('pw-error').textContent = '새 비밀번호가 일치하지 않습니다.';
+        return;
+    }
+    // 새 비밀번호 유효성(길이 등) 추가 체크 가능
+
+    // 서버에 변경 요청
+        fetch('/my-page/change-password', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                currentPassword: currentPw,
+                newPassword: newPw
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+            document.getElementById('password-modal').style.display = 'none';
+            document.getElementById('pw-error').textContent = '';
+            if (data.success) {
+                // 성공: 팝업 띄우고, 닫으면 로그아웃
+                showPopup('비밀번호가 성공적으로 변경되었습니다. 다시 로그인 해주세요.', function() {
+                    // 로그아웃 요청 후 메인 페이지 이동
+                    fetch('/user/logout', { method: 'POST', credentials: 'include' })
+                    .then(() => window.location.href = '/');
+                });
+            } else {
+                // 실패: 팝업만 띄움
+                showPopup(data.message || '비밀번호 변경 실패');
+            }
+        })
+        .catch(() => {
+            document.getElementById('password-modal').style.display = 'none';
+            showPopup('서버 오류가 발생했습니다.');
+        });
+    });
+
+
+
+</script>
 </body>
 </html>

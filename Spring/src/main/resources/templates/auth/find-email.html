@@ -9,7 +9,7 @@
   <script>
     // Firebase 초기화 (Firebase 콘솔에서 복사한 값으로 대체)
     const firebaseConfig = {
-      apiKey: "AIzaSyCdBS26hIe7eI1DMecfdOlB8SFH8wYzvGk",
+       apiKey: "AIzaSyCdBS26hIe7eI1DMecfdOlB8SFH8wYzvGk",
       authDomain: "haeil-305e0.firebaseapp.com",
       projectId: "haeil-305e0",
       storageBucket: "haeil-305e0.firebasestorage.app",
@@ -38,6 +38,7 @@
 <!-- 결과 표시 영역 -->
 <div id="result"></div>
 <a href="/">로그인 하러가기</a>
+<a href="#">비밀번호 찾기</a>
 
 <script>
   const phoneInput = document.getElementById('phone');
@@ -49,17 +50,21 @@
 
   // 전화번호 포맷팅 함수
   function formatPhoneNumber(phone) {
+     // 1. 숫자만 추출
     const cleaned = phone.replace(/\D/g, '');
-    // 01012345678 → +821012345678
+
+    // 2. 01012345678 → +821012345678
     if (cleaned.startsWith('010') && cleaned.length === 11) {
       return '+82' + cleaned.substring(1);
     }
-    // 이미 +82로 시작하면 그대로 반환
-    if (phone.startsWith('+82')) {
-      return phone;
+
+    // 3. 821012345678 → +821012345678
+    if (cleaned.startsWith('82') && (cleaned.length === 11 || cleaned.length === 12)) {
+      return '+' + cleaned;
     }
-    // 그 외의 경우는 그대로 반환 (추가적인 변환 필요시 확장)
-    return phone;
+
+    // 4. 그 외: 숫자에만 + 붙여서 반환
+    return '+' + cleaned;
   }
 
   // 인증번호 발송 버튼 클릭

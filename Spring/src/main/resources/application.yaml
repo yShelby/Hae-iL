@@ -2,6 +2,20 @@
 spring:
   application:
     name: server
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: haeil.kosmo154@gmail.com
+    password: cfpy buiq xhhj yejr
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+          connection timeout: 5000
+          timeout: 5000
+          write timeout: 5000
 
   jpa:
     properties:

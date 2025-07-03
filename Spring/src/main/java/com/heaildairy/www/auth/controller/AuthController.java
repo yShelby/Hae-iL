@@ -1,6 +1,8 @@
 package com.heaildairy.www.auth.controller;
 
 import com.heaildairy.www.auth.config.AESUtil;
+import com.heaildairy.www.auth.dto.ChangePWRequestDto;
+import com.heaildairy.www.auth.dto.FindPWRequestDto;
 import com.heaildairy.www.auth.dto.LoginRequestDto;
 import com.heaildairy.www.auth.dto.RegisterRequestDto;
 import com.heaildairy.www.auth.entity.UserEntity;
@@ -27,6 +29,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -50,49 +53,67 @@ public class AuthController {
 
     }
 
-    // 로그인 처리 (세션에 사용자 정보 저장)
     @PostMapping("/login/jwt")
     @ResponseBody
     public ResponseEntity<?> login(@RequestBody LoginRequestDto loginRequest, HttpSession session, HttpServletResponse response) {
         try {
-            Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                            loginRequest.getEmail(),
-                            loginRequest.getPassword()
-                    )
-            );
-            // UserService를 통해 사용자 정보 조회
-            UserEntity user = userService.getUserByEmail(loginRequest.getEmail());
-            session.setAttribute("user", user);
+            // 1. 인증 및 로그인 처리 (Service로 분리)
+            Authentication authentication =
+                    userService.loginAndAuthenticate(loginRequest.getEmail(), loginRequest.getPassword());
 
-            // Access Token & Refresh Token 발급
-            String accessToken = jwtProvider.createAccessToken(authentication);
-            String refreshToken = jwtProvider.createRefreshToken(authentication);
-            // Refresh Token DB 저장
-            userService.saveOrUpdateRefreshToken(loginRequest.getEmail(), refreshToken);
+            // 2. 로그인 성공 후 토큰/쿠키/세션 처리 (Service로 분리)
+            userService.processLoginSuccess(authentication, loginRequest.getEmail(), session, response);
 
-            // Access Token 쿠키에 저장
-            Cookie accessCookie = new Cookie("jwt", accessToken);
-            accessCookie.setHttpOnly(true);
-            accessCookie.setSecure(true);
-            accessCookie.setMaxAge(60 * 5); // 5분
-            accessCookie.setPath("/");
-            response.addCookie(accessCookie);
-
-            // Refresh Token 쿠키에 저장
-            Cookie refreshCookie = new Cookie("refreshToken", refreshToken);
-            refreshCookie.setHttpOnly(true);
-            refreshCookie.setSecure(true);
-            refreshCookie.setMaxAge(60 * 60 * 24 * 7); // 7일
-            refreshCookie.setPath("/");
-            response.addCookie(refreshCookie);
-
-            // 프론트에서 쿠키를 사용한다면 간단한 응답 반환
             return ResponseEntity.ok(Map.of("success", true));
         } catch (AuthenticationException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "로그인 실패"));
         }
     }
+
+//    // 로그인 처리 (세션에 사용자 정보 저장)
+//    @PostMapping("/login/jwt")
+//    @ResponseBody
+//    public ResponseEntity<?> login(@RequestBody LoginRequestDto loginRequest, HttpSession session, HttpServletResponse response) {
+//        try {
+//            Authentication authentication = authenticationManager.authenticate(
+//                    new UsernamePasswordAuthenticationToken(
+//                            loginRequest.getEmail(),
+//                            loginRequest.getPassword()
+//                    )
+//            );
+//            // UserService를 통해 사용자 정보 조회
+//            UserEntity user = userService.getUserByEmail(loginRequest.getEmail());
+//            session.setAttribute("user", user);
+//
+//            // Access Token & Refresh Token 발급
+//            String accessToken = jwtProvider.createAccessToken(authentication);
+//            String refreshToken = jwtProvider.createRefreshToken(authentication);
+//            // Refresh Token DB 저장
+//            userService.saveOrUpdateRefreshToken(loginRequest.getEmail(), refreshToken);
+//
+//            // Access Token 쿠키에 저장
+//            Cookie accessCookie = new Cookie("jwt", accessToken);
+//            accessCookie.setHttpOnly(true);
+//            accessCookie.setSecure(true);
+//            accessCookie.setMaxAge(60 * 5); // 5분
+//            accessCookie.setPath("/");
+//            response.addCookie(accessCookie);
+//
+//            // Refresh Token 쿠키에 저장
+//            Cookie refreshCookie = new Cookie("refreshToken", refreshToken);
+//            refreshCookie.setHttpOnly(true);
+//            refreshCookie.setSecure(true);
+//            refreshCookie.setMaxAge(60 * 60 * 24 * 7); // 7일
+//            refreshCookie.setPath("/");
+//            response.addCookie(refreshCookie);
+//
+//            // 프론트에서 쿠키를 사용한다면 간단한 응답 반환
+//            return ResponseEntity.ok(Map.of("success", true));
+//        } catch (AuthenticationException e) {
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "로그인 실패"));
+//        }
+//    }
+
     // 비로그인 유저가 로그인 필요한 페이지 접속시
     @GetMapping("/need-login")
     public String needLogin(Model model) {
@@ -158,6 +179,89 @@ public class AuthController {
         return email.substring(0, 3) + "***" + email.substring(atIdx);
     }
 
+    // 비밀번호 찾기 페이지
+    @GetMapping("/find-password")
+    public String findPassword(){
+        return "auth/find-password.html";
+    }
+
+    // 비밀번호 찾기 - 임시 비밀번호 이메일 전송
+    @PostMapping("/find-password/send")
+    @ResponseBody
+    public Map<String, Object> sendTempPassword(@RequestBody FindPWRequestDto dto) {
+        Map<String, Object> result = new HashMap<>();
+        try {
+            userService.sendTempPassword(dto.getEmail());
+            result.put("success", true);
+        } catch (IllegalArgumentException e) {
+            result.put("success", false);
+            result.put("message", e.getMessage());
+        }
+        return result;
+    }
+
+    @PostMapping("/find-password/login")
+    @ResponseBody
+    public ResponseEntity<?> loginWithTempPassword(@RequestBody LoginRequestDto dto, HttpSession session, HttpServletResponse response) {
+        try {
+            // 1. 인증 및 로그인 처리 (Service로 분리)
+            Authentication authentication = userService.loginAndAuthenticate(dto.getEmail(), dto.getPassword());
+
+            // 2. 로그인 성공 후 토큰/쿠키/세션 처리 (Service로 분리)
+            userService.processLoginSuccess(authentication, dto.getEmail(), session, response);
+
+            return ResponseEntity.ok(Map.of("success", true));
+        } catch (AuthenticationException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "임시 비밀번호가 일치하지 않습니다."));
+        }
+    }
+
+//    // 비밀번호 찾기 - 임시 비밀번호 사용 로그인 -> 마이 페이지로 이동 비밀번호 변경 유도
+//    @PostMapping("/find-password/login")
+//    @ResponseBody
+//    public ResponseEntity<?> loginWithTempPassword(@RequestBody LoginRequestDto dto, HttpSession session, HttpServletResponse response) {
+//
+//        try {
+//            // 1. 인증 (임시 비밀번호 검증)
+//            Authentication authentication = authenticationManager.authenticate(
+//                    new UsernamePasswordAuthenticationToken(
+//                            dto.getEmail(),
+//                            dto.getPassword()
+//                    )
+//            );
+//            // 2. 사용자 정보 조회
+//            UserEntity user = userService.getUserByEmail(dto.getEmail());
+//            session.setAttribute("user", user);
+//
+//            // 3. JWT 발급
+//            String accessToken = jwtProvider.createAccessToken(authentication);
+//            String refreshToken = jwtProvider.createRefreshToken(authentication);
+//
+//            // 4. Refresh Token DB 저장
+//            userService.saveOrUpdateRefreshToken(dto.getEmail(), refreshToken);
+//
+//            // 5. 쿠키 저장
+//            Cookie accessCookie = new Cookie("jwt", accessToken);
+//            accessCookie.setHttpOnly(true);
+//            accessCookie.setSecure(true);
+//            accessCookie.setMaxAge(60 * 5); // 5분
+//            accessCookie.setPath("/");
+//            response.addCookie(accessCookie);
+//
+//            Cookie refreshCookie = new Cookie("refreshToken", refreshToken);
+//            refreshCookie.setHttpOnly(true);
+//            refreshCookie.setSecure(true);
+//            refreshCookie.setMaxAge(60 * 60 * 24 * 7); // 7일
+//            refreshCookie.setPath("/");
+//            response.addCookie(refreshCookie);
+//
+//            // 6. 응답 반환
+//            return ResponseEntity.ok(Map.of("success", true));
+//        } catch (AuthenticationException e) {
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "임시 비밀번호가 일치하지 않습니다."));
+//        }
+//    }
+
 
     // 회원가입 폼 페이지
     @GetMapping("/register")
@@ -204,6 +308,7 @@ public class AuthController {
         }
     }
 
+    // 마이페이지
     @GetMapping("/my-page")
     public String myPage(Model model, HttpSession session) {
 
@@ -212,5 +317,43 @@ public class AuthController {
 
         return "auth/my-page.html";
     }
+
+    // 마이페이지 - 비밀번호 변경
+    @PostMapping("/my-page/change-password")
+    @ResponseBody
+    public Map<String, Object> changePassword(@RequestBody ChangePWRequestDto dto, HttpSession session, HttpServletResponse response) {
+
+        Map<String, Object> result = new HashMap<>();
+        // 세션에서 유저 정보 확인
+        UserEntity user = (UserEntity) session.getAttribute("user");
+        if (user == null) {
+            result.put("success", false);
+            result.put("message", "로그인이 필요합니다.");
+            return result;
+        }
+        try {
+            userService.changePassword(user.getEmail(), dto.getCurrentPassword(), dto.getNewPassword());
+
+            // 자동 로그아웃 처리: 세션 무효화 & 쿠키 삭제
+            session.invalidate();
+            // JWT/refreshToken 쿠키 삭제
+            Cookie jwtCookie = new Cookie("jwt", "");
+            jwtCookie.setMaxAge(0);
+            jwtCookie.setPath("/");
+            response.addCookie(jwtCookie);
+            Cookie refreshCookie = new Cookie("refreshToken", "");
+            refreshCookie.setMaxAge(0);
+            refreshCookie.setPath("/");
+            response.addCookie(refreshCookie);
+
+            result.put("success", true);
+        } catch (IllegalArgumentException e) {
+            result.put("success", false);
+            result.put("message", e.getMessage());
+        }
+        return result;
+    }
+
+
 
 }

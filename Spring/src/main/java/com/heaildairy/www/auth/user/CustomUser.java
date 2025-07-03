@@ -1,4 +1,4 @@
-package com.heaildairy.www.auth.service; // CustomUser가 service 패키지에 있다고 가정
+package com.heaildairy.www.auth.user; // CustomUser가 service 패키지에 있다고 가정
 
 import lombok.Getter;
 import lombok.Setter;
@@ -28,7 +28,7 @@ public class CustomUser extends User {
     };
     public CustomUser(
             String email, String password, Collection<? extends GrantedAuthority> authorities,
-                      String userId, String nickname, String profileImage,
+                      Integer userId, String nickname, String profileImage,
                       Integer themeId, LocalDateTime lastLoginAt, LocalDateTime createdAt
     ) {
         super(email, password, authorities);

@@ -52,7 +52,8 @@ public class SecurityConfig {
         // 로그인 여부 확인 설정
         http.authorizeHttpRequests((authorize)-> authorize
 //                .requestMatchers("/**").permitAll() // 항상 허용
-                .requestMatchers("/", "/login/jwt","/need-login", "/register", "/register/newUser", "/reissue", "/find-email", "/find-email/verify").permitAll() // 인증 불필요 경로
+                .requestMatchers("/", "/login/jwt","/need-login", "/register", "/register/newUser",
+                        "/reissue", "/find-email", "/find-email/verify", "/find-password", "/find-password/send", "/find-password/login").permitAll() // 인증 불필요 경로
                 .requestMatchers("/css/**","/js/**","/image/**").permitAll() // 정적 리소스 허용
                 .anyRequest().authenticated() // 나머지 모든 요청은 반드시 인증 필요
         );

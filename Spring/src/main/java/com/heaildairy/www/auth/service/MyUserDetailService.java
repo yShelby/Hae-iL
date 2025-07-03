@@ -1,6 +1,7 @@
 package com.heaildairy.www.auth.service;
 
 
+import com.heaildairy.www.auth.user.CustomUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
