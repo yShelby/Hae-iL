@@ -28,11 +28,10 @@ public class CustomUser extends User {
     };
     public CustomUser(
             String email, String password, Collection<? extends GrantedAuthority> authorities,
-                      Integer userId, String nickname, String profileImage,
-                      Integer themeId, LocalDateTime lastLoginAt, LocalDateTime createdAt
+            Integer userId, String nickname, String profileImage,
+            Integer themeId, LocalDateTime lastLoginAt, LocalDateTime createdAt
     ) {
         super(email, password, authorities);
     };
 
 }
-

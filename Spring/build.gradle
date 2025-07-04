@@ -44,7 +44,6 @@ dependencies {
 	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.5' // Jackson (JSON 파싱/생성)
 	implementation 'org.springframework.boot:spring-boot-starter-mail' // 스프링 이메일 전송 표준 메세지
 
-
 }
 
 tasks.named('test') {

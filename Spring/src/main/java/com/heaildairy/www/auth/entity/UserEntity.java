@@ -23,20 +23,11 @@ public class UserEntity {
     @Column(name = "password", nullable = false)
     private String password;
 
-//    // 회원의 상태를 나타내는 Enum 필드 추가
-//    @Enumerated(EnumType.STRING)
-//    @Column(name = "status", nullable = false)
-//    private UserStatus status; // 필드명은 'status'로 하는 게 일반적
-//
-//    // 신규 회원이 가입될 때 기본 상태를 ACTIVE로 설정
-//    @PrePersist
-//    protected void onRegister() {
-//        if (this.status == null) { // status 필드가 아직 설정되지 않았다면 (최초 저장 시)
-//            this.status = UserStatus.ACTIVE;
-//        } else if (this.status == UserStatus.INACTIVE) { // 재가입 회원일 경우 ACTIVATE
-//            this.status = UserStatus.ACTIVE;
-//        };
-//    }
+    // 회원의 상태를 나타내는 Enum 필드 추가
+    // 신규 회원이 가입될 때 기본 상태를 ACTIVE로 설정
+    @Enumerated(EnumType.STRING)
+    @Column(name = "user_status", nullable = false)
+    private UserStatus status = UserStatus.ACTIVE;
 
     @Column(name = "name", nullable = true)
     private String name;

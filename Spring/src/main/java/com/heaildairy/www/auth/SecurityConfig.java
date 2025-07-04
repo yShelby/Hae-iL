@@ -36,12 +36,12 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         // 개발단계이므로 csrf 보안기능 off
-            http.csrf(AbstractHttpConfigurer::disable);
+        http.csrf(AbstractHttpConfigurer::disable);
 
         // 세션 데이터 설정
         http.sessionManagement((session) -> session
 //                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // 세션 데이터 생성 방지
-                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED) // 필요할 때만 세션 생성
+                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED) // 필요할 때만 세션 생성
 //                .sessionCreationPolicy(SessionCreationPolicy.ALWAYS) // 세션 데이터 생성 허용
         );
 
@@ -52,10 +52,10 @@ public class SecurityConfig {
         // 로그인 여부 확인 설정
         http.authorizeHttpRequests((authorize)-> authorize
 //                .requestMatchers("/**").permitAll() // 항상 허용
-                .requestMatchers("/", "/login/jwt","/need-login", "/register", "/register/newUser",
-                        "/reissue", "/find-email", "/find-email/verify", "/find-password", "/find-password/send", "/find-password/login").permitAll() // 인증 불필요 경로
-                .requestMatchers("/css/**","/js/**","/image/**").permitAll() // 정적 리소스 허용
-                .anyRequest().authenticated() // 나머지 모든 요청은 반드시 인증 필요
+                        .requestMatchers("/", "/login/jwt","/need-login", "/register", "/register/newUser",
+                                "/reissue", "/find-email", "/find-email/verify", "/find-password", "/find-password/send", "/find-password/login").permitAll() // 인증 불필요 경로
+                        .requestMatchers("/css/**","/js/**","/image/**").permitAll() // 정적 리소스 허용
+                        .anyRequest().authenticated() // 나머지 모든 요청은 반드시 인증 필요
         );
 
         // 인증되지 않은 사용자가 보호된 경로에 접근하면 메인 페이지로 리다이렉트
@@ -67,23 +67,23 @@ public class SecurityConfig {
 
         // 로그아웃 DSL
         http.logout(logout -> logout
-                        .logoutUrl("/logout") // 로그아웃 URL
-                        .logoutSuccessUrl("/") // 로그아웃 성공 시 이동할 URL
-                        .addLogoutHandler((request, response, authentication) -> {
-                            // 쿠키 삭제
-                            Cookie accessCookie = new Cookie("jwt", "");
-                            accessCookie.setHttpOnly(true);
-                            accessCookie.setPath("/");
-                            accessCookie.setMaxAge(0);
-                            response.addCookie(accessCookie);
+                .logoutUrl("/logout") // 로그아웃 URL
+                .logoutSuccessUrl("/") // 로그아웃 성공 시 이동할 URL
+                .addLogoutHandler((request, response, authentication) -> {
+                    // 쿠키 삭제
+                    Cookie accessCookie = new Cookie("jwt", "");
+                    accessCookie.setHttpOnly(true);
+                    accessCookie.setPath("/");
+                    accessCookie.setMaxAge(0);
+                    response.addCookie(accessCookie);
 
-                            Cookie refreshCookie = new Cookie("refreshToken", "");
-                            refreshCookie.setHttpOnly(true);
-                            refreshCookie.setPath("/");
-                            refreshCookie.setMaxAge(0);
-                            response.addCookie(refreshCookie);
-                        })
-                );
+                    Cookie refreshCookie = new Cookie("refreshToken", "");
+                    refreshCookie.setHttpOnly(true);
+                    refreshCookie.setPath("/");
+                    refreshCookie.setMaxAge(0);
+                    response.addCookie(refreshCookie);
+                })
+        );
 
 
         return http.build();

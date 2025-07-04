@@ -123,3 +123,9 @@ Thumbs.db
 # Temporary files (추가)
 *.tmp
 *.bak
+
+# Gemini-specific files
+GEMINI.md
+
+# Project documentation
+/DR/

@@ -70,49 +70,6 @@ public class AuthController {
         }
     }
 
-//    // 로그인 처리 (세션에 사용자 정보 저장)
-//    @PostMapping("/login/jwt")
-//    @ResponseBody
-//    public ResponseEntity<?> login(@RequestBody LoginRequestDto loginRequest, HttpSession session, HttpServletResponse response) {
-//        try {
-//            Authentication authentication = authenticationManager.authenticate(
-//                    new UsernamePasswordAuthenticationToken(
-//                            loginRequest.getEmail(),
-//                            loginRequest.getPassword()
-//                    )
-//            );
-//            // UserService를 통해 사용자 정보 조회
-//            UserEntity user = userService.getUserByEmail(loginRequest.getEmail());
-//            session.setAttribute("user", user);
-//
-//            // Access Token & Refresh Token 발급
-//            String accessToken = jwtProvider.createAccessToken(authentication);
-//            String refreshToken = jwtProvider.createRefreshToken(authentication);
-//            // Refresh Token DB 저장
-//            userService.saveOrUpdateRefreshToken(loginRequest.getEmail(), refreshToken);
-//
-//            // Access Token 쿠키에 저장
-//            Cookie accessCookie = new Cookie("jwt", accessToken);
-//            accessCookie.setHttpOnly(true);
-//            accessCookie.setSecure(true);
-//            accessCookie.setMaxAge(60 * 5); // 5분
-//            accessCookie.setPath("/");
-//            response.addCookie(accessCookie);
-//
-//            // Refresh Token 쿠키에 저장
-//            Cookie refreshCookie = new Cookie("refreshToken", refreshToken);
-//            refreshCookie.setHttpOnly(true);
-//            refreshCookie.setSecure(true);
-//            refreshCookie.setMaxAge(60 * 60 * 24 * 7); // 7일
-//            refreshCookie.setPath("/");
-//            response.addCookie(refreshCookie);
-//
-//            // 프론트에서 쿠키를 사용한다면 간단한 응답 반환
-//            return ResponseEntity.ok(Map.of("success", true));
-//        } catch (AuthenticationException e) {
-//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "로그인 실패"));
-//        }
-//    }
 
     // 비로그인 유저가 로그인 필요한 페이지 접속시
     @GetMapping("/need-login")
@@ -143,7 +100,7 @@ public class AuthController {
                 String email = claims.getSubject();
                 userService.logout(email);
             } catch (Exception e) {
-                    log.error("Refresh Token 파싱 실패", e);
+                log.error("Refresh Token 파싱 실패", e);
             }
         }
 
@@ -172,6 +129,7 @@ public class AuthController {
         String maskedEmail = maskEmail(user.get().getEmail());
         return ResponseEntity.ok(Map.of("maskedEmail", maskedEmail));
     }
+
     // email 마스킹 기능
     private String maskEmail(String email) {
         int atIdx = email.indexOf('@');
@@ -181,7 +139,7 @@ public class AuthController {
 
     // 비밀번호 찾기 페이지
     @GetMapping("/find-password")
-    public String findPassword(){
+    public String findPassword() {
         return "auth/find-password.html";
     }
 
@@ -215,53 +173,6 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "임시 비밀번호가 일치하지 않습니다."));
         }
     }
-
-//    // 비밀번호 찾기 - 임시 비밀번호 사용 로그인 -> 마이 페이지로 이동 비밀번호 변경 유도
-//    @PostMapping("/find-password/login")
-//    @ResponseBody
-//    public ResponseEntity<?> loginWithTempPassword(@RequestBody LoginRequestDto dto, HttpSession session, HttpServletResponse response) {
-//
-//        try {
-//            // 1. 인증 (임시 비밀번호 검증)
-//            Authentication authentication = authenticationManager.authenticate(
-//                    new UsernamePasswordAuthenticationToken(
-//                            dto.getEmail(),
-//                            dto.getPassword()
-//                    )
-//            );
-//            // 2. 사용자 정보 조회
-//            UserEntity user = userService.getUserByEmail(dto.getEmail());
-//            session.setAttribute("user", user);
-//
-//            // 3. JWT 발급
-//            String accessToken = jwtProvider.createAccessToken(authentication);
-//            String refreshToken = jwtProvider.createRefreshToken(authentication);
-//
-//            // 4. Refresh Token DB 저장
-//            userService.saveOrUpdateRefreshToken(dto.getEmail(), refreshToken);
-//
-//            // 5. 쿠키 저장
-//            Cookie accessCookie = new Cookie("jwt", accessToken);
-//            accessCookie.setHttpOnly(true);
-//            accessCookie.setSecure(true);
-//            accessCookie.setMaxAge(60 * 5); // 5분
-//            accessCookie.setPath("/");
-//            response.addCookie(accessCookie);
-//
-//            Cookie refreshCookie = new Cookie("refreshToken", refreshToken);
-//            refreshCookie.setHttpOnly(true);
-//            refreshCookie.setSecure(true);
-//            refreshCookie.setMaxAge(60 * 60 * 24 * 7); // 7일
-//            refreshCookie.setPath("/");
-//            response.addCookie(refreshCookie);
-//
-//            // 6. 응답 반환
-//            return ResponseEntity.ok(Map.of("success", true));
-//        } catch (AuthenticationException e) {
-//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "임시 비밀번호가 일치하지 않습니다."));
-//        }
-//    }
-
 
     // 회원가입 폼 페이지
     @GetMapping("/register")
@@ -353,7 +264,5 @@ public class AuthController {
         }
         return result;
     }
-
-
 
 }
