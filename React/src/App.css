@@ -1,0 +1,112 @@
+/* 전체 앱 컨테이너 */
+.app-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    font-family: 'Noto Sans KR', sans-serif;
+}
+
+/* 헤더 스타일 */
+.app-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    border-bottom: 1px solid #e0e0e0;
+    background-color: white;
+    flex-shrink: 0;
+}
+
+.app-header h1 {
+    margin: 0;
+    font-size: 1.5rem;
+}
+
+.app-header h1 a {
+    text-decoration: none;
+    color: #333;
+}
+
+/* 메인 콘텐츠 영역 (Flexbox 레이아웃) */
+.main-content {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+
+/* 사이드바 (캘린더) */
+.sidebarB {
+    width: 400px;
+    flex-shrink: 0;
+    padding: 1.5rem;
+    border-right: 1px solid #e0e0e0;
+    overflow-y: auto;
+    background-color: #fdfdfd;
+}
+
+/* 콘텐츠 영역 (일기 작성) */
+.content-area {
+    flex: 1;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 1.5rem 2rem;
+    overflow-y: auto;
+}
+
+/* --- 캘린더 커스텀 스타일 --- */
+.calendar-container .react-calendar {
+    width: 100%;
+    border: none;
+    border-radius: 8px;
+    font-family: inherit;
+}
+
+.react-calendar__navigation button {
+    font-size: 1rem;
+    font-weight: bold;
+}
+
+.react-calendar__month-view__weekdays__weekday abbr[title] {
+    text-decoration: none;
+    font-weight: 600;
+    color: #666;
+}
+
+.react-calendar__tile {
+    border-radius: 6px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.react-calendar__tile--now {
+    background: #e6f7ff;
+}
+.react-calendar__tile--now:hover {
+    background: #cceeff;
+}
+
+.react-calendar__tile--active {
+    background: #007bff !important;
+    color: white !important;
+}
+
+.active-diary-date {
+    position: relative;
+}
+.active-diary-date::after {
+    content: '';
+    position: absolute;
+    bottom: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: #28a745;
+}
+
+.react-calendar__tile--active.active-diary-date::after {
+    background-color: white;
+}

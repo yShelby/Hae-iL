@@ -1,5 +1,21 @@
+// 📄 파일 경로: com.heaildairy.www.auth.jwt.JwtAuthenticationFilter.java
+// 📌 역할:
+//   - 🔐 모든 요청마다 JWT 검사 (Access Token + Refresh Token 쿠키 기반)
+//   - ⚠️ Access Token 만료 시 Refresh Token으로 재발급 시도
+//   - ✅ 유효한 토큰이면 SecurityContext에 인증 객체 등록
+//
+// 📊 데이터 흐름도:
+// 1️⃣ doFilterInternal() 호출 → 요청 도착
+// 2️⃣ resolveToken() → "jwt" 쿠키 또는 Authorization 헤더에서 AccessToken 추출
+// 3️⃣ jwtProvider.validateToken() → 토큰 유효성 검사
+// 4️⃣ 유효한 경우 → 인증 객체 생성 후 SecurityContext 등록
+// 5️⃣ 만료된 경우 → "refreshToken" 쿠키에서 리프레시 토큰 추출
+// 6️⃣ RefreshToken 유효 → 새 AccessToken 생성 + 쿠키에 저장 + 인증 객체 등록
+// 7️⃣ 둘 다 실패 → SecurityContext 초기화
+
 package com.heaildairy.www.auth.jwt;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -14,22 +30,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-
-/**
- * 📂 JwtAuthenticationFilter.java
- * ────────────────────────────────
- * ✅ 역할:
- * - 모든 HTTP 요청마다 JWT 토큰 존재 여부 검사 및 유효성 검증
- * - 유효한 토큰이면 SecurityContext에 인증 정보 등록 → Spring Security 인증 흐름 연동
- * - JWT 토큰은 쿠키 또는 Authorization 헤더에서 추출 가능
- *
- * 📊 데이터 흐름도
- * 1️⃣ HTTP 요청 수신 → 토큰 추출 시도 (쿠키 'jwt' 우선, 없으면 Authorization 헤더)
- * 2️⃣ 토큰 존재 & 유효성 검사 진행
- * 3️⃣ 유효하면 토큰에서 Authentication 객체 생성 → SecurityContext에 저장
- * 4️⃣ 인증 실패하거나 토큰 없으면 인증 미설정 상태 유지
- * 5️⃣ 다음 필터 체인으로 요청 전달
- */
+import java.util.Arrays;
 
 @Slf4j
 @Component
@@ -42,53 +43,81 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
-        // 1️⃣ 요청에서 JWT 토큰 추출 (쿠키 우선 → 헤더)
-        String token = resolveToken(request);
+        // 🥇 Step 1: AccessToken을 쿠키("jwt") 또는 Authorization 헤더에서 추출
+        String accessToken = resolveToken(request, "jwt");
 
-        // 2️⃣ 토큰 존재 && 유효한지 검사
-        if (token != null && jwtProvider.validateToken(token)) {
-            try {
-                // 3️⃣ 유효한 토큰에서 Authentication 객체 생성 후 SecurityContext에 설정
-                Authentication authentication = jwtProvider.getAuthentication(token);
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-                log.debug("Authenticated user: {}, authorities: {}", authentication.getName(), authentication.getAuthorities());
-            } catch (Exception e) {
-                // ❌ 인증 객체 설정 실패 시 로그 기록
-                log.error("Could not set user authentication in security context", e);
+        try {
+            // 🛡️ Step 2: AccessToken이 유효한 경우
+            if (StringUtils.hasText(accessToken) && jwtProvider.validateToken(accessToken)) {
+                Authentication authentication = jwtProvider.getAuthentication(accessToken); // 🔓 인증 객체 생성
+                SecurityContextHolder.getContext().setAuthentication(authentication); // 🔐 Spring Security에 인증 정보 설정
+                log.debug("✅ Access Token is valid. Authenticated user: {}", authentication.getName());
             }
-        } else {
-            // ⚠️ 유효한 토큰 없을 때 로그 (보안상 인증 무시 상태)
-            log.debug("No valid JWT token found, uri: {}", request.getRequestURI());
+        } catch (ExpiredJwtException e) {
+            // ⏳ Step 3: Access Token 만료 시 Refresh Token 재발급 시도
+            log.warn("⚠️ Access Token has expired. Attempting to refresh token...");
+
+            // 🔄 Step 4: Refresh Token 쿠키에서 추출
+            String refreshToken = resolveToken(request, "refreshToken");
+
+            // 🔁 Step 5: Refresh Token이 유효하면
+            if (StringUtils.hasText(refreshToken) && jwtProvider.validateToken(refreshToken)) {
+                log.info("🔁 Refresh Token is valid. Issuing new Access Token.");
+
+                // 인증 정보 재생성
+                Authentication authentication = jwtProvider.getAuthentication(refreshToken);
+
+                // 새 Access Token 생성
+                String newAccessToken = jwtProvider.createAccessToken(authentication);
+
+                // 🔐 새 Access Token 쿠키로 발급
+                Cookie newAccessTokenCookie = new Cookie("jwt", newAccessToken);
+                newAccessTokenCookie.setHttpOnly(true);
+                newAccessTokenCookie.setPath("/");
+                // newAccessTokenCookie.setSecure(true); // 👉 HTTPS 환경에서만 주석 해제
+                response.addCookie(newAccessTokenCookie);
+
+                // SecurityContext에 인증 객체 등록
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+                log.info("✅ New Access Token issued and user authenticated.");
+            } else {
+                // ❌ Refresh Token도 유효하지 않음
+                log.warn("❌ Refresh Token is invalid or not present. Clearing security context.");
+                SecurityContextHolder.clearContext();
+            }
+
+        } catch (Exception e) {
+            // 🛑 예외 발생 시 SecurityContext 초기화
+            log.error("🚨 Could not set user authentication in security context", e);
+            SecurityContextHolder.clearContext();
         }
 
-        // 4️⃣ 인증 여부와 상관없이 다음 필터로 요청 전달
+        // 🔚 필터 체인 계속 진행
         filterChain.doFilter(request, response);
     }
 
     /**
-     * 토큰 추출 헬퍼 메서드
-     * - 쿠키에서 'jwt' 토큰 우선 탐색
-     * - 없으면 Authorization 헤더의 'Bearer ' 토큰 탐색
-     * - 없으면 null 반환
+     * 🍪 특정 이름의 토큰을 쿠키에서 추출 (없으면 Authorization 헤더로 fallback)
      */
-    private String resolveToken(HttpServletRequest request) {
-        // 🍪 쿠키에서 'jwt' 토큰 탐색
+    private String resolveToken(HttpServletRequest request, String tokenName) {
         Cookie[] cookies = request.getCookies();
+
         if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if ("jwt".equals(cookie.getName())) {
-                    return cookie.getValue();
-                }
+            return Arrays.stream(cookies)
+                    .filter(cookie -> tokenName.equals(cookie.getName()))
+                    .map(Cookie::getValue)
+                    .findFirst()
+                    .orElse(null);
+        }
+
+        // 📦 Fallback: Authorization 헤더에서 Bearer 토큰 추출
+        if ("jwt".equals(tokenName)) {
+            String bearerToken = request.getHeader("Authorization");
+            if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
+                return bearerToken.substring(7); // "Bearer " 제거
             }
         }
 
-        // 🔑 Authorization 헤더에서 Bearer 토큰 탐색
-        String bearerToken = request.getHeader("Authorization");
-        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
-            return bearerToken.substring(7);
-        }
-
-        // 토큰 없으면 null 반환
         return null;
     }
 }

@@ -78,49 +78,34 @@
 </div>
 
 <!-- 서버 에러 메시지를 JS로 전달 -->
+<!-- 서버 에러 메시지를 JS로 안전하게 전달 -->
 <script th:inline="javascript">
     /*<![CDATA[*/
-        const serverErrors = /*[[${errors}]]*/ null;
-        const emailErrorFromServer = /*[[${emailError}]]*/ null;
-    /*]]>*/
 
-    window.onload = function () {
-        const errorMessages = [];
+    // 1. 컨트롤러에서 전달된 'errors' 모델 속성을 JS 변수로 변환합니다.
+    //    값이 없으면(페이지 첫 로드 시) null이 됩니다.
+    const serverValidationErrors = /*[[${errors}]]*/ null;
 
-        if (emailErrorFromServer) {
-            errorMessages.push(emailErrorFromServer);
-        }
+    // 2. 컨트롤러에서 전달된 'emailError' 모델 속성을 JS 변수로 변환합니다.
+    const emailErrorFromServer = /*[[${emailError}]]*/ null;
 
-        if (serverErrors && Array.isArray(serverErrors)) {
-            serverErrors.forEach(err => {
-                if (err?.defaultMessage) errorMessages.push(err.defaultMessage);
-            });
-        }
+    // 3. registerValidation.js에서 사용할 최종 에러 메시지 배열을 생성합니다.
+    //    이 변수는 항상 배열 형태로 존재하므로 ReferenceError가 발생하지 않습니다.
+    const serverErrorMessages = [];
 
-        if (errorMessages.length > 0) {
-            showModal(errorMessages);
-        }
-
-        const closeBtn = document.getElementById('closeErrorBtn');
-        if (closeBtn) {
-            closeBtn.addEventListener('click', () => {
-                document.getElementById('errorModal').style.display = 'none';
-                document.getElementById('errorList').innerHTML = '';
-            });
-        }
-    };
-
-    function showModal(messages) {
-        const modal = document.getElementById('errorModal');
-        const list = document.getElementById('errorList');
-        list.innerHTML = '';
-        messages.forEach(msg => {
-            const li = document.createElement('li');
-            li.textContent = msg;
-            list.appendChild(li);
-        });
-        modal.style.display = 'flex';
+    if (emailErrorFromServer) {
+        serverErrorMessages.push(emailErrorFromServer);
     }
+
+    if (serverValidationErrors && Array.isArray(serverValidationErrors)) {
+        serverValidationErrors.forEach(err => {
+            if (err && err.defaultMessage) {
+                serverErrorMessages.push(err.defaultMessage);
+            }
+        });
+    }
+
+    /*]]>*/
 </script>
 
 <!-- 클라이언트 유효성 검사 -->

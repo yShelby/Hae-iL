@@ -1,0 +1,90 @@
+.diary-write-page {
+    background: #fff;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    min-height: 500px; /* 최소 높이를 지정하여 레이아웃 안정성 확보 */
+}
+
+/* 초기 화면 스타일 */
+.placeholder-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    flex-grow: 1; /* 부모의 남은 공간을 모두 차지 */
+    text-align: center;
+    border: 2px dashed #e0e0e0;
+    border-radius: 8px;
+    padding: 2rem;
+}
+
+.placeholder-text {
+    font-size: 1.2rem;
+    color: #868e96;
+    margin-bottom: 1.5rem;
+}
+
+.start-writing-button {
+    padding: 12px 30px;
+    border: none;
+    border-radius: 8px;
+    background-color: #007bff;
+    color: white;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.2s;
+}
+
+.start-writing-button:hover {
+    background-color: #0056b3;
+    transform: translateY(-2px);
+}
+
+
+/* 버튼 그룹 스타일 */
+.button-group {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.save-button,
+.delete-button {
+    padding: 10px 25px;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s, opacity 0.2s;
+}
+
+.save-button:disabled,
+.delete-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.save-button {
+    background-color: #007bff;
+    color: white;
+}
+
+.save-button:hover:not(:disabled) {
+    background-color: #0056b3;
+}
+
+.delete-button {
+    background-color: #dc3545;
+    color: white;
+}
+
+.delete-button:hover:not(:disabled) {
+    background-color: #c82333;
+}
