@@ -1,0 +1,24 @@
+/*
+ * File: src/shared/ui/ConfirmModal.css
+ * 역할: 공용 모달 스타일 외에, ConfirmModal에만 필요한 특화된 스타일을 정의합니다.
+ */
+
+/* 확인 버튼 스타일 */
+.modal-buttons .confirm-button {
+    background-color: #dc3545; /* 삭제/위험을 의미하는 붉은색 */
+    color: white;
+}
+
+.modal-buttons .confirm-button:hover {
+    background-color: #c82333;
+}
+
+/* 취소 버튼 스타일 */
+.modal-buttons .cancel-button {
+    background-color: #e9ecef;
+    color: #495057;
+}
+
+.modal-buttons .cancel-button:hover {
+    background-color: #dee2e6;
+}

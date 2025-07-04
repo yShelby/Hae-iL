@@ -1,0 +1,61 @@
+/* 캘린더 전체 컨테이너 */
+.calendar-container .react-calendar {
+    width: 100%;
+    border: none;
+    border-radius: 8px;
+    font-family: inherit;
+}
+
+/* 캘린더 상단 네비게이션 (예: 2025년 7월) */
+.react-calendar__navigation button {
+    font-size: 1rem;
+    font-weight: bold;
+}
+
+/* 요일 표시 (월, 화, 수...) */
+.react-calendar__month-view__weekdays__weekday abbr[title] {
+    /* 역할: 요일 밑에 있던 기본 점선을 제거합니다. */
+    text-decoration: none;
+    font-weight: 600;
+    color: #666;
+}
+
+/* 날짜 타일 기본 스타일 */
+.react-calendar__tile {
+    border-radius: 6px;
+}
+
+/* 오늘 날짜 기본 스타일 */
+.react-calendar__tile--now {
+    background: #e6f7ff;
+}
+.react-calendar__tile--now:hover {
+    background: #cceeff;
+}
+
+/* 사용자가 선택한 날짜 스타일 */
+.react-calendar__tile--active {
+    background: #007bff !important;
+    color: white !important;
+}
+
+/* 일기가 있는 날에 점 표시 */
+.active-diary-date {
+    position: relative;
+}
+.active-diary-date::after {
+    content: '';
+    position: absolute;
+    bottom: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background-color: #28a745; /* 초록색 점 */
+}
+
+/* 선택된 날이면서 일기도 있는 경우, 점 색상을 흰색으로 */
+.react-calendar__tile--active.active-diary-date::after {
+    background-color: white;
+}
