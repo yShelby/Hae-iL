@@ -41,6 +41,7 @@ export const GalleryModal = () => {
             // ✅ 2️⃣ 로그인 상태면 이미지 로딩 시작
             fetchGalleryImagesAPI()
                 .then(response => {
+                    // console.log("✅ 갤러리 API 응답:", response.data);
                     // 🧾 S3 URL 포맷 적용
                     const dataWithUrls = response.data.map(img => ({
                         ...img,
