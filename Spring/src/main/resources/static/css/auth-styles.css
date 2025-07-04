@@ -1,0 +1,252 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap');
+
+:root {
+    --primary-color: #3498db;
+    --primary-hover-color: #2980b9;
+    --secondary-color: #f1f1f1;
+    --secondary-hover-color: #e1e1e1;
+    --dark-color: #2c3e50;
+    --light-color: #ffffff;
+    --background-color: #f4f7f6;
+    --error-color: #e74c3c;
+    --success-color: #2ecc71;
+    --border-color: #dce4e3;
+    --text-color: #555;
+}
+
+body {
+    font-family: 'Noto Sans KR', sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.container {
+    background-color: var(--light-color);
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 480px; /* Adjusted for forms with more fields */
+    text-align: center;
+    box-sizing: border-box;
+}
+
+h2 {
+    color: var(--dark-color);
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-weight: 700;
+}
+
+.description {
+    color: #777;
+    margin-bottom: 30px;
+    font-size: 15px;
+}
+
+/* Added label styles for register page */
+label {
+    display: block;
+    text-align: left;
+    font-weight: 500;
+    margin-bottom: 8px;
+    font-size: 14px;
+    color: var(--dark-color);
+}
+
+input[type="email"],
+input[type="password"],
+input[type="text"],
+input[type="tel"],
+input[type="url"] { /* Added input[type="url"] */
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 16px;
+    box-sizing: border-box;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+input[type="email"]:focus,
+input[type="password"]:focus,
+input[type="text"]:focus,
+input[type="tel"]:focus,
+input[type="url"]:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+}
+
+button {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 8px;
+    background-color: var(--primary-color);
+    color: var(--light-color);
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-top: 10px;
+}
+
+button:hover {
+    background-color: var(--primary-hover-color);
+}
+
+button:disabled {
+    background-color: #bdc3c7;
+    cursor: not-allowed;
+}
+
+.button-secondary {
+    background-color: var(--secondary-color);
+    color: var(--dark-color);
+}
+.button-secondary:hover {
+    background-color: var(--secondary-hover-color);
+}
+
+.links {
+    margin-top: 25px;
+    font-size: 14px;
+}
+
+.links a {
+    color: var(--primary-color);
+    text-decoration: none;
+    margin: 0 10px;
+    transition: color 0.3s;
+}
+
+.links a:hover {
+    color: var(--dark-color);
+}
+
+/* Unified message styles */
+.error, .success {
+    text-align: left;
+    font-size: 13px;
+    min-height: 20px;
+    display: block;
+    margin-top: 4px;
+    margin-bottom: 12px; /* Space before next label */
+}
+
+.error, #result.error, #login-result.error, #pw-error.error {
+    color: var(--error-color);
+}
+
+.success, #result.success, #login-result.success {
+    color: var(--success-color);
+    text-align: center; /* Success messages can be centered */
+    font-size: 14px;
+    margin-top: 20px;
+    margin-bottom: 0;
+}
+
+
+/* For find-email.html input group */
+.input-group {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 16px;
+}
+.input-group input {
+    flex-grow: 1;
+}
+.input-group button {
+    width: auto;
+    flex-shrink: 0;
+    padding: 12px 20px;
+    margin-top: 0;
+}
+
+
+/* Modal Styles */
+.modal-overlay {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content {
+    background: var(--light-color);
+    padding: 30px;
+    width: 90%;
+    max-width: 400px;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    text-align: center;
+}
+
+.modal-content h3 {
+    margin-top: 0;
+    color: var(--dark-color);
+}
+
+.modal-content p {
+    margin-bottom: 20px;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.modal-actions button {
+    width: auto;
+    padding: 10px 30px;
+    margin-top: 0;
+}
+
+/* My Page Specific Styles */
+.my-page .profile-section {
+    display: flex;
+    align-items: center;
+    text-align: left;
+    margin-bottom: 30px;
+    gap: 20px;
+}
+
+.my-page .profile-image {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--border-color);
+}
+
+.my-page .profile-info p {
+    margin: 5px 0;
+}
+
+.my-page .button-secondary {
+    margin-bottom: 10px;
+}
+
+.button-link {
+    display: inline-block;
+    margin-top: 10px;
+    color: var(--text-color);
+    text-decoration: none;
+    font-size: 14px;
+}

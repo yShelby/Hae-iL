@@ -1,6 +1,5 @@
 package com.heaildairy.www.auth.entity;
 
-import com.heaildairy.www.auth.user.UserStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
