@@ -31,7 +31,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name = "images") // 🏷️ DB 테이블명 지정
+@Table(name = "gallery") // 🏷️ DB 테이블명 지정
 public class GalleryEntity {
 
     @Id
