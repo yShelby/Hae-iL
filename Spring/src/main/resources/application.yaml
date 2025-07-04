@@ -1,7 +1,11 @@
 # src/main/resources/application.yml
 spring:
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+
   application:
-    name: server
+    name: haeil-server
   mail:
     host: smtp.gmail.com
     port: 587
@@ -30,6 +34,7 @@ spring:
     web:
       pageable:
         default-page-size: 20 # 기본 및 최대 페이지 사이즈 설정
+        max-page-size: 100
 
 logging:
   pattern:
@@ -38,8 +43,9 @@ logging:
   level:
     org:
       hibernate:
-        SQL: debug # Hibernate 관련 SQL 로그 레벨 설정
+        org.hibernate.SQL: debug
         orm.jdbc.bind: trace
+        com.heaildairy.www: debug
 
 #server: # 주석 처리된 세션 설정
 #  servlet:
@@ -48,5 +54,9 @@ logging:
 #      cookie:
 #        max-age: 5m
 
+
 jwt:
   secret: JWTPasswords2025Kosmo154TeamProjectHaeilCodedByDaranShin0628 # JWT 비밀 키
+
+cors:
+  allowed-origins: http://localhost:5173, http://localhost:3000

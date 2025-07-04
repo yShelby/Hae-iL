@@ -12,3 +12,4 @@ export const fetchGalleryImagesAPI = () => {
     // GET 요청을 통해 서버의 '/api/gallery' 엔드포인트에서 이미지 리스트를 받아옴
     return apiClient.get('/api/gallery');
 };
+

@@ -33,7 +33,7 @@ import {AuthProvider} from "@features/auth/AuthContext.jsx";
  * ================================================================= */
 
 // 🧱 1. 루트 DOM 요소 가져오기
-const root = ReactDOM.createRoot(document.getElementById('root'));
+const root = ReactDOM.createRoot(document.getElementById('react-root'));
 
 // ⚙️ 2. 애플리케이션 렌더링
 root.render(
