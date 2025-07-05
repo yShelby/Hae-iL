@@ -40,4 +40,7 @@ public interface DiaryRepository extends JpaRepository<DiaryEntity, Long> {
      */
     @Query("SELECT DISTINCT d.diaryDate FROM DiaryEntity d WHERE d.user.userId = :userId AND YEAR(d.diaryDate) = :year AND MONTH(d.diaryDate) = :month")
     List<LocalDate> findActiveDatesByUserIdAndYearMonth(@Param("userId") Integer userId, @Param("year") int year, @Param("month") int month);
+
+    // ✅ 주간 타임라인: 날짜 범위로 다이어리 전체 조회
+    List<DiaryEntity> findAllByUserUserIdAndDiaryDateBetween(Integer userId, LocalDate start, LocalDate end);
 }

@@ -57,3 +57,51 @@ export const formatStringToDate = (dateString) => {
     // 4️⃣ 유효한 Date 객체 반환
     return date;
 };
+
+/**
+ * getStartOfWeek
+ * 🛠 기능:  기준 날짜의 해당 주의 시작 날짜(월요일)를 반환
+ *
+ * @param {Date} date - 기준 날짜
+ * @returns {Date} 해당 주의 시작 날짜 (일요일)
+ */
+export const getStartOfWeek = (date) => {
+    const day = date.getDay(); // 일:0 ~ 토:6
+    const start = new Date(date);
+    const diff = day === 0 ? -6 : 1 - day; // 일요일이면 -6, 월~토는 1-day
+    start.setDate(date.getDate() + diff);
+    start.setHours(0, 0, 0, 0);
+    return start;
+};
+
+
+/**
+ * getEndOfWeek
+ * 🛠 기능: 기준 날짜의 해당 주의 끝 날짜(일요일)를 반환
+ *
+ * @param {Date} date - 기준 날짜
+ * @returns {Date} 해당 주의 마지막 날짜 (토요일)
+ */
+export const getEndOfWeek = (date) => {
+    const start = getStartOfWeek(date);
+    const end = new Date(start);
+    end.setDate(start.getDate() + 6);
+    end.setHours(23, 59, 59, 999);
+    return end;
+};
+
+/**
+ * addDays
+ * 🛠 기능: 기준 날짜에 특정 일수를 더한 새 Date 객체 반환
+ *
+ * @param {Date} date - 기준 날짜
+ * @param {number} days - 더할 일 수 (음수 가능)
+ * @returns {Date} 새로운 Date 객체
+ */
+export const addDays = (date, days) => {
+    if (!(date instanceof Date) || isNaN(date)) return null;
+    const result = new Date(date);
+    result.setDate(result.getDate() + days);
+    return result;
+};
+

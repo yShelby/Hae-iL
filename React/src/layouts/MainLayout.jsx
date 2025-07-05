@@ -13,7 +13,7 @@
 //   7️⃣ AppToaster → 전체 앱에서 toast 메시지 전역 처리
 
 import React from 'react';
-import { Routes, Route, Link } from 'react-router-dom';
+import {Routes, Route, Link, useNavigate} from 'react-router-dom';
 
 
 import Calendar from 'react-calendar';
@@ -29,46 +29,88 @@ import DiaryDatePage from "@pages/DiaryDatePage.jsx";
 import DiaryIdPage from "@pages/DiaryIdPage.jsx";
 import FloatingActionButton from "@features/gallery/FloatingActionButton.jsx";
 import GalleryModal from "@features/gallery/GalleryModal.jsx";
+import {useWeeklyTimeline} from "@/hooks/useWeeklyTimeline.js";
+import TimelineView from "@features/timeline/TimelineView.jsx";
+import {useDiaryData} from "@/hooks/useDiaryData.js";
+import SleepWidget from "@features/health/SleepWidget.jsx";
+import ExerciseWidget from "@features/health/ExerciseWidget.jsx";
+import MealWidget from "@features/health/MealWidget.jsx";
 
 const MainLayout = () => {
     // 🎨 갤러리 모달을 열기 위한 함수 가져오기 (FAB에서 사용)
     const { openGallery } = useGallery();
 
-    // 📅 커스텀 캘린더 훅에서 상태 및 제어 함수 가져오기
-    const {
-        diaryForDate,           // 📝 선택된 날짜에 해당하는 일기 데이터
-        handleActionSuccess,    // ✅ 일기 저장/삭제 성공 시 후처리 함수
-        ...calendarProps        // 📆 selectedDate, isLoading, tileClassName, 등등
-    } = useDiaryCalendar();
+    // 📍 라우팅을 위한 useNavigate 훅
+    const navigate = useNavigate();
 
+    // 📅 커스텀 캘린더 훅에서 상태 및 제어 함수 가져오기
+    // const {
+    //     diaryForDate,           // 📝 선택된 날짜에 해당하는 일기 데이터
+    //     handleActionSuccess,    // ✅ 일기 저장/삭제 성공 시 후처리 함수
+    //     ...calendarProps        // 📆 selectedDate, isLoading, tileClassName, 등등
+    // } = useDiaryCalendar();
+
+    // 📆 주간 타임라인 데이터
+    const {
+        data: timelineData,
+        loading: timelineLoading,
+    } = useWeeklyTimeline();
+
+    // 📅 일기 데이터 관련 상태 (selectedDate 포함)
+    const {
+        selectedDate,
+        diaryForDate,
+        handleActionSuccess,
+        isLoading,
+        setSelectedDate,
+    } = useDiaryData();
+
+    // 📅 타임라인에서 날짜 클릭 시
+    const handleSelectDate = (dateStr) => {
+        setSelectedDate(dateStr); // 전역 상태 변경
+        navigate(`/diary/date/${dateStr}`);
+    };
     return (
         <div className="app-container">
             {/* 🔔 전역 알림 토스트 컴포넌트 */}
             <AppToaster />
 
-            {/* 🧭 헤더 영역 - 홈 링크 포함 */}
+            {/* 🧭 상단 헤더 영역 - 홈 링크 포함 */}
             <header className="app-header">
                 <h1><Link to="/">해일(Haeil) - 감성 일기</Link></h1>
             </header>
 
-            {/* 🧱 본문 구조: 사이드 + 콘텐츠 */}
-            <main className="main-content">
-                {/* 📆 좌측 사이드바에 캘린더 렌더링 */}
-                <aside className="sidebarB">
-                    <div className="calendar-container">
-                        <Calendar
-                            onChange={calendarProps.handleDateClick} // 📌 날짜 클릭 시 상태 업데이트
-                            value={calendarProps.selectedDate ? new Date(calendarProps.selectedDate) : new Date()} // 현재 선택된 날짜 표시
-                            onActiveStartDateChange={({ activeStartDate }) =>
-                                calendarProps.setActiveStartDate(activeStartDate) // 🔄 월 변경 시 상태 업데이트
-                            }
-                            tileClassName={calendarProps.tileClassName} // 🎨 날짜별 커스텀 스타일 지정
-                        />
-                    </div>
-                </aside>
+            {/* 🖼️ 주 콘텐츠 (3단 구조) */}
+            <main className="main-content three-column-layout">
+                {/* 📍 좌측: 감정 분석 결과 (차후 구현) */}
+                <aside className="left-sidebar">
 
-                {/* 📚 본문 콘텐츠 영역 - 라우팅 처리 */}
-                <section className="content-area">
+                </aside>
+                {/* 📆 좌측 사이드바에 캘린더 렌더링 */}
+                {/*<aside className="sidebarB">*/}
+                {/*    <div className="calendar-container">*/}
+                {/*        <Calendar*/}
+                {/*            onChange={calendarProps.handleDateClick} // 📌 날짜 클릭 시 상태 업데이트*/}
+                {/*            value={calendarProps.selectedDate ? new Date(calendarProps.selectedDate) : new Date()} // 현재 선택된 날짜 표시*/}
+                {/*            onActiveStartDateChange={({ activeStartDate }) =>*/}
+                {/*                calendarProps.setActiveStartDate(activeStartDate) // 🔄 월 변경 시 상태 업데이트*/}
+                {/*            }*/}
+                {/*            tileClassName={calendarProps.tileClassName} // 🎨 날짜별 커스텀 스타일 지정*/}
+                {/*        />*/}
+                {/*    </div>*/}
+                {/*</aside>*/}
+                {/* 📝 중앙: 일기 작성 & 라우팅 */}
+                <section className="center-editor">
+                    {/* ✅ 주간 타임라인 */}
+                    <div className="timeline-header">
+                        {timelineLoading ? <p>로딩 중...</p> : (
+                            <TimelineView
+                                data={timelineData}
+                                onSelectDate={handleSelectDate}
+                                selectedDate={selectedDate}
+                            />
+                        )}
+                    </div>
                     <Routes>
                         {/* 📝 메인 작성 페이지 (홈 경로) */}
                         <Route
@@ -76,11 +118,11 @@ const MainLayout = () => {
                             element={
                                 <DiaryWritePage
                                     // 🔄 key를 일기 ID 또는 날짜로 설정하여 컴포넌트를 강제로 리렌더링
-                                    key={diaryForDate?.diaryId || calendarProps.selectedDate}
+                                    key={diaryForDate?.diaryId || selectedDate}
                                     initialDiary={diaryForDate}               // ⬅️ 초기 일기 데이터
-                                    selectedDate={calendarProps.selectedDate} // 📅 현재 선택된 날짜
+                                    selectedDate={selectedDate} // 📅 현재 선택된 날짜
                                     onActionSuccess={handleActionSuccess}     // ✅ 성공 시 리프레시
-                                    isLoading={calendarProps.isLoading}       // ⏳ 로딩 여부
+                                    isLoading={isLoading}       // ⏳ 로딩 여부
                                 />
                             }
                         />
@@ -92,6 +134,12 @@ const MainLayout = () => {
                         <Route path="/diary/:diaryId" element={<DiaryIdPage />} />
                     </Routes>
                 </section>
+                {/* 📌 우측: 건강 기록 위젯 */}
+                <aside className="right-sidebar">
+                    <ExerciseWidget date={selectedDate} />
+                    <SleepWidget date={selectedDate} />
+                    <MealWidget date={selectedDate} />
+                </aside>
             </main>
 
             {/* ➕ 플로팅 액션 버튼 (FAB) - 클릭 시 갤러리 모달 오픈 */}
