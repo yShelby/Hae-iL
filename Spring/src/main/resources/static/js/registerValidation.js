@@ -14,7 +14,7 @@
 
   // 팝업 관련 요소들
     const errorModal = document.getElementById('errorModal');
-    const closeButton = document.querySelector('.close-button');
+    const closeButton = document.getElementById('closeErrorBtn');
     const errorList = document.getElementById('errorList');
 
     // 1. 이메일 유효성 검사

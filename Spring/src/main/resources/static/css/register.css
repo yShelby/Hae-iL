@@ -1,4 +1,7 @@
-  /* 유효성 검사 메시지 스타일 */
+/*
+  */
+/* 유효성 검사 메시지 스타일 *//*
+
         body {
             width: 100vw;
             height: 100vh;
@@ -7,36 +10,62 @@
             color: red;
             font-size: 0.9em;
             margin-top: 5px;
-            display: block; /* 메시지가 한 줄에 표시되도록 */
+            display: block; */
+/* 메시지가 한 줄에 표시되도록 *//*
+
         }
         input:invalid {
-            border-color: red; /* 유효하지 않은 입력 필드 테두리 빨갛게 */
+            border-color: red; */
+/* 유효하지 않은 입력 필드 테두리 빨갛게 *//*
+
         }
         input:valid {
-            border-color: green; /* 유효한 입력 필드 테두리 초록색 */
+            border-color: green; */
+/* 유효한 입력 필드 테두리 초록색 *//*
+
         }
-         /* 팝업 모달 스타일 */
+         */
+/* 팝업 모달 스타일 *//*
+
         .modal {
-            display: none; /* 기본적으로 숨김 */
-            position: fixed; /* 화면 전체를 덮음 */
-            z-index: 1000; /* 다른 요소 위에 표시 */
+            display: none; */
+/* 기본적으로 숨김 *//*
+
+            position: fixed; */
+/* 화면 전체를 덮음 *//*
+
+            z-index: 1000; */
+/* 다른 요소 위에 표시 *//*
+
             left: 0;
             top: 0;
             width: 100%;
             height: 100%;
-            overflow: auto; /* 내용이 넘칠 경우 스크롤 */
-            background-color: rgba(0,0,0,0.4); /* 반투명 배경 */
+            overflow: auto; */
+/* 내용이 넘칠 경우 스크롤 *//*
+
+            background-color: rgba(0,0,0,0.4); */
+/* 반투명 배경 *//*
+
             justify-content: center;
-            align-items: center; /* 세로 중앙 정렬 */
+            align-items: center; */
+/* 세로 중앙 정렬 *//*
+
         }
 
         .modal-content {
             background-color: #fefefe;
-            margin: auto; /* 가로 중앙 정렬 */
+            margin: auto; */
+/* 가로 중앙 정렬 *//*
+
             padding: 20px;
             border: 1px solid #888;
-            width: 80%; /* 모달 너비 */
-            max-width: 500px; /* 최대 너비 */
+            width: 80%; */
+/* 모달 너비 *//*
+
+            max-width: 500px; */
+/* 최대 너비 *//*
+
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0,0,0,0.2);
             position: relative;
@@ -44,7 +73,9 @@
             animation-duration: 0.4s
         }
 
-        /* 모달 애니메이션 */
+        */
+/* 모달 애니메이션 *//*
+
         @keyframes animatetop {
             from {top: -300px; opacity: 0}
             to {top: 0; opacity: 1}
@@ -67,11 +98,15 @@
 
         .modal-content h2 {
             margin-top: 0;
-            color: #d32f2f; /* 오류 제목 색상 */
+            color: #d32f2f; */
+/* 오류 제목 색상 *//*
+
         }
 
         .modal-content ul {
-            list-style-type: none; /* 목록 마커 제거 */
+            list-style-type: none; */
+/* 목록 마커 제거 *//*
+
             padding: 0;
             margin: 15px 0;
         }
@@ -105,3 +140,4 @@
             border:none; border-radius:4px; cursor:pointer;
             background:#fff;
         }
+*/

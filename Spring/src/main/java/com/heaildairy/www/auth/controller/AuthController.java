@@ -211,6 +211,18 @@ public class AuthController {
             return "auth/register.html";
         }
 
+        // 전화번호 중복 체크
+        try {
+            if (userService.isPhoneDuplicated(requestDto.getPhone())) { // 변경된 부분
+                model.addAttribute("phoneError", "이미 존재하는 전화번호입니다");
+                return "auth/register.html";
+            }
+        } catch (Exception e) {
+            log.error("전화번호 중복 체크 중 오류 발생", e);
+            model.addAttribute("generalError", "전화번호 확인 중 오류가 발생했습니다.");
+            return "auth/register.html";
+        }
+
         userService.addNewUser(requestDto); // 🆕 신규 사용자 저장
         return "redirect:/";
     }

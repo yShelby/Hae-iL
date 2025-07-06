@@ -21,6 +21,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime; // <-- 이 줄 추가
 import java.util.Optional;
 import java.util.Random;
 
@@ -97,6 +98,10 @@ public class UserService {
         UserEntity user = getUserByEmail(email);
         session.setAttribute("user", user);
 
+        // lastLoginAt 업데이트
+        user.setLastLoginAt(LocalDateTime.now());
+        userRepository.save(user);
+
         // JWT Access Token, Refresh Token 생성
         String accessToken = jwtProvider.createAccessToken(authentication);
         String refreshToken = jwtProvider.createRefreshToken(authentication);
@@ -171,6 +176,11 @@ public class UserService {
     // 7️⃣ 이메일 중복 체크 (존재 여부 반환)
     public boolean isEmailDuplicated(String email) {
         return userRepository.existsByEmail(email);
+    }
+
+    // 7️⃣-1️⃣ 전화번호 중복 체크 (존재 여부 반환)
+    public boolean isPhoneDuplicated(String phone) throws Exception {
+        return findUserByPhone(phone).isPresent();
     }
 
     // 8️⃣ 전화번호 복호화
