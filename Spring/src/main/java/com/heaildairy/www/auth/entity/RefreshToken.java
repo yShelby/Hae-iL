@@ -15,15 +15,18 @@ public class RefreshToken {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true, nullable = false)
-    private String email;
+    // [리팩토링] String email 필드를 UserEntity 객체로 대체하여 명확한 연관관계 설정
+    @OneToOne(fetch = FetchType.LAZY) // 성능 최적화를 위한 지연 로딩 설정
+    @JoinColumn(name = "user_id", nullable = false, unique = true) // 외래키 설정
+    private UserEntity user;
 
     @Column(nullable = false)
     private String refreshToken;
 
     @Builder
-    public RefreshToken(String email, String refreshToken) {
-        this.email = email;
+    // [리팩토링] 생성자에서 UserEntity 객체를 받도록 수정
+    public RefreshToken(UserEntity user, String refreshToken) {
+        this.user = user;
         this.refreshToken = refreshToken;
     }
 }

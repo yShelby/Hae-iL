@@ -50,6 +50,12 @@ public class UserEntity {
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt; // 생성 시점 자동화 필요
 
+    // [리팩토링] RefreshToken과의 양방향 관계 설정
+    // CascadeType.ALL: User 변경 시 RefreshToken도 함께 변경(저장, 삭제 등)
+    // orphanRemoval = true: User와 RefreshToken의 연관관계가 끊어지면 RefreshToken 자동 삭제
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private RefreshToken refreshToken;
+
     @PrePersist // 엔티티 저장 전 호출되어 created_at 자동 설정
     protected void onCreate() {
         createdAt = LocalDateTime.now();

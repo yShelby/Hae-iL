@@ -12,6 +12,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -43,6 +44,7 @@ import java.util.Random;
  * 7️⃣ 로그아웃 시 Refresh Token DB 삭제
  */
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -106,8 +108,8 @@ public class UserService {
         String accessToken = jwtProvider.createAccessToken(authentication);
         String refreshToken = jwtProvider.createRefreshToken(authentication);
 
-        // Refresh Token DB 저장 또는 갱신
-        saveOrUpdateRefreshToken(email, refreshToken);
+        // [리팩토링] email 대신 UserEntity 객체를 전달하여 Refresh Token 저장/갱신
+        saveOrUpdateRefreshToken(user, refreshToken);
 
         // 쿠키 설정 (HttpOnly, Secure, Path, 만료시간)
         Cookie accessCookie = new Cookie("jwt", accessToken);
@@ -126,6 +128,7 @@ public class UserService {
     }
 
     // 4️⃣ Access Token 재발급: Refresh Token 검증 → DB 확인 → 새 토큰 발급 및 DB 갱신
+    @Transactional // [리팩토링] 데이터 조회와 수정을 함께 하므로 트랜잭션 처리 추가
     public String reissueAccessToken(String refreshToken) {
         if (!jwtProvider.validateToken(refreshToken)) {
             throw new RuntimeException("유효하지 않은 Refresh Token입니다.");
@@ -133,8 +136,11 @@ public class UserService {
 
         Claims claims = jwtProvider.extractToken(refreshToken);
         String email = claims.getSubject();
+        // [리팩토링] email로 UserEntity를 먼저 조회
+        UserEntity user = getUserByEmail(email);
 
-        RefreshToken storedToken = refreshTokenRepository.findByEmail(email)
+        // [리팩토링] UserEntity 객체로 DB에 저장된 토큰을 조회
+        RefreshToken storedToken = refreshTokenRepository.findByUser(user)
                 .orElseThrow(() -> new RuntimeException("존재하지 않는 Refresh Token입니다."));
 
         if (!storedToken.getRefreshToken().equals(refreshToken)) {
@@ -143,19 +149,22 @@ public class UserService {
 
         Authentication authentication = jwtProvider.getAuthentication(refreshToken);
         String newAccessToken = jwtProvider.createAccessToken(authentication);
-
         String newRefreshToken = jwtProvider.createRefreshToken(authentication);
-        refreshTokenRepository.deleteByEmail(email);
-        refreshTokenRepository.save(new RefreshToken(email, newRefreshToken));
+
+        // [리팩토링] 토큰을 삭제하고 새로 만드는 대신, 기존 토큰의 값을 변경하여 효율성 증대 (Dirty Checking)
+        storedToken.setRefreshToken(newRefreshToken);
+        refreshTokenRepository.save(storedToken);
 
         return newAccessToken;
     }
 
     // 5️⃣ Refresh Token DB 저장 혹은 갱신
     @Transactional
-    public void saveOrUpdateRefreshToken(String email, String refreshToken) {
+    // [리팩토링] email 대신 UserEntity 객체를 받도록 수정하여 타입 안정성 및 명확성 증대
+    public void saveOrUpdateRefreshToken(UserEntity user, String refreshToken) {
 
-        Optional<RefreshToken> tokenOpt = refreshTokenRepository.findByEmail(email);
+        // [리팩토링] 변경된 레포지토리 메소드 사용
+        Optional<RefreshToken> tokenOpt = refreshTokenRepository.findByUser(user);
 
         if (tokenOpt.isPresent()) {
             RefreshToken token = tokenOpt.get();
@@ -163,7 +172,8 @@ public class UserService {
             refreshTokenRepository.save(token); // update
 
         } else {
-            refreshTokenRepository.save(new RefreshToken(email, refreshToken)); // insert
+            // [리팩토링] UserEntity 객체를 사용하여 새 토큰 생성
+            refreshTokenRepository.save(new RefreshToken(user, refreshToken)); // insert
         }
     }
 
@@ -255,7 +265,22 @@ public class UserService {
     // 1️⃣5️⃣ 로그아웃: Refresh Token DB에서 삭제
     @Transactional
     public void logout(String email) {
-        refreshTokenRepository.deleteByEmail(email);
+        log.debug("UserService: Starting logout for user: {}", email);
+        UserEntity user = getUserByEmail(email);
+        log.debug("UserService: User found for email: {}", email);
+
+        // 직접 쿼리 메서드 호출
+        refreshTokenRepository.deleteByUserId(user.getUserId());
+        refreshTokenRepository.flush(); // 즉시 DB에 반영
+        log.info("UserService: Attempted to delete refresh token for user {} using custom query.", email);
+
+        // 삭제 후 다시 조회하여 확인
+        if (refreshTokenRepository.findByUser(user).isEmpty()) {
+            log.info("UserService: Refresh token successfully verified as deleted from DB for user: {}", email);
+        } else {
+            log.error("UserService: Refresh token was NOT deleted from DB despite custom query delete call for user: {}", email);
+        }
+        log.debug("UserService: Logout process finished for user: {}", email);
     }
 
 }

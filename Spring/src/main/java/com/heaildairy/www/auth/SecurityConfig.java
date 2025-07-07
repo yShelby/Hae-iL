@@ -22,8 +22,7 @@
 
 package com.heaildairy.www.auth;
 
-
-
+import com.heaildairy.www.auth.jwt.CustomLogoutHandler;
 import com.heaildairy.www.auth.jwt.JwtAuthenticationFilter;
 import jakarta.servlet.http.Cookie;
 import lombok.RequiredArgsConstructor;
@@ -45,6 +44,7 @@ public class SecurityConfig {
 
     // JwtAuthenticationFilter 등록
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final CustomLogoutHandler customLogoutHandler; // [리팩토링] CustomLogoutHandler 주입
 
     @Bean
     PasswordEncoder passwordEncoder() {
@@ -94,23 +94,13 @@ public class SecurityConfig {
         http.logout(logout -> logout
                         .logoutUrl("/logout") // 로그아웃 URL
                         .logoutSuccessUrl("/") // 로그아웃 성공 시 이동할 URL
-                        .addLogoutHandler((request, response, authentication) -> {
-                            // 쿠키 삭제
-                            Cookie accessCookie = new Cookie("jwt", "");
-                            accessCookie.setHttpOnly(true);
-                            accessCookie.setPath("/");
-                            accessCookie.setMaxAge(0);
-                            response.addCookie(accessCookie);
-
-                            Cookie refreshCookie = new Cookie("refreshToken", "");
-                            refreshCookie.setHttpOnly(true);
-                            refreshCookie.setPath("/");
-                            refreshCookie.setMaxAge(0);
-                            response.addCookie(refreshCookie);
-                        })
+                        // [리팩토링] CustomLogoutHandler를 로그아웃 핸들러로 등록
+                        .addLogoutHandler(customLogoutHandler)
+                        .deleteCookies("jwt", "refreshToken") // [추가] 로그아웃 시 쿠키 삭제
                 );
 
 
         return http.build();  // 최종적으로 Security 설정을 빌드하여 반환
     }
 }
+

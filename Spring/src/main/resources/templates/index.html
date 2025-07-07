@@ -42,15 +42,27 @@
     </main>
 </div>
 
+<!--
+    이전 로그아웃 방식(POST 요청으로 Spring Security 로그아웃 트리거)에서 사용되던 폼.
+    현재는 JavaScript fetch API를 사용하여 /user/logout 및 /logout 엔드포인트로 직접 요청을 보냄.
+    따라서 이 폼은 더 이상 필요 없음.
+    향후 참고를 위해 주석 처리하여 유지함.
+-->
 <!-- Hidden form for POST logout -->
-<form id="logoutPostForm" action="/logout" method="POST" style="display: none;"></form>
+<!-- <form id="logoutPostForm" action="/logout" method="POST" style="display: none;"></form> -->
 
 <script th:inline="javascript">
     // ==================================================================
     // Pass user info to React app
     // ==================================================================
     /*<![CDATA[*/
-    window.__USER__ = /*[[${session.user}]]*/ null;
+    window.__USER__ = {
+        userId: /*[[${session.user?.userId}]]*/ null,
+        email: /*[[${session.user?.email}]]*/ null,
+        nickname: /*[[${session.user?.nickname}]]*/ null,
+        name: /*[[${session.user?.name}]]*/ null,
+        profileImage: /*[[${session.user?.profileImage}]]*/ null
+    };
     /*]]>*/
 
     // --- Login/Logout Script ---
@@ -95,8 +107,40 @@
 
     // 로그아웃 처리
     function logout() {
-        // 숨겨진 POST 양식을 제출하여 스프링 보안 로그아웃을 트리거
-        document.getElementById('logoutPostForm').submit();
+        const userEmail = window.__USER__.email; // 사용자 이메일 가져오기
+
+        // 1. Refresh Token DB 삭제 요청
+        fetch('/api/auth/delete-refresh-token', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded', // form-urlencoded 형식으로 전송
+            },
+            body: `email=${encodeURIComponent(userEmail)}` // 이메일 파라미터 전송
+        })
+        .then(response => {
+            if (!response.ok) {
+                console.error('Failed to delete refresh token from DB:', response.statusText);
+                // DB 삭제 실패해도 로그아웃 프로세스는 계속 진행
+            }
+        })
+        .catch(err => {
+            console.error('Error deleting refresh token from DB:', err);
+            // DB 삭제 실패해도 로그아웃 프로세스는 계속 진행
+        })
+        .finally(() => {
+            // 2. Spring Security 로그아웃 (쿠키 삭제 등)
+            fetch('/logout', {
+                method: 'POST',
+                credentials: 'include'
+            })
+            .then(response => {
+                if (!response.ok) throw new Error('로그아웃 실패');
+                window.location.href = '/';
+            })
+            .catch(err => {
+                alert('로그아웃 중 오류 발생');
+            });
+        });
     }
 </script>
 
