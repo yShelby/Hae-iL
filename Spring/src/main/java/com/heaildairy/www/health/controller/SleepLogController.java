@@ -76,17 +76,4 @@ public class SleepLogController {
         SleepLogDto.Response response = sleepLogService.findSleepLogByDate(customUser.getUserId(), date);
         return ResponseEntity.ok(response); // null이면 body: null 반환 (204 대신)
     }
-
-    /**
-     * 📅 월별 수면 기록 날짜 목록 조회
-     */
-    @GetMapping("/dates/{year}/{month}")
-    public ResponseEntity<List<LocalDate>> getActiveSleepDates(
-            @AuthenticationPrincipal CustomUser customUser,
-            @PathVariable int year,
-            @PathVariable int month
-    ) {
-        List<LocalDate> dates = sleepLogService.findActiveSleepDates(customUser.getUserId(), year, month);
-        return ResponseEntity.ok(dates);
-    }
 }

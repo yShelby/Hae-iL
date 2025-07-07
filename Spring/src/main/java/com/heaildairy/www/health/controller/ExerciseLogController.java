@@ -69,14 +69,4 @@ public class ExerciseLogController {
         return ResponseEntity.ok(response);
     }
 
-    /**
-     * 📅 월별 운동 기록된 날짜 조회
-     */
-    @GetMapping("/dates/{year}/{month}")
-    public ResponseEntity<List<LocalDate>> getActiveExerciseDates(@AuthenticationPrincipal CustomUser customUser,
-                                                                  @PathVariable int year,
-                                                                  @PathVariable int month) {
-        List<LocalDate> activeDates = exerciseLogService.findActiveExerciseDates(customUser.getUserId(), year, month);
-        return ResponseEntity.ok(activeDates);
-    }
 }

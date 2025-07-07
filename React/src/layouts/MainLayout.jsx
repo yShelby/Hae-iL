@@ -12,22 +12,17 @@
 //   6️⃣ FloatingActionButton 클릭 → GalleryModal 열림
 //   7️⃣ AppToaster → 전체 앱에서 toast 메시지 전역 처리
 
-import React from 'react';
+import React, {useCallback, useRef} from 'react';
 import {Routes, Route, Link, useNavigate} from 'react-router-dom';
-
-
-import Calendar from 'react-calendar';
 
 import 'react-calendar/dist/Calendar.css';
 import '../App.css';
 
-import { useDiaryCalendar } from "@/hooks/useDiaryCalendar.js";
 import {useGallery} from "@features/gallery/GalleryContext.jsx";
 import {AppToaster} from "@shared/UI/Toast.jsx";
 import DiaryWritePage from "@pages/DiaryWritePage.jsx";
 import DiaryDatePage from "@pages/DiaryDatePage.jsx";
 import DiaryIdPage from "@pages/DiaryIdPage.jsx";
-import FloatingActionButton from "@features/gallery/FloatingActionButton.jsx";
 import GalleryModal from "@features/gallery/GalleryModal.jsx";
 import {useWeeklyTimeline} from "@/hooks/useWeeklyTimeline.js";
 import TimelineView from "@features/timeline/TimelineView.jsx";
@@ -35,26 +30,16 @@ import {useDiaryData} from "@/hooks/useDiaryData.js";
 import SleepWidget from "@features/health/SleepWidget.jsx";
 import ExerciseWidget from "@features/health/ExerciseWidget.jsx";
 import MealWidget from "@features/health/MealWidget.jsx";
+import {useCheckLogin} from "@/hooks/useCheckLogin.js";
+import GalleryThumbnail from "@features/gallery/GalleryThumbnail.jsx";
 
 const MainLayout = () => {
+    const checkLogin = useCheckLogin();
     // 🎨 갤러리 모달을 열기 위한 함수 가져오기 (FAB에서 사용)
     const { openGallery } = useGallery();
 
     // 📍 라우팅을 위한 useNavigate 훅
     const navigate = useNavigate();
-
-    // 📅 커스텀 캘린더 훅에서 상태 및 제어 함수 가져오기
-    // const {
-    //     diaryForDate,           // 📝 선택된 날짜에 해당하는 일기 데이터
-    //     handleActionSuccess,    // ✅ 일기 저장/삭제 성공 시 후처리 함수
-    //     ...calendarProps        // 📆 selectedDate, isLoading, tileClassName, 등등
-    // } = useDiaryCalendar();
-
-    // 📆 주간 타임라인 데이터
-    const {
-        data: timelineData,
-        loading: timelineLoading,
-    } = useWeeklyTimeline();
 
     // 📅 일기 데이터 관련 상태 (selectedDate 포함)
     const {
@@ -65,11 +50,22 @@ const MainLayout = () => {
         setSelectedDate,
     } = useDiaryData();
 
+    // 📆 주간 타임라인 데이터
+    const {
+        data: timelineData,
+        loading: timelineLoading,
+    } = useWeeklyTimeline(selectedDate);
+
     // 📅 타임라인에서 날짜 클릭 시
-    const handleSelectDate = (dateStr) => {
-        setSelectedDate(dateStr); // 전역 상태 변경
+    const handleSelectDate = useCallback((dateStr) => {
+        // 로그인 안 되어 있으면 useCheckLogin 내부에서 처리 (예: 토스트 띄우고 false 리턴)
+        if (!checkLogin()) {
+            return;
+        }
+        setSelectedDate(dateStr);
         navigate(`/diary/date/${dateStr}`);
-    };
+    }, [checkLogin, navigate, setSelectedDate]);
+
     return (
         <div className="app-container">
             {/* 🔔 전역 알림 토스트 컴포넌트 */}
@@ -77,28 +73,23 @@ const MainLayout = () => {
 
             {/* 🧭 상단 헤더 영역 - 홈 링크 포함 */}
             <header className="app-header">
-                <h1><Link to="/">해일(Haeil) - 감성 일기</Link></h1>
+                <h1><Link to="/">해일(Haeil) :: 해석하는 감정 일기</Link></h1>
             </header>
 
             {/* 🖼️ 주 콘텐츠 (3단 구조) */}
             <main className="main-content three-column-layout">
                 {/* 📍 좌측: 감정 분석 결과 (차후 구현) */}
                 <aside className="left-sidebar">
+                    <div className="emotion-analysis">
+                        {/* ☁️ 감정 분석 결과 자리 */}
+                        <p>감정 분석 결과 컴포넌트 삽입 예정</p>
+                    </div>
 
+                    <div className="sidebar-gallery">
+                        {/* 갤러리 썸네일 컴포넌트 */}
+                        <GalleryThumbnail />
+                    </div>
                 </aside>
-                {/* 📆 좌측 사이드바에 캘린더 렌더링 */}
-                {/*<aside className="sidebarB">*/}
-                {/*    <div className="calendar-container">*/}
-                {/*        <Calendar*/}
-                {/*            onChange={calendarProps.handleDateClick} // 📌 날짜 클릭 시 상태 업데이트*/}
-                {/*            value={calendarProps.selectedDate ? new Date(calendarProps.selectedDate) : new Date()} // 현재 선택된 날짜 표시*/}
-                {/*            onActiveStartDateChange={({ activeStartDate }) =>*/}
-                {/*                calendarProps.setActiveStartDate(activeStartDate) // 🔄 월 변경 시 상태 업데이트*/}
-                {/*            }*/}
-                {/*            tileClassName={calendarProps.tileClassName} // 🎨 날짜별 커스텀 스타일 지정*/}
-                {/*        />*/}
-                {/*    </div>*/}
-                {/*</aside>*/}
                 {/* 📝 중앙: 일기 작성 & 라우팅 */}
                 <section className="center-editor">
                     {/* ✅ 주간 타임라인 */}
@@ -141,9 +132,6 @@ const MainLayout = () => {
                     <MealWidget date={selectedDate} />
                 </aside>
             </main>
-
-            {/* ➕ 플로팅 액션 버튼 (FAB) - 클릭 시 갤러리 모달 오픈 */}
-            <FloatingActionButton onClick={openGallery} />
 
             {/* 🖼️ 갤러리 모달 - 사진 관리용 */}
             <GalleryModal />

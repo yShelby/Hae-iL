@@ -1,16 +1,20 @@
 // 📁 src/features/widgets/MealWidget.jsx
 
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
     fetchMealByDate,
     addOrUpdateMeal,
-    updateMeal,
+    updateMeal, deleteMeal,
 } from '@/api/mealApi.js';
+import {useCheckLogin} from "@/hooks/useCheckLogin.js";
+import {showToast} from "@shared/UI/Toast.jsx";
 
 export default function MealWidget({ date }) {
+    const checkLogin = useCheckLogin();
+
     const [loading, setLoading] = useState(false);
     const [data, setData] = useState(null);
-    const [editing, setEditing] = useState(false);
+    const [editing, setEditing] = useState(true);
     const [form, setForm] = useState({
         breakfast: '',
         lunch: '',
@@ -21,7 +25,7 @@ export default function MealWidget({ date }) {
     useEffect(() => {
         if (!date) return;
         setLoading(true);
-        setEditing(false);
+
         fetchMealByDate(date)
             .then((res) => {
                 setData(res || null);
@@ -34,6 +38,7 @@ export default function MealWidget({ date }) {
                     });
                 } else {
                     setForm({ breakfast: '', lunch: '', dinner: '', snack: '' });
+                    setEditing(true);
                 }
             })
             .catch(console.error)
@@ -46,7 +51,15 @@ export default function MealWidget({ date }) {
     };
 
     const handleSave = async () => {
-        if (!date) return alert('날짜가 선택되지 않았습니다.');
+        if (!checkLogin()) return;
+
+        if (!date) return showToast.error('날짜가 선택되지 않았습니다.');
+
+        const hasContent = Object.values(form).some((v) => v.trim());
+        if (!hasContent) {
+            showToast.error('최소 하나의 식사를 입력해주세요.');
+            return;
+        }
 
         setLoading(true);
         try {
@@ -58,14 +71,34 @@ export default function MealWidget({ date }) {
             }
             setData(res);
             setEditing(false);
+            showToast.success('식사 기록이 저장되었습니다!');
         } catch (err) {
             console.error(err);
-            alert('저장 중 오류가 발생했습니다.');
+            showToast.error('저장 중 오류가 발생했습니다.');
         } finally {
             setLoading(false);
         }
     };
+    const handleDelete = async () => {
+        if (!checkLogin()) return;
 
+        if (!data?.mealId) return;
+        if (!window.confirm('정말 삭제하시겠습니까?')) return;
+
+        setLoading(true);
+        try {
+            await deleteMeal(data.mealId);
+            setData(null);
+            setForm({ breakfast: '', lunch: '', dinner: '', snack: '' });
+            setEditing(true);
+            showToast.success('식사 기록이 삭제되었습니다!');
+        } catch (err) {
+            console.error(err);
+            showToast.error("삭제 중 오류가 발생했습니다.");
+        } finally {
+            setLoading(false);
+        }
+    };
     return (
         <div className="widget meal-widget">
             <h4>🍽️ 식사 ({date})</h4>
@@ -79,41 +112,45 @@ export default function MealWidget({ date }) {
                     {data.dinner && <p>저녁: {data.dinner}</p>}
                     {data.snack && <p>간식: {data.snack}</p>}
                     <button onClick={() => setEditing(true)}>수정하기</button>
+                    <button onClick={handleDelete}>삭제하기</button>
                 </>
             )}
 
-            {!loading && !editing && !data && (
-                <button onClick={() => setEditing(true)}>식사 기록 추가</button>
-            )}
-
-            {!loading && editing && (
+            {!loading && (editing || !data) && (
                 <div>
                     <input
                         name="breakfast"
+                        type="text"
                         placeholder="아침"
                         value={form.breakfast}
                         onChange={handleChange}
                     />
                     <input
                         name="lunch"
+                        type="text"
                         placeholder="점심"
                         value={form.lunch}
                         onChange={handleChange}
                     />
                     <input
                         name="dinner"
+                        type="text"
                         placeholder="저녁"
                         value={form.dinner}
                         onChange={handleChange}
                     />
                     <input
                         name="snack"
+                        type="text"
                         placeholder="간식"
                         value={form.snack}
                         onChange={handleChange}
                     />
                     <button onClick={handleSave}>저장</button>
-                    <button onClick={() => setEditing(false)}>취소</button>
+                    <button onClick={() => {
+                        setEditing(false);
+                        if (!data) setForm({ breakfast: '', lunch: '', dinner: '', snack: '' });
+                    }}>취소</button>
                 </div>
             )}
         </div>

@@ -94,11 +94,4 @@ public class MealLogService {
                 .orElse(null);
     }
 
-    /**
-     * 📅 월별 식사 기록 일자 조회
-     */
-    public List<LocalDate> findActiveMealDates(Integer userId, int year, int month) {
-        return mealLogRepository.findActiveDatesByUserIdAndYearMonth(userId, year, month);
-    }
-
 }

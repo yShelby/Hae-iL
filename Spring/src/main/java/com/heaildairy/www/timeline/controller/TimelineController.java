@@ -19,16 +19,6 @@ public class TimelineController {
 
     private final TimelineService timelineService;
 
-    // ✅ 단일 날짜용 (선택사항: 유지할 경우)
-    @GetMapping(params = "date")
-    public ResponseEntity<List<TimelineDto>> getTimelineByDate(
-            @AuthenticationPrincipal CustomUser customUser,
-            @RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
-
-        List<TimelineDto> timeline = timelineService.getTimelineByDate(customUser.getUserId(), date);
-        return ResponseEntity.ok(timeline);
-    }
-
     // ✅ 날짜 범위 요청 대응 (프론트 타임라인 전용)
     @GetMapping
     public ResponseEntity<List<TimelineDto>> getTimelineByDateRange(

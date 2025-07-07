@@ -7,7 +7,7 @@
 // - 🔒 로그인 상태에 따라 접근 제어 및 알림 제공
 // - 📆 선택된 날짜 기준으로 다이어리 로딩 및 표시 처리
 
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 
 // 📌 TipTap 확장 모듈 및 커스텀 에디터 확장
 import { useEditor } from '@tiptap/react';
@@ -24,13 +24,13 @@ import './css/DiaryWritePage.css';
 import { useDiaryForm } from '@/hooks/useDiaryForm.js';
 import { useImageUpload } from '@/hooks/useImageUpload.js';
 import { useDiaryMutations } from '@/hooks/useDiaryMutations.js';
-import {useAuth} from "@features/auth/AuthContext.jsx";
 import DiaryInfoBar from "@features/diary/DiaryInfoBar.jsx";
 import DiaryTitleInput from "@features/diary/DiaryTitleInput.jsx";
 import WeatherSelector from "@features/diary/WeatherSelector.jsx";
 import DiaryEditor from "@features/diary/DiaryEditor.jsx";
 import {ConfirmModal} from "@shared/UI/ConfirmModal.jsx";
-import {showToast} from "@shared/UI/Toast.jsx";
+import {useCheckLogin} from "@/hooks/useCheckLogin.js";
+import {useAuth} from "@features/auth/AuthContext.jsx";
 
 // 🖼️ TipTap Image 확장을 block 요소로 커스터마이징
 const CustomBlockImage = TipTapImage.extend({
@@ -40,7 +40,8 @@ const CustomBlockImage = TipTapImage.extend({
 });
 
 const DiaryWritePage = ({ initialDiary, selectedDate, onActionSuccess, isLoading }) => {
-    const { user } = useAuth(); // 🔒 현재 로그인 유저
+    const { user } = useAuth();
+    const checkLogin = useCheckLogin(); // 로그인 확인 훅
     const [isEditing, setIsEditing] = useState(false); // ✍️ 에디터 활성 여부
 
     // 🧠 TipTap 에디터 초기화 및 확장 구성
@@ -109,8 +110,7 @@ const DiaryWritePage = ({ initialDiary, selectedDate, onActionSuccess, isLoading
 
     // ✨ "작성하기" 버튼 클릭 시 → 에디터 활성화
     const handleStartWriting = () => {
-        if (!user) {
-            showToast.error('일기를 작성하려면 로그인이 필요합니다.');
+        if (!checkLogin()) {
             return;
         }
         setIsEditing(true);

@@ -26,9 +26,3 @@ export async function deleteExercise(exerciseId) {
     const response = await axios.delete(`${BASE_URL}/${exerciseId}`);
     return response.data; // 보통 없음 (204)
 }
-
-// 월별 기록된 날짜 목록 조회 (GET /api/exercise/dates/{year}/{month})
-export async function fetchActiveExerciseDates(year, month) {
-    const response = await axios.get(`${BASE_URL}/dates/${year}/${month}`);
-    return response.data; // LocalDate[] (YYYY-MM-DD 배열)
-}

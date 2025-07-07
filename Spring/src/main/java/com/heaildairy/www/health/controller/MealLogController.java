@@ -62,14 +62,4 @@ public class MealLogController {
         return ResponseEntity.ok(response);
     }
 
-    /**
-     * 📅 월별 식사 기록 작성된 날짜 리스트 조회
-     */
-    @GetMapping("/dates/{year}/{month}")
-    public ResponseEntity<List<LocalDate>> getActiveMealDates(@AuthenticationPrincipal CustomUser customUser,
-                                                              @PathVariable int year,
-                                                              @PathVariable int month) {
-        List<LocalDate> activeDates = mealLogService.findActiveMealDates(customUser.getUserId(), year, month);
-        return ResponseEntity.ok(activeDates);
-    }
 }

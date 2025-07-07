@@ -95,11 +95,4 @@ public class ExerciseLogService {
                 .orElse(null);
     }
 
-    /**
-     * 📅 월별 활성 운동 날짜 조회
-     */
-    public List<LocalDate> findActiveExerciseDates(Integer userId, int year, int month) {
-        return exerciseLogRepository.findActiveDatesByUserIdAndYearMonth(userId, year, month);
-    }
-
 }

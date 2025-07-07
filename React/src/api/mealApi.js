@@ -26,9 +26,3 @@ export async function deleteMeal(mealId) {
     const response = await axios.delete(`${BASE_URL}/${mealId}`);
     return response.data; // 보통 없음 (204)
 }
-
-// 월별 기록된 날짜 목록 조회 (GET /api/meal/dates/{year}/{month})
-export async function fetchActiveMealDates(year, month) {
-    const response = await axios.get(`${BASE_URL}/dates/${year}/${month}`);
-    return response.data; // LocalDate[] (YYYY-MM-DD 배열)
-}

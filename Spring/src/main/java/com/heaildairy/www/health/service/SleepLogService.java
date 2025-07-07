@@ -98,13 +98,6 @@ public class SleepLogService {
     }
 
     /**
-     * 📅 월별 활성 수면 일자 조회
-     */
-    public List<LocalDate> findActiveSleepDates(Integer userId, int year, int month) {
-        return sleepLogRepository.findActiveDatesByUserIdAndYearMonth(userId, year, month);
-    }
-
-    /**
      * ⏰ 총 수면 시간 계산 (bedtime ~ waketime)
      */
     private Double calculateSleepHours(java.time.LocalTime bedtime, java.time.LocalTime waketime) {
