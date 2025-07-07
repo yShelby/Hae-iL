@@ -25,6 +25,7 @@ import com.heaildairy.www.auth.dto.LoginRequestDto;
 import com.heaildairy.www.auth.dto.RegisterRequestDto;
 import com.heaildairy.www.auth.entity.UserEntity;
 import com.heaildairy.www.auth.jwt.JwtProvider;
+import com.heaildairy.www.auth.service.LogoutService;
 import com.heaildairy.www.auth.service.UserService;
 import com.heaildairy.www.auth.user.CustomUser;
 import io.jsonwebtoken.Claims;
@@ -56,6 +57,7 @@ import java.util.Optional;
 public class AuthController {
 
     private final UserService userService; // 비즈니스 로직
+    private final LogoutService logoutService; // 로그아웃 처리
     private final JwtProvider jwtProvider; // JWT 생성 /검증 .etc
     private final AuthenticationManager authenticationManager;
 
@@ -262,7 +264,7 @@ public class AuthController {
     @ResponseBody
     public Map<String, Object> changePassword(@RequestBody ChangePWRequestDto dto,
                                               @AuthenticationPrincipal CustomUser customUser,
-                                              HttpSession session,
+                                              HttpServletRequest request, // request 파라미터 추가
                                               HttpServletResponse response) {
         Map<String, Object> result = new HashMap<>();
 
@@ -275,20 +277,8 @@ public class AuthController {
         try {
             userService.changePassword(customUser.getUsername(), dto.getCurrentPassword(), dto.getNewPassword()); // 🔑 비밀번호 변경
 
-            // 🧹 DB에서 Refresh Token 삭제
-            userService.logout(customUser.getUsername());
-
-            // ❌ 변경 후 기존 세션과 JWT 쿠키 삭제 → 재로그인 유도
-            session.invalidate();
-            Cookie jwtCookie = new Cookie("jwt", "");
-            jwtCookie.setMaxAge(0);
-            jwtCookie.setPath("/");
-            response.addCookie(jwtCookie);
-
-            Cookie refreshCookie = new Cookie("refreshToken", "");
-            refreshCookie.setMaxAge(0);
-            refreshCookie.setPath("/");
-            response.addCookie(refreshCookie);
+            // 🧹 통합 로그아웃 처리
+            logoutService.logout(request, response);
 
             result.put("success", true);
         } catch (IllegalArgumentException e) {
