@@ -1,0 +1,24 @@
+.journal-page-container {
+    padding: 40px;
+    max-width: 900px;
+    margin: 0 auto;
+    background-color: #f9f9f9;
+    min-height: 100vh;
+}
+
+.journal-page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.journal-page-title {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 0;
+}
+
+a.btn {
+    text-decoration: none;
+}

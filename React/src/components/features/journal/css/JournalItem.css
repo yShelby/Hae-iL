@@ -1,0 +1,37 @@
+.journal-item-wrapper {
+    margin-bottom: 16px;
+}
+
+.journal-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.journal-item-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0;
+}
+
+.journal-item-rating {
+    display: flex;
+    align-items: center;
+    color: #f1c40f;
+}
+
+.journal-item-content {
+    font-size: 15px;
+    color: #555;
+    line-height: 1.6;
+    white-space: pre-wrap;
+}
+
+.journal-item-date {
+    font-size: 12px;
+    color: #999;
+    margin-top: 16px;
+    display: block;
+    text-align: right;
+}

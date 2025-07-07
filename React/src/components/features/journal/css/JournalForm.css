@@ -1,0 +1,50 @@
+.journal-form {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group label {
+    font-weight: 600;
+    font-size: 16px;
+}
+
+.form-group input, .form-group textarea, .form-group select {
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 15px;
+}
+
+.form-group textarea {
+    min-height: 200px;
+    resize: vertical;
+}
+
+.rating-group {
+    display: flex;
+    gap: 4px;
+}
+
+.rating-group .star {
+    cursor: pointer;
+    color: #ccc;
+    font-size: 28px;
+}
+
+.rating-group .star.active {
+    color: #f1c40f;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 16px;
+}
