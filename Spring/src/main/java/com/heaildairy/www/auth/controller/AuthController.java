@@ -275,6 +275,9 @@ public class AuthController {
         try {
             userService.changePassword(customUser.getUsername(), dto.getCurrentPassword(), dto.getNewPassword()); // 🔑 비밀번호 변경
 
+            // 🧹 DB에서 Refresh Token 삭제
+            userService.logout(customUser.getUsername());
+
             // ❌ 변경 후 기존 세션과 JWT 쿠키 삭제 → 재로그인 유도
             session.invalidate();
             Cookie jwtCookie = new Cookie("jwt", "");

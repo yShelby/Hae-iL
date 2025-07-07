@@ -99,7 +99,6 @@ public class SecurityConfig {
                         .deleteCookies("jwt", "refreshToken") // [추가] 로그아웃 시 쿠키 삭제
                 );
 
-
         return http.build();  // 최종적으로 Security 설정을 빌드하여 반환
     }
 }
