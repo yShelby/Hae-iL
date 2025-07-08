@@ -1,7 +1,8 @@
 .journal-form {
     display: flex;
     flex-direction: column;
-    gap: 24px;
+    gap: 20px;
+    flex-grow: 1; /* Editor 컨테이너 내에서 남은 공간을 모두 차지 */
 }
 
 .form-group {
@@ -10,36 +11,45 @@
     gap: 8px;
 }
 
+/* 내용(textarea)을 담는 그룹이 유동적으로 늘어나도록 설정 */
+.form-group.content-group {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
 .form-group label {
     font-weight: 600;
     font-size: 16px;
 }
 
-.form-group input, .form-group textarea, .form-group select {
+.form-group input,
+.form-group textarea,
+.form-group select {
     padding: 12px;
     border: 1px solid #ccc;
     border-radius: 8px;
     font-size: 15px;
+    transition: border-color 0.2s;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: #3498db;
 }
 
 .form-group textarea {
-    min-height: 200px;
+    flex-grow: 1;
     resize: vertical;
+    min-height: 150px;
 }
 
 .rating-group {
     display: flex;
+    align-items: center;
     gap: 4px;
-}
-
-.rating-group .star {
-    cursor: pointer;
-    color: #ccc;
-    font-size: 28px;
-}
-
-.rating-group .star.active {
-    color: #f1c40f;
 }
 
 .form-actions {
@@ -47,4 +57,5 @@
     justify-content: flex-end;
     gap: 12px;
     margin-top: 16px;
+    flex-shrink: 0;
 }

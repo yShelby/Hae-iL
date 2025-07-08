@@ -1,16 +1,15 @@
 package com.heaildairy.www.journal.controller;
 
 import com.heaildairy.www.auth.user.CustomUser;
+import com.heaildairy.www.journal.dto.JournalRequestDto;
 import com.heaildairy.www.journal.dto.JournalResponseDto;
 import com.heaildairy.www.journal.service.JournalService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -36,5 +35,63 @@ public class JournalController {
 
         List<JournalResponseDto> journals = journalService.getJournals(currentUserId, category);
         return ResponseEntity.ok(journals);
+    }
+
+    @PostMapping
+    public ResponseEntity<?> createJournal(
+            @AuthenticationPrincipal CustomUser customUser,
+            @Valid @RequestBody JournalRequestDto requestDto) {
+
+        if (customUser == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        Integer userId = customUser.getUserId();
+
+        journalService.createJournal(userId, requestDto);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    // 특정 저널의 상세 정보를 조회하는 API
+    @GetMapping("/{journalId}")
+    public ResponseEntity<JournalResponseDto> getJournalById(
+            @AuthenticationPrincipal CustomUser customUser,
+            @PathVariable Long journalId) {
+
+        if (customUser == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        JournalResponseDto journal = journalService.getJournalById(customUser.getUserId(), journalId);
+        return ResponseEntity.ok(journal);
+    }
+
+    // 특정 저널을 수정하는 API
+    @PutMapping("/{journalId}")
+    public ResponseEntity<Void> updateJournal(
+            @AuthenticationPrincipal CustomUser customUser,
+            @PathVariable Long journalId,
+            @Valid @RequestBody JournalRequestDto requestDto) {
+
+        if (customUser == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        journalService.updateJournal(customUser.getUserId(), journalId, requestDto);
+        return ResponseEntity.ok().build();
+    }
+
+    // 특정 저널을 삭제하는 API
+    @DeleteMapping("/{journalId}")
+    public ResponseEntity<Void> deleteJournal(
+            @AuthenticationPrincipal CustomUser customUser,
+            @PathVariable Long journalId) {
+
+        if (customUser == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        journalService.deleteJournal(customUser.getUserId(), journalId);
+        return ResponseEntity.noContent().build();
     }
 }

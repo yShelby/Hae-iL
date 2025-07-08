@@ -1,12 +1,27 @@
 .journal-item-wrapper {
     margin-bottom: 16px;
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    border-radius: 12px;
+    border: 2px solid transparent;
+}
+
+.journal-item-wrapper:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+}
+
+/* 선택된 아이템 Card에 적용될 스타일 */
+.journal-item-wrapper.active > div {
+    border: 2px solid #3498db;
+    box-shadow: 0 8px 20px rgba(52, 152, 219, 0.2);
 }
 
 .journal-item-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 12px;
+    margin-bottom: 8px;
 }
 
 .journal-item-title {
@@ -19,13 +34,18 @@
     display: flex;
     align-items: center;
     color: #f1c40f;
+    margin-bottom: 8px;
 }
 
 .journal-item-content {
     font-size: 15px;
     color: #555;
     line-height: 1.6;
-    white-space: pre-wrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* 최대 2줄 표시 */
+    -webkit-box-orient: vertical;
 }
 
 .journal-item-date {

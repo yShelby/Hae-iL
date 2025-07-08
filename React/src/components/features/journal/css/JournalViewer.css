@@ -1,0 +1,75 @@
+.journal-viewer-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.viewer-header {
+    margin-bottom: 16px;
+    flex-shrink: 0;
+}
+
+.viewer-title {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.viewer-rating {
+    color: #f1c40f;
+    font-size: 20px;
+}
+
+.viewer-date {
+    font-size: 14px;
+    color: #888;
+    margin-bottom: 24px;
+}
+
+.viewer-content {
+    flex-grow: 1;
+    overflow-y: auto;
+    line-height: 1.7;
+    font-size: 16px;
+    white-space: pre-wrap;
+    padding-right: 10px;
+}
+
+.viewer-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 24px;
+    flex-shrink: 0;
+}
+
+.viewer-actions .btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out, transform 0.1s ease;
+    color: white;
+}
+
+.viewer-actions .btn:hover {
+    transform: translateY(-1px); /* 살짝 떠오르는 효과 */
+}
+
+.viewer-actions .edit-btn {
+    background-color: #3498db;
+}
+
+.viewer-actions .edit-btn:hover {
+    background-color: #2980b9;
+}
+
+.viewer-actions .delete-btn {
+    background-color: #e74c3c;
+}
+
+.viewer-actions .delete-btn:hover {
+    background-color: #c0392b;
+}

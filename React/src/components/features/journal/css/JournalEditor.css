@@ -1,0 +1,21 @@
+.journal-editor-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.editor-title {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 24px;
+    flex-shrink: 0;
+}
+
+/* 로딩/에러 메시지 스타일 */
+.status-message {
+    text-align: center;
+    padding: 50px;
+    color: #888;
+    font-size: 16px;
+    margin: auto;
+}

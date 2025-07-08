@@ -2,7 +2,6 @@ package com.heaildairy.www.journal.entity;
 
 import com.heaildairy.www.auth.entity.UserEntity;
 import com.heaildairy.www.journal.dto.JournalRequestDto;
-import com.heaildairy.www.journal.service.JournalService;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -13,7 +12,6 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Objects;
 
 @Entity
 @Getter
@@ -63,5 +61,29 @@ public class JournalEntity {
         this.category = dto.getCategory();
         this.rating = dto.getRating();
         this.journalDate = dto.getJournalDate();
+    }
+
+    // @PrePersist와 @PreUpdate는 메인에 @EnableJpaAuditing으로 대체 가능
+    // 향후 중복 로직을 줄이고 싶으면 @EnableJpaAuditing으로 대체 권유
+    @PrePersist
+    public void prePersist() {
+        LocalDateTime now = LocalDateTime.now();
+        if (this.createdAt == null) {
+            this.createdAt = now;
+        }
+        this.updatedAt = now;
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    public void update(JournalRequestDto requestDto) {
+        this.title = requestDto.getTitle();
+        this.content = requestDto.getContent();
+        this.category = requestDto.getCategory();
+        this.rating = requestDto.getRating();
+        this.journalDate = requestDto.getJournalDate();
     }
 }

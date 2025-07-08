@@ -9,6 +9,7 @@ import com.heaildairy.www.journal.entity.JournalEntity;
 import com.heaildairy.www.journal.repository.JournalRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,7 +24,7 @@ public class JournalService {
     private final JournalRepository journalRepository;
     private final UserRepository userRepository;
 
-    public Long saveJournal(Integer userId, JournalRequestDto requestDto) {
+    public Long createJournal(Integer userId, JournalRequestDto requestDto) {
         UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("해당 사용자를 찾을 수 없습니다. ID: "+ userId));
 
@@ -54,5 +55,43 @@ public class JournalService {
                 return List.of();
             }
         }
+    }
+
+    public void updateJournal(Integer userId, Long journalId, JournalRequestDto requestDto) {
+        JournalEntity journal = journalRepository.findById(journalId)
+                .orElseThrow(() -> new EntityNotFoundException("해당 저널을 찾을 수 없습니다. ID: " + journalId));
+
+        // 보안 - 현재 로그인한 사용자가 해당 저널의 작성자인지 확인
+        if (!journal.getUser().getUserId().equals(userId)) {
+            throw new AccessDeniedException("이 저널을 수정할 권한이 없습니다.");
+        }
+
+        journal.update(requestDto); // 엔티티 내부의 update 메소드 호출
+    }
+
+    public void deleteJournal(Integer userId, Long journalId) {
+        JournalEntity journal = journalRepository.findById(journalId)
+                .orElseThrow(() -> new EntityNotFoundException("해당 저널을 찾을 수 없습니다. ID: " + journalId));
+
+        // 보안 - 현재 로그인한 사용자가 해당 저널의 작성자인지 확인
+        if (!journal.getUser().getUserId().equals(userId)) {
+            throw new AccessDeniedException("이 저널을 삭제할 권한이 없습니다.");
+        }
+
+        journalRepository.delete(journal);
+    }
+
+    // ID로 특정 저널을 조회하는 메소드
+    @Transactional(readOnly = true)
+    public JournalResponseDto getJournalById(Integer userId, Long journalId) {
+        JournalEntity journal = journalRepository.findById(journalId)
+                .orElseThrow(() -> new EntityNotFoundException("해당 저널을 찾을 수 없습니다. ID: " + journalId));
+
+        // [보안] 현재 로그인한 사용자가 해당 저널의 작성자인지 확인
+        if (!journal.getUser().getUserId().equals(userId)) {
+            throw new AccessDeniedException("이 저널을 조회할 권한이 없습니다.");
+        }
+
+        return new JournalResponseDto(journal);
     }
 }

@@ -24,13 +24,13 @@ import React from 'react';
 import './css/Modal.css';          // 🧩 공용 모달 스타일 import
 import './css/ConfirmModal.css';  // 🎨 ConfirmModal 전용 스타일 import
 
-export const ConfirmModal = ({ isOpen, message, onConfirm, onCancel }) => {
+export const ConfirmModal = ({ isOpen, message, onConfirm, onClose }) => {
     // 🛑 1단계: 모달이 열려있지 않으면 아무것도 렌더링하지 않음
     if (!isOpen) return null;
 
     return (
         // 🌫️ 2단계: 배경 오버레이 영역 (클릭 시 모달 닫기 트리거)
-        <div className="modal-overlay" onClick={onCancel}>
+        <div className="modal-overlay" onClick={onClose}>
 
             {/* 🧱 3단계: 모달 내용 - 클릭 버블링 막기 */}
             <div className="modal-content" onClick={e => e.stopPropagation()}>
@@ -42,7 +42,7 @@ export const ConfirmModal = ({ isOpen, message, onConfirm, onCancel }) => {
                 <div className="modal-buttons">
 
                     {/* 🔙 취소 버튼 - onCancel 호출 */}
-                    <button onClick={onCancel} className="cancel-button">취소</button>
+                    <button onClick={onClose} className="cancel-button">취소</button>
 
                     {/* ✅ 확인 버튼 - onConfirm 호출 */}
                     <button onClick={onConfirm} className="confirm-button">확인</button>

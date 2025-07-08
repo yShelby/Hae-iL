@@ -3,22 +3,63 @@
  * 역할: 공용 모달 스타일 외에, ConfirmModal에만 필요한 특화된 스타일을 정의합니다.
  */
 
-/* 확인 버튼 스타일 */
-.modal-buttons .confirm-button {
-    background-color: #dc3545; /* 삭제/위험을 의미하는 붉은색 */
-    color: white;
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
 }
 
+.modal-content {
+    background: white;
+    padding: 24px 32px;
+    border-radius: 12px;
+    min-width: 320px;
+    max-width: 400px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    text-align: center;
+}
+
+.modal-message {
+    font-size: 16px;
+    margin: 0 0 24px;
+    line-height: 1.5;
+}
+
+.modal-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+}
+
+.modal-buttons button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.modal-buttons .confirm-button {
+    background-color: #dc3545;
+    color: white;
+}
 .modal-buttons .confirm-button:hover {
     background-color: #c82333;
 }
 
-/* 취소 버튼 스타일 */
 .modal-buttons .cancel-button {
     background-color: #e9ecef;
     color: #495057;
 }
-
 .modal-buttons .cancel-button:hover {
     background-color: #dee2e6;
 }

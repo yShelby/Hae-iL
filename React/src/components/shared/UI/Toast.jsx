@@ -29,4 +29,9 @@ export const showToast = {
 
     // ⏳ 로딩 메시지 표시: 회전 아이콘과 함께 처리 중 표시
     loading: (message, options) => toast.loading(message, options),
+
+    // 추가: promise 토스트 헬퍼
+    // Promise 상태에 따라 자동으로 로딩/성공/실패 메시지를 표시
+    promise: (promise, { loading, success, error }, options) =>
+        toast.promise(promise, { loading, success, error }, options),
 };

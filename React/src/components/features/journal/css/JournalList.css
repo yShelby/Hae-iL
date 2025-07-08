@@ -1,10 +1,15 @@
 .journal-list-container {
-
+    flex-grow: 1; /* 남은 공간을 모두 차지 */
+    overflow-y: auto; /* 내용이 넘칠 경우 스크롤바 생성 */
+    padding-right: 8px; /* 스크롤바와 내용 간의 간격 */
+    margin-right: -8px; /* padding으로 인해 줄어든 너비 보정 */
 }
 
+/* 로딩/에러/데이터 없음 메시지 */
 .status-message {
     text-align: center;
     padding: 50px;
     color: #888;
     font-size: 16px;
+    margin: auto; /* 패널 중앙에 위치 */
 }
