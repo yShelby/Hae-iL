@@ -33,7 +33,7 @@ const JournalPage = () => {
             return;
         }
         setViewMode({mode: 'view', journalId});
-        // 수정 - 목록에서 아이템을 선택할 때는 전체 데이터가 없으므로,
+        // 목록에서 아이템을 선택할 때는 전체 데이터가 없으므로,
         // ID만 설정하고 데이터 상태는 null로 비워 Viewer가 새로 데이터를 불러오도록 합니다.
         setSelectedJournalData(null);
     };
@@ -65,17 +65,7 @@ const JournalPage = () => {
     const handleSuccess = (newJournalId) => {
         setRefreshKey(prevKey => prevKey + 1); // 목록 갱신 트리거
 
-        // 작성 또는 수정 성공 후 해당 항목을 상세보기로 전환
-        // const newMode = viewMode.mode === 'create' || viewMode.mode === 'edit';
-        // if (newMode) {
-        //     const journalToView = newJournalId || viewMode.journalId;
-        //     setViewMode({ mode: 'view', journalId: journalToView });
-        // } else {
-        //     // 삭제 시에는 목록으로 복귀
-        //     setViewMode({ mode: 'list', journalId: null });
-        // }
-
-        // 수정 - Editor로부터 저널 데이터 전체를 받아서 상태에 저장하고,
+        // Editor로부터 저널 데이터 전체를 받아서 상태에 저장하고,
         // 즉시 'view' 모드로 전환하여 로딩 없이 화면을 보여줍니다.
         if (journalData && journalData.id) {
             setSelectedJournalData(journalData); // 전달받은 데이터 저장
@@ -121,11 +111,7 @@ const JournalPage = () => {
                 return <JournalEditor journalId={viewMode.journalId} onSaveSuccess={handleSuccess}
                                       onCancel={handleCancel}/>;
             case 'view':
-                // 🔍 저널 상세보기 화면 (수정 및 삭제 버튼 포함)
-                // return <JournalViewer journalId={viewMode.journalId} onEdit={handleSwitchToEdit}
-                //                       onDelete={handleDeleteRequest}/>;
-
-                // 수정 - Viewer에게 ID와 함께, 미리 가지고 있는 저널 데이터(initialData)를 전달
+                // Viewer에게 ID와 함께, 미리 가지고 있는 저널 데이터(initialData)를 전달
                 return (
                     <JournalViewer
                         journalId={viewMode.journalId}

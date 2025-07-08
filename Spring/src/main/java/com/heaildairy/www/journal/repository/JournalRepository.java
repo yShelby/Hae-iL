@@ -1,5 +1,6 @@
 package com.heaildairy.www.journal.repository;
 
+import com.heaildairy.www.auth.entity.UserEntity;
 import com.heaildairy.www.journal.entity.Category;
 import com.heaildairy.www.journal.entity.JournalEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -28,4 +29,7 @@ public interface JournalRepository extends JpaRepository<JournalEntity, Long> {
      */
     @Query("SELECT j FROM JournalEntity j WHERE j.user.userId = :userId ORDER BY j.createdAt DESC")
     List<JournalEntity> findAllJournals(@Param("userId") Integer userId);
+
+    // 추가 - dashboardCount를 위한 사용자의 전체 저널(리뷰) 개수를 세는 메소드
+    long countByUser(UserEntity user);
 }

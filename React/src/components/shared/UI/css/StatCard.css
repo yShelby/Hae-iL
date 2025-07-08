@@ -1,0 +1,51 @@
+.stat-card-container {
+    padding: 20px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    border: 1px solid #e0e0e0;
+    background-color: #fafafa; /* 기본 배경색, props.color로 덮어쓰기 가능 */
+    transition: all 0.2s ease-in-out;
+}
+
+.stat-card-container.clickable:hover {
+    cursor: pointer;
+    transform: translateY(-4px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+    border-color: transparent;
+}
+
+.stat-card-icon-wrapper {
+    font-size: 1.8rem; /* 28px */
+    color: #555;
+    background-color: #ffffff;
+    border-radius: 12px;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #e0e0e0;
+    flex-shrink: 0;
+}
+
+.stat-card-content-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.stat-card-label {
+    font-size: 0.8rem; /* 13px */
+    color: #666;
+    font-weight: 500;
+    margin-bottom: 2px;
+    line-height: 1.4;
+}
+
+.stat-card-value {
+    font-size: 1.75rem; /* 28px */
+    font-weight: bold;
+    color: #222;
+}

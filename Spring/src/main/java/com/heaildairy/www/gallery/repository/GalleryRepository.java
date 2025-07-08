@@ -1,5 +1,6 @@
 package com.heaildairy.www.gallery.repository;
 
+import com.heaildairy.www.auth.entity.UserEntity;
 import com.heaildairy.www.gallery.entity.GalleryEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
@@ -38,5 +39,8 @@ public interface GalleryRepository extends JpaRepository<GalleryEntity, Long> {
      * @return Optional<GalleryEntity>
      */
     Optional<GalleryEntity> findByDiaryDiaryId(Long diaryId);
+
+    // 추가 - dashboardCount를 위한 사용자의 전체 이미지 개수를 세는 메소드
+    long countByUser(UserEntity user);
 }
 
