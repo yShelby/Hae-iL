@@ -87,7 +87,7 @@ input[type="url"]:focus {
 
 button {
     width: 100%;
-    padding: 14px;
+    padding: 7px 16px;
     border: none;
     border-radius: 8px;
     background-color: var(--primary-color);
@@ -227,20 +227,28 @@ button:disabled {
     gap: 20px;
 }
 
+.my-page .profile-image-box {
+}
 .my-page .profile-image {
-    width: 80px;
-    height: 80px;
+    width: 100px;
+    height: 100px;
     border-radius: 50%;
     object-fit: cover;
     border: 3px solid var(--border-color);
 }
 
-.my-page .profile-info p {
-    margin: 5px 0;
+.my-page .profile-image-controls {
+    display: flex;
+    justify-content: space-around;
 }
 
 .my-page .button-secondary {
+    padding: 3px 3px;
     margin-bottom: 10px;
+}
+
+.my-page .profile-info p {
+    margin: 5px 0;
 }
 
 .button-link {

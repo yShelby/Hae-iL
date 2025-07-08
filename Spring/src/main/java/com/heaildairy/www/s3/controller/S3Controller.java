@@ -41,4 +41,15 @@ public class S3Controller {
         // 2️⃣ S3Service에서 Presigned URL 생성 후 반환
         return ResponseEntity.ok(s3Service.getPresignedUrl(filename));
     }
+
+    // 프로필 이미지 업로드 - Presigned URL 요청 처리 메서드
+    @GetMapping("/profile-presigned-url")
+    public ResponseEntity<String> getProfilePresignedUrl(
+            @RequestParam String identifier, // 파라미터 타입 변경
+            @RequestParam String filename,
+            @RequestParam String contentType) {
+
+        String presignedUrl = s3Service.generateProfilePresignedPutUrl(identifier, filename, contentType, 10); // identifier 사용
+        return ResponseEntity.ok(presignedUrl);
+    }
 }

@@ -275,7 +275,8 @@ public class AuthController {
         }
 
         try {
-            userService.changePassword(customUser.getUsername(), dto.getCurrentPassword(), dto.getNewPassword()); // 🔑 비밀번호 변경
+            userService.changePassword(customUser.getUsername(),
+                    dto.getCurrentPassword(), dto.getNewPassword()); // 🔑 비밀번호 변경
 
             // 🧹 통합 로그아웃 처리
             logoutService.logout(request, response);
@@ -287,5 +288,57 @@ public class AuthController {
         }
 
         return result;
+    }
+
+    // 1️⃣5️⃣ 프로필 이미지 업데이트 API
+    @PostMapping("/api/user/profile-image")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> updateProfileImage(
+            @RequestBody Map<String, String> requestBody,
+            @AuthenticationPrincipal CustomUser customUser) {
+        Map<String, Object> response = new HashMap<>();
+        if (customUser == null) {
+            response.put("success", false);
+            response.put("message", "로그인이 필요합니다.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+        }
+
+        try {
+            String profileImageKey = requestBody.get("profileImage");
+            userService.updateProfileImage(customUser.getUserId(), profileImageKey);
+            response.put("success", true);
+            response.put("message", "프로필 이미지가 성공적으로 업데이트되었습니다.");
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            log.error("프로필 이미지 업데이트 실패", e);
+            response.put("success", false);
+            response.put("message", "프로필 이미지 업데이트에 실패했습니다.");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+
+    // 1️⃣6️⃣ 프로필 이미지 삭제 API
+    @DeleteMapping("/api/user/profile-image")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> deleteProfileImage(
+            @AuthenticationPrincipal CustomUser customUser) {
+        Map<String, Object> response = new HashMap<>();
+        if (customUser == null) {
+            response.put("success", false);
+            response.put("message", "로그인이 필요합니다.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+        }
+
+        try {
+            userService.deleteProfileImage(customUser.getUserId());
+            response.put("success", true);
+            response.put("message", "프로필 이미지가 성공적으로 삭제되었습니다.");
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            log.error("프로필 이미지 삭제 실패", e);
+            response.put("success", false);
+            response.put("message", "프로필 이미지 삭제에 실패했습니다.");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
     }
 }

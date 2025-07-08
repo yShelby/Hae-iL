@@ -4,18 +4,22 @@ import com.heaildairy.www.auth.user.UserStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import java.io.Serializable; // Serializable 임포트 추가
 import java.time.LocalDateTime; // LocalDateTime 임포트 (Java 8 이상)
 
 @Entity
 @Table(name = "Users")
 @Getter
 @Setter
-public class UserEntity {
+public class UserEntity implements Serializable { // Serializable 구현 추가
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) // ID로 자동 생성
     @Column(name = "user_id") // 컬럼명 변경
     private Integer userId; // 필드명 변경
+
+    // Serializable 인터페이스 구현 시 serialVersionUID를 명시하는 것이 좋음
+    private static final long serialVersionUID = 1L; // 이 줄도 추가
 
     @Column(name = "email", nullable = false, unique = true) // 이메일 == 사용자 로그인 ID
     private String email;

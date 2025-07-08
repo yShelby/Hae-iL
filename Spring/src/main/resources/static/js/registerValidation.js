@@ -183,3 +183,80 @@
         errorModal.style.display = 'none';
         errorList.innerHTML = '';
     }
+
+    // 프로필 이미지 관련 요소들
+    const profileImageFileInput = document.getElementById('profileImageFile');
+    const profileImagePreview = document.getElementById('profileImagePreview');
+    const profileImageUrlInput = document.getElementById('profileImageUrl'); // 숨겨진 필드
+
+    // 프로필 이미지 변경 핸들러
+    async function handleProfileImageChange(event) {
+        const file = event.target.files[0];
+        if (!file) {
+            profileImagePreview.style.display = 'none';
+            profileImagePreview.src = '#';
+            profileImageUrlInput.value = ''; // 파일 선택 취소 시 URL 초기화
+            return;
+        }
+
+        // 1. 이미지 미리보기 표시
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            profileImagePreview.src = e.target.result;
+            profileImagePreview.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+
+        // 2. 임시 ID (UUID) 생성
+        const tempIdentifier = crypto.randomUUID();
+        const filename = file.name;
+        const contentType = file.type;
+
+        profileImageError.textContent = '이미지 업로드 중...'; // 로딩 메시지
+
+        try {
+            // 3. 백엔드에 Presigned URL 요청
+            const encodedFilename = encodeURIComponent(filename); // 파일명 인코딩
+            const encodedContentType = encodeURIComponent(contentType); // Content-Type 인코딩
+
+            const requestUrl = `/api/s3/profile-presigned-url?identifier=${tempIdentifier}&filename=${encodedFilename}&contentType=${encodedContentType}`;
+            console.log('Presigned URL 요청 URL:', requestUrl); // 이 줄을 추가
+
+            const presignedUrlResponse = await fetch(requestUrl);
+            if (!presignedUrlResponse.ok) {
+                throw new Error('Presigned URL 요청 실패');
+            }
+            const presignedUrl = await presignedUrlResponse.text(); // URL은 텍스트로 반환됨
+
+            // 4. S3에 파일 직접 업로드
+            console.log('S3 업로드 Presigned URL:', presignedUrl); // 이 줄을 추가
+            const s3UploadResponse = await fetch(presignedUrl, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': contentType,
+                },
+                body: file,
+            });
+
+            if (!s3UploadResponse.ok) {
+                throw new Error('S3 업로드 실패');
+            }
+
+            // 5. S3에 저장된 이미지의 임시 객체 키를 숨겨진 필드에 저장
+            // S3Service에서 objectKey를 'profile_images/{identifier}/profile.ext'로 생성했으므로,
+            // 이 경로를 그대로 사용하면 됨.
+            const s3ObjectKey = `profile_images/${tempIdentifier}/profile.${filename.split('.').pop()}`;
+            profileImageUrlInput.value = s3ObjectKey;
+
+            profileImageError.textContent = '이미지 업로드 완료!'; // 성공 메시지
+            profileImageError.style.color = 'green';
+
+        } catch (error) {
+            console.error('프로필 이미지 업로드 오류:', error);
+            profileImageError.textContent = '이미지 업로드 실패: ' + error.message;
+            profileImageError.style.color = 'red';
+            profileImagePreview.style.display = 'none';
+            profileImagePreview.src = '#';
+            profileImageUrlInput.value = ''; // 실패 시 URL 초기화
+        }
+    }

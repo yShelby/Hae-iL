@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.CopyObjectRequest;
 import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
@@ -72,6 +73,77 @@ public class S3Service {
     }
 
     /**
+     * 📦 프로필 이미지 업로드 - Presigned URL을 생성
+     * 'profile_images/{userId}/profile.jpg'와 같은 고정된 경로를 사용
+     *
+     * @param identifier 사용자 임시 ID (프로필 이미지 경로에 사용)
+     * @param filename 원본 파일 이름 (확장자 추출용)
+     * @param contentType 파일의 MIME 타입 (예: "image/jpeg", "image/png")
+     * @param expirationMinutes Presigned URL의 유효 시간 (분 단위)
+     * @return 생성된 Presigned URL 문자열
+     */
+    public String generateProfilePresignedPutUrl(String identifier, String filename, String contentType, int expirationMinutes) {
+
+        // 1. 프로필 이미지의 고정된 S3 객체 키 생성
+        String fileExtension = "";
+
+        int dotIndex = filename.lastIndexOf('.');
+        if (dotIndex > 0 && dotIndex < filename.length() - 1) {
+            fileExtension = filename.substring(dotIndex); // 확장자 추출
+        }
+
+        String objectKey = "profile_images/" + identifier + "/profile" + fileExtension;
+
+        // 2. 파일 업로드 요청 생성
+        PutObjectRequest putObjectRequest = PutObjectRequest.builder()
+                .bucket(bucketName)
+                .key(objectKey)
+                .contentType(contentType)
+                .build();
+
+        // 3. Presigned URL 요청 생성 (유효 시간 설정)
+        PutObjectPresignRequest presignRequest = PutObjectPresignRequest.builder()
+                .signatureDuration(Duration.ofMinutes(10))
+                .putObjectRequest(putObjectRequest)
+                .build();
+
+        // 4. 사전 서명 URL 생성
+        String presignedUrl = s3Presigner.presignPutObject(presignRequest).url().toString();
+
+        log.info("Generated Profile Presigned URL for userId: {}, objectKey: {}", identifier, objectKey);
+        return presignedUrl;
+    }
+
+    /**
+     * S3 객체를 한 경로에서 다른 경로로 이동 - 복사 후 원본 삭제
+     *
+     * @param sourceKey 원본 객체 키
+     * @param destinationKey 대상 객체 키
+     * @return 이동 성공 여부
+     */
+    public boolean moveS3Object(String sourceKey, String destinationKey) {
+        try {
+            // 1. 객체 복사
+            CopyObjectRequest copyObjectRequest = CopyObjectRequest.builder()
+                    .sourceBucket(bucketName)
+                    .sourceKey(sourceKey)
+                    .destinationBucket(bucketName)
+                    .destinationKey(destinationKey)
+                    .build();
+            s3Client.copyObject(copyObjectRequest);
+            log.info("Successfully copied object from {} to {}", sourceKey, destinationKey);
+
+            // 2. 원본 객체 삭제
+            deleteFile(sourceKey); // 기존 deleteFile 메소드 재사용
+            return true;
+        } catch (Exception e) {
+            log.error("Failed to move S3 object from {} to {}: {}", sourceKey, destinationKey, e.getMessage(), e);
+            return false;
+        }
+    }
+
+
+    /**
      * 🗑️ S3 버킷에서 파일 삭제
      * @param fileKey 삭제할 파일의 S3 키
      */
@@ -96,4 +168,5 @@ public class S3Service {
             log.error("Failed to delete file from S3. File key: {}", fileKey, e);
         }
     }
+
 }

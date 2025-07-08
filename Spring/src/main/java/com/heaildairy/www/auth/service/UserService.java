@@ -7,6 +7,7 @@ import com.heaildairy.www.auth.entity.UserEntity;
 import com.heaildairy.www.auth.jwt.JwtProvider;
 import com.heaildairy.www.auth.repository.RefreshTokenRepository;
 import com.heaildairy.www.auth.repository.UserRepository;
+import com.heaildairy.www.s3.service.S3Service; // S3Service 임포트 추가
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
@@ -54,6 +55,8 @@ public class UserService {
     private final JwtProvider jwtProvider;
     private final MailService mailService;
     private final AuthenticationManager authenticationManager;
+    private final S3Service s3Service;
+    private final HttpSession session; // HttpSession 주입 추가 // S3Service 주입 추가
 
 
     // 1️⃣ 회원가입: 전화번호 암호화 후 사용자 정보 저장
@@ -75,9 +78,34 @@ public class UserService {
         newUser.setName(requestDto.getName());
         newUser.setEncryptedPhoneNumber(encryptedPhone);
         newUser.setNickname(requestDto.getNickname());
-        newUser.setProfileImage(requestDto.getProfileImage());
+        // newUser.setProfileImage(requestDto.getProfileImage()); // 임시 경로이므로 여기서 바로 저장하지 않음
 
-        userRepository.save(newUser); // DB 저장
+        // 1. 사용자 정보 먼저 저장하여 userId 획득
+        UserEntity savedUser = userRepository.save(newUser); // DB 저장
+
+        // 2. 프로필 이미지 처리 (S3 임시 경로 -> 실제 userId 경로로 이동)
+        String tempProfileImagePath = requestDto.getProfileImage(); // 프론트에서 넘어온 임시 S3 객체 키
+        if (tempProfileImagePath != null && !tempProfileImagePath.isEmpty()) {
+            // 임시 경로에서 실제 사용자 ID 경로로 변경
+            // 예: profile_images/temp_uuid/profile.ext -> profile_images/{userId}/profile.ext
+            String fileExtension = "";
+            int dotIndex = tempProfileImagePath.lastIndexOf('.');
+            if (dotIndex > 0 && dotIndex < tempProfileImagePath.length() - 1) {
+                fileExtension = tempProfileImagePath.substring(dotIndex); // 확장자 추출
+            }
+            String permanentProfileImagePath = "profile_images/" + savedUser.getUserId() + "/profile" + fileExtension;
+
+            // S3에서 객체 이동 (복사 후 원본 삭제)
+            boolean moved = s3Service.moveS3Object(tempProfileImagePath, permanentProfileImagePath);
+
+            if (moved) {
+                savedUser.setProfileImage(permanentProfileImagePath); // UserEntity에 영구 경로 저장
+                userRepository.save(savedUser); // 업데이트된 UserEntity 다시 저장
+            } else {
+                log.error("Failed to move profile image from {} to {}", tempProfileImagePath, permanentProfileImagePath);
+                // 이미지 이동 실패 시 예외 처리 또는 기본 이미지 설정 등 추가 로직 필요
+            }
+        }
     }
 
     // 2️⃣ 로그인: Spring Security AuthenticationManager 통해 인증 처리
@@ -283,4 +311,68 @@ public class UserService {
         log.debug("UserService: Logout process finished for user: {}", email);
     }
 
+    // 1️⃣6️⃣ 프로필 이미지 업데이트
+    @Transactional
+    public void updateProfileImage(Integer userId, String newProfileImageKey) {
+        UserEntity user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("사용자 정보를 찾을 수 없습니다."));
+
+        // 기존 프로필 이미지가 있고, 새로운 이미지가 다르면 S3에서 기존 이미지 삭제
+        if (user.getProfileImage() != null && !user.getProfileImage().isEmpty() &&
+            !user.getProfileImage().equals(newProfileImageKey)) {
+            s3Service.deleteFile(user.getProfileImage());
+        }
+
+        user.setProfileImage(newProfileImageKey);
+        UserEntity updatedUser = userRepository.save(user);
+
+        // 세션 갱신: 새로운 UserEntity 인스턴스를 생성하여 세션에 저장
+        // 세션이 객체의 변경을 확실히 감지하도록 도움
+        UserEntity sessionUser = new UserEntity();
+        sessionUser.setUserId(updatedUser.getUserId());
+        sessionUser.setEmail(updatedUser.getEmail());
+        sessionUser.setNickname(updatedUser.getNickname());
+        sessionUser.setName(updatedUser.getName());
+        sessionUser.setProfileImage(updatedUser.getProfileImage()); // 변경된 프로필 이미지 반영
+        sessionUser.setLastLoginAt(updatedUser.getLastLoginAt());
+        sessionUser.setCreatedAt(updatedUser.getCreatedAt());
+        sessionUser.setStatus(updatedUser.getStatus());
+        sessionUser.setEncryptedPhoneNumber(updatedUser.getEncryptedPhoneNumber());
+        sessionUser.setThemeId(updatedUser.getThemeId());
+        // 비밀번호, RefreshToken 등 민감하거나 불필요한 정보는 세션에 저장하지 않음
+
+        session.setAttribute("user", sessionUser);
+        log.info("Session user updated: {}", session.getAttribute("user"));
+    }
+
+    // 1️⃣7️⃣ 프로필 이미지 삭제
+    @Transactional
+    public void deleteProfileImage(Integer userId) { // userId는 Integer 유지
+        UserEntity user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("사용자 정보를 찾을 수 없습니다."));
+
+        // 프로필 이미지가 존재하면 S3에서 삭제
+        if (user.getProfileImage() != null && !user.getProfileImage().isEmpty()) {
+            s3Service.deleteFile(user.getProfileImage());
+        }
+
+        user.setProfileImage(null); // DB에서 프로필 이미지 경로 삭제
+        UserEntity updatedUser = userRepository.save(user);
+
+        // 세션 갱신: 새로운 UserEntity 인스턴스를 생성하여 세션에 저장
+        UserEntity sessionUser = new UserEntity();
+        sessionUser.setUserId(updatedUser.getUserId());
+        sessionUser.setEmail(updatedUser.getEmail());
+        sessionUser.setNickname(updatedUser.getNickname());
+        sessionUser.setName(updatedUser.getName());
+        sessionUser.setProfileImage(updatedUser.getProfileImage()); // null로 변경된 프로필 이미지 반영
+        sessionUser.setLastLoginAt(updatedUser.getLastLoginAt());
+        sessionUser.setCreatedAt(updatedUser.getCreatedAt());
+        sessionUser.setStatus(updatedUser.getStatus());
+        sessionUser.setEncryptedPhoneNumber(updatedUser.getEncryptedPhoneNumber());
+        sessionUser.setThemeId(updatedUser.getThemeId());
+
+        session.setAttribute("user", sessionUser);
+        log.info("Session user updated: {}", session.getAttribute("user"));
+    }
 }

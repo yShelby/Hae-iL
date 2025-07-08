@@ -29,7 +29,20 @@
 
         <!-- 로그인 상태일 때 -->
         <div th:if="${session.user != null}" class="user-info">
-            <p>안녕하세요, <strong th:text="${session.user.nickname}">사용자</strong>님!</p>
+            <a th:href="@{/my-page}" style="text-decoration: none; color: inherit;">
+                <!-- 프로필 이미지 표시 -->
+                <img th:if="${session.user.profileImage != null and session.user.profileImage != ''}"
+                     th:src="@{'https://haeil-gallery-images-garamink.s3.ap-northeast-2.amazonaws.com/' + ${session.user.profileImage}}"
+                     alt="프로필 이미지"
+                     class="profile-image">
+                <!-- 프로필 이미지가 없을 경우 기본 이미지 또는 아이콘 표시 (선택 사항) -->
+                <img th:unless="${session.user.profileImage != null and session.user.profileImage != ''}"
+                     th:src="@{/img/user_sample2.png}"
+                     alt="기본 프로필 이미지"
+                     class="default-image profile-image">
+
+                <p>안녕하세요, <strong th:text="${session.user.nickname}">사용자</strong>님!</p>
+            </a>
             <button onclick="location.href='/my-page'">마이 페이지</button>
             <button class="logout-btn" onclick="logout()">로그아웃</button>
         </div>
@@ -56,13 +69,13 @@
     // Pass user info to React app
     // ==================================================================
     /*<![CDATA[*/
-    window.__USER__ = {
-        userId: /*[[${session.user?.userId}]]*/ null,
-        email: /*[[${session.user?.email}]]*/ null,
-        nickname: /*[[${session.user?.nickname}]]*/ null,
-        name: /*[[${session.user?.name}]]*/ null,
-        profileImage: /*[[${session.user?.profileImage}]]*/ null
-    };
+        window.__USER__ = {
+            userId: /*[[${session.user?.userId}]]*/ null,
+            email: /*[[${session.user?.email}]]*/ null,
+            nickname: /*[[${session.user?.nickname}]]*/ null,
+            name: /*[[${session.user?.name}]]*/ null,
+            profileImage: /*[[${session.user?.profileImage}]]*/ null
+        };
     /*]]>*/
 
     // --- Login/Logout Script ---

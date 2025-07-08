@@ -6,13 +6,36 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Common CSS Link -->
     <link rel="stylesheet" th:href="@{/css/auth-styles.css}">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+          integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+          crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
 <div class="container my-page">
     <h2>마이페이지</h2>
     <div class="profile-section">
-        <img th:src="${user.profileImage ?: 'https://placehold.co/100x100/EFEFEF/AAAAAA?text=Profile'}" alt="프로필 이미지"
-             class="profile-image">
+        <div class="profile-image-box">
+            <!-- 프로필 이미지 표시 -->
+            <img id="currentProfileImage"
+                 th:if="${user.profileImage != null and user.profileImage != ''}"
+                 th:src="@{'https://haeil-gallery-images-garamink.s3.ap-northeast-2.amazonaws.com/' + ${user.profileImage}}"
+                 alt="프로필 이미지"
+                 class="profile-image">
+            <!-- 프로필 이미지가 없을 경우 기본 이미지 표시 -->
+            <img id="currentProfileImageDefault"
+                 th:unless="${user.profileImage != null and user.profileImage != ''}"
+                 th:src="@{/img/user_sample2.png}"
+                 alt="기본 프로필 이미지"
+                 class="profile-image">
+
+            <!-- 프로필 이미지 변경/삭제 버튼 및 파일 입력 필드 -->
+            <div class="profile-image-controls">
+                <input type="file" id="profileImageUpload" style="display: none;" accept="image/*"><button type="button" id="changeImageBtn" class="button-secondary"><i class="fa-solid fa-file-image"></i></button>
+                <button type="button" id="deleteImageBtn" class="button-secondary"><i class="fa-solid fa-trash"></i></button>
+            </div>
+        </div>
+
         <div class="profile-info">
             <p><strong>닉네임:</strong> <span th:text="${user.nickname}"></span></p>
             <p><strong>이메일:</strong> <span th:text="${user.email}"></span></p>
@@ -59,6 +82,13 @@
     </div>
 </div>
 
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    // Thymeleaf에서 사용자 ID 주입
+    window.__USER_ID__ = /*[[${user.userId}]]*/ null;
+    /*]]>*/
+</script>
+<script src="/js/myPage.js"></script>
 <script>
     // PW 변경 모달 열기
     document.getElementById('change-password-btn').addEventListener('click', function() {
