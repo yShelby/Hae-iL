@@ -64,17 +64,3 @@ jwt:
 
 cors:
   allowed-origins: http://localhost:5173, http://localhost:3000
-# ================================
-# ☁️ AWS S3 설정
-# ================================
-cloud:
-  aws:
-    credentials:
-      access-key: AKIAYEVMAPCDERIRVA4Z         # 🔑 AWS IAM 액세스 키
-      secret-key: lmI+9OQcSRhOJcklLsDW5GO3m6BPOiM3VZO7BK0i  # 🧷 비밀 키 (노출 주의!)
-    region:
-      static: ap-northeast-2                  # 🌍 AWS 리전 (서울)
-    stack:
-      auto: false                             # 🛠️ CloudFormation 스택 비활성화
-    s3:
-      bucket-name: haeil-gallery-images-garamink  # 🪣 이미지 저장용 S3 버킷 이름

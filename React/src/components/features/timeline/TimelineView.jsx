@@ -4,15 +4,16 @@ import DatePicker, {registerLocale} from 'react-datepicker';
 import ko from 'date-fns/locale/ko'; // 🇰🇷 한글 로케일
 import 'react-datepicker/dist/react-datepicker.css';
 import '../timeline/css/TimelineView.css'
+import {useCheckLogin} from "@/hooks/useCheckLogin.js";
 
 registerLocale('ko', ko); // 로케일 등록
 
 export default function TimelineView({ data = [], selectedDate, onSelectDate }) {
+    const checkLogin = useCheckLogin();
     // 내부 상태: 달력 UI 표시 여부 제어
     const [showCalendar, setShowCalendar] = useState(false);
 
     // selectedDate가 없으면 오늘 날짜로 초기화
-    // const baseDate = selectedDate ? new Date(selectedDate) : new Date();
     const baseDate = useMemo(() => {
         return selectedDate ? new Date(selectedDate) : new Date();
     }, [selectedDate]);
@@ -43,13 +44,10 @@ export default function TimelineView({ data = [], selectedDate, onSelectDate }) 
         }
         return result;
     }, [data]);
-    // if (data && data.length > 0) {
-    //   console.log('Inspecting raw data item:', data[0]);
-    //   console.log('Inspecting raw data item:', data[0]);
-    // }
 
     // 클릭 시 해당 날짜를 부모로 전달
     const handleDateClick = (date) => {
+        if (!checkLogin()) return; // 로그인 안되어 있으면 알림만 띄움
         onSelectDate && onSelectDate(date);
     };
 

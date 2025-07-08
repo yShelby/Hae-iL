@@ -31,7 +31,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name = "gallery") // 🏷️ DB 테이블명 지정
+@Table(name = "Gallery") // 🏷️ DB 테이블명 지정
 public class GalleryEntity {
 
     @Id
@@ -49,7 +49,6 @@ public class GalleryEntity {
 
     @Column(name = "file_key", nullable = false)
     private String fileKey; // 🔑 S3 저장소 내 이미지 파일 키 (URL 아님)
-
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false, nullable = false)

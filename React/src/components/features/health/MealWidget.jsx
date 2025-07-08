@@ -9,7 +9,7 @@ import {
 import {useCheckLogin} from "@/hooks/useCheckLogin.js";
 import {showToast} from "@shared/UI/Toast.jsx";
 
-export default function MealWidget({ date }) {
+export default function MealWidget({ date, onDataChange  }) {
     const checkLogin = useCheckLogin();
 
     const [loading, setLoading] = useState(false);
@@ -72,6 +72,7 @@ export default function MealWidget({ date }) {
             setData(res);
             setEditing(false);
             showToast.success('식사 기록이 저장되었습니다!');
+            onDataChange?.();
         } catch (err) {
             console.error(err);
             showToast.error('저장 중 오류가 발생했습니다.');
@@ -92,6 +93,7 @@ export default function MealWidget({ date }) {
             setForm({ breakfast: '', lunch: '', dinner: '', snack: '' });
             setEditing(true);
             showToast.success('식사 기록이 삭제되었습니다!');
+            onDataChange?.();
         } catch (err) {
             console.error(err);
             showToast.error("삭제 중 오류가 발생했습니다.");
@@ -148,6 +150,7 @@ export default function MealWidget({ date }) {
                     />
                     <button onClick={handleSave}>저장</button>
                     <button onClick={() => {
+                        if (!checkLogin()) return;
                         setEditing(false);
                         if (!data) setForm({ breakfast: '', lunch: '', dinner: '', snack: '' });
                     }}>취소</button>

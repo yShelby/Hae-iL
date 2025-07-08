@@ -1,78 +1,21 @@
-/* 전체 앱 컨테이너 */
-.app-container {
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-    font-family: 'Noto Sans KR', sans-serif;
-}
-
-/* 헤더 스타일 */
-.app-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem 2rem;
-    border-bottom: 1px solid #e0e0e0;
-    background-color: white;
-    flex-shrink: 0;
-}
-
-.app-header h1 {
+* {
+    box-sizing: border-box;
     margin: 0;
-    font-size: 1.5rem;
+    padding: 0;
 }
 
-.app-header h1 a {
+body {
+    font-family: 'Noto Sans KR', sans-serif;
+    background-color: #fdfdfd;
+    color: #222;
+}
+
+a {
+    color: inherit;
     text-decoration: none;
-    color: #333;
 }
 
-.three-column-layout {
-    display: flex;
-    width: 100%;
-    height: 100%;
-}
-.left-sidebar {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between; /* 상단은 감정분석, 하단은 갤러리 */
-    width: 250px;
-    padding: 1rem;
-    border-right: 1px solid #ddd;
-    background: #f9f9f9;
-}
-.emotion-analysis {
-    margin-bottom: 1rem;
-    min-width: 300px;
-    /* 이곳에 감정 분석 컴포넌트가 들어감 */
-}
-.sidebar-gallery {
-    margin-top: auto; /* 하단 고정 느낌 */
-    padding-top: 1rem;
-    border-top: 1px solid #e0e0e0;
-}
-.timeline-header {
-    padding: 1.2rem 2rem;
-    border-bottom: 1px solid #e0e0e0;
-    background-color: #fafafa;
-}
-/* 중앙: 타임라인 + 일기 */
-.center-editor {
-    flex: 1;
-    padding: 1rem;
-    overflow-y: auto;
-    min-width: 500px;
-}
-/* 우측: 위젯 */
-.right-sidebar {
-    min-width: 300px;
-    width: 300px;
-    padding: 1rem;
-    border-left: 1px solid #ddd;
-    background: #fafafa;
-}
-
-.timeline-card.active {
-    border: 2px solid #007bff;
-    background-color: #f0f8ff;
+button {
+    cursor: pointer;
+    font-family: inherit;
 }

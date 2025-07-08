@@ -9,7 +9,7 @@ import {
 import {useCheckLogin} from "@/hooks/useCheckLogin.js";
 import {showToast} from "@shared/UI/Toast.jsx";
 
-export default function SleepWidget({ date }) {
+export default function SleepWidget({ date, onDataChange }) {
     const checkLogin = useCheckLogin();
 
     const [loading, setLoading] = useState(false);
@@ -71,6 +71,7 @@ export default function SleepWidget({ date }) {
             setData(res);
             setEditing(false);
             showToast.success('수면 기록이 저장되었습니다!');
+            onDataChange?.();
         } catch (err) {
             console.error(err);
             showToast.error('저장 중 오류가 발생했습니다.');
@@ -91,6 +92,7 @@ export default function SleepWidget({ date }) {
             setForm({ bedtime: '', waketime: '' });
             setEditing(true);
             showToast.success('수면 기록이 삭제되었습니다!');
+            onDataChange?.();
         } catch (err) {
             console.error(err);
             showToast.error("삭제 중 오류가 발생했습니다.");
@@ -137,6 +139,7 @@ export default function SleepWidget({ date }) {
                     </label>
                     <button onClick={handleSave}>저장</button>
                     <button onClick={() => {
+                        if (!checkLogin()) return;
                         setEditing(false);
                         if (!data) {
                             setForm({ bedtime: '', waketime: '' });

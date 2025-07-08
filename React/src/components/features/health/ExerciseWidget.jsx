@@ -10,7 +10,7 @@ import {showToast} from "@shared/UI/Toast.jsx";
 import {useCheckLogin} from "@/hooks/useCheckLogin.js";
 import './css/widget.css';
 
-export default function ExerciseWidget({ date }) {
+export default function ExerciseWidget({ date, onDataChange }) {
     const checkLogin = useCheckLogin();
     const [loading, setLoading] = useState(false);
     const [data, setData] = useState(null);
@@ -69,6 +69,9 @@ export default function ExerciseWidget({ date }) {
             setData(res);
             setEditing(false);
             showToast.success('운동 기록이 저장되었습니다!');
+            if (typeof onDataChange === 'function') {
+                onDataChange();  // 변경 알림
+            }
         } catch (err) {
             console.error(err);
             showToast.error('저장 중 오류가 발생했습니다.');
@@ -90,6 +93,7 @@ export default function ExerciseWidget({ date }) {
             setData(null);
             setEditing(true);
             showToast.success('운동 기록이 삭제되었습니다!');
+            onDataChange?.(); // 타임라인 데이터 다시 불러오기
         }catch(err){
             console.error(err);
             showToast.error("삭제 중 오류가 발생했습니다.");
@@ -140,6 +144,7 @@ export default function ExerciseWidget({ date }) {
                     </label>
                     <button onClick={handleSave}>저장</button>
                     <button onClick={() => {
+                        if (!checkLogin()) return;
                         setEditing(false);
                         if (!data) {
                             setForm({ exerciseType: '', duration: '', intensity: '' });

@@ -34,7 +34,12 @@ export const AuthProvider = ({ children }) => {
     useEffect(() => {
         const initialUser = window.__USER__ || null;
 
-        if (initialUser) {
+        // console.log('✅ window.__USER__:', initialUser);
+        const isValidUser = initialUser &&
+            initialUser.userId !== null &&
+            initialUser.email !== null;
+
+        if (isValidUser) {
             // 🧩 window.__USER__의 필드를 프론트용 user 객체 구조에 맞게 매핑
             setUser({
                 id: initialUser.userId,
@@ -42,6 +47,9 @@ export const AuthProvider = ({ children }) => {
                 nickname: initialUser.nickname,
                 profileImage: initialUser.profileImage,
             });
+        }else {
+            // ❗ 모든 필드가 null이면 로그인 안 된 상태로 간주
+            setUser(null);
         }
         // 로딩 완료 표시
         setLoading(false);

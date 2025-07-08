@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import {useState, useCallback, useEffect} from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@features/auth/AuthContext.jsx';
 import { showToast } from '@shared/UI/Toast.jsx';
@@ -37,6 +37,13 @@ export const useDiaryData = () => {
             setIsLoading(false);
         }
     }, []);
+
+    // selectedDate가 바뀔 때마다 자동으로 해당 일기 데이터 불러오기
+    useEffect(() => {
+        if (selectedDate) {
+            fetchDiaryForDate(selectedDate);
+        }
+    }, [selectedDate, fetchDiaryForDate]);
 
     // ✨ 일기 저장/삭제 후 콜백
     const handleActionSuccess = useCallback((newDiary) => {
