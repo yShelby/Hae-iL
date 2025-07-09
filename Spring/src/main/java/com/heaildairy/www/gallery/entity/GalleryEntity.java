@@ -50,8 +50,6 @@ public class GalleryEntity {
     @Column(name = "file_key", nullable = false)
     private String fileKey; // 🔑 S3 저장소 내 이미지 파일 키 (URL 아님)
 
-    @Column(name = "diary_date", nullable = false)
-    private LocalDate diaryDate; // 📅 이미지가 첨부된 일기 날짜
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false, nullable = false)
@@ -62,10 +60,9 @@ public class GalleryEntity {
      * - 사용자, 일기, 파일키, 일기 날짜를 받아 객체 초기화
      */
     @Builder
-    public GalleryEntity(UserEntity user, DiaryEntity diary, String fileKey, LocalDate diaryDate) {
+    public GalleryEntity(UserEntity user, DiaryEntity diary, String fileKey) {
         this.user = user;
         this.diary = diary;
         this.fileKey = fileKey;
-        this.diaryDate = diaryDate;
     }
 }

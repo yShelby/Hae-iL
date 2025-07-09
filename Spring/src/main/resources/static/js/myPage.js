@@ -108,7 +108,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (currentProfileImageDefault) currentProfileImageDefault.style.display = 'none';
                 
                 // 변경된 세션 정보를 반영하기 위해 페이지 새로고침
-                setTimeout(() => { location.reload(); }, 1000); // 지연 시간 1초
+                setTimeout(() => { location.reload(); }, 3000); // 지연 시간 3초
             } else {
                 throw new Error(result.message || '프로필 이미지 변경 실패');
             }
@@ -152,7 +152,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
                 
                 // 변경된 세션 정보를 반영하기 위해 페이지 새로고침
-                setTimeout(() => { location.reload(); }, 1000);
+                setTimeout(() => { location.reload(); }, 3000);
             } else {
                 throw new Error(result.message || '프로필 이미지 삭제 실패');
             }
@@ -183,6 +183,65 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             alert(message); // 모달이 없으면 alert로 대체
             if (callback) callback();
+        }
+    }
+
+    const withdrawBtn = document.getElementById('withdraw-btn');
+    const withdrawConfirmModal = document.getElementById('withdraw-confirm-modal');
+    const cancelWithdrawBtn = document.getElementById('cancel-withdraw');
+    const confirmWithdrawBtn = document.getElementById('confirm-withdraw');
+
+    // 회원 탈퇴 버튼 클릭 시 모달 열기
+    if (withdrawBtn) {
+        withdrawBtn.addEventListener('click', () => {
+            withdrawConfirmModal.style.display = 'flex';
+        });
+    }
+
+    // 회원 탈퇴 모달 닫기 (취소 버튼)
+    if (cancelWithdrawBtn) {
+        cancelWithdrawBtn.addEventListener('click', () => {
+            withdrawConfirmModal.style.display = 'none';
+        });
+    }
+
+    // 회원 탈퇴 모달 닫기 (모달 외부 클릭)
+    if (withdrawConfirmModal) {
+        withdrawConfirmModal.addEventListener('click', (event) => {
+            if (event.target === withdrawConfirmModal) {
+                withdrawConfirmModal.style.display = 'none';
+            }
+        });
+    }
+
+    // 회원 탈퇴 최종 확인 버튼 클릭 시
+    if (confirmWithdrawBtn) {
+        confirmWithdrawBtn.addEventListener('click', async () => {
+            withdrawConfirmModal.style.display = 'none'; // 모달 닫기
+            // 여기에 실제 회원 탈퇴 로직 호출 (백엔드 API 호출)
+            await handleUserWithdraw();
+        });
+    }
+
+    // 회원 탈퇴 처리 함수
+    async function handleUserWithdraw() {
+        console.log('회원 탈퇴 처리 시작...');
+        try {
+            const response = await fetch('/api/user/withdraw', {
+                method: 'DELETE', // DELETE 메소드 사용
+                headers: { 'Content-Type': 'application/json' },
+            });
+            const result = await response.json();
+            if (result.success) {
+                showPopup('회원 탈퇴가 완료되었습니다. 메인 페이지로 이동합니다.', () => {
+                    window.location.href = '/'; // 메인 페이지로 리다이렉트
+                });
+            } else {
+                showPopup(result.message || '회원 탈퇴에 실패했습니다.');
+            }
+        } catch (error) {
+            console.error('회원 탈퇴 오류:', error);
+            showPopup('회원 탈퇴 중 오류가 발생했습니다.');
         }
     }
 });

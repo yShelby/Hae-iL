@@ -24,6 +24,7 @@ import com.heaildairy.www.auth.dto.FindPWRequestDto;
 import com.heaildairy.www.auth.dto.LoginRequestDto;
 import com.heaildairy.www.auth.dto.RegisterRequestDto;
 import com.heaildairy.www.auth.entity.UserEntity;
+import com.heaildairy.www.auth.service.EmailStatus;
 import com.heaildairy.www.auth.jwt.JwtProvider;
 import com.heaildairy.www.auth.service.LogoutService;
 import com.heaildairy.www.auth.service.UserService;
@@ -39,6 +40,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -83,8 +85,15 @@ public class AuthController {
             userService.processLoginSuccess(authentication, loginRequest.getEmail(), session, response);
 
             return ResponseEntity.ok(Map.of("success", true));
-        } catch (AuthenticationException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "로그인 실패"));
+        } catch (DisabledException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "탈퇴한 회원입니다."));
+        } catch (AuthenticationException e) { // Catch general AuthenticationException
+            // Check if the cause is DisabledException
+            if (e.getCause() instanceof DisabledException) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "탈퇴한 회원입니다."));
+            } else {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "로그인 실패"));
+            }
         }
     }
 
@@ -206,10 +215,10 @@ public class AuthController {
             model.addAttribute("errors", bindingResult.getAllErrors()); // ⚠️ 유효성 오류 처리
             return "auth/register.html";
         }
-        // 이메일 중복 체크
-        if (userService.isEmailDuplicated(requestDto.getEmail())) {
-            model.addAttribute("emailError", "이미 존재하는 이메일입니다");
-
+        // 이메일 상태 확인 (가입 가능, 활성/비활성 중복)
+        EmailStatus emailStatus = userService.checkEmailStatus(requestDto.getEmail());
+        if (emailStatus != EmailStatus.AVAILABLE) {
+            model.addAttribute("emailError", emailStatus.getMessage());
             return "auth/register.html";
         }
 
@@ -339,6 +348,34 @@ public class AuthController {
             response.put("success", false);
             response.put("message", "프로필 이미지 삭제에 실패했습니다.");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+
+    // 1️⃣7️⃣ 회원 탈퇴 API
+    @DeleteMapping("/api/user/withdraw")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> withdrawUser(
+            @AuthenticationPrincipal CustomUser customUser,
+            HttpServletRequest request, HttpServletResponse response) {
+        Map<String, Object> result = new HashMap<>();
+        if (customUser == null) {
+            result.put("success", false);
+            result.put("message", "로그인이 필요합니다.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(result);
+        }
+
+        try {
+            userService.withdrawUser(customUser.getUserId()); // 회원 상태 INACTIVE로 변경
+            logoutService.logout(request, response); // 강제 로그아웃 처리
+
+            result.put("success", true);
+            result.put("message", "회원 탈퇴가 성공적으로 처리되었습니다.");
+            return ResponseEntity.ok(result);
+        } catch (Exception e) {
+            log.error("회원 탈퇴 실패", e);
+            result.put("success", false);
+            result.put("message", "회원 탈퇴 중 오류가 발생했습니다.");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(result);
         }
     }
 }

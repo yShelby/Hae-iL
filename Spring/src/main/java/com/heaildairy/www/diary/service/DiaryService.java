@@ -201,7 +201,6 @@ public class DiaryService {
                 GalleryEntity image = existingImageOpt.orElseGet(() -> GalleryEntity.builder()
                         .user(diary.getUser())
                         .diary(diary)
-                        .diaryDate(diary.getDiaryDate())
                         .build());
 
                 if (existingImageOpt.isPresent() && !existingImageOpt.get().getFileKey().equals(fileKey)) {

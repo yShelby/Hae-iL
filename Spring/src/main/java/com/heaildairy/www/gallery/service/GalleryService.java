@@ -37,7 +37,7 @@ public class GalleryService {
      * @return 사용자의 이미지 DTO 리스트 (최신 날짜 순)
      */
     public List<GalleryDto> getGalleryImages(Integer userId) {
-        return imageRepository.findByUserUserIdOrderByDiaryDateDesc(userId) // 2️⃣ DB에서 사용자 이미지 최신순 조회
+        return imageRepository.findByUserUserIdOrderByDiary_DiaryDateDesc(userId) // 2️⃣ DB에서 사용자 이미지 최신순 조회
                 .stream()
                 .map(GalleryDto::fromEntity) // 3️⃣ 엔티티 -> DTO 변환
                 .collect(Collectors.toList()); // 4️⃣ 리스트로 수집하여 반환

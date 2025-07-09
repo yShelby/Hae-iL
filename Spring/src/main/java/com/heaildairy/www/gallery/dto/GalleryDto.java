@@ -39,7 +39,7 @@ public class GalleryDto {
                         .fileId(image.getImageId())                     // 이미지 고유 ID 세팅
                         .diaryId(image.getDiary().getDiaryId())         // 연결된 일기 ID 세팅
                         .fileKey(image.getFileKey())                     // S3 저장 키 세팅
-                        .diaryDate(image.getDiaryDate())                 // 일기 작성 날짜 세팅
+                        .diaryDate(image.getDiary().getDiaryDate())                 // 일기 작성 날짜 세팅
                         .build();
         }
 }

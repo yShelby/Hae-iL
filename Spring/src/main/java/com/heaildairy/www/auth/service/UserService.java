@@ -7,6 +7,7 @@ import com.heaildairy.www.auth.entity.UserEntity;
 import com.heaildairy.www.auth.jwt.JwtProvider;
 import com.heaildairy.www.auth.repository.RefreshTokenRepository;
 import com.heaildairy.www.auth.repository.UserRepository;
+import com.heaildairy.www.auth.user.UserStatus;
 import com.heaildairy.www.s3.service.S3Service; // S3Service 임포트 추가
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.Cookie;
@@ -15,6 +16,7 @@ import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -211,9 +213,20 @@ public class UserService {
                 .orElseThrow(() -> new RuntimeException("사용자 정보가 없습니다."));
     }
 
-    // 7️⃣ 이메일 중복 체크 (존재 여부 반환)
-    public boolean isEmailDuplicated(String email) {
-        return userRepository.existsByEmail(email);
+    // 7️⃣ 이메일 상태 확인 (가입 가능, 활성 중복, 비활성 중복)
+    public EmailStatus checkEmailStatus(String email) {
+        Optional<UserEntity> userOptional = userRepository.findByEmail(email);
+
+        if (userOptional.isEmpty()) {
+            return EmailStatus.AVAILABLE; // 사용 가능한 이메일
+        }
+
+        UserEntity user = userOptional.get();
+        if (user.getStatus() == UserStatus.ACTIVE) {
+            return EmailStatus.ACTIVE_DUPLICATE; // 활성 상태의 중복 이메일
+        } else {
+            return EmailStatus.INACTIVE_DUPLICATE; // 비활성 상태의 중복 이메일
+        }
     }
 
     // 7️⃣-1️⃣ 전화번호 중복 체크 (존재 여부 반환)
@@ -374,5 +387,22 @@ public class UserService {
 
         session.setAttribute("user", sessionUser);
         log.info("Session user updated: {}", session.getAttribute("user"));
+    }
+
+    // 1️⃣8️⃣ 회원 탈퇴: 사용자 상태를 INACTIVE로 변경
+    @Transactional
+    public void withdrawUser(Integer userId) {
+        UserEntity user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("사용자 정보를 찾을 수 없습니다."));
+
+        // 사용자 상태를 INACTIVE로 변경
+        user.setStatus(UserStatus.INACTIVE);
+        userRepository.save(user);
+
+        // 탈퇴 시 Refresh Token도 DB에서 삭제
+        refreshTokenRepository.deleteByUserId(userId);
+        refreshTokenRepository.flush(); // 즉시 DB에 반영
+
+        log.info("User {} (ID: {}) has been set to INACTIVE status and refresh token deleted.", user.getEmail(), userId);
     }
 }

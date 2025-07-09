@@ -27,7 +27,7 @@ public interface GalleryRepository extends JpaRepository<GalleryEntity, Long> {
      * @param userId 사용자의 고유 ID
      * @return 이미지 목록 (List<GalleryEntity>)
      */
-    List<GalleryEntity> findByUserUserIdOrderByDiaryDateDesc(Integer userId);
+    List<GalleryEntity> findByUserUserIdOrderByDiary_DiaryDateDesc(Integer userId);
 
     /**
      * 🔍 일기 ID로 단일 이미지 조회

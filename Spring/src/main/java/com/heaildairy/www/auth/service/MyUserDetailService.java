@@ -4,8 +4,11 @@ import com.heaildairy.www.auth.entity.UserEntity;
 import com.heaildairy.www.auth.repository.UserRepository;
 import com.heaildairy.www.auth.user.CustomUser;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -13,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
+import com.heaildairy.www.auth.user.UserStatus;
 
 /**
  * 📂 MyUserDetailService.java
@@ -29,6 +33,7 @@ import java.util.List;
  * 4️⃣ DB에서 가져온 정보 기반 CustomUser 생성 및 반환
  */
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class MyUserDetailService implements UserDetailsService {
@@ -41,10 +46,15 @@ public class MyUserDetailService implements UserDetailsService {
         UserEntity user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 이메일입니다: " + email));
 
-        // 2️⃣ 모든 사용자에게 기본 ROLE_USER 권한 할당 (간단히 리스트 생성)
+        // 2️⃣ 사용자 상태 확인 (탈퇴 회원 체크)
+        if (user.getStatus() == UserStatus.INACTIVE) {
+            throw new DisabledException("탈퇴한 회원입니다.");
+        }
+
+        // 3️⃣ 모든 사용자에게 기본 ROLE_USER 권한 할당 (간단히 리스트 생성)
         List<GrantedAuthority> authorities = Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));
 
-        // 3️⃣ CustomUser 객체 생성 (인증용 principal)
+        // 4️⃣ CustomUser 객체 생성 (인증용 principal)
         return new CustomUser(
                 user.getEmail(),           // 사용자 이메일 (username)
                 user.getPassword(),        // 비밀번호 (암호화된 상태)
@@ -52,9 +62,9 @@ public class MyUserDetailService implements UserDetailsService {
                 user.getUserId(),          // 유저 고유 ID
                 user.getNickname(),        // 닉네임
                 user.getProfileImage(),    // 프로필 이미지 경로 또는 URL
-                user.getThemeId(),         // 테마 아이디 (사용자 선호)
-                user.getLastLoginAt(),     // 마지막 로그인 시간
-                user.getCreatedAt()        // 계정 생성일
-        );
+                user.getThemeId() != null ? user.getThemeId() : null,         // 테마 아이디 (사용자 선호)
+                user.getLastLoginAt() != null ? user.getLastLoginAt() : null,     // 마지막 로그인 시간
+                user.getCreatedAt() != null ? user.getCreatedAt() : null        // 계정 생성일
+            );
     }
 }
