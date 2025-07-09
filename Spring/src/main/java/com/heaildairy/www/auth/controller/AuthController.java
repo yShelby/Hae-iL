@@ -24,10 +24,8 @@ import com.heaildairy.www.auth.dto.FindPWRequestDto;
 import com.heaildairy.www.auth.dto.LoginRequestDto;
 import com.heaildairy.www.auth.dto.RegisterRequestDto;
 import com.heaildairy.www.auth.entity.UserEntity;
-import com.heaildairy.www.auth.service.EmailStatus;
+import com.heaildairy.www.auth.service.*;
 import com.heaildairy.www.auth.jwt.JwtProvider;
-import com.heaildairy.www.auth.service.LogoutService;
-import com.heaildairy.www.auth.service.UserService;
 import com.heaildairy.www.auth.user.CustomUser;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.Cookie;
@@ -144,16 +142,24 @@ public class AuthController {
 
         String phone = request.get("phone");
 
-        // 🔎 전화번호로 사용자 조회
-        Optional<UserEntity> user = userService.findUserByPhone(phone);
+        EmailFindStatus emailFindStatus = userService.checkPhoneForEmailFind(phone);
 
-        if (user.isEmpty()) {
-            return ResponseEntity.ok(Map.of("maskedEmail", null));
+        if (emailFindStatus == EmailFindStatus.NOT_FOUND) {
+            Map<String, String> response = new HashMap<>();
+            response.put("maskedEmail", null);
+            return ResponseEntity.ok(response);
+        } else if (emailFindStatus == EmailFindStatus.INACTIVE_USER_FOUND) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", emailFindStatus.getMessage()));
+        } else { // ACTIVE_USER_FOUND
+            // 🙈 이메일 마스킹 처리 (ex: abc***@domain.com)
+            // 이메일은 userService.getUserByEmail(phone) 등으로 다시 조회해야 함.
+            // 하지만 여기서는 이미 checkPhoneForEmailFind에서 userOptional을 사용했으므로,
+            // userOptional을 다시 얻거나, EmailFindStatus에 user.email을 포함시키는 방법도 고려 가능.
+            // 현재는 findUserByPhone을 다시 호출하여 user를 얻는 방식으로 진행.
+            Optional<UserEntity> user = userService.findUserByPhone(phone);
+            String maskedEmail = maskEmail(user.get().getEmail());
+            return ResponseEntity.ok(Map.of("maskedEmail", maskedEmail));
         }
-
-        // 🙈 이메일 마스킹 처리 (ex: abc***@domain.com)
-        String maskedEmail = maskEmail(user.get().getEmail());
-        return ResponseEntity.ok(Map.of("maskedEmail", maskedEmail));
     }
 
     // 이메일 마스킹 로직
@@ -222,19 +228,28 @@ public class AuthController {
             return "auth/register.html";
         }
 
-        // 전화번호 중복 체크
+        // 전화번호 상태 확인 (가입 가능, 활성/비활성 중복)
+        PhoneStatus phoneStatus = null;
         try {
-            if (userService.isPhoneDuplicated(requestDto.getPhone())) { // 변경된 부분
-                model.addAttribute("phoneError", "이미 존재하는 전화번호입니다");
-                return "auth/register.html";
-            }
+            phoneStatus = userService.checkPhoneStatus(requestDto.getPhone());
         } catch (Exception e) {
             log.error("전화번호 중복 체크 중 오류 발생", e);
             model.addAttribute("generalError", "전화번호 확인 중 오류가 발생했습니다.");
             return "auth/register.html";
         }
 
-        userService.addNewUser(requestDto); // 🆕 신규 사용자 저장
+        if (phoneStatus != PhoneStatus.AVAILABLE) {
+            model.addAttribute("phoneError", phoneStatus.getMessage());
+            return "auth/register.html";
+        }
+
+        try {
+            userService.addNewUser(requestDto); // 🆕 신규 사용자 저장
+        } catch (IllegalArgumentException e) {
+            log.error("회원가입 중 오류 발생: {}", e.getMessage());
+            model.addAttribute("generalError", e.getMessage()); // 에러 메시지를 모델에 추가
+            return "auth/register.html"; // 회원가입 페이지로 돌아감
+        }
         return "redirect:/";
     }
 

@@ -142,7 +142,7 @@ button:disabled {
     margin-bottom: 12px; /* Space before next label */
 }
 
-.error, #result.error, #login-result.error, #pw-error.error {
+.error, #result.error, #login-result.error, #pw-error.error #withdraw-btn {
     color: var(--error-color);
 }
 

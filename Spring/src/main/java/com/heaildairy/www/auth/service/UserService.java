@@ -29,24 +29,6 @@ import java.time.LocalDateTime; // <-- 이 줄 추가
 import java.util.Optional;
 import java.util.Random;
 
-/**
- * 📂 UserService.java
- * ────────────────────────────────
- * ✅ 역할:
- * - 회원 가입, 로그인, 로그아웃, 비밀번호 변경 등 사용자 관련 핵심 비즈니스 로직 처리
- * - JWT 토큰 생성 및 Refresh Token DB 저장/갱신 관리
- * - 암호화된 전화번호 처리 및 임시 비밀번호 생성/이메일 발송 지원
- *
- * 📊 데이터 흐름도
- * 1️⃣ 회원가입 시 전화번호 암호화 → 사용자 정보 DB 저장
- * 2️⃣ 로그인 시 인증 매니저 통해 인증 → 토큰 발급 → 세션 및 쿠키 저장 → Refresh Token DB 저장/갱신
- * 3️⃣ Access Token 재발급 시 Refresh Token 검증 → DB 확인 → 새로운 Access & Refresh Token 발급 및 DB 갱신
- * 4️⃣ 전화번호 암/복호화 처리, 이메일 중복 확인, 사용자 조회 등 보조 기능 수행
- * 5️⃣ 비밀번호 찾기: 임시 비밀번호 생성 → 암호화 저장 → 이메일 발송
- * 6️⃣ 비밀번호 변경 시 기존 비밀번호 검증 후 새 비밀번호 저장
- * 7️⃣ 로그아웃 시 Refresh Token DB 삭제
- */
-
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -67,7 +49,11 @@ public class UserService {
 
         String encryptedPhone = null;
         try {
-            encryptedPhone = AESUtil.encrypt(requestDto.getPhone()); // 전화번호 암호화
+            String normalizedPhone = normalizePhoneNumber(requestDto.getPhone());
+            if (normalizedPhone == null) {
+                throw new IllegalArgumentException("지원하지 않는 전화번호 형식입니다.");
+            }
+            encryptedPhone = AESUtil.encrypt(normalizedPhone); // 정규화된 번호를 암호화
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -80,35 +66,61 @@ public class UserService {
         newUser.setName(requestDto.getName());
         newUser.setEncryptedPhoneNumber(encryptedPhone);
         newUser.setNickname(requestDto.getNickname());
-        // newUser.setProfileImage(requestDto.getProfileImage()); // 임시 경로이므로 여기서 바로 저장하지 않음
 
-        // 1. 사용자 정보 먼저 저장하여 userId 획득
         UserEntity savedUser = userRepository.save(newUser); // DB 저장
 
-        // 2. 프로필 이미지 처리 (S3 임시 경로 -> 실제 userId 경로로 이동)
-        String tempProfileImagePath = requestDto.getProfileImage(); // 프론트에서 넘어온 임시 S3 객체 키
+        String tempProfileImagePath = requestDto.getProfileImage();
         if (tempProfileImagePath != null && !tempProfileImagePath.isEmpty()) {
-            // 임시 경로에서 실제 사용자 ID 경로로 변경
-            // 예: profile_images/temp_uuid/profile.ext -> profile_images/{userId}/profile.ext
             String fileExtension = "";
             int dotIndex = tempProfileImagePath.lastIndexOf('.');
             if (dotIndex > 0 && dotIndex < tempProfileImagePath.length() - 1) {
-                fileExtension = tempProfileImagePath.substring(dotIndex); // 확장자 추출
+                fileExtension = tempProfileImagePath.substring(dotIndex);
             }
             String permanentProfileImagePath = "profile_images/" + savedUser.getUserId() + "/profile" + fileExtension;
 
-            // S3에서 객체 이동 (복사 후 원본 삭제)
             boolean moved = s3Service.moveS3Object(tempProfileImagePath, permanentProfileImagePath);
 
             if (moved) {
-                savedUser.setProfileImage(permanentProfileImagePath); // UserEntity에 영구 경로 저장
-                userRepository.save(savedUser); // 업데이트된 UserEntity 다시 저장
+                savedUser.setProfileImage(permanentProfileImagePath);
+                userRepository.save(savedUser);
             } else {
                 log.error("Failed to move profile image from {} to {}", tempProfileImagePath, permanentProfileImagePath);
-                // 이미지 이동 실패 시 예외 처리 또는 기본 이미지 설정 등 추가 로직 필요
             }
         }
     }
+
+    // 전화번호 정규화 메서드
+    private String normalizePhoneNumber(String phone) {
+        if (phone == null || phone.isBlank()) {
+            log.warn("전화번호가 비어있습니다.");
+            return null;
+        }
+        // 숫자만 추출 (하이픈 등 제거)
+        String cleaned = phone.replaceAll("\\D", "");
+
+        // 유효한 길이인지 먼저 검사 (한국 전화번호 기준 10~11자리)
+        if (cleaned.length() < 10 || cleaned.length() > 12) {
+            log.warn("전화번호 길이가 유효하지 않습니다: {}", phone);
+            return null;
+        }
+
+        // '010'으로 시작하는 11자리 번호인 경우 '+8210'으로 변환
+        if (cleaned.startsWith("010") && cleaned.length() == 11) {
+            return "+82" + cleaned.substring(1);
+        }
+        // '8210'으로 시작하는 12자리 번호인 경우 '+' 추가
+        if (cleaned.startsWith("8210") && cleaned.length() == 12) {
+            return "+" + cleaned;
+        }
+        // 이미 '+82'로 시작하는 13자리 번호인 경우 (프론트에서 넘어온 올바른 형식)
+        if (phone.startsWith("+82") && cleaned.length() == 12) { // cleaned는 8210... 형태
+            return phone;
+        }
+
+        log.warn("지원하지 않는 전화번호 형식입니다: {}", phone);
+        return null; // 지원하지 않는 형식이면 null 반환
+    }
+
 
     // 2️⃣ 로그인: Spring Security AuthenticationManager 통해 인증 처리
     @Transactional
@@ -126,22 +138,17 @@ public class UserService {
     public void processLoginSuccess(Authentication authentication, String email,
                                     HttpSession session, HttpServletResponse response) {
 
-        // 사용자 정보 조회 후 세션에 저장
         UserEntity user = getUserByEmail(email);
         session.setAttribute("user", user);
 
-        // lastLoginAt 업데이트
         user.setLastLoginAt(LocalDateTime.now());
         userRepository.save(user);
 
-        // JWT Access Token, Refresh Token 생성
         String accessToken = jwtProvider.createAccessToken(authentication);
         String refreshToken = jwtProvider.createRefreshToken(authentication);
 
-        // [리팩토링] email 대신 UserEntity 객체를 전달하여 Refresh Token 저장/갱신
         saveOrUpdateRefreshToken(user, refreshToken);
 
-        // 쿠키 설정 (HttpOnly, Secure, Path, 만료시간)
         Cookie accessCookie = new Cookie("jwt", accessToken);
         accessCookie.setHttpOnly(true);
         accessCookie.setSecure(true);
@@ -158,7 +165,7 @@ public class UserService {
     }
 
     // 4️⃣ Access Token 재발급: Refresh Token 검증 → DB 확인 → 새 토큰 발급 및 DB 갱신
-    @Transactional // [리팩토링] 데이터 조회와 수정을 함께 하므로 트랜잭션 처리 추가
+    @Transactional
     public String reissueAccessToken(String refreshToken) {
         if (!jwtProvider.validateToken(refreshToken)) {
             throw new RuntimeException("유효하지 않은 Refresh Token입니다.");
@@ -166,10 +173,8 @@ public class UserService {
 
         Claims claims = jwtProvider.extractToken(refreshToken);
         String email = claims.getSubject();
-        // [리팩토링] email로 UserEntity를 먼저 조회
         UserEntity user = getUserByEmail(email);
 
-        // [리팩토링] UserEntity 객체로 DB에 저장된 토큰을 조회
         RefreshToken storedToken = refreshTokenRepository.findByUser(user)
                 .orElseThrow(() -> new RuntimeException("존재하지 않는 Refresh Token입니다."));
 
@@ -181,7 +186,6 @@ public class UserService {
         String newAccessToken = jwtProvider.createAccessToken(authentication);
         String newRefreshToken = jwtProvider.createRefreshToken(authentication);
 
-        // [리팩토링] 토큰을 삭제하고 새로 만드는 대신, 기존 토큰의 값을 변경하여 효율성 증대 (Dirty Checking)
         storedToken.setRefreshToken(newRefreshToken);
         refreshTokenRepository.save(storedToken);
 
@@ -190,10 +194,8 @@ public class UserService {
 
     // 5️⃣ Refresh Token DB 저장 혹은 갱신
     @Transactional
-    // [리팩토링] email 대신 UserEntity 객체를 받도록 수정하여 타입 안정성 및 명확성 증대
     public void saveOrUpdateRefreshToken(UserEntity user, String refreshToken) {
 
-        // [리팩토링] 변경된 레포지토리 메소드 사용
         Optional<RefreshToken> tokenOpt = refreshTokenRepository.findByUser(user);
 
         if (tokenOpt.isPresent()) {
@@ -202,7 +204,6 @@ public class UserService {
             refreshTokenRepository.save(token); // update
 
         } else {
-            // [리팩토링] UserEntity 객체를 사용하여 새 토큰 생성
             refreshTokenRepository.save(new RefreshToken(user, refreshToken)); // insert
         }
     }
@@ -218,20 +219,47 @@ public class UserService {
         Optional<UserEntity> userOptional = userRepository.findByEmail(email);
 
         if (userOptional.isEmpty()) {
-            return EmailStatus.AVAILABLE; // 사용 가능한 이메일
+            return EmailStatus.AVAILABLE;
         }
 
         UserEntity user = userOptional.get();
         if (user.getStatus() == UserStatus.ACTIVE) {
-            return EmailStatus.ACTIVE_DUPLICATE; // 활성 상태의 중복 이메일
+            return EmailStatus.ACTIVE_DUPLICATE;
         } else {
-            return EmailStatus.INACTIVE_DUPLICATE; // 비활성 상태의 중복 이메일
+            return EmailStatus.INACTIVE_DUPLICATE;
         }
     }
 
-    // 7️⃣-1️⃣ 전화번호 중복 체크 (존재 여부 반환)
-    public boolean isPhoneDuplicated(String phone) throws Exception {
-        return findUserByPhone(phone).isPresent();
+    // 7️⃣-1️⃣ 전화번호 상태 확인 (가입 가능, 활성 중복, 비활성 중복)
+    public PhoneStatus checkPhoneStatus(String phone) throws Exception {
+        Optional<UserEntity> userOptional = findUserByPhone(phone);
+
+        if (userOptional.isEmpty()) {
+            return PhoneStatus.AVAILABLE;
+        }
+
+        UserEntity user = userOptional.get();
+        if (user.getStatus() == UserStatus.ACTIVE) {
+            return PhoneStatus.ACTIVE_DUPLICATE;
+        } else {
+            return PhoneStatus.INACTIVE_DUPLICATE;
+        }
+    }
+
+    // 7️⃣-2️⃣ 이메일 찾기 시 전화번호 상태 확인
+    public EmailFindStatus checkPhoneForEmailFind(String phone) throws Exception {
+        Optional<UserEntity> userOptional = findUserByPhone(phone);
+
+        if (userOptional.isEmpty()) {
+            return EmailFindStatus.NOT_FOUND;
+        }
+
+        UserEntity user = userOptional.get();
+        if (user.getStatus() == UserStatus.ACTIVE) {
+            return EmailFindStatus.ACTIVE_USER_FOUND;
+        } else {
+            return EmailFindStatus.INACTIVE_USER_FOUND;
+        }
     }
 
     // 8️⃣ 전화번호 복호화
@@ -250,7 +278,12 @@ public class UserService {
 
     // 🔟 평문 전화번호로 암호화 후 회원 조회
     public Optional<UserEntity> findUserByPhone(String phone) throws Exception {
-        String encryptedPhone = AESUtil.encrypt(phone);
+        // [수정] 전화번호를 표준 형식으로 정규화
+        String normalizedPhone = normalizePhoneNumber(phone);
+        if (normalizedPhone == null) {
+            return Optional.empty(); // 지원하지 않는 형식이면 빈 결과를 반환
+        }
+        String encryptedPhone = AESUtil.encrypt(normalizedPhone);
         return userRepository.findByEncryptedPhoneNumber(encryptedPhone);
     }
 
@@ -259,6 +292,12 @@ public class UserService {
         UserEntity user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("가입된 이메일이 없습니다."));
 
+        // [추가] 사용자의 상태를 확인하는 로직
+        if (user.getStatus() == UserStatus.INACTIVE) {
+            throw new IllegalArgumentException("탈퇴한 회원의 이메일입니다.");
+        }
+
+        // ACTIVE 상태의 사용자만 아래 로직을 실행
         String tempPassword = generateTempPassword();
         user.setPassword(passwordEncoder.encode(tempPassword));
         userRepository.save(user);
@@ -310,12 +349,10 @@ public class UserService {
         UserEntity user = getUserByEmail(email);
         log.debug("UserService: User found for email: {}", email);
 
-        // 직접 쿼리 메서드 호출
         refreshTokenRepository.deleteByUserId(user.getUserId());
-        refreshTokenRepository.flush(); // 즉시 DB에 반영
+        refreshTokenRepository.flush();
         log.info("UserService: Attempted to delete refresh token for user {} using custom query.", email);
 
-        // 삭제 후 다시 조회하여 확인
         if (refreshTokenRepository.findByUser(user).isEmpty()) {
             log.info("UserService: Refresh token successfully verified as deleted from DB for user: {}", email);
         } else {
@@ -330,7 +367,6 @@ public class UserService {
         UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("사용자 정보를 찾을 수 없습니다."));
 
-        // 기존 프로필 이미지가 있고, 새로운 이미지가 다르면 S3에서 기존 이미지 삭제
         if (user.getProfileImage() != null && !user.getProfileImage().isEmpty() &&
             !user.getProfileImage().equals(newProfileImageKey)) {
             s3Service.deleteFile(user.getProfileImage());
@@ -339,20 +375,17 @@ public class UserService {
         user.setProfileImage(newProfileImageKey);
         UserEntity updatedUser = userRepository.save(user);
 
-        // 세션 갱신: 새로운 UserEntity 인스턴스를 생성하여 세션에 저장
-        // 세션이 객체의 변경을 확실히 감지하도록 도움
         UserEntity sessionUser = new UserEntity();
         sessionUser.setUserId(updatedUser.getUserId());
         sessionUser.setEmail(updatedUser.getEmail());
         sessionUser.setNickname(updatedUser.getNickname());
         sessionUser.setName(updatedUser.getName());
-        sessionUser.setProfileImage(updatedUser.getProfileImage()); // 변경된 프로필 이미지 반영
+        sessionUser.setProfileImage(updatedUser.getProfileImage());
         sessionUser.setLastLoginAt(updatedUser.getLastLoginAt());
         sessionUser.setCreatedAt(updatedUser.getCreatedAt());
         sessionUser.setStatus(updatedUser.getStatus());
         sessionUser.setEncryptedPhoneNumber(updatedUser.getEncryptedPhoneNumber());
         sessionUser.setThemeId(updatedUser.getThemeId());
-        // 비밀번호, RefreshToken 등 민감하거나 불필요한 정보는 세션에 저장하지 않음
 
         session.setAttribute("user", sessionUser);
         log.info("Session user updated: {}", session.getAttribute("user"));
@@ -360,25 +393,23 @@ public class UserService {
 
     // 1️⃣7️⃣ 프로필 이미지 삭제
     @Transactional
-    public void deleteProfileImage(Integer userId) { // userId는 Integer 유지
+    public void deleteProfileImage(Integer userId) {
         UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("사용자 정보를 찾을 수 없습니다."));
 
-        // 프로필 이미지가 존재하면 S3에서 삭제
         if (user.getProfileImage() != null && !user.getProfileImage().isEmpty()) {
             s3Service.deleteFile(user.getProfileImage());
         }
 
-        user.setProfileImage(null); // DB에서 프로필 이미지 경로 삭제
+        user.setProfileImage(null);
         UserEntity updatedUser = userRepository.save(user);
 
-        // 세션 갱신: 새로운 UserEntity 인스턴스를 생성하여 세션에 저장
         UserEntity sessionUser = new UserEntity();
         sessionUser.setUserId(updatedUser.getUserId());
         sessionUser.setEmail(updatedUser.getEmail());
         sessionUser.setNickname(updatedUser.getNickname());
         sessionUser.setName(updatedUser.getName());
-        sessionUser.setProfileImage(updatedUser.getProfileImage()); // null로 변경된 프로필 이미지 반영
+        sessionUser.setProfileImage(updatedUser.getProfileImage());
         sessionUser.setLastLoginAt(updatedUser.getLastLoginAt());
         sessionUser.setCreatedAt(updatedUser.getCreatedAt());
         sessionUser.setStatus(updatedUser.getStatus());
@@ -395,13 +426,11 @@ public class UserService {
         UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("사용자 정보를 찾을 수 없습니다."));
 
-        // 사용자 상태를 INACTIVE로 변경
         user.setStatus(UserStatus.INACTIVE);
         userRepository.save(user);
 
-        // 탈퇴 시 Refresh Token도 DB에서 삭제
         refreshTokenRepository.deleteByUserId(userId);
-        refreshTokenRepository.flush(); // 즉시 DB에 반영
+        refreshTokenRepository.flush();
 
         log.info("User {} (ID: {}) has been set to INACTIVE status and refresh token deleted.", user.getEmail(), userId);
     }

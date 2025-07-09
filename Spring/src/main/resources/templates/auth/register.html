@@ -11,13 +11,12 @@
     <h2>회원가입</h2>
     <p class="description">Haeil-해일의 회원이 되어 감정을 기록해보세요.</p>
 
-    <form action="/register/newUser" method="POST" id="registerForm" onsubmit="return validateForm()">
+    <form id="register-form" action="/register/newUser" method="post" onsubmit="return validateForm(event);">
         <!--    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">-->
         <!-- 이메일 -->
         <label for="email">이메일</label>
-        <input type="email" id="email" name="email" placeholder="이메일 주소" required onkeyup="validateEmail()"
-               onblur="validateEmail()">
-        <span id="emailError" class="error"></span>
+        <input type="email" id="email" name="email" placeholder="이메일" required>
+        <div id="emailError" class="error-message"></div>
 
         <!-- 비밀번호 -->
         <label for="password">비밀번호</label>
@@ -38,13 +37,13 @@
         <!-- 이름 -->
         <label for="name">이름</label>
         <input type="text" id="name" name="name" placeholder="이름" required>
-        <!--               onkeyup="validateName()" onblur="validateName()"-->
         <span id="nameError" class="error"></span>
 
         <!-- 핸드폰 번호 -->
         <label for="phone">핸드폰 번호</label>
-        <input type="tel" id="phone" name="phone" placeholder="'-' 없이 숫자만 입력" required>
-        <span id="phoneError" class="error"></span>
+        <input type="tel" id="phone" name="phone" placeholder="'-' 없이 숫자만 입력" required
+               onkeyup="validatePhoneNumber()" onblur="validatePhoneNumber()">
+        <div id="phoneError" class="error-message"></div> <!-- Use div for consistency with emailError -->
 
         <!-- 닉네임 -->
         <label for="nickname">닉네임</label>

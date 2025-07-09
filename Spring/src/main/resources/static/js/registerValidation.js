@@ -74,57 +74,56 @@
         }
     }
 
-    // 5. 프로필 이미지 URL 유효성 검사 (필수 아님)
-    function validateProfileImage() {
-        // type="url" 속성에 의해 기본적인 URL 형식 검사 자동 수행
-        if (profileImageInput.validity.typeMismatch && profileImageInput.value.length > 0) {
-            profileImageError.textContent = '유효한 이미지 URL을 입력해주세요.';
-            return false;
-        } else {
-            profileImageError.textContent = '';
-            return true;
-        }
-    }
-
     // 핸드폰 번호 포맷팅 함수
     function formatPhoneNumber(phone) {
-      // 하이픈(-), 공백 등 제거
+      // 1. 숫자만 추출
       const cleaned = phone.replace(/\D/g, '');
-      // 01012345678 → +821012345678
-      if (cleaned.startsWith('010')) {
-        return '+82' + cleaned.substring(1);
+
+      // 2. 01012345678 → +821012345678
+      if (cleaned.startsWith('010') && cleaned.length === 11) {
+          return '+82' + cleaned.substring(1);
       }
-      // 이미 +82로 시작하면 그대로 반환
-      if (cleaned.startsWith('+82')) {
-        return cleaned;
+
+      // 3. 821012345678 → +82101234567
+      if (cleaned.startsWith('82') && (cleaned.length === 11 || cleaned.length === 12)) {
+          return '+' + cleaned;
       }
-      // 그 외의 경우는 그대로 반환 (추가적인 변환 필요시 확장)
-      return cleaned;
+
+      // 4. 그 외: 숫자에만 + 붙여서 반환
+      return '+' + cleaned;
     }
 
 
     // 폼 제출 시 전체 유효성 검사
-    function validateForm() {
+    function validateForm(event) { // event 파라미터 추가
+        console.log("validateForm called.");
         // 모든 유효성 검사 함수를 호출하고 결과를 논리곱(AND)으로 연결
         const isEmailValid = validateEmail();
         const isNicknameValid = validateNickname();
         const isPasswordValid = validatePassword();
         const isPasswordMatch = checkPasswordMatch();
-        const isProfileImageValid = validateProfileImage(); // 선택 사항이지만 형식이 맞는지 확인
-        // 전화번호 포맷팅
-        phoneInput.value = formatPhoneNumber(phoneInput.value);
+        const isPhoneValid = validatePhone(); // [추가] 전화번호 유효성 검사
+
+        console.log("Validation results:", { isEmailValid, isNicknameValid, isPasswordValid, isPasswordMatch, isPhoneValid });
+
+        // 전화번호 포맷팅 (유효성 검사 후)
+        if (isPhoneValid) { // 유효할 때만 포맷팅
+            phoneInput.value = formatPhoneNumber(phoneInput.value);
+        }
 
         // 모든 검사를 통과해야 폼 제출 허용
-        if (isEmailValid && isNicknameValid && isPasswordValid && isPasswordMatch && isProfileImageValid) {
+        if (isEmailValid && isNicknameValid && isPasswordValid && isPasswordMatch && isPhoneValid) {
             return true;
         } else {
+             console.log("Some validations failed. Preventing default and returning false.");
+             event.preventDefault(); // [추가] 유효성 검사 실패 시 폼 제출 방지
              // 클라이언트 측 유효성 검사 오류 메시지를 팝업으로 표시
             const clientErrors = [];
             if (!isEmailValid) clientErrors.push(emailError.textContent);
             if (!isNicknameValid) clientErrors.push(nicknameError.textContent);
             if (!isPasswordValid) clientErrors.push(passwordError.textContent);
             if (!isPasswordMatch) clientErrors.push(passwordConfirmError.textContent);
-            if (!isProfileImageValid && profileImageInput.value.length > 0) clientErrors.push(profileImageError.textContent); // 입력값이 있을 때만 이미지 URL 오류 표시
+            if (!isPhoneValid) clientErrors.push(phoneError.textContent); // [추가] 전화번호 오류 메시지
 
             // 중복 메시지 제거 및 빈 메시지 필터링
             const uniqueClientErrors = [...new Set(clientErrors.filter(msg => msg && msg.trim() !== ''))];
@@ -132,6 +131,31 @@
                 showModal(uniqueClientErrors); // 오류 팝업 표시
             }
             return false;
+        }
+    }
+
+    // [신규] 전화번호 유효성 검사 함수
+    function validatePhone() {
+        const phone = phoneInput.value.trim();
+        const cleaned = phone.replace(/\D/g, ''); // 숫자만 남김
+
+        if (phone.length === 0) {
+            phoneError.textContent = '전화번호를 입력해주세요.';
+            return false;
+        }
+        // 숫자 외의 문자가 있거나, '+'가 맨 앞에 없는데 '+'가 있는 경우
+        // 즉, 순수하게 숫자만 있거나, 맨 앞에 '+'가 있고 나머지는 숫자인 경우만 허용
+        else if (!/^[+]?[0-9]+$/.test(phone)) { // '+'는 선택적으로 맨 앞에만, 나머지는 숫자만
+            phoneError.textContent = '전화번호는 숫자만 입력 가능합니다.';
+            return false;
+        }
+        // 포맷팅 후의 길이를 고려하여 10~11자리 숫자인지 확인
+        else if (cleaned.length < 10 || cleaned.length > 12) {
+            phoneError.textContent = '유효한 전화번호 형식이 아닙니다. (10~11자리 숫자)';
+            return false;
+        } else {
+            phoneError.textContent = '';
+            return true;
         }
     }
 
@@ -216,20 +240,20 @@
 
         try {
             // 3. 백엔드에 Presigned URL 요청
-            const encodedFilename = encodeURIComponent(filename); // 파일명 인코딩
-            const encodedContentType = encodeURIComponent(contentType); // Content-Type 인코딩
+            const encodedFilename = encodeURIComponent(filename);
+            const encodedContentType = encodeURIComponent(contentType);
 
             const requestUrl = `/api/s3/profile-presigned-url?identifier=${tempIdentifier}&filename=${encodedFilename}&contentType=${encodedContentType}`;
-            console.log('Presigned URL 요청 URL:', requestUrl); // 이 줄을 추가
+            console.log('Presigned URL 요청 URL:', requestUrl);
 
             const presignedUrlResponse = await fetch(requestUrl);
             if (!presignedUrlResponse.ok) {
                 throw new Error('Presigned URL 요청 실패');
             }
-            const presignedUrl = await presignedUrlResponse.text(); // URL은 텍스트로 반환됨
+            const presignedUrl = await presignedUrlResponse.text();
 
             // 4. S3에 파일 직접 업로드
-            console.log('S3 업로드 Presigned URL:', presignedUrl); // 이 줄을 추가
+            console.log('S3 업로드 Presigned URL:', presignedUrl);
             const s3UploadResponse = await fetch(presignedUrl, {
                 method: 'PUT',
                 headers: {
