@@ -6,6 +6,7 @@ import "./css/MyRecordStatus.css";
 import {useNavigate} from "react-router-dom";
 import {useAuth} from "@features/auth/AuthContext.jsx";
 import {showToast} from "@shared/UI/Toast.jsx";
+import {format} from "date-fns";
 
 const MyRecordStatus = () => {
     const [stats, setStats] = useState({
@@ -19,6 +20,8 @@ const MyRecordStatus = () => {
     const navigate = useNavigate();
 
     const {user, loading: authLoading} = useAuth();
+
+    const today = format(new Date(), "yyyy-MM-dd");
 
     const handleProtectedNavigation = (path) => {
         if (!user) {
@@ -49,7 +52,7 @@ const MyRecordStatus = () => {
                     value={stats.totalDiaryCount}
                     color="#e3f2fd"
                     loading={loading}
-                    onClick={() => handleProtectedNavigation('/')}
+                    onClick={() => handleProtectedNavigation(`/diary/date/${today}`)}
                 />
                 <StatCard
                     icon={<FaPenAlt />}

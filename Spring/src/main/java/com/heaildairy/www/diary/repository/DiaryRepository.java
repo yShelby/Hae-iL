@@ -1,5 +1,6 @@
 package com.heaildairy.www.diary.repository;
 
+import com.heaildairy.www.auth.entity.UserEntity;
 import com.heaildairy.www.diary.entity.DiaryEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -43,4 +44,7 @@ public interface DiaryRepository extends JpaRepository<DiaryEntity, Long> {
 
     // ✅ 주간 타임라인: 날짜 범위로 다이어리 전체 조회
     List<DiaryEntity> findAllByUserUserIdAndDiaryDateBetween(Integer userId, LocalDate start, LocalDate end);
+
+    // 추가 - dashboardCount를 위한 사용자의 전체 일기 개수를 세는 메소드
+    long countByUser(UserEntity user);
 }

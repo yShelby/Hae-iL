@@ -17,6 +17,10 @@ import DiaryWritePage from "@pages/DiaryWritePage.jsx";
 import DiaryDatePage from "@pages/DiaryDatePage.jsx";
 import DiaryIdPage from "@pages/DiaryIdPage.jsx"; // 💡 메인 레이아웃을 불러옴
 import './App.css';
+import DashboardLayout from "@/layouts/DashboardLayout.jsx";
+import DashboardPage from "@pages/DashboardPage.jsx";
+import JournalPage from "@pages/JournalPage.jsx";
+import GalleryPage from "@pages/GalleryPage.jsx";
 
 function App() {
     return (
@@ -24,16 +28,21 @@ function App() {
         <Routes>
             <Route path="/" element={<MainLayout />}>
                 {/* 루트 대시보드 전용 레이아웃 예시*/}
-                {/*<Route element={<DashboardLayout />}>*/}
-                {/*    <Route index element={<DashboardPage />} />*/}
-                {/*    <Route path="contents" element={<ContentsPage />} />*/}
-                {/*</Route>*/}
+                <Route path={""} element={<DashboardLayout />}>
+                    <Route index element={<DashboardPage />} />
+                </Route>
 
                 {/* 다이어리 전용 레이아웃 */}
                 <Route path="diary" element={<DiaryLayout />}>
                     <Route index element={<DiaryWritePage />} />
                     <Route path="date/:date" element={<DiaryDatePage />} />
                     <Route path=":diaryId" element={<DiaryIdPage />} />
+                </Route>
+
+                {/* 대시보드 카운트 클릭시 journal과 gallery로 가도록 경로 추가 */}
+                <Route path="journal" element={<JournalPage />} />
+                <Route path="gallery" element={<DiaryLayout />}>
+                    <Route index element={<GalleryPage />} />
                 </Route>
             </Route>
         </Routes>

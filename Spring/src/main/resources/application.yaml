@@ -64,3 +64,8 @@ jwt:
 
 cors:
   allowed-origins: http://localhost:5173, http://localhost:3000
+
+weather:
+  api:
+    key: 481b75894233938d6adc3c1b7b98eb22
+    url: "https://api.openweathermap.org/data/2.5/weather"

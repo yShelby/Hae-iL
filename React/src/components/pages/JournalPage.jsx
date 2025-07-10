@@ -62,7 +62,7 @@ const JournalPage = () => {
     };
 
     // ✅ 에디터에서 저장/수정 성공 후 처리
-    const handleSuccess = (newJournalId) => {
+    const handleSuccess = (journalData) => {
         setRefreshKey(prevKey => prevKey + 1); // 목록 갱신 트리거
 
         // Editor로부터 저널 데이터 전체를 받아서 상태에 저장하고,

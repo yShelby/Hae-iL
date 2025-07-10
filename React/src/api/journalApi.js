@@ -33,7 +33,7 @@ export const getJournals = async (category) => {
 export const createJournal = async (journalData) => {
     try {
         const response = await apiClient.post('/api/journal', journalData);
-        return response;
+        return response.data;
     } catch (error) {
         // 에러 메시지를 안전하게 추출 후 콘솔에 출력하고 예외 던짐
         const errorData = error.response?.data || error.message || "알 수 없는 오류";
@@ -51,7 +51,7 @@ export const getJournalById = async (journalId) => {
 // 특정 ID 저널을 수정하는 PUT 요청 함수
 export const updateJournal = async (journalId, journalData) => {
     const response = await apiClient.put(`/api/journal/${journalId}`, journalData);
-    return response;
+    return response.data;
 };
 
 // 특정 ID 저널을 삭제하는 DELETE 요청 함수
