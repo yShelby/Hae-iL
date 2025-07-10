@@ -4,6 +4,10 @@ spring:
     pathmatch:
       matching-strategy: ant_path_matcher
 
+  profiles:
+    # ✅ 실행 환경 프로파일 설정 (VM 옵션 대체용)
+    active: dev
+
   application:
     name: haeil-server
   mail:
