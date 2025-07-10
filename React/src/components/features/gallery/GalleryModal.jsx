@@ -6,58 +6,93 @@
 // - ❌ 비로그인 시 모달 닫고 경고 토스트 노출
 // - 📆 일기 더블 클릭 시 해당 일기로 이동
 
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import { useNavigate } from 'react-router-dom';
 import { DndContext, closestCenter } from '@dnd-kit/core';
 import { SortableContext, arrayMove, rectSortingStrategy } from '@dnd-kit/sortable';
 import SortableImage from './SortableImage';
 import { useGallery } from './GalleryContext';
 import './css/Gallery.css';
-import {useAuth} from "@features/auth/AuthContext.jsx";
 import {showToast} from "@shared/UI/Toast.jsx";
 import {fetchGalleryImagesAPI} from "@api/galleryApi.js";
+import {useCheckLogin} from "@/hooks/useCheckLogin.js";
+import { useQuery } from '@tanstack/react-query';
 
-// 🪣 환경 변수로부터 S3 버킷 정보 로드
+// 환경 변수로부터 S3 버킷 정보 로드
 const BUCKET_NAME = import.meta.env.VITE_AWS_BUCKET_NAME;
 const REGION = import.meta.env.VITE_AWS_REGION;
 
 export const GalleryModal = () => {
-    const [images, setImages] = useState([]); // 🖼️ 현재 표시되는 이미지들
-    const [originalImages, setOriginalImages] = useState([]); // 🧾 초기 이미지 백업
     const navigate = useNavigate(); // 📍 일기 페이지 이동용
     const { isGalleryOpen, closeGallery } = useGallery(); // 📂 갤러리 모달 상태 제어
-    const { user } = useAuth(); // 👤 현재 로그인 유저
-
+    const checkLogin = useCheckLogin(); // 훅 사용
+    // 기존 코드
+    // const [images, setImages] = useState([]); // 🖼️ 현재 표시되는 이미지들
+    // const [originalImages, setOriginalImages] = useState([]); // 🧾 초기 이미지 백업
+    // const toastShownRef = useRef(false); // 기존 토스트 중복 방지
     // 🎬 갤러리 모달 열릴 때 실행되는 효과
-    useEffect(() => {
-        if (isGalleryOpen) {
-            // 🔐 1️⃣ 로그인 체크 (비로그인 시 API 호출 금지)
-            if (!user) {
-                showToast.error('갤러리를 보려면 로그인이 필요합니다.');
-                closeGallery();
-                return;
-            }
+    // useEffect(() => {
+    //     if (isGalleryOpen) {
+    //         if (!checkLogin()) {
+    //             // 로그인 안 되어있으면 모달 닫기
+    //             closeGallery();
+    //             return;
+    //         }
+    //         toastShownRef.current = false; // 로그인 시 초기화
+    //
+    //         // ✅ 2️⃣ 로그인 상태면 이미지 로딩 시작
+    //         fetchGalleryImagesAPI()
+    //             .then(response => {
+    //                 // console.log("✅ 갤러리 API 응답:", response.data);
+    //                 // 🧾 S3 URL 포맷 적용
+    //                 const dataWithUrls = response.data.map(img => ({
+    //                     ...img,
+    //                     url: img.fileKey
+    //                         ? `https://${BUCKET_NAME}.s3.${REGION}.amazonaws.com/${img.fileKey}`
+    //                         : img.url || '',
+    //                 }));
+    //                 setImages(dataWithUrls); // ✅ 화면에 보여줄 이미지
+    //                 setOriginalImages(dataWithUrls); // 💾 "원래대로" 버튼용
+    //             })
+    //             .catch(error => {
+    //                 console.error('갤러리 로딩 실패', error);
+    //                 showToast.error('갤러리를 불러오는 중 오류가 발생했습니다.');
+    //             });
+    //     }
+    // }, [isGalleryOpen, checkLogin, closeGallery]); // 🚨 반드시 로그인 상태 변경 감지
 
-            // ✅ 2️⃣ 로그인 상태면 이미지 로딩 시작
-            fetchGalleryImagesAPI()
-                .then(response => {
-                    // console.log("✅ 갤러리 API 응답:", response.data);
-                    // 🧾 S3 URL 포맷 적용
-                    const dataWithUrls = response.data.map(img => ({
-                        ...img,
-                        url: img.fileKey
-                            ? `https://${BUCKET_NAME}.s3.${REGION}.amazonaws.com/${img.fileKey}`
-                            : img.url || '',
-                    }));
-                    setImages(dataWithUrls); // ✅ 화면에 보여줄 이미지
-                    setOriginalImages(dataWithUrls); // 💾 "원래대로" 버튼용
-                })
-                .catch(error => {
-                    console.error('갤러리 로딩 실패', error);
-                    showToast.error('갤러리를 불러오는 중 오류가 발생했습니다.');
-                });
+
+    // 변경이유 : 갤러리 모달이 열릴때마다 이미지를 새로 불러와 서버에서 계속 쿼리가 실행되고 있어서 변경
+    // useQuery 훅을 사용하여 갤러리 이미지를 가져오고 상태 관리
+    const {
+        data: images = [], // 🖼️ 현재 표시되는 이미지들
+        isLoading,
+        error,
+        refetch,
+    } = useQuery({
+        queryKey: ['galleryImages'],
+        queryFn: fetchGalleryImagesAPI,
+        enabled: isGalleryOpen && checkLogin(), // 로그인 & 모달이 열릴 때만 쿼리 실행
+        select: (response) =>
+            response.data.map(img => ({
+                ...img,
+                url: img.fileKey
+                    ? `https://${BUCKET_NAME}.s3.${REGION}.amazonaws.com/${img.fileKey}`
+                    : img.url || '',
+            })),
+        onError: () => {
+            showToast.error('갤러리를 불러오는 중 오류가 발생했습니다.');
+            closeGallery();
+        },
+    })
+    const [sortedImages, setSortedImages] = React.useState([]);
+    // 모달 열릴 때마다 정렬 상태 초기화
+    React.useEffect(() => {
+        if (images?.length) {
+            setSortedImages(images);
         }
-    }, [isGalleryOpen, user, closeGallery]); // 🚨 반드시 로그인 상태 변경 감지
+    }, [images]);
+
 
     // 🧩 이미지 드래그 후 순서 변경 처리
     const handleDragEnd = (event) => {
@@ -76,6 +111,14 @@ export const GalleryModal = () => {
         navigate(`/diary/${diaryId}`);
         closeGallery(); // 🧼 모달 닫기
     };
+
+    // 로그인 안 되어있을 경우 닫기
+    React.useEffect(() => {
+        if (isGalleryOpen && !checkLogin()) {
+            showToast.error("로그인이 필요합니다.");
+            closeGallery();
+        }
+    }, [isGalleryOpen, checkLogin]);
 
     // 🚫 모달이 닫힌 상태면 렌더링하지 않음
     if (!isGalleryOpen) return null;
@@ -108,7 +151,7 @@ export const GalleryModal = () => {
                                 items={images.map(img => img.fileId)}
                                 strategy={rectSortingStrategy}
                             >
-                                {images.map(image => (
+                                {sortedImages.map(image => (
                                     <SortableImage
                                         key={image.fileId}
                                         id={image.fileId}

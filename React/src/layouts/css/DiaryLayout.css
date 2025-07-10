@@ -1,0 +1,54 @@
+/* DiaryLayout.css */
+
+.three-column-layout {
+    display: flex;
+    width: 100%;
+    height: 100%;
+}
+
+.left-sidebar {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 250px;
+    padding: 1rem;
+    border-right: 1px solid #ddd;
+    background: #f9f9f9;
+}
+
+.emotion-analysis {
+    margin-bottom: 1rem;
+    min-width: 300px;
+}
+
+.sidebar-gallery {
+    margin-top: auto;
+    padding-top: 1rem;
+    border-top: 1px solid #e0e0e0;
+}
+
+.timeline-header {
+    padding: 1.2rem 2rem;
+    border-bottom: 1px solid #e0e0e0;
+    background-color: #fafafa;
+}
+
+.center-editor {
+    flex: 1;
+    padding: 1rem;
+    overflow-y: auto;
+    min-width: 500px;
+}
+
+.right-sidebar {
+    min-width: 300px;
+    width: 300px;
+    padding: 1rem;
+    border-left: 1px solid #ddd;
+    background: #fafafa;
+}
+
+.timeline-card.active {
+    border: 2px solid #007bff;
+    background-color: #f0f8ff;
+}

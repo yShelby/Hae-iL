@@ -10,17 +10,34 @@
 //   3️⃣ MainLayout 내부의 <Routes>가 다시 세부 경로 처리 (다이어리, 캘린더, 갤러리 등등)
 
 import React from 'react';
-import { Routes, Route } from 'react-router-dom';
-import MainLayout from './layouts/MainLayout.jsx'; // 💡 메인 레이아웃을 불러옴
+import {Routes, Route} from 'react-router-dom';
+import MainLayout from './layouts/MainLayout.jsx';
+import DiaryLayout from "@/layouts/DiaryLayout.jsx";
+import DiaryWritePage from "@pages/DiaryWritePage.jsx";
+import DiaryDatePage from "@pages/DiaryDatePage.jsx";
+import DiaryIdPage from "@pages/DiaryIdPage.jsx"; // 💡 메인 레이아웃을 불러옴
+import './App.css';
 
 function App() {
     return (
         // 🧭 최상위 라우터: 라우팅을 관리하는 라우트 컨테이너
         <Routes>
-            {/* 🏠 모든 경로("/*")는 MainLayout 내부에서 처리되도록 설정 */}
-            {/* 🔁 MainLayout 안에서 다시 세부 경로를 분기 처리함 */}
-            <Route path="/*" element={<MainLayout />} />
+            <Route path="/" element={<MainLayout />}>
+                {/* 루트 대시보드 전용 레이아웃 예시*/}
+                {/*<Route element={<DashboardLayout />}>*/}
+                {/*    <Route index element={<DashboardPage />} />*/}
+                {/*    <Route path="contents" element={<ContentsPage />} />*/}
+                {/*</Route>*/}
+
+                {/* 다이어리 전용 레이아웃 */}
+                <Route path="diary" element={<DiaryLayout />}>
+                    <Route index element={<DiaryWritePage />} />
+                    <Route path="date/:date" element={<DiaryDatePage />} />
+                    <Route path=":diaryId" element={<DiaryIdPage />} />
+                </Route>
+            </Route>
         </Routes>
+
     );
 }
 
