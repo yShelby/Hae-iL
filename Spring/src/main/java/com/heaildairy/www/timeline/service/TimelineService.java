@@ -1,14 +1,46 @@
 package com.heaildairy.www.timeline.service;
 
-
-import com.heaildairy.www.timeline.dto.TimelineDTO;
-import jakarta.transaction.Transactional;
+import com.heaildairy.www.diary.repository.DiaryRepository;
+import com.heaildairy.www.health.dto.ExerciseLogDto;
+import com.heaildairy.www.health.dto.MealLogDto;
+import com.heaildairy.www.health.dto.SleepLogDto;
+import com.heaildairy.www.health.repository.ExerciseLogRepository;
+import com.heaildairy.www.health.repository.MealLogRepository;
+import com.heaildairy.www.health.repository.SleepLogRepository;
+import com.heaildairy.www.timeline.dto.TimelineDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class TimelineService {
-    //이후에 diary, emotion repository 등을 호출하면 됨 (재사용)
+
+    private final DiaryRepository diaryRepository;
+    private final ExerciseLogRepository exerciseLogRepository;
+    private final MealLogRepository mealLogRepository;
+    private final SleepLogRepository sleepLogRepository;
+
+    // ✅ 주간 타임라인 조회 추가
+    public List<TimelineDto> getTimelineByDateRange(Integer userId, LocalDate start, LocalDate end) {
+        List<TimelineDto> timeline = new ArrayList<>();
+
+        // ✅ 일기
+        diaryRepository.findAllByUserUserIdAndDiaryDateBetween(userId, start, end)
+                .forEach(diary -> timeline.add(TimelineDto.fromDiary(diary)));
+
+        var exerciseList = exerciseLogRepository.findAllByUserUserIdAndExerciseDateBetween(userId, start, end);
+        exerciseList.forEach(exercise -> timeline.add(TimelineDto.fromExerciseLog(exercise)));
+
+        var mealList = mealLogRepository.findAllByUserUserIdAndMealDateBetween(userId, start, end);
+        mealList.forEach(meal -> timeline.add(TimelineDto.fromMealLog(meal)));
+
+        var sleepList = sleepLogRepository.findAllByUserUserIdAndSleepDateBetween(userId, start, end);
+        sleepList.forEach(sleep -> timeline.add(TimelineDto.fromSleepLog(sleep)));
+
+        return timeline;
+    }
 }

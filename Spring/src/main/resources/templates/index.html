@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>:: 해일 :: 해석하는 감정 일기</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/css/index.css}">
+    <link rel="stylesheet" th:href="@{/css/index-Bj2Sh7sR.css}">
+</head>
+<body>
+<div class="container-fluid">
+    <aside class="sidebar">
+        <h1 class="logo">Haeil - 해일</h1>
+
+        <!-- 로그인 상태가 아닐 때 -->
+        <div th:unless="${session.user != null}">
+            <form id="loginForm" class="login-form">
+                <input type="email" id="email" name="email" placeholder="이메일" required>
+                <input type="password" id="password" name="password" placeholder="비밀번호" required>
+                <div id="loginError" class="error-message"></div>
+                <button type="submit">로그인</button>
+            </form>
+            <div class="sidebar-links">
+                <a th:href="@{/find-email}">이메일 찾기</a>
+                <a th:href="@{/find-password}">비밀번호 찾기</a>
+            </div>
+            <button class="register-btn" onclick="location.href='/register'">회원가입</button>
+        </div>
+
+        <!-- 로그인 상태일 때 -->
+        <div th:if="${session.user != null}" class="user-info">
+            <a th:href="@{/my-page}" style="text-decoration: none; color: inherit;">
+                <!-- 프로필 이미지 표시 -->
+                <img th:if="${session.user.profileImage != null and session.user.profileImage != ''}"
+                     th:src="@{'https://haeil-gallery-images-garamink.s3.ap-northeast-2.amazonaws.com/' + ${session.user.profileImage}}"
+                     alt="프로필 이미지"
+                     class="profile-image">
+                <!-- 프로필 이미지가 없을 경우 기본 이미지 또는 아이콘 표시 (선택 사항) -->
+                <img th:unless="${session.user.profileImage != null and session.user.profileImage != ''}"
+                     th:src="@{/img/user_sample2.png}"
+                     alt="기본 프로필 이미지"
+                     class="default-image profile-image">
+
+                <p>안녕하세요, <strong th:text="${session.user.nickname}">사용자</strong>님!</p>
+            </a>
+            <button onclick="location.href='/my-page'">마이 페이지</button>
+            <button class="logout-btn" onclick="logout()">로그아웃</button>
+        </div>
+    </aside>
+
+    <!-- Main Content (우측) -->
+    <main class="main-content">
+        <!-- React가 마운트될 영역 -->
+        <div id="react-root"></div>
+    </main>
+</div>
+
+<!--
+    이전 로그아웃 방식(POST 요청으로 Spring Security 로그아웃 트리거)에서 사용되던 폼.
+    현재는 JavaScript fetch API를 사용하여 /user/logout 및 /logout 엔드포인트로 직접 요청을 보냄.
+    따라서 이 폼은 더 이상 필요 없음.
+    향후 참고를 위해 주석 처리하여 유지함.
+-->
+<!-- Hidden form for POST logout -->
+<!-- <form id="logoutPostForm" action="/logout" method="POST" style="display: none;"></form> -->
+
+<script th:inline="javascript">
+    // ==================================================================
+    // Pass user info to React app
+    // ==================================================================
+    /*<![CDATA[*/
+        window.__USER__ = {
+            userId: /*[[${session.user?.userId}]]*/ null,
+            email: /*[[${session.user?.email}]]*/ null,
+            nickname: /*[[${session.user?.nickname}]]*/ null,
+            name: /*[[${session.user?.name}]]*/ null,
+            profileImage: /*[[${session.user?.profileImage}]]*/ null
+        };
+    /*]]>*/
+
+    // --- Login/Logout Script ---
+
+    // 로그인 요청 처리
+    const loginForm = document.getElementById('loginForm');
+    if (loginForm) {
+        loginForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            const loginError = document.getElementById('loginError');
+            const submitButton = loginForm.querySelector('button');
+
+            submitButton.disabled = true;
+            submitButton.textContent = '로그인 중...';
+            loginError.textContent = '';
+
+            fetch('/login/jwt', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    email: document.querySelector('#email').value,
+                    password: document.querySelector('#password').value
+                })
+            })
+            .then(response => {
+                if (response.ok) {
+                    window.location.reload();
+                } else {
+                    // Read the JSON response body for error details
+                    return response.json().then(errorData => {
+                        if (errorData && errorData.error === '로그인 실패') { // Check for specific backend message
+                            loginError.textContent = '이메일 또는 비밀번호가 잘못되었습니다.'; // Revert to old message
+                        } else if (errorData && errorData.error) {
+                            loginError.textContent = errorData.error; // Display other specific errors from backend
+                        } else {
+                            loginError.textContent = '로그인 실패: 알 수 없는 오류'; // Generic fallback
+                        }
+                    }).catch(() => {
+                        // Fallback if response is not valid JSON
+                        loginError.textContent = '로그인 실패: 응답 처리 중 오류 발생';
+                    });
+                }
+            })
+            .catch(err => {
+                console.error('Login error:', err);
+                loginError.textContent = '로그인 중 오류가 발생했습니다.';
+            })
+            .finally(() => {
+                submitButton.disabled = false;
+                submitButton.textContent = '로그인';
+            });
+        });
+    }
+
+    // 로그아웃 처리
+    function logout() {
+        const userEmail = window.__USER__.email; // 사용자 이메일 가져오기
+
+        // 1. Refresh Token DB 삭제 요청
+        fetch('/api/auth/delete-refresh-token', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded', // form-urlencoded 형식으로 전송
+            },
+            body: `email=${encodeURIComponent(userEmail)}` // 이메일 파라미터 전송
+        })
+        .then(response => {
+            if (!response.ok) {
+                console.error('Failed to delete refresh token from DB:', response.statusText);
+                // DB 삭제 실패해도 로그아웃 프로세스는 계속 진행
+            }
+        })
+        .catch(err => {
+            console.error('Error deleting refresh token from DB:', err);
+            // DB 삭제 실패해도 로그아웃 프로세스는 계속 진행
+        })
+        .finally(() => {
+            // 2. Spring Security 로그아웃 (쿠키 삭제 등)
+            fetch('/logout', {
+                method: 'POST',
+                credentials: 'include'
+            })
+            .then(response => {
+                if (!response.ok) throw new Error('로그아웃 실패');
+                window.location.href = '/';
+            })
+            .catch(err => {
+                alert('로그아웃 중 오류 발생');
+            });
+        });
+    }
+</script>
+
+<!-- React 앱 번들 스크립트 -->
+<script type="module" src="/js/index-DGSXbgD9.js"></script>
+</body>
+</html>

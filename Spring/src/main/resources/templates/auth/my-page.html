@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>:: 해일 :: 마이페이지</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Common CSS Link -->
+    <link rel="stylesheet" th:href="@{/css/auth-styles.css}">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+          integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+          crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+<div class="container my-page">
+    <h2>마이페이지</h2>
+    <div class="profile-section">
+        <div class="profile-image-box">
+            <!-- 프로필 이미지 표시 -->
+            <img id="currentProfileImage"
+                 th:if="${user.profileImage != null and user.profileImage != ''}"
+                 th:src="@{'https://haeil-gallery-images-garamink.s3.ap-northeast-2.amazonaws.com/' + ${user.profileImage}}"
+                 alt="프로필 이미지"
+                 class="profile-image">
+            <!-- 프로필 이미지가 없을 경우 기본 이미지 표시 -->
+            <img id="currentProfileImageDefault"
+                 th:unless="${user.profileImage != null and user.profileImage != ''}"
+                 th:src="@{/img/user_sample2.png}"
+                 alt="기본 프로필 이미지"
+                 class="profile-image">
+
+            <!-- 프로필 이미지 변경/삭제 버튼 및 파일 입력 필드 -->
+            <div class="profile-image-controls">
+                <input type="file" id="profileImageUpload" style="display: none;" accept="image/*"><button type="button" id="changeImageBtn" class="button-secondary"><i class="fa-solid fa-file-image"></i></button>
+                <button type="button" id="deleteImageBtn" class="button-secondary"><i class="fa-solid fa-trash"></i></button>
+            </div>
+        </div>
+
+        <div class="profile-info">
+            <p><strong>닉네임:</strong> <span th:text="${user.nickname}"></span></p>
+            <p><strong>이메일:</strong> <span th:text="${user.email}"></span></p>
+        </div>
+    </div>
+
+    <!-- 마이페이지 내에 비밀번호 변경 버튼 -->
+    <button id="change-password-btn" type="button" class="button-secondary">비밀번호 변경</button>
+    <button id="withdraw-btn" type="button" class="button-secondary">회원 탈퇴</button>
+    <a href="/" class="button-link">메인으로 돌아가기</a>
+</div>
+
+<!-- 비밀번호 변경 모달-->
+<div id="password-modal" class="modal-overlay" style="display:none;">
+    <div class="modal-content">
+        <h3>비밀번호 변경</h3>
+        <form id="password-change-form">
+            <label for="current-password">현재 비밀번호</label>
+            <input type="password" id="current-password" required>
+
+            <label for="new-password">새 비밀번호</label>
+            <input type="password" id="new-password" required minlength="8" maxlength="20"
+                   placeholder="8~20자 영문, 숫자, 특수문자 조합">
+
+            <label for="new-password-confirm">새 비밀번호 확인</label>
+            <input type="password" id="new-password-confirm" required>
+
+            <div id="pw-error" class="error"></div>
+
+            <div class="modal-actions">
+                <button type="button" id="cancel-pw-change" class="button-secondary">취소</button>
+                <button type="submit">변경하기</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- 결과 팝업 모달 -->
+<div id="popup-modal" class="modal-overlay" style="display:none;">
+    <div class="modal-content">
+        <p id="popup-message"></p>
+        <div class="modal-actions">
+            <button id="popup-close-btn">확인</button>
+        </div>
+    </div>
+</div>
+
+<!-- 회원 탈퇴 확인 모달 -->
+<div id="withdraw-confirm-modal" class="modal-overlay" style="display:none;">
+    <div class="modal-content">
+        <h3>회원 탈퇴</h3>
+        <p>정말 해일을 떠나시겠습니까? </p>
+        <div class="modal-actions">
+            <button type="button" id="cancel-withdraw" class="button-secondary">취소</button>
+            <button type="button" id="confirm-withdraw">떠나기</button>
+        </div>
+    </div>
+</div>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    // Thymeleaf에서 사용자 ID 주입
+    window.__USER_ID__ = /*[[${user.userId}]]*/ null;
+    /*]]>*/
+</script>
+<script src="/js/myPage.js"></script>
+<script>
+    // PW 변경 모달 열기
+    document.getElementById('change-password-btn').addEventListener('click', function() {
+        document.getElementById('password-modal').style.display = 'flex';
+    });
+
+    // PW 변경 모달 닫기
+    function closePasswordModal() {
+        document.getElementById('password-modal').style.display = 'none';
+        document.getElementById('password-change-form').reset();
+        document.getElementById('pw-error').textContent = '';
+    }
+    document.getElementById('cancel-pw-change').addEventListener('click', closePasswordModal);
+
+    // 팝업 모달 함수
+    function showPopup(message, callback) {
+        document.getElementById('popup-message').textContent = message;
+        document.getElementById('popup-modal').style.display = 'flex';
+        document.getElementById('popup-close-btn').onclick = function() {
+            document.getElementById('popup-modal').style.display = 'none';
+            if (callback) callback();
+        };
+    }
+
+    // 폼 제출 이벤트
+    document.getElementById('password-change-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const currentPw = document.getElementById('current-password').value;
+        const newPw = document.getElementById('new-password').value;
+        const newPwConfirm = document.getElementById('new-password-confirm').value;
+        const pwError = document.getElementById('pw-error');
+
+        // 새 비밀번호 일치 확인
+        if (newPw !== newPwConfirm) {
+            pwError.textContent = '새 비밀번호가 일치하지 않습니다.';
+            return;
+        }
+        if (newPw.length < 8) {
+            pwError.textContent = '새 비밀번호는 8자 이상이어야 합니다.';
+            return;
+        }
+        // 새 비밀번호 유효성(길이 등) 추가 체크 가능
+        pwError.textContent = '';
+
+        const submitButton = this.querySelector('button[type="submit"]');
+        submitButton.disabled = true;
+        submitButton.textContent = '변경 중...';
+
+        // 서버에 변경 요청
+        fetch('/my-page/change-password', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                currentPassword: currentPw,
+                newPassword: newPw
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+            closePasswordModal();
+            if (data.success) {
+                // 성공: 팝업 띄우고, 닫으면 로그아웃
+                showPopup('비밀번호가 성공적으로 변경되었습니다. 다시 로그인 해주세요.', function() {
+                    fetch('/user/logout', { method: 'POST', credentials: 'include' })
+                    .then(() => window.location.href = '/');
+                });
+            } else {
+                // 실패: 팝업만 띄움
+                showPopup(data.message || '비밀번호 변경에 실패했습니다. 현재 비밀번호를 확인해주세요.');
+            }
+        })
+        .catch(() => {
+            closePasswordModal();
+            showPopup('서버 오류가 발생했습니다.');
+        })
+        .finally(() => {
+            submitButton.disabled = false;
+            submitButton.textContent = '변경하기';
+        });
+    });
+</script>
+</body>
+</html>

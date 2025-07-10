@@ -1,0 +1,21 @@
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.input-group .title-input {
+    width: 100%;
+    padding: 12px;
+    font-size: 1.75rem;
+    font-weight: bold;
+    border: none;
+    border-bottom: 2px solid #e9ecef;
+    transition: border-color 0.2s;
+    background-color: transparent;
+}
+
+.input-group .title-input:focus {
+    outline: none;
+    border-color: #007bff;
+}

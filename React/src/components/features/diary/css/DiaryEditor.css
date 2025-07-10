@@ -1,0 +1,40 @@
+/* 에디터 전체를 감싸는 컨테이너 */
+.editor-container {
+    border: 1px solid #dcdcdc;
+    border-radius: 8px;
+    overflow: hidden; /* 둥근 모서리 밖으로 내용이 나가지 않도록 함 */
+}
+
+/* Tiptap 에디터의 콘텐츠 영역 스타일 */
+.tiptap-editor-content {
+    padding: 1rem;
+    min-height: 300px;
+    max-height: 60vh; /* 에디터의 최대 높이를 제한하여 너무 길어지는 것을 방지 */
+    overflow-y: auto; /* 내용이 많아지면 스크롤 생성 */
+    font-size: 1rem;
+    line-height: 1.6;
+}
+
+.tiptap-editor-content:focus {
+    outline: none;
+}
+
+/* 에디터 내부 이미지 스타일 */
+.tiptap-editor-content img {
+    max-width: 100%;
+    height: auto;
+    max-height: 500px;
+    display: block;
+    margin: 1rem auto;
+    border-radius: 8px;
+    object-fit: contain;
+}
+
+/* 에디터 Placeholder 텍스트 스타일 */
+.tiptap-editor-content p.is-editor-empty:first-child::before {
+    content: attr(data-placeholder);
+    float: left;
+    color: #adb5bd;
+    pointer-events: none;
+    height: 0;
+}

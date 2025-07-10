@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>로그인</title>
+</head>
+<body>
+<h2>로그인</h2>
+<form>
+    <input name="email" id="email" placeholder="이메일" required>
+    <input name="password" type="password" id="password" placeholder="비밀번호" required>
+</form>
+    <button type="button" onclick="loginJwt()">로그인</button>
+<script>
+    // 로그인 요청 성공 시 -> 메인 페이지로 이동
+    function loginJwt() {
+        fetch('/login/jwt', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                email: document.querySelector('#email').value,
+                password: document.querySelector('#password').value
+            })
+        })
+        .then(response => response.text())
+        .then(jwt => {
+<!--            // JWT를 쿠키에 저장 (실제 서비스에서는 서버에서 Set-Cookie로 저장 권장)-->
+<!--            document.cookie = "jwt=" + jwt + ";path=/;HttpOnly";-->
+            window.location.href = "/";
+        })
+        .catch(err => alert("로그인 실패"));
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,63 @@
+.timeline-wrapper {
+    margin-bottom: 24px;
+}
+.timeline-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+.timeline-controls button {
+    background: none;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    padding: 4px 8px;
+}
+.timeline-controls .week-range {
+    font-weight: bold;
+    font-size: 16px;
+}
+.react-datepicker {
+    font-family: inherit;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid #ccc;
+}
+/* 가로 스크롤 카드 컨테이너 */
+.timeline-cards {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    padding-bottom: 8px;
+    scrollbar-width: thin;
+}
+/* 개별 카드 */
+.timeline-card {
+    min-width: 120px;
+    flex-shrink: 0;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    text-align: center;
+    background-color: white;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+/* 날짜 텍스트 */
+.timeline-card h4 {
+    margin-bottom: 8px;
+    font-size: 14px;
+    font-weight: 600;
+}
+/* 선택된 날짜 카드 */
+.timeline-card.active {
+    border: 2px solid #007bff;
+    background-color: #f0f8ff;
+}
+.card-icons {
+    font-size: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+}
