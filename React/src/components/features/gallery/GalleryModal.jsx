@@ -27,7 +27,7 @@ export const GalleryModal = () => {
     const { isGalleryOpen, closeGallery } = useGallery(); // 📂 갤러리 모달 상태 제어
     const checkLogin = useCheckLogin(); // 훅 사용
     // 기존 코드
-    // const [images, setImages] = useState([]); // 🖼️ 현재 표시되는 이미지들
+    // const [img, setImages] = useState([]); // 🖼️ 현재 표시되는 이미지들
     // const [originalImages, setOriginalImages] = useState([]); // 🧾 초기 이미지 백업
     // const toastShownRef = useRef(false); // 기존 토스트 중복 방지
     // 🎬 갤러리 모달 열릴 때 실행되는 효과

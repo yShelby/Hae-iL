@@ -4,6 +4,8 @@ import com.heaildairy.www.auth.user.UserStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+
 import java.io.Serializable; // Serializable 임포트 추가
 import java.time.LocalDateTime; // LocalDateTime 임포트 (Java 8 이상)
 
@@ -51,8 +53,18 @@ public class UserEntity implements Serializable { // Serializable 구현 추가
     @Column(name = "last_login_at", nullable = true)
     private LocalDateTime lastLoginAt;
 
+    @CreationTimestamp // @PrePersist ~~ 를 @CreationTimestamp로 대체(축약)
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt; // 생성 시점 자동화 필요
+
+    // 이 필드는 "하루에 한 번만 쿠키를 열 수 있다"는 핵심 비즈니스 로직을 구현하기 위해
+    // 반드시 필요한 데이터 사용자가 마지막으로 쿠키를 연 날짜를 저장하여 오늘 날짜와 비교하는 용도로 사용
+    @Column(name = "last_fortune_opened_date")
+    private LocalDateTime lastFortuneOpenedDate;
+
+    public void updateLastFortuneOpenedDate(LocalDateTime date) {
+        this.lastFortuneOpenedDate = date;
+    }
 
     // [리팩토링] RefreshToken과의 양방향 관계 설정
     // CascadeType.ALL: User 변경 시 RefreshToken도 함께 변경(저장, 삭제 등)
@@ -60,9 +72,9 @@ public class UserEntity implements Serializable { // Serializable 구현 추가
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private RefreshToken refreshToken;
 
-    @PrePersist // 엔티티 저장 전 호출되어 created_at 자동 설정
-    protected void onCreate() {
-        createdAt = LocalDateTime.now();
-    }
+//    @PrePersist // 엔티티 저장 전 호출되어 created_at 자동 설정
+//    protected void onCreate() {
+//        createdAt = LocalDateTime.now();
+//    }
 
 }

@@ -2,6 +2,7 @@ import React from 'react';
 import "./css/DashboardLayout.css";
 import Weather from "@features/dashboard/Weather.jsx";
 import {Outlet} from "react-router-dom";
+import FortuneCookie from "@features/dashboard/FortuneCookie.jsx";
 
 const DashboardLayout = () => {
     return (
@@ -18,7 +19,9 @@ const DashboardLayout = () => {
                     과정을 거치기 때문에 1~2초 정도의 로딩이 걸린다.(정상) */}
                     <Weather/>
                 </div>
-                <div className="placeholder-box" style={{height: '80px'}}>포춘쿠키 (영역)</div>
+                <div className="placeholder-box">
+                    <FortuneCookie />
+                </div>
                 <div className="placeholder-box" style={{height: '120px'}}>오늘의 질문 (영역)</div>
                 <div className="placeholder-box" style={{flexGrow: 1}}>달력 (영역)</div>
             </div>

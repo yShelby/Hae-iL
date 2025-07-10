@@ -21,6 +21,27 @@ export default defineConfig({
     },
     build: {
         outDir: 'dist',
-        emptyOutDir: true
+        emptyOutDir: true,
+
+        rollupOptions: {
+            output: {
+                // JS 파일 경로 설정
+                entryFileNames: `js/[name]-[hash].js`,
+                // 기타 청크 파일(코드 분할 시) 경로 설정
+                chunkFileNames: `js/[name]-[hash].js`,
+                // CSS, 이미지 등 기타 에셋 파일 경로 설정
+                assetFileNames: (assetInfo) => {
+                    if (assetInfo.name.endsWith('.css')) {
+                        return `css/[name]-[hash][extname]`;
+                    }
+                    const imageExtensions = ['.png', '.jpg', '.jpeg', '.gif', '.svg', '.webp'];
+                    if (imageExtensions.some(ext => assetInfo.name.endsWith(ext))) {
+                        return `img/[name]-[hash][extname]`;
+                    }
+                    // 그 외 다른 에셋들은 assets 폴더에 보관
+                    return `assets/[name]-[hash][extname]`;
+                },
+            }
+        }
     }
 })

@@ -82,7 +82,9 @@ public class SecurityConfig {
 //               .requestMatchers("/**").permitAll() // 항상 허용
                 .requestMatchers("/", "/login/jwt","/need-login", "/register", "/register/newUser",
                         "/reissue", "/find-email", "/find-email/verify", "/find-password", "/find-password/send", "/find-password/login",
-                        "/api/s3/profile-presigned-url", "/diary", "/diary/**").permitAll() // 인증 불필요 경로
+                        "/api/s3/profile-presigned-url", "/diary", "/diary/**",
+                        "/api/dashboard", "/api/dashboard/**" // dashboard도 접근 권한 추가
+                ).permitAll() // 인증 불필요 경로
                 .requestMatchers("/css/**","/js/**","/image/**").permitAll() // 정적 리소스 허용
                 .anyRequest().authenticated() // 나머지 모든 요청은 반드시 인증 필요
         );
