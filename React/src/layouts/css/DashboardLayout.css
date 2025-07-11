@@ -26,6 +26,31 @@
     flex: 9; /* 오른쪽 컬럼 비율 */
 }
 
+/* 1. 날씨와 포춘쿠키를 감싸는 가로 컨테이너 */
+.horizontal-container {
+    display: flex;
+    flex-direction: row;
+    gap: 24px;
+    width: 100%;
+}
+
+/* 자식 요소(*는 직계 자식 컴포넌트를 의미)에 margin: auto를 적용하여 flex 아이템의 주변 여백을
+  자동으로 계산하게 만들어, 부모의 정중앙에 위치시킨다 */
+.weather-box > *,
+.fortune-box > * {
+    margin: auto;
+}
+
+.weather-box {
+    flex: 9;
+    height: 200px;
+}
+
+.fortune-box {
+    flex: 11;
+    height: 200px;
+}
+
 /* --- 모든 박스의 공통 스타일 --- */
 .placeholder-box {
     /* 디자인 */
@@ -34,7 +59,7 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); /* 부드러운 그림자 효과 */
 
     /* 레이아웃 및 여백 */
-    padding: 24px;
+    /*padding: 24px;*/
     display: flex;
     align-items: center;
     justify-content: center;

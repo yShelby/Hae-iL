@@ -7,10 +7,12 @@
     height: 100%;
     gap: 8px;
     font-family: 'Pretendard', sans-serif;
+    padding: 10px;
+    box-sizing: border-box;
 }
 
 .weather-location {
-    font-size: 1.2rem;
+    font-size: 1.5rem;
     font-weight: 600;
     color: #374151;
 }
@@ -22,19 +24,19 @@
 }
 
 .weather-icon {
-    width: 64px;
-    height: 64px;
+    width: 100px;
+    height: 100px;
 }
 
 .weather-details {
     display: flex;
     flex-direction: column;
-    align-items: flex-start; /* 텍스트를 왼쪽 정렬 */
+    align-items: center;
 }
 
 .weather-main-text {
-    font-size: 1rem;
-    font-weight: 500;
+    font-size: 1.4rem;
+    font-weight: 700;
     color: #4B5563;
     margin: 0;
 }

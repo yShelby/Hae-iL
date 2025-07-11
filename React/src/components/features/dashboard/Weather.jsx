@@ -49,9 +49,11 @@ const Weather = () => {
     return (
         <div className={"weather-container"}>
             {weatherData ? (
-                <div>
+                <>
                     {/* 1. 도시 (시/구/동) */}
-                    <div className="weather-location">{weatherData.city}</div>
+                    <div className="weather-location">
+                        {weatherData.city}
+                    </div>
 
                     <div className="weather-content">
                         {/* 2. 날씨 아이콘 */}
@@ -67,11 +69,11 @@ const Weather = () => {
                             </p>
                             {/* 4. 현재 온도 */}
                             <p className="weather-temp-current">
-                                {Math.round(weatherData.temp)}°
+                                {Math.round(weatherData.temp)}°C
                             </p>
                         </div>
                     </div>
-                </div>
+                </>
             ) : (
                 <p>날씨 정보가 없습니다.</p>
             )}
