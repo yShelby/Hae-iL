@@ -1,6 +1,7 @@
 package com.heaildairy.www.emotion.controller;
 
 
+import com.heaildairy.www.diary.entity.DiaryEntity;
 import com.heaildairy.www.emotion.dto.FlaskResponseDTO;
 import com.heaildairy.www.emotion.service.AllService;
 import com.heaildairy.www.emotion.service.FlaskService;
@@ -20,18 +21,18 @@ public class EmotionController {
     private final AllService allService;
 
     @PostMapping("/diary")
-    public ResponseEntity<?> analyzeAndSave(@RequestBody EmotionRequestDTO requestBody) {
+    public ResponseEntity<?> analyzeAndSave(@RequestBody DiaryEntity diaryEntity) {
         try {
-            String text = (String) requestBody.getText();
-            Long diaryId =  requestBody.getDiaryEntity().getDiaryId();
+            String text = (String) diaryEntity.getContent();
+            Long diaryId = diaryEntity.getDiaryId();
 
             if (text == null || text.isEmpty() || diaryId == null) {
                 return ResponseEntity.badRequest().body("text와 diaryId는 필수입니다.");
             }
 
-            FlaskResponseDTO flaskResult = flaskService.callAnalyze(requestBody.getText());
+            FlaskResponseDTO flaskResult = flaskService.callAnalyze(diaryEntity.getContent());
             log.info("Flask 서비스 응답 성공: {}",flaskResult);
-            allService.allEmotion(flaskResult, requestBody.getDiaryEntity().getDiaryId());
+            allService.allEmotion(flaskResult, diaryEntity);
 
             return ResponseEntity.ok(flaskResult);
         } catch (Exception e) {
