@@ -8,7 +8,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name="meal_log")
+@Table(name="MealLog")
 @Getter
 @Setter
 @Builder
@@ -17,14 +17,15 @@ import java.time.LocalDateTime;
 public class MealLog {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer mealId; // 식사 ID
+    @Column(name = "meal_id")
+    private Long mealId; // 식사 ID
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="user_id", nullable = false)
     private UserEntity user;
 
 
-    @Column(nullable = false)
+    @Column(name = "meal_date", nullable = false)
     private LocalDate mealDate; // 식사 날짜
 
     @Column(columnDefinition = "TEXT", nullable = true)
@@ -40,7 +41,7 @@ public class MealLog {
     @Column(columnDefinition = "TEXT", nullable = true)
     private String snack; // 간식 내용
 
-    @Column(updatable = false, nullable = true)
+    @Column(name = "create_at",updatable = false, nullable = true)
     private LocalDateTime createdAt; // 생성 시간
 
     @PrePersist

@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TagDTO {
-    private Integer tagId;
+    private Long tagId;
     private String tagName;
     private Integer usedCount;
 }

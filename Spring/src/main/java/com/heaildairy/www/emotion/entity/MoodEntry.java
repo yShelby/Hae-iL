@@ -15,13 +15,13 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
-@Table(name = "mood_entries")
+@Table(name = "MoodEntries")
 public class MoodEntry {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "mood_entry_id")
-    private Integer moodEntryId;
+    private Long moodEntryId;
 
     @OneToOne
     @JoinColumn(name = "diary_id", nullable = false, unique = true,

@@ -57,7 +57,7 @@ public class MealLogDto {
 
         public static Response fromEntity(MealLog entity) {
             return Response.builder()
-                    .mealId(entity.getMealId().longValue())
+                    .mealId(entity.getMealId())
                     .mealDate(entity.getMealDate())
                     .breakfast(entity.getBreakfast())
                     .lunch(entity.getLunch())

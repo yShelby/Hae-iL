@@ -13,14 +13,14 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @Getter
 @Setter
-@Table(name = "mood_details")
+@Table(name = "MoodDetail")
 @Entity
 public class MoodDetail {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "detail_id")
-    private Integer detailId;
+    private Long detailId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "diary_id", nullable = false,

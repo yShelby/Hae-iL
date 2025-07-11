@@ -8,7 +8,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "exercise_log")
+@Table(name = "ExerciseLog")
 @Getter
 @Setter
 @Builder
@@ -18,16 +18,17 @@ public class ExerciseLog {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer exerciseId;
+    @Column(name = "exercise_id")
+    private Long exerciseId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity user;
 
-    @Column(nullable = false)
+    @Column(name = "exercise_date",nullable = false)
     private LocalDate exerciseDate; // 운동 날짜
 
-    @Column(length = 100, nullable = false)
+    @Column(name = "exercise_type",length = 100, nullable = false)
     private String exerciseType; // 운동 종류
 
     @Column(nullable = true)
@@ -36,7 +37,7 @@ public class ExerciseLog {
     @Column(length = 20, nullable = true)
     private String intensity; // 운동 강도
 
-    @Column(updatable = false, nullable = false)
+    @Column(name = "create_at", updatable = false, nullable = false)
     private LocalDateTime createdAt; // 생성 시간
 
     @PrePersist

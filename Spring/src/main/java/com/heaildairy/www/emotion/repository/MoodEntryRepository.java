@@ -5,6 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface MoodEntryRepository extends JpaRepository<MoodEntry, Integer> {
+public interface MoodEntryRepository extends JpaRepository<MoodEntry, Long> {
 
 }

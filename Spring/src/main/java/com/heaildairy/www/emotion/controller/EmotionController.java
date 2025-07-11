@@ -1,7 +1,6 @@
 package com.heaildairy.www.emotion.controller;
 
 
-import com.heaildairy.www.emotion.dto.EmotionRequestDTO;
 import com.heaildairy.www.emotion.dto.FlaskResponseDTO;
 import com.heaildairy.www.emotion.service.AllService;
 import com.heaildairy.www.emotion.service.FlaskService;

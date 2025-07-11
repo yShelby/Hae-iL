@@ -54,7 +54,7 @@ public class SleepLogDto {
 
         public static Response fromEntity(SleepLog entity) {
             return Response.builder()
-                    .sleepId(Long.valueOf(entity.getSleepId()))
+                    .sleepId(entity.getSleepId())
                     .sleepDate(entity.getSleepDate())
                     .bedtime(entity.getBedtime())
                     .waketime(entity.getWaketime())

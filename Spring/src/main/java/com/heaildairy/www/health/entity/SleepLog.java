@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @Entity
-@Table(name = "sleep_log")
+@Table(name = "SleepLog")
 @Getter
 @Setter
 @Builder
@@ -19,13 +19,14 @@ public class SleepLog {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer sleepId; // 수면 기록 ID
+    @Column(name = "sleep_id")
+    private Long sleepId; // 수면 기록 ID
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name= "user_id", nullable = false)
     private UserEntity user; // 사용자 ID (외래키)
 
-    @Column(nullable = false)
+    @Column(name="sleep_date", nullable = false)
     private LocalDate sleepDate; // 수면 날짜
 
     @Column(nullable = true)
@@ -34,10 +35,10 @@ public class SleepLog {
     @Column(nullable = true)
     private LocalTime waketime; // 기상 시간
 
-    @Column(nullable = true)
+    @Column(name="total_hours", nullable = true)
     private Double totalHours; // 총 수면 시간(시간 단위, 소수점 1자리까지 저장)
 
-    @Column(updatable = false, nullable = false)
+    @Column(name = "create_at", updatable = false, nullable = false)
     private LocalDateTime createdAt; // 생성 일시 (업데이트 불가)
 
     @PrePersist

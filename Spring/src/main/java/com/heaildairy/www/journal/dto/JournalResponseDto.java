@@ -17,7 +17,7 @@ public class JournalResponseDto {
     private final LocalDateTime createdAt;
 
     public JournalResponseDto(JournalEntity journal) {
-        this.id = journal.getId();
+        this.id = journal.getJournalId();
         this.category = journal.getCategory().name();
         this.title = journal.getTitle();
         this.content = journal.getContent();

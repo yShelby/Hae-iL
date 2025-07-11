@@ -5,6 +5,8 @@ import lombok.*;
 
 import java.time.LocalDate;
 
+import static java.lang.Long.valueOf;
+
 public class ExerciseLogDto {
 
     @Getter
@@ -41,7 +43,7 @@ public class ExerciseLogDto {
 
         public static Response fromEntity(ExerciseLog entity) {
             return Response.builder()
-                    .exerciseId(Long.valueOf(entity.getExerciseId()))
+                    .exerciseId(entity.getExerciseId())
                     .exerciseDate(entity.getExerciseDate())
                     .exerciseType(entity.getExerciseType())
                     .duration(entity.getDuration())

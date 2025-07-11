@@ -10,14 +10,14 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-@Table(name = "tag")
+@Table(name = "Tag")
 @Entity
 public class Tag {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "tag_id")
-    private Integer tagId;
+    private Long tagId;
 
     @Column(name = "tag_name", length = 50, nullable = false)
     private String tagName;

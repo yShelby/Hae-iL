@@ -2,8 +2,6 @@ package com.heaildairy.www.emotion.service;
 
 
 import com.heaildairy.www.emotion.dto.EmotionDTO;
-import com.heaildairy.www.emotion.entity.EmotionEntity;
-import com.heaildairy.www.emotion.repository.EmotionRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

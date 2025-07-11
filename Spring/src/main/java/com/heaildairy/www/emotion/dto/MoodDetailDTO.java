@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 @Data
 @NoArgsConstructor
 public class MoodDetailDTO {
-    private Integer detailId;
+    private Long detailId;
     private Integer percentage;
     private String emotionType;
     private Long diaryId;
