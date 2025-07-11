@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -32,10 +31,10 @@ public class FortuneService {
                 .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + userId));
 
         LocalDate today = LocalDate.now();
-        LocalDateTime lastOpenedDateTime = user.getLastFortuneOpenedDate();
+        LocalDate lastOpenedDate = user.getLastFortuneOpenedDate();
 
         // 2. 오늘 날짜와 마지막으로 쿠키를 연 날짜를 비교
-        if (lastOpenedDateTime != null && lastOpenedDateTime.toLocalDate().isEqual(today)) {
+        if (lastOpenedDate != null && lastOpenedDate.isEqual(today)) {
             // 오늘 이미 열었다면, 열 수 없음 상태와 함께 메시지 반환
             return FortuneDto.StatusResponse.builder()
                     .canOpen(false)
@@ -60,9 +59,9 @@ public class FortuneService {
 
         // 2. 오늘 이미 열었는지 다시 한번 확인 (동시성 문제 방지)
         LocalDate today = LocalDate.now();
-        LocalDateTime lastOpenedDateTime = user.getLastFortuneOpenedDate();
+        LocalDate lastOpenedDate = user.getLastFortuneOpenedDate();
 
-        if (lastOpenedDateTime != null && lastOpenedDateTime.toLocalDate().isEqual(today)) {
+        if (lastOpenedDate != null && lastOpenedDate.isEqual(today)) {
             // 동시 다발적인 요청으로 쿠키를 여러 번 여는 것을 방지하기 위해,
             // 상태를 확인하고 이미 열었다면 더 구체적인 예외를 발생시킵니다.
             throw new IllegalStateException("오늘 이미 포춘쿠키를 사용했어요.");
@@ -77,7 +76,7 @@ public class FortuneService {
                 .orElse("내일은 더 좋은 일이 생길 거예요."); // DB에 운세가 하나도 없을 경우를 대비한 기본 메시지
 
         // 4. 사용자의 마지막 쿠키 확인 날짜를 오늘로 업데이트
-        user.updateLastFortuneOpenedDate(LocalDateTime.now());
+        user.updateLastFortuneOpenedDate(today);
 
         return new FortuneDto.OpenResponse(message);
     }

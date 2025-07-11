@@ -1,8 +1,8 @@
-package com.heaildairy.www.dashboard.controller;
+package com.heaildairy.www.dashboard.count.controller;
 
 import com.heaildairy.www.auth.user.CustomUser;
-import com.heaildairy.www.dashboard.dto.DashboardStatsResponseDto;
-import com.heaildairy.www.dashboard.service.DashboardService;
+import com.heaildairy.www.dashboard.count.dto.CountStatsResponseDto;
+import com.heaildairy.www.dashboard.count.service.CountService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -11,18 +11,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/dashboard")
+@RequestMapping("/api/dashboard/count")
 @RequiredArgsConstructor
-public class DashboardController {
+public class CountController {
 
-    private final DashboardService dashboardService;
+    private final CountService countService;
 
     @GetMapping("/stats")
-    public ResponseEntity<DashboardStatsResponseDto> getDashboardStats(
+    public ResponseEntity<CountStatsResponseDto> getDashboardStats(
             @AuthenticationPrincipal CustomUser customUser) {
         Integer userId = customUser.getUserId();
 
-        DashboardStatsResponseDto stats = dashboardService.getDashboardStats(userId);
+        CountStatsResponseDto stats = countService.getDashboardStats(userId);
         return ResponseEntity.ok(stats);
     }
 }

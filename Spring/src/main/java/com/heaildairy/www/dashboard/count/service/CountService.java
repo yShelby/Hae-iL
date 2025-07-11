@@ -1,8 +1,8 @@
-package com.heaildairy.www.dashboard.service;
+package com.heaildairy.www.dashboard.count.service;
 
 import com.heaildairy.www.auth.entity.UserEntity;
 import com.heaildairy.www.auth.repository.UserRepository;
-import com.heaildairy.www.dashboard.dto.DashboardStatsResponseDto;
+import com.heaildairy.www.dashboard.count.dto.CountStatsResponseDto;
 import com.heaildairy.www.diary.repository.DiaryRepository;
 import com.heaildairy.www.gallery.repository.GalleryRepository;
 import com.heaildairy.www.journal.repository.JournalRepository;
@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class DashboardService {
+public class CountService {
 
     private final UserRepository userRepository;
     private final DiaryRepository diaryRepository;
@@ -20,7 +20,7 @@ public class DashboardService {
     private final GalleryRepository galleryRepository;
 
     @Transactional(readOnly = true)
-    public DashboardStatsResponseDto getDashboardStats(Integer userId) {
+    public CountStatsResponseDto getDashboardStats(Integer userId) {
         UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다. ID: " + userId));
 
@@ -28,6 +28,6 @@ public class DashboardService {
         long journalingCount = journalRepository.countByUser(user);
         long galleryImageCount = galleryRepository.countByUser(user);
 
-        return new DashboardStatsResponseDto(totalDiaryCount, journalingCount, galleryImageCount);
+        return new CountStatsResponseDto(totalDiaryCount, journalingCount, galleryImageCount);
     }
 }
