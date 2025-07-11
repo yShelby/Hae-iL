@@ -32,7 +32,7 @@ public class JournalService {
 
         JournalEntity savedJournal = journalRepository.save(journal);
 
-        return savedJournal.getId();
+        return savedJournal.getJournalId();
     }
 
     @Transactional(readOnly = true)

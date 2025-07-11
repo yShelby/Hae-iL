@@ -27,7 +27,7 @@ export const GalleryModal = () => {
     const { isGalleryOpen, closeGallery } = useGallery(); // 📂 갤러리 모달 상태 제어
     const checkLogin = useCheckLogin(); // 훅 사용
     // 기존 코드
-    // const [img, setImages] = useState([]); // 🖼️ 현재 표시되는 이미지들
+    // const [images, setImages] = useState([]); // 🖼️ 현재 표시되는 이미지들
     // const [originalImages, setOriginalImages] = useState([]); // 🧾 초기 이미지 백업
     // const toastShownRef = useRef(false); // 기존 토스트 중복 방지
     // 🎬 갤러리 모달 열릴 때 실행되는 효과
@@ -45,11 +45,11 @@ export const GalleryModal = () => {
     //             .then(response => {
     //                 // console.log("✅ 갤러리 API 응답:", response.data);
     //                 // 🧾 S3 URL 포맷 적용
-    //                 const dataWithUrls = response.data.map(img => ({
-    //                     ...img,
-    //                     url: img.fileKey
-    //                         ? `https://${BUCKET_NAME}.s3.${REGION}.amazonaws.com/${img.fileKey}`
-    //                         : img.url || '',
+    //                 const dataWithUrls = response.data.map(images => ({
+    //                     ...images,
+    //                     url: images.fileKey
+    //                         ? `https://${BUCKET_NAME}.s3.${REGION}.amazonaws.com/${images.fileKey}`
+    //                         : images.url || '',
     //                 }));
     //                 setImages(dataWithUrls); // ✅ 화면에 보여줄 이미지
     //                 setOriginalImages(dataWithUrls); // 💾 "원래대로" 버튼용

@@ -20,7 +20,7 @@ public class FortuneService {
     private final FortuneRepository fortuneRepository;
 
     /**
-     * 사용자의 오늘 포춘쿠키 상태를 조회합니다.
+     * 사용자의 오늘 포춘쿠키 상태를 조회
      * @param userId 현재 로그인한 사용자의 ID
      * @return 오늘의 쿠키를 열 수 있는지 여부와, 이미 열었다면 확인한 메시지를 담은 Dto
      */
@@ -48,7 +48,7 @@ public class FortuneService {
     }
 
     /**
-     * 사용자가 포춘쿠키를 엽니다. (운세 메시지를 랜덤으로 뽑고, 오늘 날짜를 기록합니다)
+     * 사용자가 포춘쿠키를 엽니다. (운세 메시지를 랜덤으로 뽑고, 오늘 날짜를 기록)
      * @param userId 현재 로그인한 사용자의 ID
      * @return 새로 뽑은 운세 메시지를 담은 Dto
      */

@@ -1,37 +1,57 @@
 import {useFortuneCookie} from "@/hooks/useFortuneCookie.js";
 import {useEffect, useState} from "react";
-import crackedCookieImg from "../../../assets/img/cracked_cookie.svg";
-import cookieImg from "../../../assets/img/cookie.svg";
+// import crackedCookieImg from "../../../assets/images/cracked_cookie.svg";
+// import cookieImg from "../../../assets/images/cookie.svg";
 import "./css/FortuneCookie.css";
 import {useAuth} from "@features/auth/AuthContext.jsx";
-import {showToast} from "@shared/UI/Toast.jsx";
+import {useCheckLogin} from "@/hooks/useCheckLogin.js";
 
-// const cookieImgUrl = '/img/cookie.svg';
-// const crackedCookieImgUrl = '/img/cracked_cookie.svg';
+const cookieImgUrl = '/images/cookie.svg';
+const crackedCookieImgUrl = '/images/cracked_cookie.svg';
 
 const FortuneCookie = () => {
     const {user} = useAuth();
+    const checkLogin = useCheckLogin();
+
     const {status, isStatusLoading, openCookie, isOpening, fortuneMessage } = useFortuneCookie();
-
     const [isCracked, setIsCracked] = useState(false);
-
     const [isShaking, setIsShaking] = useState(false);
 
-    // 컴포넌트가 로드될 때, 오늘 이미 쿠키를 열었는지 확인하고 상태를 설정
+    // 페이지가 처음 로드되거나 날짜가 바뀌었을 때 서버에서 받은 상태를 기반으로
+    // '이미 열었는지' 여부만 UI에 반영하는 역할
     useEffect(() => {
-        if (user && status && !status.canOpen){
-            setIsCracked(true);
+        // 애니메이션이 진행 중일 때는 이 훅이 상태를 덮어쓰지 않도록 방지
+        if (isShaking) return;
+
+        if (status) {
+            setIsCracked(!status.canOpen);
         }
-    }, [user, status]);
+    }, [status, isShaking]);
+
+    // 📌 [비로그인 유저]를 위한 렌더링 블록
+    if (!user) {
+        return (
+            <div className="fortune-cookie-container">
+                <div
+                    // 비로그인 시에는 .disabled와 .grayscale 클래스를 모두 적용
+                    className="cookie-image-container disabled grayscale"
+                    title="로그인이 필요합니다"
+                    onClick={checkLogin}
+                >
+                    <img src={cookieImgUrl} alt="포춘쿠키" className="cookie-img" />
+                </div>
+                <div className="fortune-message">
+                    로그인하고 오늘의 운세를 확인하세요!
+                </div>
+            </div>
+        );
+    }
 
     const handleCookieClick = () => {
-        if (!user) {
-            showToast.error("로그인이 필요합니다.");
-            return;
-        }
         // 열 수 없거나, 여는 중이거나, 이미 깨진 상태면 클릭을 방지
-        if (!status?.canOpen || isOpening || isCracked) return;
+        if (!status?.canOpen || isOpening || isCracked || isShaking) return;
 
+        setIsShaking(true);
         openCookie(null, {
             onSuccess: () => {
                 // 애니메이션 효과를 위해 약간의 딜레이 후 상태 변경
@@ -53,15 +73,18 @@ const FortuneCookie = () => {
     return (
         <div className="fortune-cookie-container">
             <div
-                className={`cookie-image-container ${isShaking ? 'shaking' : ''} ${!status?.canOpen ? 'disabled' : ''}`}
+                // isCracked가 true가 되면 shaking 클래스가 적용되지 않도록 하여, 깨진 쿠키가 흔들리지 않게 합니다.
+                className={`cookie-image-container ${isShaking && !isCracked ? 'shaking' : ''} 
+                ${!status?.canOpen || isCracked ? 'disabled' : ''}`}
                 onClick={handleCookieClick}
-                title={!user ? "로그인이 필요합니다" : (status?.canOpen ? "클릭하여 운세 확인" : "오늘은 이미 확인했어요")}
+                title={status?.canOpen ? "클릭하여 운세 확인" : "오늘은 이미 확인했어요"}
             >
                 <img
-                    src={isCracked ? crackedCookieImg : cookieImg}
-                    // src={isCracked ? crackedCookieImgUrl : cookieImgUrl}
+                    // src={isCracked ? crackedCookieImg : cookieImg}
+                    src={isCracked ? crackedCookieImgUrl : cookieImgUrl}
                     alt="포춘쿠키"
-                    className="cookie-img"
+                    // isCracked 상태에 따라 다른 className을 부여하여 크기 조절
+                    className={isCracked ? "cracked-cookie-img" : "cookie-img"}
                 />
             </div>
             <div className="fortune-message">

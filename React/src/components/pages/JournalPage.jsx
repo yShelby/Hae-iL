@@ -9,6 +9,7 @@ import {deleteJournal} from "@api/journalApi.js";
 import {ConfirmModal} from "@shared/UI/ConfirmModal.jsx";
 import {JournalViewer} from "@features/journal/JournalViewer.jsx";
 import "./css/JournalPage.css"
+import {useCheckLogin} from "@/hooks/useCheckLogin.js";
 
 const JournalPage = () => {
     // UI 상태를 관리하는 viewMode 상태. mode: 'list'|'create'|'edit', journalId: 수정할 저널의 ID
@@ -24,14 +25,13 @@ const JournalPage = () => {
 
     const {user} = useAuth(); // 현재 로그인된 사용자 정보 가져오기
 
+    const checkLogin = useCheckLogin();
+
     const [isModalOpen, setIsModalOpen] = useState(false); // 삭제 확인 모달 관련 상태
 
     // ✅ 저널 아이템을 클릭했을 때 실행되는 함수 (상세보기로 전환)
     const handleItemSelect = (journalId) => {
-        if (!user) {
-            showToast.error("로그인을 해주세요.");
-            return;
-        }
+        if (!checkLogin()) return;
         setViewMode({mode: 'view', journalId});
         // 목록에서 아이템을 선택할 때는 전체 데이터가 없으므로,
         // ID만 설정하고 데이터 상태는 null로 비워 Viewer가 새로 데이터를 불러오도록 합니다.
@@ -45,10 +45,7 @@ const JournalPage = () => {
 
     // ✅ "작성하기" 버튼 클릭 시 실행되는 함수
     const handleCreate = () => {
-        if (!user) {
-            showToast.error("로그인을 해주세요.");
-            return;
-        }
+        if (!checkLogin()) return;
         setViewMode({mode: 'create', journalId: null});
     };
 
@@ -79,10 +76,7 @@ const JournalPage = () => {
 
     // ✅ 삭제 요청 버튼 클릭 시 모달 오픈
     const handleDeleteRequest = () => {
-        if (!user || !viewMode.journalId) {
-            showToast.error("로그인을 해주세요.");
-            return;
-        }
+        if (!checkLogin()) return;
         setIsModalOpen(true);
     };
 

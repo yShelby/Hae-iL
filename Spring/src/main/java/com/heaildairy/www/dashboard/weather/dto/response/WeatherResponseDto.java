@@ -15,18 +15,23 @@ import java.util.List;
 public class WeatherResponseDto {
     private List<WeatherPart> weather;
     private MainPart main;
+    private String name;
 
-    // 외부 API 응답 객체를 우리 시스템의 공식 DTO(`WeatherDto`)로 변환하는 헬퍼 메서드
-    public WeatherDto weatherDto() {
+    /**
+     * 외부 API 응답 객체를 우리 시스템의 공식 DTO('WeatherDto')로 변환.
+     * @param detailedCityName 리버스 지오코딩으로 얻은 상세 주소 (예: "서울 금천구")
+     * @return 최종 WeatherDto 객체
+     */
+    public WeatherDto toWeatherDto(String detailedCityName) { // 상세 주소를 파라미터로 받도록 변경
         if (weather == null || weather.isEmpty() || main == null) {
             return null;
         }
         WeatherPart firstWeatherPart = weather.get(0);
         return WeatherDto.builder()
-                .main(firstWeatherPart.getMain())
-                .description(firstWeatherPart.getDescription())
-                .icon(firstWeatherPart.getIcon())
-                .temp(main.getTemp())
+                .city(detailedCityName) // 1. 리버스 지오코딩으로 받은 상세 주소 사용
+                .icon(firstWeatherPart.getIcon()) // 2. 아이콘 ID
+                .main(firstWeatherPart.getMain()) // 3. 날씨 내용 (Clear, Clouds 등)
+                .temp(main.getTemp()) // 4. 현재 온도
                 .build();
     }
 }

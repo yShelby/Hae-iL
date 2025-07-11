@@ -5,8 +5,8 @@ import {FaBookMedical, FaImages, FaPenAlt} from "react-icons/fa";
 import "./css/MyRecordStatus.css";
 import {useNavigate} from "react-router-dom";
 import {useAuth} from "@features/auth/AuthContext.jsx";
-import {showToast} from "@shared/UI/Toast.jsx";
 import {format} from "date-fns";
+import {useCheckLogin} from "@/hooks/useCheckLogin.js";
 
 const MyRecordStatus = () => {
     const [stats, setStats] = useState({
@@ -20,14 +20,12 @@ const MyRecordStatus = () => {
     const navigate = useNavigate();
 
     const {user, loading: authLoading} = useAuth();
+    const checkLogin = useCheckLogin();
 
     const today = format(new Date(), "yyyy-MM-dd");
 
     const handleProtectedNavigation = (path) => {
-        if (!user) {
-            showToast.error("로그인 후 기록을 확인하세요.");
-            return;
-        }
+        if (!checkLogin()) return;
         navigate(path);
     }
 

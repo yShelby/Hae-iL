@@ -11,5 +11,6 @@ spring:
       hibernate:
         default_schema: TestHaeil
     hibernate:
-      ddl-auto: update # 개발시에는 update, 필요시 create
+      ddl-auto: update # 개발시 update
+#      ddl-auto: create # 필요시 create
 

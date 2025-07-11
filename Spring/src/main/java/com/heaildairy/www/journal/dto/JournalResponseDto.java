@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 
 @Getter
 public class JournalResponseDto {
-    private final Long id;
+    private final Long journalId;
     private final String category;
     private final String title;
     private final String content;
@@ -17,7 +17,7 @@ public class JournalResponseDto {
     private final LocalDateTime createdAt;
 
     public JournalResponseDto(JournalEntity journal) {
-        this.id = journal.getJournalId();
+        this.journalId = journal.getJournalId();
         this.category = journal.getCategory().name();
         this.title = journal.getTitle();
         this.content = journal.getContent();

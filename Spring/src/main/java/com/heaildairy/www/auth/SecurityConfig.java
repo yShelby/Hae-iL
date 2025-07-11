@@ -85,7 +85,8 @@ public class SecurityConfig {
                         "/api/s3/profile-presigned-url", "/diary", "/diary/**",
                         "/api/dashboard", "/api/dashboard/**" // dashboard도 접근 권한 추가
                 ).permitAll() // 인증 불필요 경로
-                .requestMatchers("/css/**","/js/**","/image/**").permitAll() // 정적 리소스 허용
+                // 경로 image -> images로 수정
+                .requestMatchers("/css/**","/js/**","/images/**").permitAll() // 정적 리소스 허용
                 .anyRequest().authenticated() // 나머지 모든 요청은 반드시 인증 필요
         );
 
