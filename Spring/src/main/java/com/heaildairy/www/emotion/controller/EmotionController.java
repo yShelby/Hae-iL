@@ -1,9 +1,10 @@
-package com.example.testServer.emotion.controller;
+package com.heaildairy.www.emotion.controller;
 
-import com.example.testServer.emotion.emotiondto.EmotionRequestDTD;
-import com.example.testServer.emotion.emotiondto.FlaskResponseDTO;
-import com.example.testServer.emotion.service.AllService;
-import com.example.testServer.emotion.service.FlaskService;
+
+import com.heaildairy.www.emotion.dto.EmotionRequestDTO;
+import com.heaildairy.www.emotion.dto.FlaskResponseDTO;
+import com.heaildairy.www.emotion.service.AllService;
+import com.heaildairy.www.emotion.service.FlaskService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -13,16 +14,17 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/emotion")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:5173") // accessing different ports(5173 vs 8080)
 public class EmotionController {
 
     private final FlaskService flaskService;
     private final AllService allService;
 
     @PostMapping("/diary")
-    public ResponseEntity<?> analyzeAndSave(@RequestBody EmotionRequestDTD requestBody) {
+    public ResponseEntity<?> analyzeAndSave(@RequestBody EmotionRequestDTO requestBody) {
         try {
             String text = (String) requestBody.getText();
-            Integer diaryId = (Integer) requestBody.getDiaryId();
+            Long diaryId =  requestBody.getDiaryEntity().getDiaryId();
 
             if (text == null || text.isEmpty() || diaryId == null) {
                 return ResponseEntity.badRequest().body("text와 diaryId는 필수입니다.");
@@ -30,7 +32,7 @@ public class EmotionController {
 
             FlaskResponseDTO flaskResult = flaskService.callAnalyze(requestBody.getText());
             log.info("Flask 서비스 응답 성공: {}",flaskResult);
-            allService.allEmotion(flaskResult, requestBody.getDiaryId());
+            allService.allEmotion(flaskResult, requestBody.getDiaryEntity().getDiaryId());
 
             return ResponseEntity.ok(flaskResult);
         } catch (Exception e) {
