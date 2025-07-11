@@ -13,7 +13,7 @@ const FortuneCookie = () => {
     const {user} = useAuth();
     const checkLogin = useCheckLogin();
 
-    const {status, isStatusLoading, openCookie, isOpening, fortuneMessage } = useFortuneCookie();
+    const {status, isStatusLoading, openCookie, isOpening, fortuneMessage} = useFortuneCookie();
     const [isCracked, setIsCracked] = useState(false);
     const [isShaking, setIsShaking] = useState(false);
 
@@ -38,7 +38,7 @@ const FortuneCookie = () => {
                     title="로그인이 필요합니다"
                     onClick={checkLogin}
                 >
-                    <img src={cookieImgUrl} alt="포춘쿠키" className="cookie-img" />
+                    <img src={cookieImgUrl} alt="포춘쿠키" className="cookie-img"/>
                 </div>
                 <div className="fortune-message">
                     로그인하고 오늘의 운세를 확인하세요!
@@ -88,7 +88,9 @@ const FortuneCookie = () => {
                 />
             </div>
             <div className="fortune-message">
-                {isStatusLoading && user ? "운세를 불러오는 중..." : displayMessage}
+                {isStatusLoading && user ? "운세를 불러오는 중..." :
+                    // isCracked가 true일 때만(즉, 2초 후) 최종 메시지를 보여줍니다.
+                    isCracked ? displayMessage : "쿠키를 눌러 오늘의 운세를 확인하세요!"}
             </div>
         </div>
     );

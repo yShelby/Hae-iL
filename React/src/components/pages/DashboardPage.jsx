@@ -5,13 +5,11 @@ const DashboardPage = () => {
     return (
         // 이 내용은 DashboardLayout의 <Outlet /> 안으로 렌더링됩니다.
         <>
-            <div className="placeholder-box">
-                <MyRecordStatus />
-            </div>
-            <div className="placeholder-box" style={{ height: '250px' }}>
+            <MyRecordStatus/>
+            <div className="placeholder-box" style={{height: '250px'}}>
                 오늘 감정 분석 / 최근 자가 진단 결과 (영역)
             </div>
-            <div className="placeholder-box" style={{ height: '150px' }}>
+            <div className="placeholder-box" style={{height: '150px'}}>
                 중요한 일 / to do (영역)
             </div>
         </>

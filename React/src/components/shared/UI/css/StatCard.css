@@ -4,29 +4,26 @@
     display: flex;
     align-items: center;
     gap: 15px;
-    border: 1px solid #e0e0e0;
     background-color: #fafafa; /* 기본 배경색, props.color로 덮어쓰기 가능 */
     transition: all 0.2s ease-in-out;
+    border: 1px solid transparent;
 }
 
 .stat-card-container.clickable:hover {
     cursor: pointer;
     transform: translateY(-4px);
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
-    border-color: transparent;
 }
 
 .stat-card-icon-wrapper {
     font-size: 1.8rem; /* 28px */
     color: #555;
-    background-color: #ffffff;
     border-radius: 12px;
     width: 50px;
     height: 50px;
     display: flex;
     justify-content: center;
     align-items: center;
-    border: 1px solid #e0e0e0;
     flex-shrink: 0;
 }
 
