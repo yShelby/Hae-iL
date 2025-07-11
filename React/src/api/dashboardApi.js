@@ -1,12 +1,8 @@
-import axios from "axios";
-
-const apiClient = axios.create({
-    baseURL: "/api",
-});
+import apiClient from "@api/apiClient.js";
 
 export const getDashboardStats = async () => {
     try {
-        const response = await apiClient.get("/dashboard/stats");
+        const response = await apiClient.get("/api/dashboard/stats");
         return response.data;
     } catch (e) {
         console.error("대시보드 통계 데이터 로딩에 실패했습니다: ", e);
