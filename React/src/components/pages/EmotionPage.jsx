@@ -1,15 +1,40 @@
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import EmotionResult from "../features/emotions/EmotionsResults.jsx";
+import {fetchEmotionByDiaryId} from "@api/emotionApi.js";
 
-function EmotionPage() {
+function EmotionPage({ selectedDiaryId, refreshKey  }) {
+    const [loading, setLoading] = useState(false);
+    const [emotionResult, setEmotionResult] = useState(null);
+    const [error, setError] = useState(null);
 
+    useEffect(() => {
+        if (!selectedDiaryId) {
+            setEmotionResult(null);
+            return;
+        }
+
+        setLoading(true);
+        setError(null);
+
+        fetchEmotionByDiaryId(selectedDiaryId)
+            .then(response => {
+                setEmotionResult(response.data);
+            })
+            .catch(err => {
+                console.error("감정 분석 조회 실패:", err);
+                setError("감정 분석 결과를 불러오는 데 실패했습니다.");
+            })
+            .finally(() => {
+                setLoading(false);
+            });
+    }, [selectedDiaryId, refreshKey]);
 
     return (
         <div style={{ padding: 20 }}>
-            <h1>일기 감정 분석기</h1>
-            {/*    {loading ? "분석 중..." : "감정 분석하기"}*/}
-            {/*//*/}
-            {/*// {result && <EmotionResult result={result} />}*/}
+            {loading && <p>분석 결과 불러오는 중...</p>}
+            {error && <p style={{ color: "red" }}>{error}</p>}
+            {!loading && !error && !emotionResult && <p>일기를 작성해주세요.</p>}
+            {emotionResult && <EmotionResult result={emotionResult} />}
         </div>
     );
 }

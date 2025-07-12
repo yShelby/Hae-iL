@@ -1,6 +1,7 @@
 package com.heaildairy.www.emotion.controller;
 
 
+import com.heaildairy.www.auth.user.CustomUser;
 import com.heaildairy.www.diary.entity.DiaryEntity;
 import com.heaildairy.www.emotion.dto.FlaskResponseDTO;
 import com.heaildairy.www.emotion.service.AllService;
@@ -8,35 +9,34 @@ import com.heaildairy.www.emotion.service.FlaskService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/emotion")
+@RequestMapping("/api/analyze")
 @RequiredArgsConstructor
 @CrossOrigin(origins = "http://localhost:5173") // accessing different ports(5173 vs 8080)
 public class EmotionController {
 
-    private final FlaskService flaskService;
     private final AllService allService;
+    /**
+     * 일기 ID로 감정 분석 결과 조회
+     * @param diaryId 일기 ID
+     * @param customUser 인증된 사용자 정보
+     * @return 감정 분석 결과 DTO
+     */
+    @GetMapping("/{diaryId}")
+    public ResponseEntity<FlaskResponseDTO> getEmotionByDiaryId(
+            @PathVariable Long diaryId,
+            @AuthenticationPrincipal CustomUser customUser) {
 
-    @PostMapping("/diary")
-    public ResponseEntity<?> analyzeAndSave(@RequestBody DiaryEntity diaryEntity) {
-        try {
-            String text = (String) diaryEntity.getContent();
-            Long diaryId = diaryEntity.getDiaryId();
+        FlaskResponseDTO result = allService.findByDiary(diaryId);
 
-            if (text == null || text.isEmpty() || diaryId == null) {
-                return ResponseEntity.badRequest().body("text와 diaryId는 필수입니다.");
-            }
-
-            FlaskResponseDTO flaskResult = flaskService.callAnalyze(diaryEntity.getContent());
-            log.info("Flask 서비스 응답 성공: {}",flaskResult);
-            allService.allEmotion(flaskResult, diaryEntity);
-
-            return ResponseEntity.ok(flaskResult);
-        } catch (Exception e) {
-            return ResponseEntity.status(500).body("서버 에러: " + e.getMessage());
+        if (result == null) {
+            return ResponseEntity.notFound().build();
         }
+
+        return ResponseEntity.ok(result);
     }
 }

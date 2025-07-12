@@ -12,7 +12,7 @@
 //   5️⃣ handleDelete 호출 시 삭제 API 요청 → 콜백에 null 전달 후 홈으로 이동
 
 import { useState, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import {useNavigate, useOutletContext} from 'react-router-dom';
 import {showToast} from "@shared/UI/Toast.jsx";
 import {deleteDiaryAPI, saveDiaryAPI, updateDiaryAPI} from "@api/diaryApi.js";
 
@@ -33,6 +33,7 @@ export const useDiaryMutations = ({
     // ❗ 삭제 확인 모달 상태
     const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 
+    const { onDataChange } = useOutletContext();
     // 💾 일기 저장 or 수정 핸들러
     const handleSave = useCallback(async () => {
         // 🚨 저장 조건 검사: 에디터/로그인 여부/중복 저장 방지
@@ -73,7 +74,7 @@ export const useDiaryMutations = ({
                 // 🆕 신규 저장인 경우: save API 호출
                 const { data: newDiary } = await saveDiaryAPI(dto);
                 showToast.success('일기가 성공적으로 저장되었습니다.', { id: toastId });
-
+                onDataChange?.(); // 타임라인 갱신 콜백 호출
                 if (onActionSuccess) {
                     onActionSuccess(newDiary); // 🔁 새 일기 결과 반영
                 }

@@ -10,5 +10,4 @@ import lombok.NoArgsConstructor;
 public class TagDTO {
     private Long tagId;
     private String tagName;
-    private Integer usedCount;
 }

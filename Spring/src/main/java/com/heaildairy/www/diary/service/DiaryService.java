@@ -8,6 +8,9 @@ import com.heaildairy.www.auth.repository.UserRepository;
 import com.heaildairy.www.diary.dto.DiaryDto;
 import com.heaildairy.www.diary.entity.DiaryEntity;
 import com.heaildairy.www.diary.repository.DiaryRepository;
+import com.heaildairy.www.emotion.dto.FlaskResponseDTO;
+import com.heaildairy.www.emotion.service.AllService;
+import com.heaildairy.www.emotion.service.FlaskService;
 import com.heaildairy.www.gallery.entity.GalleryEntity;
 import com.heaildairy.www.gallery.repository.GalleryRepository;
 import com.heaildairy.www.s3.service.S3Service;
@@ -45,6 +48,8 @@ public class DiaryService {
     private final GalleryRepository galleryRepository;
     private final ObjectMapper objectMapper;
     private final S3Service s3Service;
+    private final FlaskService flaskService;
+    private final AllService allService;
 
     /**
      * 📝 일기 저장
@@ -57,10 +62,10 @@ public class DiaryService {
     @Transactional
     public DiaryDto.Response saveDiary(Integer userId, DiaryDto.SaveRequest dto) {
         UserEntity user = userRepository.findById(userId)
-                .orElseThrow(() -> new NoSuchElementException("User not found with id: " + userId));
+                .orElseThrow(() -> new NoSuchElementException("사용자 아이디를 찾을 수 없습니다." + userId));
 
         diaryRepository.findByUserUserIdAndDiaryDate(userId, dto.getDiaryDate()).ifPresent(d -> {
-            throw new IllegalStateException("A diary for this date already exists.");
+            throw new IllegalStateException("해당 날짜에 이미 일기가 존재합니다: " + dto.getDiaryDate());
         });
 
         DiaryEntity diary = DiaryEntity.builder()
@@ -74,6 +79,16 @@ public class DiaryService {
         DiaryEntity savedDiary = diaryRepository.save(diary);
 
         extractAndSaveImage(savedDiary);
+
+        try {
+            // 감정분석요청(Flask 서버 호출)
+            FlaskResponseDTO analysis = flaskService.callAnalyze(savedDiary.getContent());
+            // 감정 분석 결과 저장
+            allService.allEmotion(analysis, savedDiary);
+            log.info("감정 분석 성공: {}", analysis);
+        } catch (Exception e) {
+            log.error("감정 분석 실패: {}", e.getMessage());
+        }
 
         return DiaryDto.Response.fromEntity(savedDiary);
     }
@@ -89,10 +104,10 @@ public class DiaryService {
     @Transactional
     public DiaryDto.Response updateDiary(Long diaryId, Integer userId, DiaryDto.UpdateRequest dto) {
         DiaryEntity diary = diaryRepository.findById(diaryId)
-                .orElseThrow(() -> new NoSuchElementException("Diary not found with id: " + diaryId));
+                .orElseThrow(() -> new NoSuchElementException("해당 일기를 찾을 수 없습니다: " + diaryId));
 
         if (!diary.getUser().getUserId().equals(userId)) {
-            throw new SecurityException("User does not have permission to update this diary.");
+            throw new SecurityException("사용자가 이 일기를 수정할 권한이 없습니다.");
         }
 
         diary.setTitle(dto.getTitle());
@@ -100,7 +115,17 @@ public class DiaryService {
         diary.setWeather(dto.getWeather());
 
         extractAndSaveImage(diary);
+        try {
+            // 감정 분석 요청 (Flask 서버 호출)
+            FlaskResponseDTO analysis = flaskService.callAnalyze(diary.getContent());
 
+            // 감정 분석 결과 저장
+            allService.allEmotion(analysis, diary);
+
+            log.info("감정 분석 성공: {}", analysis);
+        } catch (Exception e) {
+            log.error("감정 분석 실패: {}", e.getMessage());
+        }
         return DiaryDto.Response.fromEntity(diary);
     }
 
@@ -116,10 +141,10 @@ public class DiaryService {
     @Transactional
     public void deleteDiary(Long diaryId, Integer userId) {
         DiaryEntity diary = diaryRepository.findById(diaryId)
-                .orElseThrow(() -> new NoSuchElementException("Diary not found with id: " + diaryId));
+                .orElseThrow(() -> new NoSuchElementException("해당 일기를 찾을 수 없습니다: " + diaryId));
 
         if (!diary.getUser().getUserId().equals(userId)) {
-            throw new SecurityException("User does not have permission to delete this diary.");
+            throw new SecurityException("사용자가 이 일기를 삭제할 권한이 없습니다.");
         }
 
         Optional<GalleryEntity> imageOpt = galleryRepository.findByDiaryDiaryId(diaryId);
@@ -141,10 +166,10 @@ public class DiaryService {
      */
     public DiaryDto.Response findDiaryById(Long diaryId, Integer userId) {
         DiaryEntity diary = diaryRepository.findById(diaryId)
-                .orElseThrow(() -> new NoSuchElementException("Diary not found with id: " + diaryId));
+                .orElseThrow(() -> new NoSuchElementException("해당 일기를 찾을 수 없습니다: " + diaryId));
 
         if (!diary.getUser().getUserId().equals(userId)) {
-            throw new SecurityException("User does not have permission to view this diary.");
+            throw new SecurityException("사용자가 이 일기를 조회할 권한이 없습니다.");
         }
 
         return DiaryDto.Response.fromEntity(diary);
@@ -190,7 +215,7 @@ public class DiaryService {
                 String fileKey = extractFileKeyFromUrl(imageUrl);
 
                 if (fileKey == null) {
-                    log.warn("Could not extract a valid S3 file key from URL: {}", imageUrl);
+                    log.warn("이미지 URL에서 파일 키를 추출할 수 없습니다: {}", imageUrl);
                     existingImageOpt.ifPresent(image -> {
                         s3Service.deleteFile(image.getFileKey());
                         galleryRepository.delete(image);
@@ -217,7 +242,7 @@ public class DiaryService {
                 });
             }
         } catch (JsonProcessingException e) {
-            log.error("Failed to parse diary content JSON for diaryId {}: {}", diary.getDiaryId(), e.getMessage());
+            log.error("일기 내용 JSON 파싱 실패: {}", e.getMessage(), e);
         }
     }
 

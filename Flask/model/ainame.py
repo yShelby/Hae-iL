@@ -11,8 +11,8 @@ model_2C.eval()
 
 checkpoint_dir_6 = "Jinuuuu/KoELECTRA_fine_tunning_emotion"
 
-tokenizer_6 = AutoTokenizer.from_pretrained(checkpoint_dir_6, local_files_only=True)
-model_6 = AutoModelForSequenceClassification.from_pretrained(checkpoint_dir_6, local_files_only=True)
+tokenizer_6 = AutoTokenizer.from_pretrained(checkpoint_dir_6)
+model_6 = AutoModelForSequenceClassification.from_pretrained(checkpoint_dir_6)
 model_6.eval()
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
