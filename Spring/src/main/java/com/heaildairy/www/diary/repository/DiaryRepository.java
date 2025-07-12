@@ -47,4 +47,18 @@ public interface DiaryRepository extends JpaRepository<DiaryEntity, Long> {
 
     // 추가 - dashboardCount를 위한 사용자의 전체 일기 개수를 세는 메소드
     long countByUser(UserEntity user);
+
+    /**
+     * 추가 - 특정 사용자와 기간에 해당하는 모든 일기 작성 날짜를 중복 없이 조회
+     * JPQL(Java Persistence Query Language)을 사용하여 필요한 날짜(localDate) 데이터만 효율적으로 가져온다
+     * @param userId User의 ID
+     * @param startDate 조회 시작일
+     * @param endDate 조회 종료일
+     * @return 날짜 목록 (List<LocalDate>)
+     */
+    @Query("SELECT DISTINCT d.diaryDate FROM DiaryEntity d WHERE d.user.userId = :userId AND d.diaryDate BETWEEN :startDate AND :endDate")
+    List<LocalDate> findDistinctByUserIdAndDateBetween(
+            @Param("userId") Integer userId,
+            @Param("startDate") LocalDate startDate,
+            @Param("endDate") LocalDate endDate);
 }

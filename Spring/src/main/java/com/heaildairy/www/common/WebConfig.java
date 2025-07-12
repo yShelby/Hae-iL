@@ -15,9 +15,12 @@ package com.heaildairy.www.common;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import java.util.List;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
@@ -56,5 +59,19 @@ public class WebConfig implements WebMvcConfigurer {
 
         registry.addViewController("/**/{path:[^\\.]*}")      // /diary/view/1 같은 다단계 경로
                 .setViewName("forward:/");
+    }
+
+    // ===================================================================================
+    // 추가 - @GetUserId 어노테이션을 위한 Argument Resolver 등록
+    // ===================================================================================
+    /**
+     * ✨ 커스텀 HandlerMethodArgumentResolver를 등록하는 메소드
+     * - 여기에 UserIdArgumentResolver를 추가함으로써, 모든 컨트롤러에서 @GetUserId 어노테이션이 동작하게 된다.
+     * @param resolvers Argument Resolver 리스트
+     */
+    @Override
+    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
+        // 직접 만든 UserIdArgumentResolver의 인스턴스를 생성하여 리스트에 추가합니다.
+        resolvers.add(new UserIdArgumentResolver());
     }
 }

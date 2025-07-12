@@ -14,13 +14,15 @@ const CATEGORIES = [
     {key: "ETC", name: "etc"},
 ];
 
+const getTodayString = () => new Date().toISOString().split('T')[0];
+
 // 기본 폼 초기값, rating은 2.5로 초기화해 사용자가 별점을 일부러 안 주는 상황을 방지
 const getInitialFormData = () => ({
     title: '',
     content: '',
     category: 'MOVIE',
     rating: 2.5,
-    journalDate: new Date().toISOString().split('T')[0],  // 오늘 날짜 (yyyy-mm-dd)
+    journalDate: getTodayString(),  // 오늘 날짜 (yyyy-mm-dd)
 });
 
 export const JournalForm = ({ onSubmit, onCancel, initialData, isSubmitting }) => {
@@ -99,8 +101,29 @@ export const JournalForm = ({ onSubmit, onCancel, initialData, isSubmitting }) =
             {/* 날짜 입력 필드 */}
             <div className="form-group">
                 <label htmlFor="journalDate">날짜</label>
-                <input type="date" id="journalDate" name="journalDate" value={formData.journalDate}
-                       onChange={handleChange} required/>
+                {/* 왜 max 속성만으로 미래 날짜 비활성화가 가능할까?
+
+                  1. HTML5 표준 기능: <input type="date"> 태그의 'max' 속성은 HTML5 표준에 내장된 기능
+                     우리가 직접 자바스크립트로 날짜를 비교하고, 클래스를 추가하고, 클릭을 막는 복잡한 로직을 짤 필요x
+
+                  2. 브라우저의 역할: 'max' 속성에 "YYYY-MM-DD" 형식의 날짜를 지정해주면,
+                     웹 브라우저가 알아서 달력 UI에서 해당 날짜 이후의 모든 날짜를 회색으로 비활성화 처리
+
+                  3. 간결함과 효율성: 이 방식은 코드를 매우 간결하게 유지해주며, 불필요한 리렌더링이나
+                     복잡한 상태 관리를 피할 수 있게 해주는 가장 효율적인 방법
+
+                  (참고: DashboardCalendar는 <div>로 직접 만든 커스텀 달력이기 때문에,
+                   이런 브라우저 기본 기능을 사용할 수 없어 직접 비활성화 로직을 구현 필요.)
+                */}
+                <input
+                    type="date"
+                    id="journalDate"
+                    name="journalDate"
+                    value={formData.journalDate}
+                    max={getTodayString()}
+                    onChange={handleChange}
+                    required
+                />
             </div>
 
             {/* 내용 입력 textarea */}

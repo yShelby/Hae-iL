@@ -3,6 +3,7 @@ import "./css/DashboardLayout.css";
 import Weather from "@features/dashboard/Weather.jsx";
 import {Outlet} from "react-router-dom";
 import FortuneCookie from "@features/dashboard/FortuneCookie.jsx";
+import DashboardCalendar from "@features/dashboard/DashboardCalendar.jsx";
 
 const DashboardLayout = () => {
     return (
@@ -25,7 +26,9 @@ const DashboardLayout = () => {
                     </div>
                 </div>
 
-                <div className="placeholder-box" style={{flexGrow: 1}}>달력 (영역)</div>
+                <div className="calendar-container">
+                    <DashboardCalendar />
+                </div>
             </div>
         </main>
     );

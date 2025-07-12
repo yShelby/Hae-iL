@@ -19,11 +19,11 @@
 
 /* --- 각 컬럼의 너비 비율 설정 --- */
 .dashboard-left-column {
-    flex: 11; /* 왼쪽 컬럼 비율 */
+    flex: 8; /* 왼쪽 컬럼 비율 */
 }
 
 .dashboard-right-column {
-    flex: 9; /* 오른쪽 컬럼 비율 */
+    flex: 5; /* 오른쪽 컬럼 비율 */
 }
 
 /* 1. 날씨와 포춘쿠키를 감싸는 가로 컨테이너 */
@@ -51,6 +51,16 @@
     height: 200px;
 }
 
+/* 달력을 감싸는 컨테이너 스타일 */
+.calendar-container {
+    flex-grow: 1;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    /* 자식 요소(.calendar)의 높이를 내용물 크기만큼으로 축소시켜 빈 공간을 만들기 때문에 주석 처리 */
+    /*align-items: center;*/
+}
+
 /* --- 모든 박스의 공통 스타일 --- */
 .placeholder-box {
     /* 디자인 */
@@ -59,7 +69,6 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); /* 부드러운 그림자 효과 */
 
     /* 레이아웃 및 여백 */
-    /*padding: 24px;*/
     display: flex;
     align-items: center;
     justify-content: center;
