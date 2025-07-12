@@ -2,6 +2,8 @@ package com.heaildairy.www.common;
 
 import com.heaildairy.www.dashboard.fortune.entity.FortuneEntity;
 import com.heaildairy.www.dashboard.fortune.repository.FortuneRepository;
+import com.heaildairy.www.dashboard.question.entity.DailyQuestionEntity;
+import com.heaildairy.www.dashboard.question.repository.DailyQuestionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.annotation.Profile;
@@ -9,6 +11,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
@@ -18,6 +21,7 @@ import java.util.List;
 public class DataInitializer {
 
     private final FortuneRepository fortuneRepository;
+    private final DailyQuestionRepository dailyQuestionRepository;
 
     /**
      * Spring 애플리케이션이 완전히 준비된 후, 이 메서드가 자동으로 한 번 실행됩니다.
@@ -26,6 +30,11 @@ public class DataInitializer {
     @EventListener(ApplicationReadyEvent.class)
     @Transactional // 데이터베이스 작업을 하나의 트랜잭션으로 묶습니다.
     public void init() {
+        initFortuneData();
+        initDailyQuestion();
+    }
+
+    private void initFortuneData() {
         // 테이블이 비어있을 때만 데이터를 추가하여 중복 삽입을 방지
         // 'ddl-auto: create' 시에는 항상 비어있으므로 실행되고, 'update' 시에는 최초 한 번만 실행
         if (fortuneRepository.count() == 0) {
@@ -50,6 +59,23 @@ public class DataInitializer {
             System.out.println("[DataInitializer] " + fortunes.size() + "개의 포춘쿠키 메시지가 추가되었습니다.");
         } else {
             System.out.println("[DataInitializer] 'dev' 프로필 감지. 이미 데이터가 존재하므로 초기화를 건너뜁니다.");
+        }
+    }
+
+    private void initDailyQuestion() {
+        LocalDate today = LocalDate.now();
+
+        boolean existsTodayQuestion = dailyQuestionRepository.existsByDate(today);
+
+        if (!existsTodayQuestion) {
+            System.out.println("[DataInitializer] 오늘 날짜의 질문이 없어 기본 질문을 추가합니다.");
+
+            DailyQuestionEntity question = new DailyQuestionEntity("오늘 나는 무엇에 감사했는가?", today);
+
+            dailyQuestionRepository.save(question);
+            System.out.println("[DataInitializer] 기본 질문이 추가되었습니다.");
+        } else {
+            System.out.println("[DataInitializer] 오늘 날짜의 질문이 이미 존재합니다. 초기화를 건너뜁니다.");
         }
     }
 }

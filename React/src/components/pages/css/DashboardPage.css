@@ -1,0 +1,6 @@
+.horizontal-container {
+    display: flex;
+    flex-direction: row;
+    gap: 24px;
+    width: 100%;
+}
