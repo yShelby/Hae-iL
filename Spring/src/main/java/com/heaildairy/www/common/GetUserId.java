@@ -13,5 +13,7 @@ import java.lang.annotation.Target;
  */
 @Target(ElementType.PARAMETER)
 @Retention(RetentionPolicy.RUNTIME)
+// '@interface' 앞의 '@' 기호는 이 파일이 '어노테이션 정의'임을 의미
+// 즉, 이 클래스는 일반 클래스가 아니라 '커스텀 어노테이션'을 만들기 위한 특별한 선언이라는 의미
 public @interface GetUserId {
 }

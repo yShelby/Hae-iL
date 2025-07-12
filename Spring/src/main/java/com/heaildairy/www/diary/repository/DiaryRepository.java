@@ -61,4 +61,7 @@ public interface DiaryRepository extends JpaRepository<DiaryEntity, Long> {
             @Param("userId") Integer userId,
             @Param("startDate") LocalDate startDate,
             @Param("endDate") LocalDate endDate);
+
+    // 추가 - 특정 사용자가 특정 날짜에 일기를 작성했는지 확인하는 메서드
+    boolean existsByUser_UserIdAndDiaryDate(Integer userId, LocalDate date);
 }

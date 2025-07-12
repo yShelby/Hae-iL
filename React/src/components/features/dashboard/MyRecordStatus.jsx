@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import {getDashboardStats} from "@api/dashboardApi.js";
+import {getDashboardStats} from "@api/countApi.js";
 import StatCard from "@shared/UI/StatCard.jsx";
 import {FaBookMedical, FaImages, FaPenAlt} from "react-icons/fa";
 import "./css/MyRecordStatus.css";

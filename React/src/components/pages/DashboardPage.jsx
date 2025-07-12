@@ -1,6 +1,7 @@
 import React from 'react';
 import MyRecordStatus from "@features/dashboard/MyRecordStatus.jsx";
 import "../../layouts/css/DashboardLayout.css";
+import DailyMssion from "@features/dashboard/DailyMssion.jsx";
 
 const DashboardPage = () => {
     return (
@@ -16,8 +17,8 @@ const DashboardPage = () => {
                 <div className="placeholder-box" style={{ flex: 1}}>
                     오늘 감정 분석 / 최근 자가 진단 결과 (영역)
                 </div>
-                <div className="placeholder-box" style={{ flex: 1}}>
-                    중요한 일 / to do (영역)
+                <div className="placeholder-box" style={{ flex: 1, padding: 0, alignItems: 'stretch', justifyContent: 'stretch' }}>
+                    <DailyMssion />
                 </div>
             </div>
         </>

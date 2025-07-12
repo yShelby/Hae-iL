@@ -43,4 +43,7 @@ public interface JournalRepository extends JpaRepository<JournalEntity, Long> {
      */
     @Query("SELECT DISTINCT j.journalDate FROM JournalEntity j WHERE j.user.userId = :userId AND j.journalDate BETWEEN :startDate AND :endDate")
     List<LocalDate> findDistinctByUserIdAndDateBetween(@Param("userId") Integer userId, @Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
+
+    // 추가 - 특정 사용자가 특정 날짜에 저널을 작성했는지 확인하는 메서드
+    boolean existsByUser_UserIdAndJournalDate(Integer userId, LocalDate date);
 }
