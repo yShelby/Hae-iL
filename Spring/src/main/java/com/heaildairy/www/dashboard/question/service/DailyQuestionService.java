@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -24,7 +25,7 @@ public class DailyQuestionService {
     private final UserRepository userRepository;
 
     /**
-     * 오늘의 질문과, 사용자가 이전에 작성한 답변이 있다면 함께 조회합니다.
+     * 오늘의 질문과, 사용자가 이전에 작성한 답변이 있다면 함께 조회
      */
     public QuestionAnswerDto getTodayQuestionAndAnswer(Integer userId) {
         LocalDate today = LocalDate.now();
@@ -39,7 +40,7 @@ public class DailyQuestionService {
     }
 
     /**
-     * 오늘의 질문에 대한 답변을 저장하거나 업데이트합니다.
+     * 오늘의 질문에 대한 답변을 저장하거나 업데이트
      */
     @Transactional
     public void saveOrUpdateAnswer(Integer userId, String answerText) {
@@ -67,8 +68,24 @@ public class DailyQuestionService {
     }
 
     /**
+     * 오늘의 질문에 대한 답변을 삭제하는 메서드
+     * @param userId 현재 로그인한 사용자의 ID
+     */
+    @Transactional
+    public void deleteAnswer(Integer userId) {
+        LocalDate today = LocalDate.now();
+
+        // 오늘 날짜에 해당하는 사용자의 답변을 찾아서 삭제
+        // 답변이 없는 경우, NoSuchElementException 예외를 발생시켜 클라이언트가 알 수 있도록 한다.
+        DailyAnswerEntity answer = dailyAnswerRepository.findByUser_UserIdAndAnswerDate(userId, today)
+                .orElseThrow(() -> new NoSuchElementException("삭제할 답변을 찾을 수 없습니다."));
+
+        dailyAnswerRepository.delete(answer);
+    }
+
+    /**
      * 오늘의 질문을 결정하는 로직
-     * (오늘 날짜의 연중 일수) % (전체 질문 개수) 와 같은 간단한 공식을 사용합니다.
+     * (오늘 날짜의 연중 일수) % (전체 질문 개수) 와 같은 간단한 공식을 사용
      */
     private DailyQuestionEntity getTodayQuestion() {
         long totalQuestions = dailyQuestionRepository.count();

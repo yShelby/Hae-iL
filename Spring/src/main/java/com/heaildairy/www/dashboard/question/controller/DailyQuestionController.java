@@ -35,4 +35,15 @@ public class DailyQuestionController {
         questionService.saveOrUpdateAnswer(userId, request.getAnswerText());
         return ResponseEntity.ok().build();
     }
+
+    /**
+     * 오늘의 질문에 대한 답변을 삭제하는 API
+     * @param customUser 현재 로그인한 사용자 정보
+     * @return 성공 시 204 No Content
+     */
+    @DeleteMapping("/answer")
+    public ResponseEntity<Void> deleteAnswer(@AuthenticationPrincipal CustomUser customUser) {
+        questionService.deleteAnswer(customUser.getUserId());
+        return ResponseEntity.noContent().build(); // 성공적으로 삭제되었으며, 본문 없음을 의미
+    }
 }

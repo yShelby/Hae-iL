@@ -27,3 +27,17 @@ export const saveAnswer = async (answerText) => {
     const response = await apiClient.post('/api/question/answer', { answerText: textToSave });
     return response.data;
 };
+
+/**
+ * 오늘의 질문에 대한 답변을 서버에서 삭제하는 함수
+ * @returns {Promise<any>}
+ */
+export const deleteAnswerAPI = async () => {
+    try {
+        const response = await apiClient.delete('/api/question/answer');
+        return response.data;
+    } catch (error) {
+        console.error("답변 삭제 API 호출 실패:", error);
+        throw error;
+    }
+};

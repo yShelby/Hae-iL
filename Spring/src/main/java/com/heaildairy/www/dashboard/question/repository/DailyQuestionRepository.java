@@ -30,5 +30,5 @@ public interface DailyQuestionRepository extends JpaRepository<DailyQuestionEnti
      * @param date 확인할 날짜
      * @return 존재하면 true, 없으면 false
      */
-    boolean existsByDate(LocalDate date);
+//    boolean existsByDate(LocalDate date);
 }

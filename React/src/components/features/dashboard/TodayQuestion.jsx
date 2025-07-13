@@ -1,19 +1,18 @@
 import {useAuth} from "@features/auth/AuthContext.jsx";
-import {useCheckLogin} from "@/hooks/useCheckLogin.js";
-import {useEffect, useRef, useState} from "react";
-import {getTodayQuestionAndAnswer, saveAnswer} from "@api/questionApi.js";
+import {useEffect, useState} from "react";
+import {deleteAnswerAPI, getTodayQuestionAndAnswer, saveAnswer} from "@api/questionApi.js";
 import "./css/TodayQuestion.css";
+import {showToast} from "@shared/UI/Toast.jsx";
+import toast from "react-hot-toast";
 
 const TodayQuestion = () => {
     const { user, loading: authLoading } = useAuth();
-    const checkLogin = useCheckLogin();
 
     const [question, setQuestion] = useState('');
     const [answer, setAnswer] = useState('');
     const [isLoading, setIsLoading] = useState(true);
-    const [isSaving, setIsSaving] = useState(false); // 저장 중 상태
-
-    const debounceTimer = useRef(null); // 디바운싱을 위한 타이머 ref
+    const [isProcessing, setIsProcessing] = useState(false); // 저장/수정/삭제 중
+    const [hasExistingAnswer, setHasExistingAnswer] = useState(false);
 
     useEffect(() => {
         if (authLoading) return;
@@ -24,6 +23,7 @@ const TodayQuestion = () => {
                     const { questionText, answerText } = await getTodayQuestionAndAnswer();
                     setQuestion(questionText);
                     setAnswer(answerText || ''); // 답변이 null이면 빈 문자열로 초기화
+                    setHasExistingAnswer(!!answerText); // 서버에서 받아온 답변 텍스트의 존재 여부로 상태를 설정
                 } catch (e) {
                     setQuestion('질문을 불러오는 데 실패했습니다.');
                 }
@@ -33,37 +33,81 @@ const TodayQuestion = () => {
         fetchData();
     }, [authLoading, user]);
 
-    // 답변이 변경될 때마다 디바운싱을 적용하여 자동 저장
-    useEffect(() => {
-        // 로딩 중이거나, 로그인하지 않았거나, 질문이 없는 경우에는 저장 로직을 실행하지 않음
-        if (isLoading || !user || !question) return;
-
-        // 이전 타이머가 있다면 취소
-        if (debounceTimer.current) {
-            clearTimeout(debounceTimer.current);
-        }
-
-        // 1.5초 후에 저장 로직 실행
-        debounceTimer.current = setTimeout(async () => {
-            if (!checkLogin()) return;
-            setIsSaving(true);
-            try {
-                await saveAnswer(answer);
-            } catch (error) {
-                console.error("답변 저장 실패:", error);
-            } finally {
-                setIsSaving(false);
-            }
-        }, 1500); // 1.5초
-
-        // 컴포넌트 언마운트 시 타이머 정리
-        return () => {
-            clearTimeout(debounceTimer.current);
-        };
-    }, [answer, user, question, isLoading, checkLogin]);
-
     const handleAnswerChange = (e) => {
         setAnswer(e.target.value);
+    };
+
+    // 저장 또는 수정 핸들러
+    const handleSaveOrUpdate = async () => {
+        setIsProcessing(true);
+        const promise = saveAnswer(answer);
+
+        showToast.promise(promise, {
+            loading: '저장 중...',
+            success: hasExistingAnswer ? '답변이 수정되었습니다.' : '답변이 저장되었습니다.',
+            error: '처리 중 오류가 발생했습니다.',
+        });
+
+        try {
+            await promise;
+            setHasExistingAnswer(true); // 성공 시 '수정/삭제' 모드로 변경
+        } catch (e) {
+            // 에러는 토스트가 자동으로 처리
+        } finally {
+            setIsProcessing(false);
+        }
+    };
+
+    // 삭제 핸들러
+    const handleDelete = async () => {
+        toast((t) => (
+            <div className="confirm-toast">
+                <p>정말 삭제하시겠습니까?</p>
+                <div className="confirm-buttons">
+                    <button
+                        className="btn-confirm-delete"
+                        onClick={() => {
+                            toast.dismiss(t.id); // 확인 토스트 닫기
+                            executeDelete();   // 실제 삭제 로직 실행
+                        }}
+                    >
+                        삭제
+                    </button>
+                    <button className="btn-confirm-cancel" onClick={() => toast.dismiss(t.id)}>
+                        취소
+                    </button>
+                </div>
+            </div>
+        ), {
+            position: 'top-center', // ✅ 위치 설정
+            style: {
+                border: 'none', // ✅ 겉 테두리 제거
+                boxShadow: 'none', // ✅ 그림자 제거 (원할 경우)
+                padding: 0, // optional: 내부 여백 제거
+            }
+        });
+    };
+
+    // 실제 삭제 로직을 처리하는 함수 (Promise 토스트와 함께)
+    const executeDelete = async () => {
+        setIsProcessing(true);
+        const promise = deleteAnswerAPI();
+
+        showToast.promise(promise, {
+            loading: '삭제 중...',
+            success: '답변이 삭제되었습니다.',
+            error: '삭제 중 오류가 발생했습니다.',
+        });
+
+        try {
+            await promise;
+            setAnswer('');
+            setHasExistingAnswer(false); // 성공 시 '저장' 모드로 변경
+        } catch (e) {
+            // 에러는 토스트가 자동으로 처리
+        } finally {
+            setIsProcessing(false);
+        }
     };
 
     const renderContent = () => {
@@ -82,8 +126,22 @@ const TodayQuestion = () => {
                     onChange={handleAnswerChange}
                     placeholder="이곳에 답변을 입력하세요..."
                 />
-                <div className="save-status">
-                    {isSaving ? '저장 중...' : '모든 내용이 자동으로 저장됩니다.'}
+                {/* 버튼 조건부 렌더링 */}
+                <div className="question-button-container">
+                    {hasExistingAnswer ? (
+                        <>
+                            <button onClick={handleSaveOrUpdate} className="btn-update" disabled={isProcessing}>
+                                {isProcessing ? '수정 중...' : '수정'}
+                            </button>
+                            <button onClick={handleDelete} className="btn-delete" disabled={isProcessing}>
+                                {isProcessing ? '삭제 중...' : '삭제'}
+                            </button>
+                        </>
+                    ) : (
+                        <button onClick={handleSaveOrUpdate} className="btn-save" disabled={isProcessing}>
+                            {isProcessing ? '저장 중...' : '저장'}
+                        </button>
+                    )}
                 </div>
             </>
         );

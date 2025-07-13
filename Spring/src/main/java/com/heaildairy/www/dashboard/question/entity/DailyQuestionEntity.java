@@ -1,13 +1,16 @@
 package com.heaildairy.www.dashboard.question.entity;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
 @Getter
 @Entity
 @Table(name = "daily_question")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class DailyQuestionEntity {
 
     @Id
@@ -18,11 +21,8 @@ public class DailyQuestionEntity {
     @Column(name = "question_text", nullable = false, columnDefinition = "TEXT")
     private String questionText;
 
-    @Column(name = "date", nullable = false, unique = true)
-    private LocalDate date;
-
-    public DailyQuestionEntity(String questionText, LocalDate date) {
+    // DataInitializer에서 사용하기 위한 생성자
+    public DailyQuestionEntity(String questionText) {
         this.questionText = questionText;
-        this.date = date;
     }
 }

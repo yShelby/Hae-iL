@@ -11,7 +11,6 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
@@ -63,19 +62,26 @@ public class DataInitializer {
     }
 
     private void initDailyQuestion() {
-        LocalDate today = LocalDate.now();
+        if (dailyQuestionRepository.count() == 0) {
+            System.out.println("[DataInitializer] '오늘의 질문' 데이터가 없어 기본 질문 목록을 추가합니다.");
 
-        boolean existsTodayQuestion = dailyQuestionRepository.existsByDate(today);
+            List<DailyQuestionEntity> questions = Arrays.asList(
+                    new DailyQuestionEntity("오늘 하루, 스스로에게 가장 칭찬해주고 싶은 점은 무엇인가요?"),
+                    new DailyQuestionEntity("최근 나를 가장 편안하게 만들어준 것은 무엇이었나요?"),
+                    new DailyQuestionEntity("사소하지만 오늘 나를 미소 짓게 한 순간이 있었나요?"),
+                    new DailyQuestionEntity("요즘 나의 마음을 가장 잘 표현하는 단어는 무엇인가요?"),
+                    new DailyQuestionEntity("1년 전의 나에게 해주고 싶은 조언이 있다면 무엇인가요?"),
+                    new DailyQuestionEntity("오늘 하루, 어떤 감정을 가장 강하게 느꼈나요?"),
+                    new DailyQuestionEntity("나의 어떤 점이 가장 자랑스러운가요?"),
+                    new DailyQuestionEntity("최근에 새롭게 배우거나 깨달은 것이 있나요?"),
+                    new DailyQuestionEntity("나에게 '쉼'이란 어떤 의미인가요?"),
+                    new DailyQuestionEntity("내일의 나에게 어떤 기대를 하고 있나요?")
+            );
 
-        if (!existsTodayQuestion) {
-            System.out.println("[DataInitializer] 오늘 날짜의 질문이 없어 기본 질문을 추가합니다.");
-
-            DailyQuestionEntity question = new DailyQuestionEntity("오늘 나는 무엇에 감사했는가?", today);
-
-            dailyQuestionRepository.save(question);
-            System.out.println("[DataInitializer] 기본 질문이 추가되었습니다.");
+            dailyQuestionRepository.saveAll(questions);
+            System.out.println("[DataInitializer] " + questions.size() + "개의 '오늘의 질문' 데이터가 추가되었습니다.");
         } else {
-            System.out.println("[DataInitializer] 오늘 날짜의 질문이 이미 존재합니다. 초기화를 건너뜁니다.");
+            System.out.println("[DataInitializer] '오늘의 질문' 데이터가 이미 존재하므로 초기화를 건너뜁니다.");
         }
     }
 }
