@@ -34,8 +34,8 @@ public class TodoListEntity {
     private LocalDate todoDate;
 
     @Builder
-    public TodoListEntity(UserEntity userId, String activityType, boolean isCompleted, LocalDate todoDate) {
-        this.user = userId;
+    public TodoListEntity(UserEntity user, String activityType, boolean isCompleted, LocalDate todoDate) {
+        this.user = user;
         this.activityType = activityType;
         this.isCompleted = isCompleted;
         this.todoDate = todoDate;

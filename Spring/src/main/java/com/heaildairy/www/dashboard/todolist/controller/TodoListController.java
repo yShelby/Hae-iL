@@ -1,7 +1,6 @@
 package com.heaildairy.www.dashboard.todolist.controller;
 
 import com.heaildairy.www.auth.user.CustomUser;
-import com.heaildairy.www.dashboard.todolist.dto.TodoListDto;
 import com.heaildairy.www.dashboard.todolist.service.TodoListService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
