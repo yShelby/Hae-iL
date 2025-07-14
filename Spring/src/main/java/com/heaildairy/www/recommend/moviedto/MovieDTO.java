@@ -1,0 +1,15 @@
+package com.heaildairy.www.recommend.moviedto;
+
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
+public class MovieDTO {
+    private Integer id;
+    private String title;
+    private String overview;
+    private double vote_average;
+    private String trailerUrl;
+    private String poster_path;
+}
