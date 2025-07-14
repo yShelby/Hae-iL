@@ -1,5 +1,6 @@
 package com.heaildairy.www.auth.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.heaildairy.www.auth.config.AESUtil;
 import com.heaildairy.www.auth.dto.RegisterRequestDto;
 import com.heaildairy.www.auth.entity.RefreshToken;
@@ -66,6 +67,18 @@ public class UserService {
         newUser.setName(requestDto.getName());
         newUser.setEncryptedPhoneNumber(encryptedPhone);
         newUser.setNickname(requestDto.getNickname());
+
+        // 감정/장르 JSON 변환
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            String emotionJson = objectMapper.writeValueAsString(requestDto.getInitialEmotion());
+            String genreJson = objectMapper.writeValueAsString(requestDto.getInitialGenre());
+
+            newUser.setInitialEmotion(emotionJson);
+            newUser.setInitialGenre(genreJson);
+        } catch (Exception e) {
+            throw new RuntimeException("JSON 직렬화 실패", e);
+        }
 
         UserEntity savedUser = userRepository.save(newUser); // DB 저장
 

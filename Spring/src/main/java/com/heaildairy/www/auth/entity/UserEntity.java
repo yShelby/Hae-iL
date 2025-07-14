@@ -77,4 +77,9 @@ public class UserEntity implements Serializable { // Serializable 구현 추가
 //        createdAt = LocalDateTime.now();
 //    }
 
+    // 이 필드는 초기 감정 상태와 장르 상태를 JSON 형태로 저장하기 위해 추가
+    @Column(name="initial_emotion", nullable = false,columnDefinition = "json")
+    private String initialEmotion; // 초기 감정 상태를 JSON 형태로 저장
+    @Column(name="inital_genre", nullable = false,columnDefinition = "json")
+    private String initialGenre; // 초기 장르 상태를 JSON 형태로 저장
 }

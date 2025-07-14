@@ -1,5 +1,7 @@
 package com.heaildairy.www.recommend.movieservice;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.heaildairy.www.auth.entity.UserEntity;
 import com.heaildairy.www.recommend.movieentity.EmotionGenreMapEntity;
 import com.heaildairy.www.recommend.movierepository.DisLikeMoviesRepository;
@@ -38,9 +40,17 @@ public class RecommendMovieService {
     public List<MovieDTO> recommendByEmotion(String emotionType, UserEntity user) {
         log.info("영화 추천 요청 - 감정: {}, userId: {}", emotionType, user.getUserId());
 
-        // 1. 감정에 매핑된 장르 가중치 리스트 조회 (ex: 기쁨 → 코미디, 음악 등)
-        List<EmotionGenreMapEntity> genreWeights = emotionGenreMapRepository.findByEmotionTypeOrdered(emotionType);
-        log.debug("조회된 장르 가중치: {}", genreWeights);
+        boolean useSurveyInstead = (emotionType == null || emotionType.equalsIgnoreCase("중립/기타"));
+        List<EmotionGenreMapEntity> genreWeights;
+        if (useSurveyInstead) {
+            // 초기 설문 기반 추천 사용
+            genreWeights = generateGenreWeightsFromInitialSurvey(user);
+            log.info("초기 설문 기반 추천 사용, 계산된 장르 가중치: {}", genreWeights);
+        } else {
+            // 감정에 매핑된 장르 가중치 조회 (ex: 기쁨 → 코미디, 음악 등)
+            genreWeights = emotionGenreMapRepository.findByEmotionTypeOrdered(emotionType);
+            log.debug("감정 기반 장르 가중치: {}", genreWeights);
+        }
 
         // 2. 현재 사용자가 싫어요 표시한 영화 키 리스트 조회
         List<String> dislikedMovieKeys = disLikeMoviesRepository.findByUser_UserId(user.getUserId())
@@ -85,5 +95,44 @@ public class RecommendMovieService {
         log.info("최종 추천 영화 수: {}", result.size());
 
         return result;
+    }
+    /**
+     * 초기 설문 기반 장르 가중치 생성 메서드
+     * - 사용자의 초기 설문 결과를 기반으로 장르 가중치를 생성함
+     * - 예시: 사용자가 '코미디'를 좋아한다고 응답하면, 해당 장르의 가중치를 높임
+     */
+    private List<EmotionGenreMapEntity> generateGenreWeightsFromInitialSurvey(UserEntity user) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        List<String> initialEmotions;
+        List<String> initialGenres;
+
+        try {
+            initialEmotions = objectMapper.readValue(user.getInitialEmotion(), new TypeReference<>() {});
+            initialGenres = objectMapper.readValue(user.getInitialGenre(), new TypeReference<>() {});
+        } catch (Exception e) {
+            log.error("초기 설문 JSON 파싱 실패", e);
+            return Collections.emptyList(); // 예외 발생 시 빈 리스트 반환
+        }
+        Map<Integer, EmotionGenreMapEntity> genreWeightMap = new HashMap<>();
+
+        for(String emotion : initialEmotions) {
+            List<EmotionGenreMapEntity> mappings = emotionGenreMapRepository.findByEmotionTypeOrdered(emotion);
+            for(EmotionGenreMapEntity mapping : mappings) {
+                if (initialGenres.contains(mapping.getGenreName())) {
+                    // 장르가 초기 설문에 포함되어 있다면 가중치 누적
+                    genreWeightMap.merge(
+                            mapping.getGenreCode(),
+                            new EmotionGenreMapEntity(emotion, mapping.getGenreCode(), mapping.getGenreName(), mapping.getGenreWeight()),
+                            (oldVal, newVal) -> {
+                                oldVal.setGenreWeight(oldVal.getGenreWeight()+newVal.getGenreWeight());
+                                return oldVal;
+                            }
+                    );
+                }
+            }
+        }
+        return genreWeightMap.values().stream()
+                .sorted(Comparator.comparingInt(EmotionGenreMapEntity::getGenreWeight).reversed())
+                .collect(Collectors.toList());
     }
 }
