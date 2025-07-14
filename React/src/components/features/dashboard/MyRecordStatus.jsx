@@ -4,7 +4,7 @@ import StatCard from "@shared/UI/StatCard.jsx";
 import {FaBookMedical, FaImages, FaPenAlt} from "react-icons/fa";
 import "./css/MyRecordStatus.css";
 import {useNavigate} from "react-router-dom";
-import {useAuth} from "@features/auth/AuthContext.jsx";
+import {useAuth} from "@shared/context/AuthContext.jsx";
 import {format} from "date-fns";
 import {useCheckLogin} from "@/hooks/useCheckLogin.js";
 

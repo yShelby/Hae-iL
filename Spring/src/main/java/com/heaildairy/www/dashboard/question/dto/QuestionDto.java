@@ -1,10 +1,12 @@
 package com.heaildairy.www.dashboard.question.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class SaveAnswerRequestDto {
-    private String answerText;
+@AllArgsConstructor
+public class QuestionDto {
+    private String questionText;
 }

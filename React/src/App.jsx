@@ -21,32 +21,35 @@ import DashboardLayout from "@/layouts/DashboardLayout.jsx";
 import DashboardPage from "@pages/DashboardPage.jsx";
 import JournalPage from "@pages/JournalPage.jsx";
 import GalleryPage from "@pages/GalleryPage.jsx";
+import {QuestionProvider} from "@shared/context/QuestionContext.jsx";
 
 function App() {
     return (
-        // 🧭 최상위 라우터: 라우팅을 관리하는 라우트 컨테이너
-        <Routes>
-            <Route path="/" element={<MainLayout />}>
-                {/* 루트 대시보드 전용 레이아웃 예시*/}
-                <Route path={""} element={<DashboardLayout />}>
-                    <Route index element={<DashboardPage />} />
-                </Route>
+        // 오늘의 질문이 dashboard와 diary 간 공유를 위해 추가
+        <QuestionProvider>
+            {/*🧭 최상위 라우터: 라우팅을 관리하는 라우트 컨테이너*/}
+            <Routes>
+                <Route path="/" element={<MainLayout/>}>
+                    {/* 루트 대시보드 전용 레이아웃 예시*/}
+                    <Route path={""} element={<DashboardLayout/>}>
+                        <Route index element={<DashboardPage/>}/>
+                    </Route>
 
-                {/* 다이어리 전용 레이아웃 */}
-                <Route path="diary" element={<DiaryLayout />}>
-                    <Route index element={<DiaryWritePage />} />
-                    <Route path="date/:date" element={<DiaryDatePage />} />
-                    <Route path=":diaryId" element={<DiaryIdPage />} />
-                </Route>
+                    {/* 다이어리 전용 레이아웃 */}
+                    <Route path="diary" element={<DiaryLayout/>}>
+                        <Route index element={<DiaryWritePage/>}/>
+                        <Route path="date/:date" element={<DiaryDatePage/>}/>
+                        <Route path=":diaryId" element={<DiaryIdPage/>}/>
+                    </Route>
 
-                {/* 대시보드 카운트 클릭시 journal과 gallery로 가도록 경로 추가 */}
-                <Route path="journal" element={<JournalPage />} />
-                <Route path="gallery" element={<DiaryLayout />}>
-                    <Route index element={<GalleryPage />} />
+                    {/* 대시보드 카운트 클릭시 journal과 gallery로 가도록 경로 추가 */}
+                    <Route path="journal" element={<JournalPage/>}/>
+                    <Route path="gallery" element={<DiaryLayout/>}>
+                        <Route index element={<GalleryPage/>}/>
+                    </Route>
                 </Route>
-            </Route>
-        </Routes>
-
+            </Routes>
+        </QuestionProvider>
     );
 }
 

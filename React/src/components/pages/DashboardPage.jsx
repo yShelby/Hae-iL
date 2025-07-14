@@ -14,7 +14,7 @@ const DashboardPage = () => {
                 </div>
                 <div className="placeholder-box"
                      style={{flex: 1, padding: 0, alignItems: 'stretch', justifyContent: 'stretch'}}>
-                    <DailyMission/>
+                    <TodayQuestion />
                 </div>
             </div>
             <div className="horizontal-container" style={{flexGrow: 1}}>
@@ -22,7 +22,7 @@ const DashboardPage = () => {
                     오늘 감정 분석 / 최근 자가 진단 결과 (영역)
                 </div>
                 <div className="placeholder-box" style={{flex: 1, padding: 0, alignItems: 'stretch', justifyContent: 'stretch'}}>
-                    <TodayQuestion />
+                    <DailyMission/>
                 </div>
             </div>
         </>

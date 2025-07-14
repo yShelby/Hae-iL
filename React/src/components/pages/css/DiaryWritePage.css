@@ -88,3 +88,13 @@
 .delete-button:hover:not(:disabled) {
     background-color: #c82333;
 }
+
+/* 추가 - 날씨 선택기와 질문 표시기를 나란히 배치하기 위한 컨테이너 */
+.diary-meta-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 1rem;
+    flex-wrap: wrap; /* 화면이 좁을 때 줄바꿈 */
+}

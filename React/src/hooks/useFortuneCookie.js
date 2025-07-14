@@ -1,7 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { getFortuneStatus, openFortune } from '../api/fortuneApi';
 import {showToast} from "@shared/UI/Toast.jsx";
-import {useAuth} from "@features/auth/AuthContext.jsx";
+import {useAuth} from "@shared/context/AuthContext.jsx";
 
 export const useFortuneCookie = () => {
     const {user} = useAuth();

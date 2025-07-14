@@ -3,7 +3,7 @@ import {Button} from '../shared/UI/Button';
 import {JournalList} from "@features/journal/JournalList.jsx";
 import JournalEditor from "@features/journal/JournalEditor.jsx";
 import {FilterByCategory} from "@features/journal/FilterByCategory.jsx";
-import {useAuth} from "@features/auth/AuthContext.jsx";
+import {useAuth} from "@shared/context/AuthContext.jsx";
 import {showToast} from "@shared/UI/Toast.jsx";
 import {deleteJournal} from "@api/journalApi.js";
 import {ConfirmModal} from "@shared/UI/ConfirmModal.jsx";

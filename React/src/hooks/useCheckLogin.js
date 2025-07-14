@@ -1,6 +1,6 @@
 // 📁 src/hooks/useCheckLogin.js
 import { useRef } from 'react';
-import { useAuth } from '@features/auth/AuthContext.jsx';
+import { useAuth } from '@shared/context/AuthContext.jsx';
 import { showToast } from '@shared/UI/Toast.jsx';
 
 export function useCheckLogin() {

@@ -1,6 +1,6 @@
 import {useState, useCallback, useEffect} from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '@features/auth/AuthContext.jsx';
+import { useAuth } from '@shared/context/AuthContext.jsx';
 import { showToast } from '@shared/UI/Toast.jsx';
 import { fetchDiaryByDateAPI } from '@api/diaryApi.js';
 import { formatDateToString } from '@shared/utils/dateUtils.js';

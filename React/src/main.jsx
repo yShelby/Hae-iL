@@ -12,7 +12,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import './index.css';
 import {GalleryProvider} from "@features/gallery/GalleryContext.jsx";
 import App from "@/App.jsx";
-import {AuthProvider} from "@features/auth/AuthContext.jsx";
+import {AuthProvider} from "@shared/context/AuthContext.jsx";
 
 /* =================================================================
  * 🚀 Entry Point: index.jsx

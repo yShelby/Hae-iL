@@ -1,43 +1,20 @@
 import apiClient from "@api/apiClient.js";
 
 /**
- * 오늘의 질문과 저장된 답변을 서버에서 가져오는 함수
- * @returns {Promise<Object>} { questionText: "...", answerText: "..." } 형태의 객체
+ * 오늘의 질문을 랜덤으로 가져오는 함수
+ * @returns {Promise<Object>} { questionText: "..." } 형태의 객체
  */
-export const getTodayQuestionAndAnswer = async () => {
+export const getTodayQuestionAPI = async () => {
     try {
+        // API 엔드포인트는 기존과 동일하게 /api/question/today를 사용
         const response = await apiClient.get('/api/question/today');
         return response.data;
     } catch (error) {
+        // 401(미인증) 에러는 apiClient 인터셉터에서 공통 처리하므로, 그 외의 에러만 로그를 남긴다
         if (error.response?.status !== 401) {
             console.error("오늘의 질문 조회 API 호출 실패:", error);
         }
-        throw error;
-    }
-};
-
-/**
- * 오늘의 질문에 대한 답변을 서버에 저장/수정하는 함수
- * @param {string} answerText - 사용자가 입력한 답변 내용
- * @returns {Promise<any>}
- */
-export const saveAnswer = async (answerText) => {
-    // answerText가 null이나 undefined일 경우를 대비하여 빈 문자열로 보낸다
-    const textToSave = answerText || '';
-    const response = await apiClient.post('/api/question/answer', { answerText: textToSave });
-    return response.data;
-};
-
-/**
- * 오늘의 질문에 대한 답변을 서버에서 삭제하는 함수
- * @returns {Promise<any>}
- */
-export const deleteAnswerAPI = async () => {
-    try {
-        const response = await apiClient.delete('/api/question/answer');
-        return response.data;
-    } catch (error) {
-        console.error("답변 삭제 API 호출 실패:", error);
+        // 에러를 다시 throw하여 호출한 컴포넌트(e.g., TodayQuestion.jsx)에서 catch 가능.
         throw error;
     }
 };

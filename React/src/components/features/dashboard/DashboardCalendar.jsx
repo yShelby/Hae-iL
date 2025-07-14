@@ -1,6 +1,6 @@
 import {useEffect, useState} from "react";
 import {useCheckLogin} from "@/hooks/useCheckLogin.js";
-import {useAuth} from "@features/auth/AuthContext.jsx";
+import {useAuth} from "@shared/context/AuthContext.jsx";
 import {useNavigate} from "react-router-dom";
 import {getRecordDate} from "@api/recordApi.js";
 import "./css/DashboardCalendar.css";

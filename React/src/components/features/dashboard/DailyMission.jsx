@@ -1,6 +1,6 @@
 import {useEffect, useMemo, useState} from "react";
 import {DAILY_MISSIONS, MISSION_NAV_PATHS} from "@features/dashboard/constants.js";
-import {useAuth} from "@features/auth/AuthContext.jsx";
+import {useAuth} from "@shared/context/AuthContext.jsx";
 import {getTodayTodoStatus} from "@api/todoApi.js";
 import "./css/DailyMission.css";
 import {useNavigate} from "react-router-dom";
@@ -9,14 +9,20 @@ const DailyMission = () => {
     const { user, loading: authLoading } = useAuth();
     const navigate = useNavigate();
 
+    // 미션 완료 상태와 데이터 로딩 상태를 관리
     const [missionStatus, setMissionStatus] = useState({});
     const [isMissionLoading, setIsMissionLoading] = useState(true);
 
-    // 모든 미션이 완료되었는지 확인하는 로직
+    /**
+     * 모든 미션이 완료되었는지 여부를 계산하는 Memoized 값
+     * missionStatus 객체가 변경될 때만 재계산된다
+     */
     const allMissionsComplete = useMemo(() => {
-        // missionStatus 객체에 값이 있고, 모든 미션의 상태가 true인지 확인
-        const statuses = Object.values(missionStatus);
-        return statuses.length > 0 && statuses.every(status => status === true);
+        // missionStatus 객체가 비어있으면(초기 로딩) false를 반환
+        if (Object.keys(missionStatus).length === 0) return false;
+
+        // DAILY_MISSIONS 배열의 모든 미션에 대해 missionStatus의 값이 true인지 확인
+        return DAILY_MISSIONS.every(mission => missionStatus[mission.id] === true);
     }, [missionStatus]);
 
     // 컴포넌트 마운트 시, 오늘 날짜의 미션 완료 상태를 서버에서 불러온다.
@@ -59,22 +65,25 @@ const DailyMission = () => {
             <h4 className="title">오늘의 미션</h4>
             {!user ? (
                 <div className="login-prompt">로그인 후 이용해주세요.</div>
-            ) : allMissionsComplete ? (
-                <div className="all-complete-message">🎉 오늘의 미션을 모두 완료했습니다!</div>
             ) : (
-                <ul className="mission-list">
-                    {DAILY_MISSIONS.map((mission) => (
-                        // li 요소에 직접 onClick 이벤트를 추가
-                        <li key={mission.id} className="mission-item" onClick={() => handleNavigate(mission.id)}>
-                            <div className={`status-icon ${missionStatus[mission.id] ? 'completed' : ''}`}>
-                                {missionStatus[mission.id] && '✔'}
-                            </div>
-                            <span className={`mission-text ${missionStatus[mission.id] ? 'completed' : ''}`}>
-                                {mission.text}
-                            </span>
-                        </li>
-                    ))}
-                </ul>
+                // 모든 미션 완료 시 메시지를 상단에 표시하고, 그 아래에 항상 미션 목록을 보여준다
+                <>
+                    {allMissionsComplete && (
+                        <div className="all-complete-message">오늘의 미션을 모두 완료했습니다!</div>
+                    )}
+                    <ul className="mission-list">
+                        {DAILY_MISSIONS.map((mission) => (
+                            <li key={mission.id} className="mission-item" onClick={() => handleNavigate(mission.id)}>
+                                <div className={`status-icon ${missionStatus[mission.id] ? 'completed' : ""}`}>
+                                    {missionStatus[mission.id] && '✓'}
+                                </div>
+                                <span className={`mission-text ${missionStatus[mission.id] ? 'completed' : ""}`}>
+                                    {mission.text}
+                                </span>
+                            </li>
+                        ))}
+                    </ul>
+                </>
             )}
         </div>
     );

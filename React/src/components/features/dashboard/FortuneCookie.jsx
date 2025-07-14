@@ -3,7 +3,7 @@ import {useEffect, useState} from "react";
 // import crackedCookieImg from "../../../assets/images/cracked_cookie.svg";
 // import cookieImg from "../../../assets/images/cookie.svg";
 import "./css/FortuneCookie.css";
-import {useAuth} from "@features/auth/AuthContext.jsx";
+import {useAuth} from "@shared/context/AuthContext.jsx";
 import {useCheckLogin} from "@/hooks/useCheckLogin.js";
 
 const cookieImgUrl = '/images/cookie.svg';
