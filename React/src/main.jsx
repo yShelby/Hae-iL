@@ -3,6 +3,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import {BrowserRouter} from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import "./index.css";
 
 // 🌐 전역 상태 컨텍스트 (인증 / 갤러리 모달)
 

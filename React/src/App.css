@@ -1,21 +1,4 @@
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
-
-body {
-    font-family: 'Noto Sans KR', sans-serif;
-    background-color: #fdfdfd;
-    color: #222;
-}
-
-a {
-    color: inherit;
-    text-decoration: none;
-}
-
-button {
-    cursor: pointer;
-    font-family: inherit;
-}
+/* app.css를 index.css와 통합
+   App.jsx 에서도 css를 import할 필요 없어졌고,
+   main.jsx 에서만 index.css import
+*/

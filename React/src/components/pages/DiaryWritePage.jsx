@@ -125,6 +125,21 @@ const DiaryWritePage = ({initialDiary, selectedDate, onActionSuccess, isLoading}
         }
     };
 
+    // 추가 - "닫기" 버튼 클릭 시 -> 에디터 비활성화
+    const handleCancelWriting = () => {
+        setIsEditing(false);
+        if (editor) {
+            editor.setEditable(false);
+            // 기존 일기가 있었다면, 그 내용으로 복원
+            if (initialDiary) {
+                const content = initialDiary.content ? JSON.parse(initialDiary.content) : '';
+                editor.commands.setContent(content, false);
+            } else { // 새 일기였다면 내용 비우기
+                editor.commands.clearContent();
+            }
+        }
+    };
+
     // ⏳ 일기 불러오는 중
     if (isLoading) {
         return (
@@ -162,19 +177,22 @@ const DiaryWritePage = ({initialDiary, selectedDate, onActionSuccess, isLoading}
                     </button>
                 </div>
             ) : (
-                <>
-                    {/* 📝 제목 입력 */}
-                    <DiaryTitleInput
-                        title={diaryState.title}
-                        setTitle={(val) => setField('title', val)}
-                    />
+                <div className={"diary-content-wrapper"}>
+                    {/* 제목과 날씨 선택기를 감싸는 div 추가
+                     -> 제목과 날씨를 가로로 나란히 배치하기 위해 flexbox를 적용할 부모 컨테이너가 필요 */}
+                    <div className="title-weather-wrapper">
+                        {/* 📝 제목 입력 */}
+                        <DiaryTitleInput
+                            title={diaryState.title}
+                            setTitle={(val) => setField('title', val)}
+                        />
 
-                    {/* 🌦️ 날씨 선택 */}
-                    <WeatherSelector
-                        weather={diaryState.weather}
-                        setWeather={(val) => setField('weather', val)}
-                    />
-
+                        {/* 🌦️ 날씨 선택 */}
+                        <WeatherSelector
+                            weather={diaryState.weather}
+                            setWeather={(val) => setField('weather', val)}
+                        />
+                    </div>
                     {/* ✍️ 본문 에디터 (이미지 포함) */}
                     <DiaryEditor editor={editor} onImageUpload={handleImageUpload}/>
 
@@ -206,8 +224,16 @@ const DiaryWritePage = ({initialDiary, selectedDate, onActionSuccess, isLoading}
                                 {isSaving ? '저장 중...' : '저장'}
                             </button>
                         )}
+                        {/* 추가 - 닫기 버튼 */}
+                        <button
+                            onClick={handleCancelWriting}
+                            className="cancel-button"
+                            disabled={isSaving}
+                        >
+                            닫기
+                        </button>
                     </div>
-                </>
+                </div>
             )}
 
             {/* 🧾 삭제 확인 모달 */}

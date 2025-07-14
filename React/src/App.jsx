@@ -16,7 +16,6 @@ import DiaryLayout from "@/layouts/DiaryLayout.jsx";
 import DiaryWritePage from "@pages/DiaryWritePage.jsx";
 import DiaryDatePage from "@pages/DiaryDatePage.jsx";
 import DiaryIdPage from "@pages/DiaryIdPage.jsx"; // 💡 메인 레이아웃을 불러옴
-import './App.css';
 import DashboardLayout from "@/layouts/DashboardLayout.jsx";
 import DashboardPage from "@pages/DashboardPage.jsx";
 import JournalPage from "@pages/JournalPage.jsx";
