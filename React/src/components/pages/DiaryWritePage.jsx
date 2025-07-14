@@ -142,15 +142,6 @@ const DiaryWritePage = ({ selectedDate, isLoading }) => {
         );
     }
 
-    // 📆 날짜 선택 안 된 경우 안내
-    if (!selectedDate && !initialDiary) {
-        return (
-            <div className="diary-write-page placeholder-wrapper">
-                <p className="placeholder-text">캘린더에서 날짜를 선택해주세요.</p>
-            </div>
-        );
-    }
-
     return (
         <div className="diary-write-page">
             {/* 📌 상단 날짜 및 기존 작성 여부 표시 */}
