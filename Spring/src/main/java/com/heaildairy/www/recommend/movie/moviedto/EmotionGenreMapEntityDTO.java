@@ -11,5 +11,5 @@ public class EmotionGenreMapEntityDTO {
     private String emotionType;
     private Integer genreCode;
     private String genreName;
-    private Integer genreWeight;
+    private Double genreWeight;
 }

@@ -132,7 +132,7 @@ public class RecommendMovieService {
             }
         }
         return genreWeightMap.values().stream()
-                .sorted(Comparator.comparingInt(EmotionGenreMapEntity::getGenreWeight).reversed())
+                .sorted(Comparator.comparingDouble(EmotionGenreMapEntity::getGenreWeight).reversed())
                 .collect(Collectors.toList());
     }
 }

@@ -27,5 +27,5 @@ public class EmotionGenreMapEntity {
     private String genreName;
 
     @Column(name = "genre_weight")
-    private Integer genreWeight;
+    private Double genreWeight;
 }
