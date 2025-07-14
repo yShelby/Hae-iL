@@ -1,7 +1,7 @@
 package com.heaildairy.www.recommend.movie.movieservice;
 
 import com.heaildairy.www.auth.entity.UserEntity;
-import com.heaildairy.www.recommend.movie.moviedto.DisLikeMoviesDTO;
+import com.heaildairy.www.recommend.movie.moviedto.DisLikeMoviesDto;
 import com.heaildairy.www.recommend.movie.movieentity.DisLikeMoviesEntity;
 import com.heaildairy.www.recommend.movie.movierepository.DisLikeMoviesRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,11 +18,11 @@ public class DisLikeMoviesService {
 
     private final DisLikeMoviesRepository disLikeMoviesRepository;
 
-    public List<DisLikeMoviesDTO> findDislikeMoviesByUser(Integer userId){
+    public List<DisLikeMoviesDto> findDislikeMoviesByUser(Integer userId){
         List<DisLikeMoviesEntity> disLikeMoviesEntities = disLikeMoviesRepository.findByUser_UserId(userId);
         return disLikeMoviesEntities.stream()
                 .map(disLikeMoviesEntity -> {
-                    DisLikeMoviesDTO disLikeMoviesDTO = new DisLikeMoviesDTO();
+                    DisLikeMoviesDto disLikeMoviesDTO = new DisLikeMoviesDto();
                     disLikeMoviesDTO.setDislikeId(disLikeMoviesEntity.getDislikeId());
                     disLikeMoviesDTO.setMovieKey(disLikeMoviesEntity.getMovieKey());
                     return disLikeMoviesDTO;

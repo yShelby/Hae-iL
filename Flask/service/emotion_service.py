@@ -15,6 +15,8 @@ class EmotionDiaryService:
         top3_emotions = tuple([emo for emo, _ in detailed_emotions[:3]])
         custom_tags = custom_combinations.get(top3_emotions, [])
 
+        print("태그지롱",tags)
+
         return {
             "mood_score" : mood_score,
             "details" : [{"emotion_type": emo, "percentage":round(prob * 100, 2)} for emo, prob in detailed_emotions],

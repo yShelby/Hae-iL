@@ -5,7 +5,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class DisLikeMoviesDTO {
+public class DisLikeMoviesDto {
     private Integer dislikeId;
     private String movieKey;
 }

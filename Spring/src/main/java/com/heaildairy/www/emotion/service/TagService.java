@@ -1,10 +1,12 @@
 package com.heaildairy.www.emotion.service;
 
-import com.heaildairy.www.emotion.dto.TagDTO;
+import com.heaildairy.www.diary.entity.DiaryEntity;
+import com.heaildairy.www.emotion.dto.TagDto;
 import com.heaildairy.www.emotion.entity.Tag;
 import com.heaildairy.www.emotion.repository.TagRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,26 +18,30 @@ public class TagService {
     // 태그 저장소
     private final TagRepository tagRepository;
 
-    public Tag saveTag(TagDTO tagDTO) {
-        Tag tag = tagRepository.findByTagName(tagDTO.getTagName()).orElse(null);
+    /**
+     * 여러 태그 저장 - 일기마다 별도 태그 엔티티 생성
+     */
+    @Transactional
+    public List<Tag> saveOrUpdateTags(List<TagDto> tagDtoList, DiaryEntity diaryEntity) {
+        // 기존 태그 삭제
+        tagRepository.deleteByDiaryDiaryId(diaryEntity.getDiaryId());
 
-        if (tag != null){
-            tag.setUsedCount(tag.getUsedCount()+1);
-        } else {
-            tag = new Tag();
-        tag.setTagName(tagDTO.getTagName());
-        tag.setUsedCount(1);
-        }
-
-        return tagRepository.save(tag);
-    }
-
-    public List<Tag> saveTag(List<TagDTO> tagDTOList) {
+        // 새 태그 저장
         List<Tag> savedTags = new ArrayList<>();
-        for (TagDTO dto : tagDTOList) {
-            savedTags.add(saveTag(dto)); // 단건 저장 메서드 호출
+        for (TagDto dto : tagDtoList) {
+            Tag tag = new Tag();
+            tag.setTagName(dto.getTagName());
+            tag.setDiary(diaryEntity);
+            savedTags.add(tagRepository.save(tag));
         }
         return savedTags;
+    }
+
+    /**
+     * 해당 일기에 연결된 태그 이름 목록 조회
+     */
+    public List<String> findTagNamesByDiaryId(Long diaryId) {
+        return tagRepository.findTagNamesByDiaryId(diaryId);
     }
 
 }

@@ -27,14 +27,9 @@ public class MoodEntry {
     @JoinColumn(name = "diary_id", nullable = false, unique = true,
     foreignKey = @ForeignKey(name = "fk_diary_id"))
     private DiaryEntity diary;
-//    @Column(name = "diary_id", nullable = false, unique = true)
-//    private Integer diaryId;
 
     @Column(name = "mood_score", nullable = false)
     private Integer moodScore;
-
-//    @Column(name = "sentiment_type", nullable = false)
-//    private String sentimentType;
 
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;

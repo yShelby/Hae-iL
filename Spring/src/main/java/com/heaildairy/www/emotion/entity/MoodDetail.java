@@ -33,7 +33,4 @@ public class MoodDetail {
     @Column(name = "emotion_type",length = 50)
     private String emotionType;
 
-    @Column(name = "confidence_score", precision = 3, scale = 2)
-    private BigDecimal confidenceScore;
-
 }

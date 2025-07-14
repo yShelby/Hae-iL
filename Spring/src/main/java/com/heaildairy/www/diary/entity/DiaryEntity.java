@@ -15,6 +15,9 @@
 package com.heaildairy.www.diary.entity;
 
 import com.heaildairy.www.auth.entity.UserEntity;
+import com.heaildairy.www.emotion.entity.MoodDetail;
+import com.heaildairy.www.emotion.entity.MoodEntry;
+import com.heaildairy.www.emotion.entity.Tag;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -25,6 +28,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Getter
@@ -70,6 +74,16 @@ public class DiaryEntity {
     @UpdateTimestamp
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    // 일기와 관련된 감정 세부 정보 (다대일 관계, 삭제 시 연관된 MoodDetail도 삭제)
+    @OneToMany(mappedBy = "diary", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<MoodDetail> moodDetails;
+
+    @OneToOne(mappedBy = "diary", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private MoodEntry moodEntry;
+
+    @OneToMany(mappedBy = "diary", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Tag> tags;
 
     /**
      * 🛠️ 빌더 생성자

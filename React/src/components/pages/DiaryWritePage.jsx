@@ -31,6 +31,7 @@ import DiaryEditor from "@features/diary/DiaryEditor.jsx";
 import {ConfirmModal} from "@shared/UI/ConfirmModal.jsx";
 import {useCheckLogin} from "@/hooks/useCheckLogin.js";
 import {useAuth} from "@features/auth/AuthContext.jsx";
+import {useOutletContext} from "react-router-dom";
 
 // 🖼️ TipTap Image 확장을 block 요소로 커스터마이징
 const CustomBlockImage = TipTapImage.extend({
@@ -39,11 +40,11 @@ const CustomBlockImage = TipTapImage.extend({
     draggable: true,
 });
 
-const DiaryWritePage = ({ initialDiary, selectedDate, onActionSuccess, isLoading }) => {
+const DiaryWritePage = ({ selectedDate, isLoading }) => {
     const { user } = useAuth();
     const checkLogin = useCheckLogin(); // 로그인 확인 훅
     const [isEditing, setIsEditing] = useState(false); // ✍️ 에디터 활성 여부
-
+    const { initialDiary, onDiaryUpdated, setSelectedDiaryId, onEmotionUpdated } = useOutletContext();
     // 🧠 TipTap 에디터 초기화 및 확장 구성
     const editor = useEditor({
         extensions: [
@@ -64,6 +65,18 @@ const DiaryWritePage = ({ initialDiary, selectedDate, onActionSuccess, isLoading
 
     // ☁️ 이미지 업로드 훅 (에디터 연동 + S3 전송 준비)
     const { handleImageUpload, uploadPendingImagesToS3 } = useImageUpload(editor);
+
+    const onActionSuccess = async (updatedDiaryOrNull) => {
+        if (updatedDiaryOrNull) {
+            setSelectedDiaryId?.(updatedDiaryOrNull.diaryId);  // 감정 분석 트리거
+            onDiaryUpdated?.();  // 부모에게 다시 일기 불러오라고 요청
+            onEmotionUpdated?.(); // 감정 분석 결과 새로고침
+            setIsEditing(true);  // 저장 후에도 에디터 유지
+        } else {
+            setSelectedDiaryId?.(null);  // 삭제 시 감정 결과 초기화
+            setIsEditing(false);
+        }
+    };
 
     // 💾 저장/삭제 기능 + 모달 상태 관리 훅
     const {
@@ -125,15 +138,6 @@ const DiaryWritePage = ({ initialDiary, selectedDate, onActionSuccess, isLoading
         return (
             <div className="diary-write-page placeholder-wrapper">
                 <p className="placeholder-text">일기를 불러오는 중입니다...</p>
-            </div>
-        );
-    }
-
-    // 📆 날짜 선택 안 된 경우 안내
-    if (!selectedDate && !initialDiary) {
-        return (
-            <div className="diary-write-page placeholder-wrapper">
-                <p className="placeholder-text">캘린더에서 날짜를 선택해주세요.</p>
             </div>
         );
     }
@@ -205,7 +209,7 @@ const DiaryWritePage = ({ initialDiary, selectedDate, onActionSuccess, isLoading
                 isOpen={isConfirmOpen}
                 message="정말 이 일기를 삭제하시겠습니까?"
                 onConfirm={handleDelete}
-                onCancel={cancelDelete}
+                onClose={cancelDelete}
             />
         </div>
     );

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import { Outlet } from 'react-router-dom';
 import { useWeeklyTimeline } from '@/hooks/useWeeklyTimeline.js';
 import { useDiaryData } from '@/hooks/useDiaryData.js';
@@ -11,6 +11,8 @@ import MealWidget from "@features/health/MealWidget.jsx";
 import GalleryThumbnail from "@features/gallery/GalleryThumbnail.jsx";
 import GalleryModal from "@features/gallery/GalleryModal.jsx";
 import './css/DiaryLayout.css';
+import EmotionPage from "@pages/EmotionPage.jsx";
+import {fetchDiaryByDateAPI} from "@api/diaryApi.js";
 
 const DiaryLayout = () => {
     const checkLogin = useCheckLogin();
@@ -19,7 +21,9 @@ const DiaryLayout = () => {
         selectedDate,
         setSelectedDate,
     } = useDiaryData();
-
+    const [selectedDiaryId, setSelectedDiaryId] = useState(null); // 선택된 일기 ID 상태
+    const [initialDiary, setInitialDiary] = useState(null); // 초기 일기 데이터 상태
+    const [emotionRefreshKey, setEmotionRefreshKey] = useState(0); // 감정 분석 새로고침 키
     const {
         data: timelineData,
         loading: timelineLoading,
@@ -36,12 +40,57 @@ const DiaryLayout = () => {
         refetchTimeline?.();
     };
 
+    useEffect(() => {
+        setSelectedDiaryId(initialDiary?.diaryId ?? null);
+    }, [initialDiary]);
+
+    // 초기 일기 데이터를 선택된 날짜로부터 불러오기
+    useEffect(() => {
+        if (!selectedDate) {
+            setInitialDiary(null);
+            return;
+        }
+        fetchDiaryByDateAPI(selectedDate)
+            .then((res) => {
+                setInitialDiary(res.data ?? null);
+            })
+            .catch((err) => {
+                console.warn("일기 조회 실패:", err);
+                setInitialDiary(null);
+            });
+    }, [selectedDate]);
+    // 감정 분석 결과가 수정되었을 때 호출하는 함수
+    const handleEmotionUpdated = () => {
+        // 감정 분석 결과 갱신용 키 증가시키기 (강제 리렌더링/데이터 재조회 유도)
+        setEmotionRefreshKey(prev => prev + 1);
+
+        // 선택된 일기 데이터도 다시 가져오기
+        handleDiaryUpdated();
+    };
+
+    // 선택된 날짜가 변경될 때마다 초기 일기 데이터 갱신
+    const handleDiaryUpdated = () => {
+        if (!selectedDate) return;
+        fetchDiaryByDateAPI(selectedDate)
+            .then((res) => {
+                const diary = res.data ?? null;
+                setInitialDiary(diary);
+                setSelectedDiaryId(diary?.diaryId ?? null);
+            })
+            .catch(() => {
+                setInitialDiary(null);
+                setSelectedDiaryId(null); // 실패 시 감정 분석도 초기화
+            });
+    };
     return (
         <main className="main-content three-column-layout">
             {/* 좌측 사이드바 */}
             <aside className="left-sidebar">
                 <div className="emotion-analysis">
-                    <p>감정 분석 결과 컴포넌트 삽입 예정</p>
+                    <EmotionPage
+                        refreshKey={emotionRefreshKey} // 갱신 키 전달
+                        selectedDiaryId={selectedDiaryId}
+                    />
                 </div>
                 <div className="sidebar-gallery">
                     <GalleryThumbnail />
@@ -59,7 +108,12 @@ const DiaryLayout = () => {
                         />
                     )}
                 </div>
-                <Outlet />
+                <Outlet context={{
+                    initialDiary,
+                    setSelectedDiaryId,
+                    onDiaryUpdated: handleDiaryUpdated,
+                    onEmotionUpdated: handleEmotionUpdated,
+                    onDataChange: handleDataChange,}}  />
             </section>
 
             {/* 우측: 건강 위젯 */}

@@ -3,20 +3,14 @@ package com.heaildairy.www.recommend.movie.movieservice;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.heaildairy.www.auth.entity.UserEntity;
-import com.heaildairy.www.diary.entity.DiaryEntity;
-import com.heaildairy.www.diary.repository.DiaryRepository;
-import com.heaildairy.www.emotion.dto.FlaskResponseDTO;
-import com.heaildairy.www.emotion.entity.MoodDetail;
-import com.heaildairy.www.emotion.repository.MoodDetailRepository;
 import com.heaildairy.www.recommend.movie.movieentity.EmotionGenreMapEntity;
 import com.heaildairy.www.recommend.movie.movierepository.DisLikeMoviesRepository;
 import com.heaildairy.www.recommend.movie.movierepository.EmotionGenreMapRepository;
-import com.heaildairy.www.recommend.movie.moviedto.MovieDTO;
+import com.heaildairy.www.recommend.movie.moviedto.MovieDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -35,8 +29,6 @@ public class RecommendMovieService {
     private final EmotionGenreMapRepository emotionGenreMapRepository;
     private final DisLikeMoviesRepository disLikeMoviesRepository;
     private final TmdbApiClientService tmdbApiClientService;
-    private final DiaryRepository diaryRepository;
-    private final MoodDetailRepository moodDetailRepository;
 
     /**
      * 감정 기반 영화 추천 메서드 (동기 방식)
@@ -45,7 +37,7 @@ public class RecommendMovieService {
      * @param user 현재 로그인한 사용자 정보
      * @return 추천 영화 리스트
      */
-    public List<MovieDTO> recommendByEmotion(String emotionType, UserEntity user) {
+    public List<MovieDto> recommendByEmotion(String emotionType, UserEntity user) {
         log.info("영화 추천 요청 - 감정: {}, userId: {}", emotionType, user.getUserId());
 
         boolean useSurveyInstead = (emotionType == null || emotionType.equalsIgnoreCase("중립/기타"));
@@ -150,26 +142,26 @@ public class RecommendMovieService {
 //                .collect(Collectors.toList());
 //    }
 //}
-    public List<MovieDTO> recommendByInitialSurvey(UserEntity user) {
+    public List<MovieDto> recommendByInitialSurvey(UserEntity user) {
         List<EmotionGenreMapEntity> genreWeights = generateGenreWeightsFromInitialSurvey(user);
         return recommendByGenreWeights(genreWeights, user);
     }
 
-    private List<MovieDTO> recommendByGenreWeights(
+    private List<MovieDto> recommendByGenreWeights(
             List<EmotionGenreMapEntity> genreWeights, UserEntity user
     ) {
         List<String> disliked = disLikeMoviesRepository.findByUser_UserId(user.getUserId())
                 .stream().map(e -> e.getMovieKey()).collect(Collectors.toList());
 
-        List<MovieDTO> combined = new ArrayList<>();
+        List<MovieDto> combined = new ArrayList<>();
         for (EmotionGenreMapEntity em : genreWeights) {
-            List<MovieDTO> movies = tmdbApiClientService.searchMoviesByGenre(em.getGenreCode());
+            List<MovieDto> movies = tmdbApiClientService.searchMoviesByGenre(em.getGenreCode());
             combined.addAll(movies.stream()
                     .filter(m -> !disliked.contains(String.valueOf(m.getId())))
                     .collect(Collectors.toList()));
         }
 
-        Map<Integer, MovieDTO> distinct = new LinkedHashMap<>();
+        Map<Integer, MovieDto> distinct = new LinkedHashMap<>();
         combined.forEach(m -> distinct.putIfAbsent(m.getId(), m));
 
         distinct.values().forEach(m ->

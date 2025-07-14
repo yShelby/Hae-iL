@@ -9,14 +9,20 @@ function RecommendMoviePage(){
     const [emotion, setEmotion] = useState("기쁨/행복");
 
     useEffect(() => {
-        axios.get(`/api/recommend?emotionType=${encodeURIComponent(emotion)}`)  // 예시 URL
-            .then((res) => setMovies(res.data))
+        axios.get(`/api/recommend/movies`,{
+            withCredentials: true
+        })
+            .then((res) => {
+                const data = res.data;
+                const moviesArray = Array.isArray(data) ? data : data.movies || [];
+                setMovies(moviesArray);
+            })
             .catch((error) => {
                 console.error("영화 추천 API 호출 실패:", error);
                 setMovies([]);
-            })
-        ;
-    }, [emotion]);
+            });
+    }, []);
+
 
     return(
         <div>

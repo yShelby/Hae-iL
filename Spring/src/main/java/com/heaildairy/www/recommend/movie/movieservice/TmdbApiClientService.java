@@ -1,6 +1,6 @@
 package com.heaildairy.www.recommend.movie.movieservice;
 
-import com.heaildairy.www.recommend.movie.moviedto.MovieDTO;
+import com.heaildairy.www.recommend.movie.moviedto.MovieDto;
 import com.heaildairy.www.recommend.movie.movieresponse.MovieListResponse;
 import com.heaildairy.www.recommend.movie.movieresponse.MovieTrailerResponse;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +23,7 @@ public class TmdbApiClientService {
 
     private static final String BASE_URL = "https://api.themoviedb.org/3";
 
-    public List<MovieDTO> searchMoviesByGenre(Integer genreCode) {
+    public List<MovieDto> searchMoviesByGenre(Integer genreCode) {
         log.debug("TMDB 영화 검색 요청 - 장르코드: {}", genreCode);
 
         String url = BASE_URL + "/discover/movie"
@@ -33,18 +33,18 @@ public class TmdbApiClientService {
 
         MovieListResponse response = restTemplate.getForObject(url, MovieListResponse.class);
 
-        List<MovieDTO> result = response != null ? response.getResult() : List.of();
+        List<MovieDto> results = response != null ? response.getResults() : List.of();
 
-        log.debug("TMDB 검색 결과 영화 수: {}", result.size());
-        return result;
+        log.debug("TMDB 검색 결과 영화 수: {}", results.size());
+        return results;
     }
 
-    public MovieDTO getMovieDetails(String movieId) {
+    public MovieDto getMovieDetails(String movieId) {
         log.debug("TMDB 영화 상세 조회 요청 - movieId: {}", movieId);
 
         String url = BASE_URL + "/movie/" + movieId + "?api_key=" + apiKey;
 
-        return restTemplate.getForObject(url, MovieDTO.class);
+        return restTemplate.getForObject(url, MovieDto.class);
     }
 
     public String getMovieTrailer(String movieId) {

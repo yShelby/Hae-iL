@@ -1,6 +1,10 @@
+import RecommendMoviePage from "@pages/RecommendMoviePage.jsx";
+
 function RecommendLayout(){
     return(
-        <div></div>
+        <div>
+            <RecommendMoviePage />
+        </div>
     )
 }
 

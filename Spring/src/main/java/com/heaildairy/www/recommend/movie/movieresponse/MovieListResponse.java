@@ -1,7 +1,8 @@
 package com.heaildairy.www.recommend.movie.movieresponse;
 
-import com.heaildairy.www.recommend.movie.moviedto.MovieDTO;
+import com.heaildairy.www.recommend.movie.moviedto.MovieDto;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.List;
 
@@ -10,6 +11,7 @@ import java.util.List;
 * 이 객체는 영화 목록을 포함하고 있으며, 각 영화는 MovieDTO 형태로 표현됩니다.
 * */
 @Getter
+@Setter
 public class MovieListResponse {
-    private List<MovieDTO> result;
+    private List<MovieDto> results;
 }

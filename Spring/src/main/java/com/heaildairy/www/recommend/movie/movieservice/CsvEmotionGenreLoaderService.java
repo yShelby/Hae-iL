@@ -26,7 +26,7 @@ public class CsvEmotionGenreLoaderService implements CommandLineRunner {
         List<EmotionGenreMapEntity> dataList = new ArrayList<>();
 
         try (CSVReader reader = new CSVReader(new InputStreamReader(
-                new ClassPathResource("emotion_genre.csv").getInputStream(), "UTF-8"))) {
+                new ClassPathResource("emotion_genre_map.csv").getInputStream(), "UTF-8"))) {
 
             String[] line;
             reader.readNext(); // 헤더 스킵
