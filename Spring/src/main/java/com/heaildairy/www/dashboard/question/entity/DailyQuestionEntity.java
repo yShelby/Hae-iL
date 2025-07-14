@@ -5,8 +5,6 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
-
 @Getter
 @Entity
 @Table(name = "daily_question")
@@ -21,7 +19,7 @@ public class DailyQuestionEntity {
     @Column(name = "question_text", nullable = false, columnDefinition = "TEXT")
     private String questionText;
 
-    // DataInitializer에서 사용하기 위한 생성자
+    // CSV 데이터 주입을 위한 생성자
     public DailyQuestionEntity(String questionText) {
         this.questionText = questionText;
     }
