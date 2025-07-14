@@ -1,9 +1,23 @@
 import "./css/JournalForm.css";
-import {useEffect, useState} from "react";
+import {forwardRef, useEffect, useState} from "react";
 import {Button} from "@shared/UI/Button.jsx";
-import {FaRegStar, FaStar} from "react-icons/fa";
+import {FaCalendarAlt, FaRegStar, FaStar} from "react-icons/fa";
 import Rating from "react-rating";
 import {showToast} from "@shared/UI/Toast.jsx";
+import DatePicker, {registerLocale} from "react-datepicker";
+import ko from "date-fns/locale/ko";
+
+// 1. 기존 'ko' 로케일 객체를 복사
+// 2. options.weekStartsOn 값을 1로 명시하여 '월요일' 시작을 강제(0: 일요일, 1: 월요일)
+const koMondayStart = {
+    ...ko,
+    options: {
+        ...ko.options,
+        weekStartsOn: 1,
+    },
+};
+// 3. 새로 만든 로케일 객체를 'ko-monday'라는 이름으로 등록
+registerLocale("ko-monday", koMondayStart);
 
 const CATEGORIES = [
     // enum 타입과 매핑하기 위해서 key값을 대문자로 해야 한다
@@ -25,7 +39,17 @@ const getInitialFormData = () => ({
     journalDate: getTodayString(),  // 오늘 날짜 (yyyy-mm-dd)
 });
 
-export const JournalForm = ({ onSubmit, onCancel, initialData, isSubmitting }) => {
+// forwardRef를 사용하여 DatePicker로부터 ref를 전달받아 접근성을 유지
+const CustomDateButton = forwardRef(({value, onClick}, ref) => (
+    <button type="button" className="custom-date-button" onClick={onClick} ref={ref}>
+        {value}
+        <FaCalendarAlt className="calendar-icon"/>
+    </button>
+));
+// displayName 추가 (디버깅 시 유용)
+CustomDateButton.displayName = 'CustomDateButton';
+
+export const JournalForm = ({onSubmit, onCancel, initialData, isSubmitting}) => {
     // Form은 자신의 UI 상태(formData)를 직접 관리합니다.
     const [formData, setFormData] = useState(getInitialFormData());
 
@@ -55,6 +79,18 @@ export const JournalForm = ({ onSubmit, onCancel, initialData, isSubmitting }) =
     // 별점 선택 변경 시 상태 업데이트
     const handleRatingChange = (rate) => {
         setFormData(prev => ({...prev, rating: rate}));
+    };
+
+    const handleDateChange = (date) => {
+        // date가 null이거나 undefined가 아닌, 유효한 Date 객체일 때만 실행
+        if (date) {
+            setFormData(prev => ({
+                ...prev,
+                journalDate: date.toISOString().split('T')[0]
+            }));
+        }
+        // 만약 날짜가 지워져서 null이 들어온 경우, 아무 작업도 하지 않아 이전 값을 유지하거나
+        // 혹은 기본값으로 설정 가능. 여기서는 이전 값을 유지하도록 한다
     };
 
     // 제출 시 유효성 검사 및 onSubmit 호출
@@ -92,16 +128,23 @@ export const JournalForm = ({ onSubmit, onCancel, initialData, isSubmitting }) =
                         fractions={2} // 0.5 단위 평가 가능
                         initialRating={formData.rating}
                         onChange={handleRatingChange}
-                        emptySymbol={<FaRegStar size={24} color={"e0e0e0"} />}
-                        fullSymbol={<FaStar size={24} color={"f1c40f"} />}
+                        emptySymbol={<FaRegStar size={24} color={"e0e0e0"}/>}
+                        fullSymbol={<FaStar size={24} color={"f1c40f"}/>}
                     />
                 </div>
             </div>
 
             {/* 날짜 입력 필드 */}
             <div className="form-group">
-                <label htmlFor="journalDate">날짜</label>
-                {/* 왜 max 속성만으로 미래 날짜 비활성화가 가능할까?
+                <label>날짜</label>
+                <div className="datepicker-container">
+                    {/* 사용자에게 보여지는 버튼 역할 수행 */}
+                    <label htmlFor="journalDatePicker" className="custom-date-label">
+                        <span>{formData.journalDate}</span>
+                        <FaCalendarAlt className="calendar-icon"/>
+                    </label>
+                    {/*
+                    왜 max 속성만으로 미래 날짜 비활성화가 가능할까?
 
                   1. HTML5 표준 기능: <input type="date"> 태그의 'max' 속성은 HTML5 표준에 내장된 기능
                      우리가 직접 자바스크립트로 날짜를 비교하고, 클래스를 추가하고, 클릭을 막는 복잡한 로직을 짤 필요x
@@ -115,15 +158,17 @@ export const JournalForm = ({ onSubmit, onCancel, initialData, isSubmitting }) =
                   (참고: DashboardCalendar는 <div>로 직접 만든 커스텀 달력이기 때문에,
                    이런 브라우저 기본 기능을 사용할 수 없어 직접 비활성화 로직을 구현 필요.)
                 */}
-                <input
-                    type="date"
-                    id="journalDate"
-                    name="journalDate"
-                    value={formData.journalDate}
-                    max={getTodayString()}
-                    onChange={handleChange}
-                    required
-                />
+                    <DatePicker
+                        id="journalDatePicker"
+                        locale={"ko-monday"} // 달력을 한글로 표시 (요일, 월 등). 이 옵션 덕분에 월요일부터 시작된다
+                        selected={new Date(formData.journalDate)} // 현재 선택된 날짜를 Date 객체로 전달
+                        onChange={handleDateChange}
+                        dateFormat="yyyy-MM-dd"
+                        maxDate={new Date()} // 선택 가능한 최대 날짜 (오늘까지)
+                        className="hidden-datepicker"
+                        popperPlacement="bottom" // 캘린더가 버튼 바로 아래 오른쪽에 위치하도록 설정
+                    />
+                </div>
             </div>
 
             {/* 내용 입력 textarea */}

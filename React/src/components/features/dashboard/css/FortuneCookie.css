@@ -69,12 +69,12 @@
     }
     95% {
         opacity: 1;
-        transform: scale(1.6);
+        transform: scale(1.8);
     }
     100% {
         /* 애니메이션이 끝날 때 투명해지도록 설정 */
         opacity: 0;
-        transform: scale(1.7);
+        transform: scale(2);
     }
 }
 
