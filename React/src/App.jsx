@@ -21,6 +21,7 @@ import DashboardLayout from "@/layouts/DashboardLayout.jsx";
 import DashboardPage from "@pages/DashboardPage.jsx";
 import JournalPage from "@pages/JournalPage.jsx";
 import GalleryPage from "@pages/GalleryPage.jsx";
+import CalendarPage from "@pages/CalendarPage.jsx";
 
 function App() {
     return (
@@ -44,6 +45,9 @@ function App() {
                 <Route path="gallery" element={<DiaryLayout />}>
                     <Route index element={<GalleryPage />} />
                 </Route>
+
+                {/* 캘린더 페이지 라우트 */}
+                <Route path="calendar" element={<CalendarPage />} />
             </Route>
         </Routes>
 

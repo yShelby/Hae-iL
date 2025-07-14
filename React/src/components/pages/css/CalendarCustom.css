@@ -1,0 +1,26 @@
+/* src/components/shared/UI/CalendarCustom.css */
+
+.calendar-year {
+  font-size: 1.5em; /* 년도 크기 */
+  color: #333;     /* 년도 색상 */
+  margin-right: 5px; /* 년도와 월 사이 간격 */
+}
+
+.calendar-month {
+  font-size: 2em; /* 월 크기 */
+  color: #399bf1; /* 월 색상 */
+  font-weight: bold;
+}
+
+/* react-big-calendar 기본 툴바 스타일을 덮어쓸 수도 있어 */
+.rbc-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.rbc-toolbar-label {
+  flex-grow: 1; /* 가운데 정렬을 위해 */
+  text-align: center;
+}

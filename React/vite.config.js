@@ -36,7 +36,7 @@ export default defineConfig({
                     }
                     const imageExtensions = ['.png', '.jpg', '.jpeg', '.gif', '.svg', '.webp'];
                     if (imageExtensions.some(ext => assetInfo.name.endsWith(ext))) {
-                        return `img/[name]-[hash][extname]`;
+                        return `image/[name]-[hash][extname]`;
                     }
                     // 그 외 다른 에셋들은 assets 폴더에 보관
                     return `assets/[name]-[hash][extname]`;

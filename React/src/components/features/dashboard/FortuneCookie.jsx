@@ -1,13 +1,13 @@
 import {useFortuneCookie} from "@/hooks/useFortuneCookie.js";
 import {useEffect, useState} from "react";
-import crackedCookieImg from "../../../assets/img/cracked_cookie.svg";
-import cookieImg from "../../../assets/img/cookie.svg";
+import crackedCookieImg from "../../../assets/image/cracked_cookie.svg";
+import cookieImg from "../../../assets/image/cookie.svg";
 import "./css/FortuneCookie.css";
 import {useAuth} from "@features/auth/AuthContext.jsx";
 import {showToast} from "@shared/UI/Toast.jsx";
 
-// const cookieImgUrl = '/img/cookie.svg';
-// const crackedCookieImgUrl = '/img/cracked_cookie.svg';
+// const cookieImgUrl = '/image/cookie.svg';
+// const crackedCookieImgUrl = '/image/cracked_cookie.svg';
 
 const FortuneCookie = () => {
     const {user} = useAuth();

@@ -15,6 +15,7 @@
 package com.heaildairy.www.diary.entity;
 
 import com.heaildairy.www.auth.entity.UserEntity;
+import com.heaildairy.www.emotion.entity.MoodEntry;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -70,6 +71,11 @@ public class DiaryEntity {
     @UpdateTimestamp
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    // 📊 MoodEntry와의 1:1 관계 설정 (양방향 매핑)
+    // mappedBy는 관계의 주인이 아님을 나타내며, MoodEntry 엔티티의 'diary' 필드에 의해 매핑됨
+    @OneToOne(mappedBy = "diary", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private MoodEntry moodEntry;
 
     /**
      * 🛠️ 빌더 생성자
