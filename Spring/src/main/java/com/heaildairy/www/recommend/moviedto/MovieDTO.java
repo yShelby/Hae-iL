@@ -9,7 +9,7 @@ public class MovieDTO {
     private Integer id;
     private String title;
     private String overview;
-    private double vote_average;
+    private Double vote_average;
     private String trailerUrl;
     private String poster_path;
 }

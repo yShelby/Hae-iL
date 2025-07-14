@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -29,12 +30,15 @@ public class FlaskService {
                 .block();
     }
 
-    public List<MovieDTO> analyzeAndRecommend(String text, UserEntity user){
-        FlaskResponseDTO flaskResponseDTO = callAnalyze(text);
+    public Map<String, List<MovieDTO>> analyzeAndRecommendByTop3Emotions(FlaskResponseDTO flaskResponseDTO, UserEntity user){
+        Map<String, List<MovieDTO>> emotionToMovies = new LinkedHashMap<>();
 
-        String emotionType = flaskResponseDTO.getSentiment();
-
-        return recommendMovieService.recommendByEmotion(emotionType, user)
-                .block();
+        flaskResponseDTO.getDetails()
+                .forEach(detail -> {
+                    String emotionType = detail.getEmotionType();
+                    List<MovieDTO> movies = recommendMovieService.recommendByEmotion(emotionType, user);
+                    emotionToMovies.put(emotionType, movies != null ? movies : List.of());
+                });
+        return emotionToMovies;
     }
 }

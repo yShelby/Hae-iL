@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -22,13 +21,15 @@ public class MovieController {
     private final DisLikeMoviesService disLikeMoviesService;
 
     @PostMapping
-    public Mono<ResponseEntity<List<MovieDTO>>> recommendByEmotion(
+    public ResponseEntity<List<MovieDTO>> recommendByEmotion(
             @RequestParam String emotionType,
             @AuthenticationPrincipal UserEntity user
     ){
-        return recommendMovieService.recommendByEmotion(emotionType, user)
-                .map(movies -> ResponseEntity.ok().body(movies))
-                .defaultIfEmpty(ResponseEntity.noContent().build());
+        List<MovieDTO> movies = recommendMovieService.recommendByEmotion(emotionType, user);
+        if (movies == null || movies.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(movies);
     }
 
     @PostMapping
