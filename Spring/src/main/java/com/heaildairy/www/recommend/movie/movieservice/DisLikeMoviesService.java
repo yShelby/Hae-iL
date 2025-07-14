@@ -1,9 +1,9 @@
-package com.heaildairy.www.recommend.movieservice;
+package com.heaildairy.www.recommend.movie.movieservice;
 
 import com.heaildairy.www.auth.entity.UserEntity;
-import com.heaildairy.www.recommend.moviedto.DisLikeMoviesDTO;
-import com.heaildairy.www.recommend.movieentity.DisLikeMoviesEntity;
-import com.heaildairy.www.recommend.movierepository.DisLikeMoviesRepository;
+import com.heaildairy.www.recommend.movie.moviedto.DisLikeMoviesDTO;
+import com.heaildairy.www.recommend.movie.movieentity.DisLikeMoviesEntity;
+import com.heaildairy.www.recommend.movie.movierepository.DisLikeMoviesRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

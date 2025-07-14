@@ -1,12 +1,12 @@
-package com.heaildairy.www.recommend.movieservice;
+package com.heaildairy.www.recommend.movie.movieservice;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.heaildairy.www.auth.entity.UserEntity;
-import com.heaildairy.www.recommend.movieentity.EmotionGenreMapEntity;
-import com.heaildairy.www.recommend.movierepository.DisLikeMoviesRepository;
-import com.heaildairy.www.recommend.movierepository.EmotionGenreMapRepository;
-import com.heaildairy.www.recommend.moviedto.MovieDTO;
+import com.heaildairy.www.recommend.movie.movieentity.EmotionGenreMapEntity;
+import com.heaildairy.www.recommend.movie.movierepository.DisLikeMoviesRepository;
+import com.heaildairy.www.recommend.movie.movierepository.EmotionGenreMapRepository;
+import com.heaildairy.www.recommend.movie.moviedto.MovieDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

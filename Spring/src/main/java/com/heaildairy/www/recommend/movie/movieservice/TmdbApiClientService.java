@@ -1,8 +1,8 @@
-package com.heaildairy.www.recommend.movieservice;
+package com.heaildairy.www.recommend.movie.movieservice;
 
-import com.heaildairy.www.recommend.moviedto.MovieDTO;
-import com.heaildairy.www.recommend.movieresponse.MovieListResponse;
-import com.heaildairy.www.recommend.movieresponse.MovieTrailerResponse;
+import com.heaildairy.www.recommend.movie.moviedto.MovieDTO;
+import com.heaildairy.www.recommend.movie.movieresponse.MovieListResponse;
+import com.heaildairy.www.recommend.movie.movieresponse.MovieTrailerResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;

@@ -1,15 +1,15 @@
-package com.heaildairy.www.recommend.movieentity;
+package com.heaildairy.www.recommend.movie.moviedto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.io.Serializable;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class EmotionGenreMapId implements Serializable {
+public class EmotionGenreMapEntityDTO {
     private String emotionType;
     private Integer genreCode;
+    private String genreName;
+    private Integer genreWeight;
 }

@@ -1,10 +1,10 @@
-package com.heaildairy.www.recommend.moviecontroller;
+package com.heaildairy.www.recommend.movie.moviecontroller;
 
 import com.heaildairy.www.auth.entity.UserEntity;
-import com.heaildairy.www.recommend.moviedto.MovieDTO;
-import com.heaildairy.www.recommend.movieentity.DisLikeMoviesEntity;
-import com.heaildairy.www.recommend.movieservice.DisLikeMoviesService;
-import com.heaildairy.www.recommend.movieservice.RecommendMovieService;
+import com.heaildairy.www.recommend.movie.moviedto.MovieDTO;
+import com.heaildairy.www.recommend.movie.movieentity.DisLikeMoviesEntity;
+import com.heaildairy.www.recommend.movie.movieservice.DisLikeMoviesService;
+import com.heaildairy.www.recommend.movie.movieservice.RecommendMovieService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping
+@RequestMapping("api/recommend/movies")
 @RequiredArgsConstructor
 public class MovieController {
 
@@ -37,7 +37,7 @@ public class MovieController {
     /**
      * 싫어요 영화 저장
      */
-    @PostMapping
+    @PostMapping("/dislike")
     public ResponseEntity<String> saveDislikeMovie(
             @RequestParam String movieKey,
             @AuthenticationPrincipal UserEntity user  // 예: 인터셉터, 필터 또는 시큐리티에서 주입
@@ -52,7 +52,7 @@ public class MovieController {
     /**
      * 싫어요 영화 삭제
      */
-    @DeleteMapping
+    @DeleteMapping("/{disLikeId}")
     public ResponseEntity<String> deleteDisLikeMovie(@RequestParam Integer disLikeId){
         disLikeMoviesService.deleteDisLikeMovie(disLikeId);
         return ResponseEntity.ok("싫어요한 영화가 삭제되었습니다.");

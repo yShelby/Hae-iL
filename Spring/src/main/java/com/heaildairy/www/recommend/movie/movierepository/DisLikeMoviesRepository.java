@@ -1,6 +1,6 @@
-package com.heaildairy.www.recommend.movierepository;
+package com.heaildairy.www.recommend.movie.movierepository;
 
-import com.heaildairy.www.recommend.movieentity.DisLikeMoviesEntity;
+import com.heaildairy.www.recommend.movie.movieentity.DisLikeMoviesEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

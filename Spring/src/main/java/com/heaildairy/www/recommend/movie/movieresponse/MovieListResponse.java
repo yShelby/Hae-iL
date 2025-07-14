@@ -1,6 +1,6 @@
-package com.heaildairy.www.recommend.movieresponse;
+package com.heaildairy.www.recommend.movie.movieresponse;
 
-import com.heaildairy.www.recommend.moviedto.MovieDTO;
+import com.heaildairy.www.recommend.movie.moviedto.MovieDTO;
 import lombok.Getter;
 
 import java.util.List;

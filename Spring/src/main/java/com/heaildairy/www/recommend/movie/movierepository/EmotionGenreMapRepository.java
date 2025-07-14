@@ -1,6 +1,6 @@
-package com.heaildairy.www.recommend.movierepository;
+package com.heaildairy.www.recommend.movie.movierepository;
 
-import com.heaildairy.www.recommend.movieentity.EmotionGenreMapEntity;
+import com.heaildairy.www.recommend.movie.movieentity.EmotionGenreMapEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

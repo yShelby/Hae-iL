@@ -1,4 +1,4 @@
-package com.heaildairy.www.recommend.util;
+package com.heaildairy.www.recommend.movie.util;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

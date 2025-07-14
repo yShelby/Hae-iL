@@ -1,4 +1,4 @@
-package com.heaildairy.www.recommend.moviedto;
+package com.heaildairy.www.recommend.movie.moviedto;
 
 import lombok.Getter;
 import lombok.Setter;

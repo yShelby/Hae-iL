@@ -1,4 +1,4 @@
-package com.heaildairy.www.recommend.movieentity;
+package com.heaildairy.www.recommend.movie.movieentity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

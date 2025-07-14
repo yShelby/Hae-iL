@@ -2,8 +2,8 @@ package com.heaildairy.www.emotion.service;
 
 import com.heaildairy.www.auth.entity.UserEntity;
 import com.heaildairy.www.emotion.dto.FlaskResponseDTO;
-import com.heaildairy.www.recommend.moviedto.MovieDTO;
-import com.heaildairy.www.recommend.movieservice.RecommendMovieService;
+import com.heaildairy.www.recommend.movie.moviedto.MovieDTO;
+import com.heaildairy.www.recommend.movie.movieservice.RecommendMovieService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;

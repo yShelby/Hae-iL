@@ -1,4 +1,4 @@
-package com.heaildairy.www.recommend.movieresponse;
+package com.heaildairy.www.recommend.movie.movieresponse;
 
 import lombok.Getter;
 
