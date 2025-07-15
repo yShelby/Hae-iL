@@ -12,4 +12,6 @@ def make_tags_prob_and_map(top_emotions, tag_map, threshold=0.05):
             else:
                 tags.add("#" + emotion)
                 # 태그가 없을시 이모션 앞에 #을 붙여서 반환
+
+    print("생성된태그",tags)
     return list(tags)

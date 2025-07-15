@@ -1,5 +1,6 @@
 package com.heaildairy.www.emotion.entity;
 
+import com.heaildairy.www.diary.entity.DiaryEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -22,7 +23,8 @@ public class Tag {
     @Column(name = "tag_name", length = 50, nullable = false)
     private String tagName;
 
-    @Column(name = "used_count")
-    private Integer usedCount;
-
+    @ManyToOne
+    @JoinColumn(name = "diary_id", nullable = false,
+            foreignKey = @ForeignKey(name = "fk_tag_diary_id"))
+    private DiaryEntity diary;
 }

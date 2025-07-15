@@ -12,5 +12,4 @@ public class MoodDetailDTO {
     private Integer percentage;
     private String emotionType;
     private Long diaryId;
-    private BigDecimal confidenceScore;
 }

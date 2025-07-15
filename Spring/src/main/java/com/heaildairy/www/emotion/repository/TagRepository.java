@@ -2,9 +2,14 @@ package com.heaildairy.www.emotion.repository;
 
 import com.heaildairy.www.emotion.entity.Tag;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
-import java.util.Optional;
+import java.util.List;
 
 public interface TagRepository extends JpaRepository<Tag, Long> {
-    Optional<Tag> findByTagName(String tagName);
+    // diaryId로 태그 이름 리스트 조회
+    @Query("SELECT t.tagName FROM Tag t WHERE t.diary.diaryId = :diaryId")
+    List<String> findTagNamesByDiaryId(@Param("diaryId") Long diaryId);
+    void deleteByDiaryDiaryId(Long diaryId);
 }

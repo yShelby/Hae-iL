@@ -10,6 +10,7 @@
 .left-sidebar {
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
     width: 250px;
     padding: 1rem;
     border-right: 1px solid #ddd;

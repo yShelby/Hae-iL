@@ -10,9 +10,9 @@
 import React, {useEffect, useState} from 'react';
 
 // 📌 TipTap 확장 모듈 및 커스텀 에디터 확장
-import {useEditor} from '@tiptap/react';
+import { useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
-import {Image as TipTapImage} from '@tiptap/extension-image';
+import { Image as TipTapImage } from '@tiptap/extension-image';
 import Placeholder from '@tiptap/extension-placeholder';
 import Underline from '@tiptap/extension-underline';
 import TextStyle from '@tiptap/extension-text-style';
@@ -21,15 +21,17 @@ import FontFamily from '@tiptap/extension-font-family';
 
 // 📌 스타일 및 하위 컴포넌트
 import './css/DiaryWritePage.css';
-import {useDiaryForm} from '@/hooks/useDiaryForm.js';
-import {useImageUpload} from '@/hooks/useImageUpload.js';
-import {useDiaryMutations} from '@/hooks/useDiaryMutations.js';
+import { useDiaryForm } from '@/hooks/useDiaryForm.js';
+import { useImageUpload } from '@/hooks/useImageUpload.js';
+import { useDiaryMutations } from '@/hooks/useDiaryMutations.js';
 import DiaryInfoBar from "@features/diary/DiaryInfoBar.jsx";
 import DiaryTitleInput from "@features/diary/DiaryTitleInput.jsx";
 import WeatherSelector from "@features/diary/WeatherSelector.jsx";
 import DiaryEditor from "@features/diary/DiaryEditor.jsx";
 import {ConfirmModal} from "@shared/UI/ConfirmModal.jsx";
 import {useCheckLogin} from "@/hooks/useCheckLogin.js";
+import {useAuth} from "@features/auth/AuthContext.jsx";
+import {useOutletContext} from "react-router-dom";
 import {useAuth} from "@shared/context/AuthContext.jsx";
 import {useQuestion} from "@shared/context/QuestionContext.jsx";
 import QuestionDisplay from "@features/diary/QuestionDisplay.jsx";
@@ -41,6 +43,8 @@ const CustomBlockImage = TipTapImage.extend({
     draggable: true,
 });
 
+const DiaryWritePage = ({ selectedDate, isLoading }) => {
+    const { user } = useAuth();
 const DiaryWritePage = ({initialDiary, selectedDate, onActionSuccess, isLoading}) => {
     const {user} = useAuth();
     const checkLogin = useCheckLogin(); // 로그인 확인 훅
@@ -49,26 +53,39 @@ const DiaryWritePage = ({initialDiary, selectedDate, onActionSuccess, isLoading}
     // 추가 - 대시보드와 일기 페이지 간의 질문 상태를 동기화하고, 새로고침 시 두 페이지의 질문이 함께 변경되도록 하기 위해 추가
     const {question} = useQuestion();
 
+    const { initialDiary, onDiaryUpdated, setSelectedDiaryId, onEmotionUpdated } = useOutletContext();
     // 🧠 TipTap 에디터 초기화 및 확장 구성
     const editor = useEditor({
         extensions: [
             StarterKit,
             CustomBlockImage,
-            Placeholder.configure({placeholder: '오늘 하루는 어떠셨나요?'}),
+            Placeholder.configure({ placeholder: '오늘 하루는 어떠셨나요?' }),
             Underline,
             TextStyle,
             Color,
             FontFamily,
         ],
-        editorProps: {attributes: {class: 'tiptap-editor'}},
+        editorProps: { attributes: { class: 'tiptap-editor' } },
         editable: isEditing,
     });
 
     // 📄 제목/날씨 등 폼 상태 관리 훅
-    const {diaryState, setField} = useDiaryForm(initialDiary);
+    const { diaryState, setField } = useDiaryForm(initialDiary);
 
     // ☁️ 이미지 업로드 훅 (에디터 연동 + S3 전송 준비)
-    const {handleImageUpload, uploadPendingImagesToS3} = useImageUpload(editor);
+    const { handleImageUpload, uploadPendingImagesToS3 } = useImageUpload(editor);
+
+    const onActionSuccess = async (updatedDiaryOrNull) => {
+        if (updatedDiaryOrNull) {
+            setSelectedDiaryId?.(updatedDiaryOrNull.diaryId);  // 감정 분석 트리거
+            onDiaryUpdated?.();  // 부모에게 다시 일기 불러오라고 요청
+            onEmotionUpdated?.(); // 감정 분석 결과 새로고침
+            setIsEditing(true);  // 저장 후에도 에디터 유지
+        } else {
+            setSelectedDiaryId?.(null);  // 삭제 시 감정 결과 초기화
+            setIsEditing(false);
+        }
+    };
 
     // 💾 저장/삭제 기능 + 모달 상태 관리 훅
     const {
@@ -149,15 +166,6 @@ const DiaryWritePage = ({initialDiary, selectedDate, onActionSuccess, isLoading}
         );
     }
 
-    // 📆 날짜 선택 안 된 경우 안내
-    if (!selectedDate && !initialDiary) {
-        return (
-            <div className="diary-write-page placeholder-wrapper">
-                <p className="placeholder-text">캘린더에서 날짜를 선택해주세요.</p>
-            </div>
-        );
-    }
-
     return (
         <div className="diary-write-page">
             {/* 📌 상단 날짜 및 기존 작성 여부 표시 */}
@@ -169,7 +177,6 @@ const DiaryWritePage = ({initialDiary, selectedDate, onActionSuccess, isLoading}
 
             {/* ✍️ 작성 전 안내 UI */}
             {!isEditing ? (
-
                 <div className="placeholder-wrapper">
                     <p className="placeholder-text">오늘의 감정을 기록해보세요!</p>
                     <button onClick={handleStartWriting} className="start-writing-button">
@@ -241,7 +248,7 @@ const DiaryWritePage = ({initialDiary, selectedDate, onActionSuccess, isLoading}
                 isOpen={isConfirmOpen}
                 message="정말 이 일기를 삭제하시겠습니까?"
                 onConfirm={handleDelete}
-                onCancel={cancelDelete}
+                onClose={cancelDelete}
             />
         </div>
     );

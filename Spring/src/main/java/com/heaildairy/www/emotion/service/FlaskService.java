@@ -16,7 +16,7 @@ public class FlaskService {
 
     public FlaskResponseDTO callAnalyze(String text) {
         return webClient.post()
-                .uri("/emotion")
+                .uri("/analyze")
                 .header("Content-Type", "application/json")
                 .bodyValue(Map.of("text", text))
                 .retrieve()

@@ -2,9 +2,10 @@ from flask import request, jsonify, Blueprint
 from service.emotion_service import EmotionDiaryService
 import traceback
 
+# 1. 블루프린트 객체 생성
 emotion_blueprint = Blueprint('emotion', __name__)
-
-@emotion_blueprint.route("/diary", methods=["POST"])
+# 2. 라우트 등록
+@emotion_blueprint.route("/analyze", methods=["POST"])
 def diary_text():
     try:
         data = request.json

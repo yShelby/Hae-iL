@@ -1,16 +1,12 @@
 // 📄 파일: src/api/emotionApi.js
-import axios from 'axios';
-// Flask 서버의 주소에 맞게 설정
-const flaskClient = axios.create({
-baseURL: 'http://localhost:5000',});
-// Flask 서버 주소});
+import apiClient from "@api/apiClient.js";
 
 /**
- * 🧠 감정 분석 요청 API
- * @param {string} text - 분석할 텍스트
- * @returns {Promise}
+ * 📊 감정 분석 결과 조회 API
+ * @param {number} diaryId - 감정분석 결과를 조회할 일기 ID
+ * @returns {Promise} - Axios 응답 프로미스
  */
-
-export const analyzeEmotionAPI = (text) => {
-    return flaskClient.post('/analyze', { text });
+export const fetchEmotionByDiaryId = (diaryId) => {
+    if (!diaryId) return Promise.reject(new Error("일기 ID가 필요합니다."));
+    return apiClient.get(`/api/analyze/${diaryId}`);
 };
