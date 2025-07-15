@@ -1,5 +1,5 @@
-import React from 'react';
-import { Outlet } from 'react-router-dom';
+import React, {useEffect} from 'react';
+import {Outlet, useParams} from 'react-router-dom';
 import { useWeeklyTimeline } from '@/hooks/useWeeklyTimeline.js';
 import { useDiaryData } from '@/hooks/useDiaryData.js';
 import { useCheckLogin } from '@/hooks/useCheckLogin.js';
@@ -13,12 +13,20 @@ import GalleryModal from "@features/gallery/GalleryModal.jsx";
 import './css/DiaryLayout.css';
 
 const DiaryLayout = () => {
+    const { date: urlDate } = useParams(); // URL에서 날짜 추출
     const checkLogin = useCheckLogin();
     const navigate = useNavigate();
     const {
         selectedDate,
         setSelectedDate,
     } = useDiaryData();
+
+    // URL에서 날짜가 있으면 selectedDate를 업데이트
+    useEffect(() => {
+        if (urlDate && urlDate !== selectedDate) {
+            setSelectedDate(urlDate);
+        }
+    }, [urlDate, selectedDate, setSelectedDate]);
 
     const {
         data: timelineData,
