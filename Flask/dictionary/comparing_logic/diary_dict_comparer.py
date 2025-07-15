@@ -15,14 +15,14 @@ def _diary_dict_comparer(diary : list[dict], sentiment_dict : list[dict]) -> lis
         pos = item["pos"]
 
         if word_root in senti_lookup:
-            emotion_info = senti_lookup[word_root]
+            mood_info = senti_lookup[word_root]
             compared.append({
                 "sentence_index" : sen_idx,
                 "word_index" : word_idx,
                 "word_root" : word_root,
-                "polarity" : int(emotion_info["polarity"]),
-                "label" : emotion_info["label"],
-                "tag" : emotion_info["tag"],
+                "polarity" : int(mood_info["polarity"]),
+                "label" : mood_info["label"],
+                "tag" : mood_info["tag"],
                 "pos" : pos
                 })
 

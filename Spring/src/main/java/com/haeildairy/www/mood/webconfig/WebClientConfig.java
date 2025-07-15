@@ -1,4 +1,4 @@
-package com.haeildairy.www.emotion.webconfig;
+package com.haeildairy.www.mood.webconfig;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

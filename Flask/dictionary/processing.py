@@ -42,7 +42,7 @@ with open(dict_path, 'r', encoding='utf-8') as f:
     
 #=====================================#
     
-def extract_emotion_with_dict(json_text) -> dict:
+def extract_mood_with_dict(json_text) -> dict:
     
     # json str -> dict 형태로 변경
     editor_json = json.loads(json_text)
@@ -91,8 +91,8 @@ def extract_emotion_with_dict(json_text) -> dict:
     # 1) 원하는 품사만 추출하기
 
     # 감정어 후보군
-    emotion_target_pos = {"NNG","VV","VA","MAG"} # 감성사전의 어근과 비교할 : 일반명사, 동사, 형용사, 부사
-    emotion_candidate = _pos_filter(results_preprocess, emotion_target_pos)
+    mood_target_pos = {"NNG","VV","VA","MAG"} # 감성사전의 어근과 비교할 : 일반명사, 동사, 형용사, 부사
+    mood_candidate = _pos_filter(results_preprocess, mood_target_pos)
 
     # 부정어 후보군
     NEGATIVE_WORDS = {('안', 'MAG'), ('못', 'MAG'), ('않', 'VX'), ('없', 'VA'), ('아니', 'MAG'), ('모르', 'VV'), ('다르', 'VA')} # 부정어 리스트 (set(tuple))
@@ -100,14 +100,14 @@ def extract_emotion_with_dict(json_text) -> dict:
 
     # 2) 일기 word_root를 감성사전 word_root와 비교
     # {word_root, polarity, label, tag} 추출
-    compared_emotion = _diary_dict_comparer(emotion_candidate, sentiment_dic)
+    compared_mood = _diary_dict_comparer(mood_candidate, sentiment_dic)
 
     # 3) 부정어 처리
-    negative_processing = _negative_processer(compared_emotion, negation_candidate)
+    negative_processing = _negative_processer(compared_mood, negation_candidate)
 
     # 4) 레이블 '' 삭제 처리
         # list comprehension : [<넣을_값> for <변수> in <반복_대상> if <조건>]
-    results_emotion = [item for item in negative_processing if not(item.get("label") == '' or item.get("tag") == '')]  # list[dict]
+    results_mood = [item for item in negative_processing if not(item.get("label") == '' or item.get("tag") == '')]  # list[dict]
 
 
     #=====================================#  
@@ -130,7 +130,7 @@ def extract_emotion_with_dict(json_text) -> dict:
     neutral_threshold = 9 # 중립/기타 분기 가중치
 
     # 2. 레이블 개수 세기 (소량 데이터 판단)
-    labels_list = [item["label"] for item in results_emotion]
+    labels_list = [item["label"] for item in results_mood]
     labels_count = Counter(labels_list).most_common()
 
     # 3. 케이스 분기
@@ -140,10 +140,10 @@ def extract_emotion_with_dict(json_text) -> dict:
         tag_list = [{"tag" : "#무난한"}]
 
     elif labels_count[0][1] < small_threshold : # 2) 소량 데이터 : 최빈도 레이블 < small_threshold
-        polarity_score, label_list, tag_list = _small_dataset_handler(results_emotion, p_threshold_sa, p_threshold_sb, last_threshold, top_label)
+        polarity_score, label_list, tag_list = _small_dataset_handler(results_mood, p_threshold_sa, p_threshold_sb, last_threshold, top_label)
 
     else : # 3) 일반 데이터 : 레이블 빈도수 >= min_count 존재할 때
-        polarity_score, label_list, tag_list = _large_dataset_handler(results_emotion, labels_count, p_threshold_la, p_threshold_lb, min_count, top_label, top_tag, neutral_threshold)
+        polarity_score, label_list, tag_list = _large_dataset_handler(results_mood, labels_count, p_threshold_la, p_threshold_lb, min_count, top_label, top_tag, neutral_threshold)
 
     # 4. 결과 도출
     results_score = {"polarity": polarity_score, "label": label_list, "tag": tag_list}
@@ -158,6 +158,6 @@ def extract_emotion_with_dict(json_text) -> dict:
 
 #     test1 = results_score
 
-#     print(f"RESULT : {test1}, len : {len(emotion_candidate)}")
+#     print(f"RESULT : {test1}, len : {len(mood_candidate)}")
     
     

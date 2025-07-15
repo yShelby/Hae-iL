@@ -1,4 +1,4 @@
-package com.haeildairy.www.emotion.dto;
+package com.haeildairy.www.mood.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;

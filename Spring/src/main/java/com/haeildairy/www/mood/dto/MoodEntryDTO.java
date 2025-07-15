@@ -1,13 +1,14 @@
-package com.haeildairy.www.emotion.dto;
+package com.haeildairy.www.mood.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class TagDTO {
-    private Long tagId;
-    private String tagName;
+public class MoodEntryDTO {
+    private Long diaryId;
+    private Integer moodScore;
 }

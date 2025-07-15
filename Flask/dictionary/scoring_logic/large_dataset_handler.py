@@ -4,14 +4,14 @@ from .percentage_calculator import _percentage_calculator
 from .polarity_calculator import _polarity_calculator
 
 
-def _large_dataset_handler(results_emotion : list[dict], labels_count: list[tuple[str, int]], p_threshold_la : int, p_threshold_lb : int, min_count : int, top_label : int, top_tag: int, neutral_threshold : int) -> tuple[list[dict], list[dict], list[dict]]:
+def _large_dataset_handler(results_mood : list[dict], labels_count: list[tuple[str, int]], p_threshold_la : int, p_threshold_lb : int, min_count : int, top_label : int, top_tag: int, neutral_threshold : int) -> tuple[list[dict], list[dict], list[dict]]:
     """
     일반 데이터셋 처리
     (레이블 빈도수 >= min_count)
     """
     
     # polarity 추출 및 계산
-    polarities = [item["polarity"] for item in results_emotion]
+    polarities = [item["polarity"] for item in results_mood]
     polarity_result = _polarity_calculator(polarities, p_threshold_la, p_threshold_lb) ##### polarity 결과
     
     # label
@@ -20,7 +20,7 @@ def _large_dataset_handler(results_emotion : list[dict], labels_count: list[tupl
     labels_count_sum = sum(count for _, count in labels_count) # top 레이블 빈도수 합
     
     # tag
-    tags = [item["tag"] for item in results_emotion if item["label"] in labels_list][:top_tag] # top 레이블에 속하는 태그만 추출(최대 7개)
+    tags = [item["tag"] for item in results_mood if item["label"] in labels_list][:top_tag] # top 레이블에 속하는 태그만 추출(최대 7개)
     tags_count = Counter(tags).most_common() # 태그 카운트, 최빈도 순 정렬
     tags_result = [item for item, _ in tags_count] ##### tag 결과
     

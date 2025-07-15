@@ -1,13 +1,13 @@
-package com.haeildairy.www.emotion.service;
+package com.haeildairy.www.mood.service;
 
 
 import com.haeildairy.www.diary.entity.DiaryEntity;
-import com.haeildairy.www.emotion.dto.FlaskResponseDTO;
-import com.haeildairy.www.emotion.dto.MoodDetailDTO;
-import com.haeildairy.www.emotion.dto.MoodEntryDTO;
-import com.haeildairy.www.emotion.dto.TagDTO;
-import com.haeildairy.www.emotion.entity.MoodEntry;
-import com.haeildairy.www.emotion.entity.Tag;
+import com.haeildairy.www.mood.dto.FlaskResponseDTO;
+import com.haeildairy.www.mood.dto.MoodDetailDTO;
+import com.haeildairy.www.mood.dto.MoodEntryDTO;
+import com.haeildairy.www.mood.dto.TagDTO;
+import com.haeildairy.www.mood.entity.MoodEntry;
+import com.haeildairy.www.mood.entity.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

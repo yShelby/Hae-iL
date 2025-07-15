@@ -1,9 +1,9 @@
-package com.haeildairy.www.emotion.service;
+package com.haeildairy.www.mood.service;
 
 import com.haeildairy.www.diary.entity.DiaryEntity;
-import com.haeildairy.www.emotion.dto.TagDTO;
-import com.haeildairy.www.emotion.entity.Tag;
-import com.haeildairy.www.emotion.repository.TagRepository;
+import com.haeildairy.www.mood.dto.TagDTO;
+import com.haeildairy.www.mood.entity.Tag;
+import com.haeildairy.www.mood.repository.TagRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

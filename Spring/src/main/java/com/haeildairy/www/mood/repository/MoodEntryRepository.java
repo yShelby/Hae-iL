@@ -1,6 +1,6 @@
-package com.haeildairy.www.emotion.repository;
+package com.haeildairy.www.mood.repository;
 
-import com.haeildairy.www.emotion.entity.MoodEntry;
+import com.haeildairy.www.mood.entity.MoodEntry;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
