@@ -42,66 +42,59 @@ public class RecommendMovieService {
 
         boolean useSurveyInstead = (emotionType == null || emotionType.equalsIgnoreCase("중립/기타"));
 
-        List<EmotionGenreMapEntity> genreWeights = useSurveyInstead
-                ? generateGenreWeightsFromInitialSurvey(user)
-                : emotionGenreMapRepository.findByEmotionTypeOrdered(emotionType);
-        return recommendByGenreWeights(genreWeights, user);
-    }
+        List<EmotionGenreMapEntity> genreWeights;
+        if (useSurveyInstead) {
+            genreWeights = generateGenreWeightsFromInitialSurvey(user);
+            log.info("초기 설문 기반 추천 사용, 계산된 장르 가중치: {}", genreWeights);
+        } else {
+            genreWeights = emotionGenreMapRepository.findByEmotionTypeOrdered(emotionType);
+            log.debug("감정 기반 장르 가중치: {}", genreWeights);
+        }
 
-//        if (useSurveyInstead) {
-//            // 초기 설문 기반 추천 사용
-//            genreWeights = generateGenreWeightsFromInitialSurvey(user);
-//            log.info("초기 설문 기반 추천 사용, 계산된 장르 가중치: {}", genreWeights);
-//        } else {
-//            // 감정에 매핑된 장르 가중치 조회 (ex: 기쁨 → 코미디, 음악 등)
-//            genreWeights = emotionGenreMapRepository.findByEmotionTypeOrdered(emotionType);
-//            log.debug("감정 기반 장르 가중치: {}", genreWeights);
-//        }
-//
-//        // 2. 현재 사용자가 싫어요 표시한 영화 키 리스트 조회
-//        List<String> dislikedMovieKeys = disLikeMoviesRepository.findByUser_UserId(user.getUserId())
-//                .stream()
-//                .map(entity -> entity.getMovieKey())
-//                .collect(Collectors.toList());
-//        log.debug("제외할 영화 키: {}", dislikedMovieKeys);
-//
-//        // 3. 장르별로 TMDB API 호출 → 영화 검색 → 싫어요 영화 제거
-//        List<MovieDTO> combinedMovies = new ArrayList<>();
-//
-//        for (EmotionGenreMapEntity genreMap : genreWeights) {
-//            Integer genreCode = genreMap.getGenreCode();
-//            log.debug("장르 [{}]에 대한 영화 검색 시작", genreCode);
-//
-//            // TMDB API 동기 호출
-//            List<MovieDTO> movies = tmdbApiClientService.searchMoviesByGenre(genreCode);
-//
-//            // 싫어요 영화 필터링
-//            List<MovieDTO> filtered = movies.stream()
-//                    .filter(movie -> !dislikedMovieKeys.contains(String.valueOf(movie.getId())))
-//                    .collect(Collectors.toList());
-//
-//            log.debug("장르 [{}] 필터링 후 남은 영화 수: {}", genreCode, filtered.size());
-//
-//            combinedMovies.addAll(filtered);
-//        }
-//
-//        // 4. 중복 영화 제거
-//        Map<Integer, MovieDTO> distinctMovies = new LinkedHashMap<>();
-//        for (MovieDTO movie : combinedMovies) {
-//            distinctMovies.putIfAbsent(movie.getId(), movie);
-//        }
-//
-//        // 5. 영화마다 트레일러 URL 조회 후 추가 (동기 호출)
-//        for (MovieDTO movie : distinctMovies.values()) {
-//            String trailerUrl = tmdbApiClientService.getMovieTrailer(String.valueOf(movie.getId()));
-//            movie.setTrailerUrl(trailerUrl);
-//        }
-//
-//        List<MovieDTO> result = new ArrayList<>(distinctMovies.values());
-//        log.info("최종 추천 영화 수: {}", result.size());
-//
-//        return result;
-//    }
+        // 2. 현재 사용자가 싫어요 표시한 영화 키 리스트 조회
+        List<String> dislikedMovieKeys = disLikeMoviesRepository.findByUser_UserId(user.getUserId())
+                .stream()
+                .map(entity -> entity.getMovieKey())
+                .collect(Collectors.toList());
+        log.debug("제외할 영화 키: {}", dislikedMovieKeys);
+
+        // 3. 장르별로 TMDB API 호출 → 영화 검색 → 싫어요 영화 제거
+        List<MovieDto> combinedMovies = new ArrayList<>();
+
+        for (EmotionGenreMapEntity genreMap : genreWeights) {
+            Integer genreCode = genreMap.getGenreCode();
+            log.debug("장르 [{}]에 대한 영화 검색 시작", genreCode);
+
+            // TMDB API 동기 호출
+            List<MovieDto> movies = tmdbApiClientService.searchMoviesByGenre(genreCode);
+
+            // 싫어요 영화 필터링
+            List<MovieDto> filtered = movies.stream()
+                    .filter(movie -> !dislikedMovieKeys.contains(String.valueOf(movie.getId())))
+                    .collect(Collectors.toList());
+
+            log.debug("장르 [{}] 필터링 후 남은 영화 수: {}", genreCode, filtered.size());
+
+            combinedMovies.addAll(filtered);
+        }
+
+        // 4. 중복 영화 제거
+        Map<Integer, MovieDto> distinctMovies = new LinkedHashMap<>();
+        for (MovieDto movie : combinedMovies) {
+            distinctMovies.putIfAbsent(movie.getId(), movie);
+        }
+
+        // 5. 영화마다 트레일러 URL 조회 후 추가 (동기 호출)
+        for (MovieDto movie : distinctMovies.values()) {
+            String trailerUrl = tmdbApiClientService.getMovieTrailer(String.valueOf(movie.getId()));
+            movie.setTrailerUrl(trailerUrl);
+        }
+
+        List<MovieDto> result = new ArrayList<>(distinctMovies.values());
+        log.info("최종 추천 영화 수: {}", result.size());
+
+        return result;
+    }
     /**
      * 초기 설문 기반 장르 가중치 생성 메서드
      * - 사용자의 초기 설문 결과를 기반으로 장르 가중치를 생성함

@@ -253,30 +253,6 @@ public class MovieController {
     }
 
     /**
-     * 클라이언트에서 감정을 직접 보내서 해당 감정 기반 영화 추천 요청
-     * 인증된 사용자만 접근 가능
-     */
-//    @PostMapping
-//    public ResponseEntity<List<MovieDTO>> recommendByEmotion(
-//            @AuthenticationPrincipal UserEntity user
-//    ) {
-//        log.info("추천 요청 감정: {}", emotionType);
-//        log.info("추천 요청 사용자: {}", (user != null ? user.getEmail() : "null"));
-//
-//        if (user == null) {
-//            log.warn("❌ 인증 안 된 사용자 요청");
-//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-//        }
-//
-//        List<MovieDTO> movies = recommendMovieService.recommendByEmotion(emotionType, user);
-//        if (movies == null || movies.isEmpty()) {
-//            log.info("추천 영화가 없습니다.");
-//            return ResponseEntity.noContent().build();
-//        }
-//        return ResponseEntity.ok(movies);
-//    }
-
-    /**
      * 사용자가 특정 영화를 '싫어요'로 저장 요청
      * 인증된 사용자만 접근 가능
      */
@@ -306,7 +282,7 @@ public class MovieController {
      * 사용자가 저장한 '싫어요' 영화 삭제 요청
      */
     @DeleteMapping("/{disLikeId}")
-    public ResponseEntity<String> deleteDisLikeMovie(@RequestParam Integer disLikeId) {
+    public ResponseEntity<String> deleteDisLikeMovie(@PathVariable Integer disLikeId) {
         log.info("싫어요 영화 삭제 요청: disLikeId={}", disLikeId);
         disLikeMoviesService.deleteDisLikeMovie(disLikeId);
         return ResponseEntity.ok("싫어요한 영화가 삭제되었습니다.");

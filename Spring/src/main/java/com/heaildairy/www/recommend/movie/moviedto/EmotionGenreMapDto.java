@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class EmotionGenreMapEntityDto {
+public class EmotionGenreMapDto {
     private String emotionType;
     private Integer genreCode;
     private String genreName;
