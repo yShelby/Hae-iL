@@ -26,6 +26,7 @@
     "react": "^19.1.0",
     "react-calendar": "^6.0.0",
     "react-countup": "^6.5.3",
+    "react-d3-cloud": "^1.0.6",
     "react-datepicker": "^8.4.0",
     "react-dom": "^19.1.0",
     "react-hot-toast": "^2.5.2",

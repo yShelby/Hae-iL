@@ -1,6 +1,26 @@
 .horizontal-container {
     display: flex;
-    flex-direction: row;
-    gap: 24px;
-    width: 100%;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.placeholder-box {
+    background-color: #ffffff;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+}
+
+.wordcloud-container {
+    justify-content: flex-start;
+    align-items: stretch;
+}
+
+.title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: #334155;
 }
