@@ -1,7 +1,7 @@
-package com.heaildairy.www.diary.dto;
+package com.haeildairy.www.diary.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.heaildairy.www.diary.entity.DiaryEntity;
+import com.haeildairy.www.diary.entity.DiaryEntity;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;

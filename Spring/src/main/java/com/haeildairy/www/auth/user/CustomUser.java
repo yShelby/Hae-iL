@@ -1,4 +1,4 @@
-package com.heaildairy.www.auth.user; // CustomUser가 service 패키지에 있다고 가정
+package com.haeildairy.www.auth.user; // CustomUser가 service 패키지에 있다고 가정
 
 import lombok.Getter;
 import lombok.Setter;

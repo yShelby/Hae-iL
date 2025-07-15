@@ -1,4 +1,4 @@
-package com.heaildairy.www.dashboard.fortune.entity;
+package com.haeildairy.www.dashboard.fortune.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;

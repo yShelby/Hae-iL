@@ -1,4 +1,4 @@
-package com.heaildairy.www.dashboard.weather.dto;
+package com.haeildairy.www.dashboard.weather.dto;
 
 import lombok.Builder;
 import lombok.Getter;

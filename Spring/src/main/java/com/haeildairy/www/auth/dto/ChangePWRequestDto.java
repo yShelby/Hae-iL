@@ -1,4 +1,4 @@
-package com.heaildairy.www.auth.dto;
+package com.haeildairy.www.auth.dto;
 
 import lombok.Data;
 

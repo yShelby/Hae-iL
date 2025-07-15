@@ -1,11 +1,11 @@
-package com.heaildairy.www.dashboard.service;
+package com.haeildairy.www.dashboard.service;
 
-import com.heaildairy.www.auth.entity.UserEntity;
-import com.heaildairy.www.auth.repository.UserRepository;
-import com.heaildairy.www.dashboard.dto.DashboardStatsResponseDto;
-import com.heaildairy.www.diary.repository.DiaryRepository;
-import com.heaildairy.www.gallery.repository.GalleryRepository;
-import com.heaildairy.www.journal.repository.JournalRepository;
+import com.haeildairy.www.auth.entity.UserEntity;
+import com.haeildairy.www.auth.repository.UserRepository;
+import com.haeildairy.www.dashboard.dto.DashboardStatsResponseDto;
+import com.haeildairy.www.diary.repository.DiaryRepository;
+import com.haeildairy.www.gallery.repository.GalleryRepository;
+import com.haeildairy.www.journal.repository.JournalRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

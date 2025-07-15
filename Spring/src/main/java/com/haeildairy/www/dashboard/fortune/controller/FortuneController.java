@@ -1,8 +1,8 @@
-package com.heaildairy.www.dashboard.fortune.controller;
+package com.haeildairy.www.dashboard.fortune.controller;
 
-import com.heaildairy.www.auth.user.CustomUser;
-import com.heaildairy.www.dashboard.fortune.dto.FortuneDto;
-import com.heaildairy.www.dashboard.fortune.service.FortuneService;
+import com.haeildairy.www.auth.user.CustomUser;
+import com.haeildairy.www.dashboard.fortune.dto.FortuneDto;
+import com.haeildairy.www.dashboard.fortune.service.FortuneService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

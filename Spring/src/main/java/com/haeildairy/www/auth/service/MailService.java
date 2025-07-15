@@ -1,4 +1,4 @@
-package com.heaildairy.www.auth.service;
+package com.haeildairy.www.auth.service;
 
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;

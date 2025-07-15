@@ -1,4 +1,4 @@
-package com.heaildairy.www.auth.service;
+package com.haeildairy.www.auth.service;
 
 public enum EmailFindStatus {
     NOT_FOUND("해당 전화번호로 가입된 이메일이 없습니다."),

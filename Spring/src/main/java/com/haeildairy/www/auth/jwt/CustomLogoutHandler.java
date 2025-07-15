@@ -1,6 +1,6 @@
-package com.heaildairy.www.auth.jwt;
+package com.haeildairy.www.auth.jwt;
 
-import com.heaildairy.www.auth.event.LogoutEvent; // LogoutEvent 임포트
+import com.haeildairy.www.auth.event.LogoutEvent; // LogoutEvent 임포트
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;

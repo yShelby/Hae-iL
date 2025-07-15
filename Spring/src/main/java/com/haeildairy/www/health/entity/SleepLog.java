@@ -1,6 +1,6 @@
-package com.heaildairy.www.health.entity;
+package com.haeildairy.www.health.entity;
 
-import com.heaildairy.www.auth.entity.UserEntity;
+import com.haeildairy.www.auth.entity.UserEntity;
 import jakarta.persistence.*;
 import lombok.*;
 

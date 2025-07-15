@@ -1,12 +1,12 @@
-package com.heaildairy.www.journal.service;
+package com.haeildairy.www.journal.service;
 
-import com.heaildairy.www.auth.entity.UserEntity;
-import com.heaildairy.www.auth.repository.UserRepository;
-import com.heaildairy.www.journal.dto.JournalRequestDto;
-import com.heaildairy.www.journal.dto.JournalResponseDto;
-import com.heaildairy.www.journal.entity.Category;
-import com.heaildairy.www.journal.entity.JournalEntity;
-import com.heaildairy.www.journal.repository.JournalRepository;
+import com.haeildairy.www.auth.entity.UserEntity;
+import com.haeildairy.www.auth.repository.UserRepository;
+import com.haeildairy.www.journal.dto.JournalRequestDto;
+import com.haeildairy.www.journal.dto.JournalResponseDto;
+import com.haeildairy.www.journal.entity.Category;
+import com.haeildairy.www.journal.entity.JournalEntity;
+import com.haeildairy.www.journal.repository.JournalRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;

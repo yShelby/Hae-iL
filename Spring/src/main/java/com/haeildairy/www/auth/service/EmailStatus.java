@@ -1,4 +1,4 @@
-package com.heaildairy.www.auth.service;
+package com.haeildairy.www.auth.service;
 
 public enum EmailStatus {
     AVAILABLE("사용 가능한 이메일입니다."),

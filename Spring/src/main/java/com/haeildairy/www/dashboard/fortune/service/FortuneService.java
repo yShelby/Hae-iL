@@ -1,10 +1,10 @@
-package com.heaildairy.www.dashboard.fortune.service;
+package com.haeildairy.www.dashboard.fortune.service;
 
-import com.heaildairy.www.auth.entity.UserEntity;
-import com.heaildairy.www.auth.repository.UserRepository;
-import com.heaildairy.www.dashboard.fortune.dto.FortuneDto;
-import com.heaildairy.www.dashboard.fortune.entity.FortuneEntity;
-import com.heaildairy.www.dashboard.fortune.repository.FortuneRepository;
+import com.haeildairy.www.auth.entity.UserEntity;
+import com.haeildairy.www.auth.repository.UserRepository;
+import com.haeildairy.www.dashboard.fortune.dto.FortuneDto;
+import com.haeildairy.www.dashboard.fortune.entity.FortuneEntity;
+import com.haeildairy.www.dashboard.fortune.repository.FortuneRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

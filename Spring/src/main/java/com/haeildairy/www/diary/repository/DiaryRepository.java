@@ -1,7 +1,7 @@
-package com.heaildairy.www.diary.repository;
+package com.haeildairy.www.diary.repository;
 
-import com.heaildairy.www.auth.entity.UserEntity;
-import com.heaildairy.www.diary.entity.DiaryEntity;
+import com.haeildairy.www.auth.entity.UserEntity;
+import com.haeildairy.www.diary.entity.DiaryEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

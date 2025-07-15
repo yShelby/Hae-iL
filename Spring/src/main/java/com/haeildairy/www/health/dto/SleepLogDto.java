@@ -1,7 +1,7 @@
-package com.heaildairy.www.health.dto;
+package com.haeildairy.www.health.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.heaildairy.www.health.entity.SleepLog;
+import com.haeildairy.www.health.entity.SleepLog;
 import lombok.*;
 
 import java.time.LocalDate;

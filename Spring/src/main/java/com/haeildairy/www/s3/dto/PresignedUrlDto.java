@@ -1,4 +1,4 @@
-package com.heaildairy.www.s3.dto;
+package com.haeildairy.www.s3.dto;
 
 import lombok.Builder;
 import lombok.Getter;

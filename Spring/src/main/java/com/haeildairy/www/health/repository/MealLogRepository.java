@@ -1,6 +1,6 @@
-package com.heaildairy.www.health.repository;
+package com.haeildairy.www.health.repository;
 
-import com.heaildairy.www.health.entity.MealLog;
+import com.haeildairy.www.health.entity.MealLog;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

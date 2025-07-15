@@ -1,4 +1,4 @@
-package com.heaildairy.www.auth.config;
+package com.haeildairy.www.auth.config;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;

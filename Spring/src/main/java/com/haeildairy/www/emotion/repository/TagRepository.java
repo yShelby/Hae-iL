@@ -1,6 +1,6 @@
-package com.heaildairy.www.emotion.repository;
+package com.haeildairy.www.emotion.repository;
 
-import com.heaildairy.www.emotion.entity.Tag;
+import com.haeildairy.www.emotion.entity.Tag;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

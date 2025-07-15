@@ -1,4 +1,4 @@
-package com.heaildairy.www.auth.jwt;
+package com.haeildairy.www.auth.jwt;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;

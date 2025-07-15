@@ -1,7 +1,7 @@
-package com.heaildairy.www.gallery.service;
+package com.haeildairy.www.gallery.service;
 
-import com.heaildairy.www.gallery.dto.GalleryDto;
-import com.heaildairy.www.gallery.repository.GalleryRepository;
+import com.haeildairy.www.gallery.dto.GalleryDto;
+import com.haeildairy.www.gallery.repository.GalleryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

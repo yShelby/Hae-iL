@@ -9,7 +9,7 @@
 //   📍 4. 상태 코드가 404면 index.html로 렌더링 (SPA 라우팅 유지)
 //   📍 5. 그 외 상태는 error.html 등 기본 에러 페이지로 이동
 
-package com.heaildairy.www.common.controller;
+package com.haeildairy.www.common.controller;
 
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.http.HttpServletRequest;

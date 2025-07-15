@@ -1,4 +1,4 @@
-package com.heaildairy.www.auth.entity;
+package com.haeildairy.www.auth.entity;
 
 import jakarta.persistence.*;
 import lombok.Builder;

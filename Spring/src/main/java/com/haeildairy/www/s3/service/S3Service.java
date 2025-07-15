@@ -1,6 +1,6 @@
-package com.heaildairy.www.s3.service;
+package com.haeildairy.www.s3.service;
 
-import com.heaildairy.www.s3.dto.PresignedUrlDto;
+import com.haeildairy.www.s3.dto.PresignedUrlDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;

@@ -1,6 +1,6 @@
-package com.heaildairy.www.journal.dto;
+package com.haeildairy.www.journal.dto;
 
-import com.heaildairy.www.journal.entity.JournalEntity;
+import com.haeildairy.www.journal.entity.JournalEntity;
 import lombok.Getter;
 
 import java.time.LocalDate;

@@ -1,8 +1,8 @@
-package com.heaildairy.www.timeline.controller;
+package com.haeildairy.www.timeline.controller;
 
-import com.heaildairy.www.auth.user.CustomUser;
-import com.heaildairy.www.timeline.dto.TimelineDto;
-import com.heaildairy.www.timeline.service.TimelineService;
+import com.haeildairy.www.auth.user.CustomUser;
+import com.haeildairy.www.timeline.dto.TimelineDto;
+import com.haeildairy.www.timeline.service.TimelineService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;

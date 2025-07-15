@@ -1,7 +1,7 @@
-package com.heaildairy.www.dashboard.weather.controller;
+package com.haeildairy.www.dashboard.weather.controller;
 
-import com.heaildairy.www.dashboard.weather.dto.WeatherDto;
-import com.heaildairy.www.dashboard.weather.service.WeatherService;
+import com.haeildairy.www.dashboard.weather.dto.WeatherDto;
+import com.haeildairy.www.dashboard.weather.service.WeatherService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

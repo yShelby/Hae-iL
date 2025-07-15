@@ -1,6 +1,6 @@
-package com.heaildairy.www.health.dto;
+package com.haeildairy.www.health.dto;
 
-import com.heaildairy.www.health.entity.ExerciseLog;
+import com.haeildairy.www.health.entity.ExerciseLog;
 import lombok.*;
 
 import java.time.LocalDate;

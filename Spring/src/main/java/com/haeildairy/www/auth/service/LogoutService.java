@@ -1,6 +1,6 @@
-package com.heaildairy.www.auth.service;
+package com.haeildairy.www.auth.service;
 
-import com.heaildairy.www.auth.jwt.JwtProvider;
+import com.haeildairy.www.auth.jwt.JwtProvider;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;

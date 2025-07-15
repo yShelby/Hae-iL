@@ -1,7 +1,7 @@
-package com.heaildairy.www.journal.entity;
+package com.haeildairy.www.journal.entity;
 
-import com.heaildairy.www.auth.entity.UserEntity;
-import com.heaildairy.www.journal.dto.JournalRequestDto;
+import com.haeildairy.www.auth.entity.UserEntity;
+import com.haeildairy.www.journal.dto.JournalRequestDto;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;

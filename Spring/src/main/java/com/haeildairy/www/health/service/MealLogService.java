@@ -1,17 +1,16 @@
-package com.heaildairy.www.health.service;
+package com.haeildairy.www.health.service;
 
-import com.heaildairy.www.auth.entity.UserEntity;
-import com.heaildairy.www.auth.repository.UserRepository;
-import com.heaildairy.www.health.dto.MealLogDto;
-import com.heaildairy.www.health.entity.MealLog;
-import com.heaildairy.www.health.repository.MealLogRepository;
+import com.haeildairy.www.auth.entity.UserEntity;
+import com.haeildairy.www.auth.repository.UserRepository;
+import com.haeildairy.www.health.dto.MealLogDto;
+import com.haeildairy.www.health.entity.MealLog;
+import com.haeildairy.www.health.repository.MealLogRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.NoSuchElementException;
 
 @Slf4j

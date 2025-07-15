@@ -1,7 +1,7 @@
-package com.heaildairy.www.dashboard.weather.dto.response;
+package com.haeildairy.www.dashboard.weather.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.heaildairy.www.dashboard.weather.dto.WeatherDto;
+import com.haeildairy.www.dashboard.weather.dto.WeatherDto;
 import lombok.Getter;
 import lombok.Setter;
 

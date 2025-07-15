@@ -1,14 +1,14 @@
-package com.heaildairy.www.auth.service;
+package com.haeildairy.www.auth.service;
 
-import com.heaildairy.www.auth.config.AESUtil;
-import com.heaildairy.www.auth.dto.RegisterRequestDto;
-import com.heaildairy.www.auth.entity.RefreshToken;
-import com.heaildairy.www.auth.entity.UserEntity;
-import com.heaildairy.www.auth.jwt.JwtProvider;
-import com.heaildairy.www.auth.repository.RefreshTokenRepository;
-import com.heaildairy.www.auth.repository.UserRepository;
-import com.heaildairy.www.auth.user.UserStatus;
-import com.heaildairy.www.s3.service.S3Service; // S3Service 임포트 추가
+import com.haeildairy.www.auth.config.AESUtil;
+import com.haeildairy.www.auth.dto.RegisterRequestDto;
+import com.haeildairy.www.auth.entity.RefreshToken;
+import com.haeildairy.www.auth.entity.UserEntity;
+import com.haeildairy.www.auth.jwt.JwtProvider;
+import com.haeildairy.www.auth.repository.RefreshTokenRepository;
+import com.haeildairy.www.auth.repository.UserRepository;
+import com.haeildairy.www.auth.user.UserStatus;
+import com.haeildairy.www.s3.service.S3Service; // S3Service 임포트 추가
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;

@@ -1,13 +1,10 @@
-package com.heaildairy.www.timeline.service;
+package com.haeildairy.www.timeline.service;
 
-import com.heaildairy.www.diary.repository.DiaryRepository;
-import com.heaildairy.www.health.dto.ExerciseLogDto;
-import com.heaildairy.www.health.dto.MealLogDto;
-import com.heaildairy.www.health.dto.SleepLogDto;
-import com.heaildairy.www.health.repository.ExerciseLogRepository;
-import com.heaildairy.www.health.repository.MealLogRepository;
-import com.heaildairy.www.health.repository.SleepLogRepository;
-import com.heaildairy.www.timeline.dto.TimelineDto;
+import com.haeildairy.www.diary.repository.DiaryRepository;
+import com.haeildairy.www.health.repository.ExerciseLogRepository;
+import com.haeildairy.www.health.repository.MealLogRepository;
+import com.haeildairy.www.health.repository.SleepLogRepository;
+import com.haeildairy.www.timeline.dto.TimelineDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

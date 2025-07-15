@@ -1,4 +1,4 @@
-package com.heaildairy.www.auth.user;
+package com.haeildairy.www.auth.user;
 
 public enum UserStatus {
     ACTIVE,    // 활동 중인 회원

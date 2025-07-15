@@ -1,8 +1,8 @@
-package com.heaildairy.www.auth.service;
+package com.haeildairy.www.auth.service;
 
-import com.heaildairy.www.auth.entity.UserEntity;
-import com.heaildairy.www.auth.repository.UserRepository;
-import com.heaildairy.www.auth.user.CustomUser;
+import com.haeildairy.www.auth.entity.UserEntity;
+import com.haeildairy.www.auth.repository.UserRepository;
+import com.haeildairy.www.auth.user.CustomUser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
-import com.heaildairy.www.auth.user.UserStatus;
+import com.haeildairy.www.auth.user.UserStatus;
 
 /**
  * 📂 MyUserDetailService.java

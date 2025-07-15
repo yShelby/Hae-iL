@@ -1,6 +1,6 @@
-package com.heaildairy.www.journal.dto;
+package com.haeildairy.www.journal.dto;
 
-import com.heaildairy.www.journal.entity.Category;
+import com.haeildairy.www.journal.entity.Category;
 import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

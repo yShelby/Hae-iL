@@ -1,6 +1,6 @@
-package com.heaildairy.www.auth.repository;
+package com.haeildairy.www.auth.repository;
 
-import com.heaildairy.www.auth.entity.UserEntity; // UserEntity 임포트
+import com.haeildairy.www.auth.entity.UserEntity; // UserEntity 임포트
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 

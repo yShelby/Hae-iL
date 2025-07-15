@@ -1,4 +1,4 @@
-package com.heaildairy.www.emotion.dto;
+package com.haeildairy.www.emotion.dto;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

@@ -1,7 +1,7 @@
-package com.heaildairy.www.gallery.dto;
+package com.haeildairy.www.gallery.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.heaildairy.www.gallery.entity.GalleryEntity;
+import com.haeildairy.www.gallery.entity.GalleryEntity;
 import lombok.Builder;
 import lombok.Getter;
 

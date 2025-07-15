@@ -1,8 +1,8 @@
-package com.heaildairy.www.diary.controller;
+package com.haeildairy.www.diary.controller;
 
-import com.heaildairy.www.auth.user.CustomUser;
-import com.heaildairy.www.diary.dto.DiaryDto;
-import com.heaildairy.www.diary.service.DiaryService;
+import com.haeildairy.www.auth.user.CustomUser;
+import com.haeildairy.www.diary.dto.DiaryDto;
+import com.haeildairy.www.diary.service.DiaryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;

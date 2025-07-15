@@ -1,4 +1,4 @@
-package com.heaildairy.www.dashboard.fortune.dto;
+package com.haeildairy.www.dashboard.fortune.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

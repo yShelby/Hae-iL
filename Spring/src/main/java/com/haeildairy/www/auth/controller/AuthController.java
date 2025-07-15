@@ -1,4 +1,4 @@
-package com.heaildairy.www.auth.controller;
+package com.haeildairy.www.auth.controller;
 
 /**
  * 📂 AuthController.java
@@ -19,14 +19,15 @@ package com.heaildairy.www.auth.controller;
  * 8️⃣ Access Token 재발급 → Refresh Token 검증 → 새 토큰 발급
  */
 
-import com.heaildairy.www.auth.dto.ChangePWRequestDto;
-import com.heaildairy.www.auth.dto.FindPWRequestDto;
-import com.heaildairy.www.auth.dto.LoginRequestDto;
-import com.heaildairy.www.auth.dto.RegisterRequestDto;
-import com.heaildairy.www.auth.entity.UserEntity;
-import com.heaildairy.www.auth.service.*;
-import com.heaildairy.www.auth.jwt.JwtProvider;
-import com.heaildairy.www.auth.user.CustomUser;
+import com.haeildairy.www.auth.dto.ChangePWRequestDto;
+import com.haeildairy.www.auth.dto.FindPWRequestDto;
+import com.haeildairy.www.auth.dto.LoginRequestDto;
+import com.haeildairy.www.auth.dto.RegisterRequestDto;
+import com.haeildairy.www.auth.entity.UserEntity;
+import com.haeildairy.www.auth.service.*;
+import com.haeildairy.www.auth.service.*;
+import com.haeildairy.www.auth.jwt.JwtProvider;
+import com.haeildairy.www.auth.user.CustomUser;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;

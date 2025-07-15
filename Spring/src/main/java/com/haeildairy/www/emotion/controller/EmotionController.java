@@ -1,11 +1,9 @@
-package com.heaildairy.www.emotion.controller;
+package com.haeildairy.www.emotion.controller;
 
 
-import com.heaildairy.www.auth.user.CustomUser;
-import com.heaildairy.www.diary.entity.DiaryEntity;
-import com.heaildairy.www.emotion.dto.FlaskResponseDTO;
-import com.heaildairy.www.emotion.service.AllService;
-import com.heaildairy.www.emotion.service.FlaskService;
+import com.haeildairy.www.auth.user.CustomUser;
+import com.haeildairy.www.emotion.dto.FlaskResponseDTO;
+import com.haeildairy.www.emotion.service.AllService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;

@@ -1,4 +1,4 @@
-package com.heaildairy.www.dashboard.weather.dto.response;
+package com.haeildairy.www.dashboard.weather.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;

@@ -1,19 +1,17 @@
-package com.heaildairy.www.health.controller;
+package com.haeildairy.www.health.controller;
 
-import com.heaildairy.www.auth.user.CustomUser;
-import com.heaildairy.www.health.dto.MealLogDto;
-import com.heaildairy.www.health.service.MealLogService;
+import com.haeildairy.www.auth.user.CustomUser;
+import com.haeildairy.www.health.dto.MealLogDto;
+import com.haeildairy.www.health.service.MealLogService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/meal")

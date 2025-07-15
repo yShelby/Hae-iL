@@ -12,12 +12,12 @@
 // 4️⃣ 🗂️ 조회/수정 시 이 엔티티를 통해 데이터 매핑됨
 // 5️⃣ ✏️ 수정 시 updatedAt 자동 변경됨
 
-package com.heaildairy.www.diary.entity;
+package com.haeildairy.www.diary.entity;
 
-import com.heaildairy.www.auth.entity.UserEntity;
-import com.heaildairy.www.emotion.entity.MoodDetail;
-import com.heaildairy.www.emotion.entity.MoodEntry;
-import com.heaildairy.www.emotion.entity.Tag;
+import com.haeildairy.www.auth.entity.UserEntity;
+import com.haeildairy.www.emotion.entity.MoodDetail;
+import com.haeildairy.www.emotion.entity.MoodEntry;
+import com.haeildairy.www.emotion.entity.Tag;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;

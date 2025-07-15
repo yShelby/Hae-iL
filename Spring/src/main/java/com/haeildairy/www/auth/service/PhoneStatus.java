@@ -1,4 +1,4 @@
-package com.heaildairy.www.auth.service;
+package com.haeildairy.www.auth.service;
 
 public enum PhoneStatus {
     AVAILABLE("사용 가능한 전화번호입니다."),

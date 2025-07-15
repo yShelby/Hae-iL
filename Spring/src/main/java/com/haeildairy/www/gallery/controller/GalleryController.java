@@ -1,8 +1,8 @@
-package com.heaildairy.www.gallery.controller;
+package com.haeildairy.www.gallery.controller;
 
-import com.heaildairy.www.auth.user.CustomUser;
-import com.heaildairy.www.gallery.dto.GalleryDto;
-import com.heaildairy.www.gallery.service.GalleryService;
+import com.haeildairy.www.auth.user.CustomUser;
+import com.haeildairy.www.gallery.dto.GalleryDto;
+import com.haeildairy.www.gallery.service.GalleryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

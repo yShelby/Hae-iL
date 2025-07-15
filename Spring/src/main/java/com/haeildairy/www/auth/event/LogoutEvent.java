@@ -1,4 +1,4 @@
-package com.heaildairy.www.auth.event;
+package com.haeildairy.www.auth.event;
 
 import org.springframework.context.ApplicationEvent;
 

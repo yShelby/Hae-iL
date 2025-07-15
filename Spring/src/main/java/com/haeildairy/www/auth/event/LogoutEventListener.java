@@ -1,6 +1,6 @@
-package com.heaildairy.www.auth.event;
+package com.haeildairy.www.auth.event;
 
-import com.heaildairy.www.auth.service.UserService;
+import com.haeildairy.www.auth.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;

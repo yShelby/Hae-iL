@@ -12,10 +12,10 @@
 // 4️⃣ 토큰 검증 → 사용자 정보 조회 → SecurityContext에 등록
 // 5️⃣ 만료된 토큰인 경우에도 extractToken()을 통해 Claims는 추출 가능
 
-package com.heaildairy.www.auth.jwt;
+package com.haeildairy.www.auth.jwt;
 
-import com.heaildairy.www.auth.user.CustomUser;
-import com.heaildairy.www.auth.service.MyUserDetailService;
+import com.haeildairy.www.auth.user.CustomUser;
+import com.haeildairy.www.auth.service.MyUserDetailService;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;

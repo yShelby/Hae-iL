@@ -1,6 +1,6 @@
-package com.heaildairy.www.dashboard.fortune.repository;
+package com.haeildairy.www.dashboard.fortune.repository;
 
-import com.heaildairy.www.dashboard.fortune.entity.FortuneEntity;
+import com.haeildairy.www.dashboard.fortune.entity.FortuneEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

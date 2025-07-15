@@ -1,7 +1,7 @@
-package com.heaildairy.www.auth.repository;
+package com.haeildairy.www.auth.repository;
 
-import com.heaildairy.www.auth.entity.RefreshToken;
-import com.heaildairy.www.auth.entity.UserEntity;
+import com.haeildairy.www.auth.entity.RefreshToken;
+import com.haeildairy.www.auth.entity.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

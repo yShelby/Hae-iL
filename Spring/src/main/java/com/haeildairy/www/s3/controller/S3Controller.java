@@ -1,7 +1,7 @@
-package com.heaildairy.www.s3.controller;
+package com.haeildairy.www.s3.controller;
 
-import com.heaildairy.www.s3.dto.PresignedUrlDto;
-import com.heaildairy.www.s3.service.S3Service;
+import com.haeildairy.www.s3.dto.PresignedUrlDto;
+import com.haeildairy.www.s3.service.S3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

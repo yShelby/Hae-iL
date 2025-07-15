@@ -1,9 +1,9 @@
-package com.heaildairy.www.journal.controller;
+package com.haeildairy.www.journal.controller;
 
-import com.heaildairy.www.auth.user.CustomUser;
-import com.heaildairy.www.journal.dto.JournalRequestDto;
-import com.heaildairy.www.journal.dto.JournalResponseDto;
-import com.heaildairy.www.journal.service.JournalService;
+import com.haeildairy.www.auth.user.CustomUser;
+import com.haeildairy.www.journal.dto.JournalRequestDto;
+import com.haeildairy.www.journal.dto.JournalResponseDto;
+import com.haeildairy.www.journal.service.JournalService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

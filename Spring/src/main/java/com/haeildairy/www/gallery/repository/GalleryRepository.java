@@ -1,7 +1,7 @@
-package com.heaildairy.www.gallery.repository;
+package com.haeildairy.www.gallery.repository;
 
-import com.heaildairy.www.auth.entity.UserEntity;
-import com.heaildairy.www.gallery.entity.GalleryEntity;
+import com.haeildairy.www.auth.entity.UserEntity;
+import com.haeildairy.www.gallery.entity.GalleryEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 import java.util.Optional;

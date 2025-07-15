@@ -11,7 +11,7 @@
 //    → ViewController가 요청을 "/" 경로(index.html)로 강제 포워딩
 //    → React Router가 클라이언트 라우팅 처리
 
-package com.heaildairy.www.common;
+package com.haeildairy.www.common;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;

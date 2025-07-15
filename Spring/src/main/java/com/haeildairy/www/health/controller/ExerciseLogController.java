@@ -1,8 +1,8 @@
-package com.heaildairy.www.health.controller;
+package com.haeildairy.www.health.controller;
 
-import com.heaildairy.www.auth.user.CustomUser;
-import com.heaildairy.www.health.dto.ExerciseLogDto;
-import com.heaildairy.www.health.service.ExerciseLogService;
+import com.haeildairy.www.auth.user.CustomUser;
+import com.haeildairy.www.health.dto.ExerciseLogDto;
+import com.haeildairy.www.health.service.ExerciseLogService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -11,7 +11,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.util.List;
 
 /**
  * 🏋️ ExerciseLogController.java

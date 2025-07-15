@@ -1,8 +1,8 @@
-package com.heaildairy.www.dashboard.controller;
+package com.haeildairy.www.dashboard.controller;
 
-import com.heaildairy.www.auth.user.CustomUser;
-import com.heaildairy.www.dashboard.dto.DashboardStatsResponseDto;
-import com.heaildairy.www.dashboard.service.DashboardService;
+import com.haeildairy.www.auth.user.CustomUser;
+import com.haeildairy.www.dashboard.dto.DashboardStatsResponseDto;
+import com.haeildairy.www.dashboard.service.DashboardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

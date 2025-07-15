@@ -1,7 +1,7 @@
-package com.heaildairy.www.dashboard.weather.service;
+package com.haeildairy.www.dashboard.weather.service;
 
-import com.heaildairy.www.dashboard.weather.dto.WeatherDto;
-import com.heaildairy.www.dashboard.weather.dto.response.WeatherResponseDto;
+import com.haeildairy.www.dashboard.weather.dto.WeatherDto;
+import com.haeildairy.www.dashboard.weather.dto.response.WeatherResponseDto;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;

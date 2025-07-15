@@ -1,4 +1,4 @@
-package com.heaildairy.www.emotion.dto;
+package com.haeildairy.www.emotion.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
@@ -29,27 +29,3 @@ public class FlaskResponseDTO {
         private Integer percentage;
     }
 }
-
-// public class FlaskResponseDTO {
-//     @JsonProperty("mood_score")
-//     private Integer moodScore;
-
-//     private String sentiment;
-
-//     private List<FlaskEmotionDetailDTO> details;
-
-//     private List<String> tags;
-
-//     @JsonProperty("custom_tags")
-//     private List<String> customTags;
-
-//     @Data
-//     @NoArgsConstructor
-//     @AllArgsConstructor
-//     public static class FlaskEmotionDetailDTO {
-//         @JsonProperty("emotion_type")
-//         private String emotionType;
-
-//         private Double percentage;
-//     }
-// }

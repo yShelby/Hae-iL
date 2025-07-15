@@ -1,6 +1,6 @@
-package com.heaildairy.www.auth.entity;
+package com.haeildairy.www.auth.entity;
 
-import com.heaildairy.www.auth.user.UserStatus;
+import com.haeildairy.www.auth.user.UserStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;

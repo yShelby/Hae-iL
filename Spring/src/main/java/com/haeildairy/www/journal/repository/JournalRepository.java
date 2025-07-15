@@ -1,8 +1,8 @@
-package com.heaildairy.www.journal.repository;
+package com.haeildairy.www.journal.repository;
 
-import com.heaildairy.www.auth.entity.UserEntity;
-import com.heaildairy.www.journal.entity.Category;
-import com.heaildairy.www.journal.entity.JournalEntity;
+import com.haeildairy.www.auth.entity.UserEntity;
+import com.haeildairy.www.journal.entity.Category;
+import com.haeildairy.www.journal.entity.JournalEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

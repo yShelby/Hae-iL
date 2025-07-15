@@ -1,20 +1,18 @@
-package com.heaildairy.www.emotion.service;
+package com.haeildairy.www.emotion.service;
 
 
-import com.heaildairy.www.diary.entity.DiaryEntity;
-import com.heaildairy.www.diary.repository.DiaryRepository;
-import com.heaildairy.www.emotion.dto.FlaskResponseDTO;
-import com.heaildairy.www.emotion.dto.MoodDetailDTO;
-import com.heaildairy.www.emotion.dto.MoodEntryDTO;
-import com.heaildairy.www.emotion.dto.TagDTO;
-import com.heaildairy.www.emotion.entity.MoodEntry;
-import com.heaildairy.www.emotion.entity.Tag;
+import com.haeildairy.www.diary.entity.DiaryEntity;
+import com.haeildairy.www.emotion.dto.FlaskResponseDTO;
+import com.haeildairy.www.emotion.dto.MoodDetailDTO;
+import com.haeildairy.www.emotion.dto.MoodEntryDTO;
+import com.haeildairy.www.emotion.dto.TagDTO;
+import com.haeildairy.www.emotion.entity.MoodEntry;
+import com.haeildairy.www.emotion.entity.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @Service

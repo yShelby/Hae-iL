@@ -1,10 +1,10 @@
-package com.heaildairy.www.timeline.dto;
+package com.haeildairy.www.timeline.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.heaildairy.www.diary.entity.DiaryEntity;
-import com.heaildairy.www.health.entity.ExerciseLog;
-import com.heaildairy.www.health.entity.MealLog;
-import com.heaildairy.www.health.entity.SleepLog;
+import com.haeildairy.www.diary.entity.DiaryEntity;
+import com.haeildairy.www.health.entity.ExerciseLog;
+import com.haeildairy.www.health.entity.MealLog;
+import com.haeildairy.www.health.entity.SleepLog;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
