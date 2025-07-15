@@ -3,14 +3,22 @@ package com.heaildairy.www.recommend.movie.movieservice;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.heaildairy.www.auth.entity.UserEntity;
+import com.heaildairy.www.diary.entity.DiaryEntity;
+import com.heaildairy.www.diary.repository.DiaryRepository;
+import com.heaildairy.www.emotion.dto.MoodDetailDto;
+import com.heaildairy.www.emotion.entity.MoodDetail;
+import com.heaildairy.www.emotion.repository.MoodDetailRepository;
+import com.heaildairy.www.recommend.movie.movieentity.DisLikeMoviesEntity;
 import com.heaildairy.www.recommend.movie.movieentity.EmotionGenreMapEntity;
 import com.heaildairy.www.recommend.movie.movierepository.DisLikeMoviesRepository;
 import com.heaildairy.www.recommend.movie.movierepository.EmotionGenreMapRepository;
 import com.heaildairy.www.recommend.movie.moviedto.MovieDto;
+import com.heaildairy.www.recommend.movie.movieresponse.MovieListResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -29,6 +37,67 @@ public class RecommendMovieService {
     private final EmotionGenreMapRepository emotionGenreMapRepository;
     private final DisLikeMoviesRepository disLikeMoviesRepository;
     private final TmdbApiClientService tmdbApiClientService;
+    private final DiaryRepository diaryRepository;
+    private final MoodDetailRepository moodDetailRepository;
+
+
+    public List<MovieDto> recommendByTodayDiaryWeighted(UserEntity user) {
+        // 1. 오늘 일기 조회
+        Optional<DiaryEntity> todayDiary = diaryRepository.findByUserUserIdAndDiaryDate(user.getUserId(), LocalDate.now());
+        if (todayDiary.isEmpty()) return List.of();
+
+        // 2. 감정 리스트 가져오기
+        List<MoodDetail> moodDetails = moodDetailRepository.findByDiaryDiaryId(todayDiary.get().getDiaryId());
+        if (moodDetails.isEmpty()) return List.of();
+
+        // 3. 감정-장르 가중치 계산
+        Map<Integer, Double> genreScores = new HashMap<>();
+        for (MoodDetail mood : moodDetails) {
+            List<EmotionGenreMapEntity> mappings = emotionGenreMapRepository.findByEmotionTypeOrdered(mood.getEmotionType());
+            for (EmotionGenreMapEntity mapping : mappings) {
+                genreScores.merge(
+                        mapping.getGenreCode(),
+                        mapping.getGenreWeight() * mood.getPercentage(),
+                        Double::sum
+                );
+            }
+        }
+
+        // 4. 장르 점수 내림차순 정렬
+        List<Integer> topGenres = genreScores.entrySet().stream()
+                .sorted(Map.Entry.<Integer, Double>comparingByValue().reversed())
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toList());
+
+        // 5. TMDB에서 영화 검색
+        List<String> dislikedMovieKeys = disLikeMoviesRepository.findByUser_UserId(user.getUserId())
+                .stream().map(DisLikeMoviesEntity::getMovieKey).toList();
+
+        Map<Integer, MovieDto> finalMovies = new LinkedHashMap<>();
+        for (Integer genreCode : topGenres) {
+            List<MovieDto> candidates = tmdbApiClientService.searchMoviesByGenre(genreCode);
+            for (MovieDto movie : candidates) {
+                if (!dislikedMovieKeys.contains(String.valueOf(movie.getId()))) {
+                    finalMovies.putIfAbsent(movie.getId(), movie);
+                }
+            }
+        }
+
+        // 6. 트레일러 추가
+        finalMovies.values().forEach(movie -> {
+            movie.setTrailerUrl(tmdbApiClientService.getMovieTrailer(String.valueOf(movie.getId())));
+        });
+
+        List<MovieDto> movies = new ArrayList<>(finalMovies.values());
+
+        List<MoodDetailDto> moodDtos = moodDetails.stream()
+                .map(MoodDetailDto::fromEntity) // MoodDetail → MoodDetailDto 변환 메서드 필요
+                .collect(Collectors.toList());
+
+
+        return new MovieListResponse(movies, moodDtos).getResults();
+    }
+
 
     /**
      * 감정 기반 영화 추천 메서드 (동기 방식)

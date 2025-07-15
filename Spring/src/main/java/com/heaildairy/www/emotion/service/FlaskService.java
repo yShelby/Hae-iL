@@ -5,6 +5,7 @@ import com.heaildairy.www.emotion.dto.FlaskResponseDto;
 import com.heaildairy.www.recommend.movie.moviedto.MovieDto;
 import com.heaildairy.www.recommend.movie.movieservice.RecommendMovieService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -13,12 +14,18 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-@RequiredArgsConstructor
 public class FlaskService {
 
     // 플라스크 서버와 통신하는 서비스
     private final WebClient webClient;
     private final RecommendMovieService recommendMovieService;
+
+
+    public FlaskService(@Qualifier("flaskWebClient") WebClient webClient,
+                        RecommendMovieService recommendMovieService) {
+        this.webClient = webClient;
+        this.recommendMovieService = recommendMovieService;
+    }
 
     public FlaskResponseDto callAnalyze(String text) {
         return webClient.post()

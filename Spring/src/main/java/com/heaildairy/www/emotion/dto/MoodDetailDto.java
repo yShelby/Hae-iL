@@ -1,5 +1,6 @@
 package com.heaildairy.www.emotion.dto;
 
+import com.heaildairy.www.emotion.entity.MoodDetail;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -10,4 +11,11 @@ public class MoodDetailDto {
     private Integer percentage;
     private String emotionType;
     private Long diaryId;
+
+    public static MoodDetailDto fromEntity(MoodDetail moodDetail) {
+        MoodDetailDto dto = new MoodDetailDto();
+        dto.setEmotionType(moodDetail.getEmotionType());
+        dto.setPercentage(moodDetail.getPercentage());
+        return dto;
+    }
 }

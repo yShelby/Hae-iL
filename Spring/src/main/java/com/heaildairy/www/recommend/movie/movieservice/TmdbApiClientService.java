@@ -3,68 +3,82 @@ package com.heaildairy.www.recommend.movie.movieservice;
 import com.heaildairy.www.recommend.movie.moviedto.MovieDto;
 import com.heaildairy.www.recommend.movie.movieresponse.MovieListResponse;
 import com.heaildairy.www.recommend.movie.movieresponse.MovieTrailerResponse;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.List;
 
-@Slf4j
 @Service
-@RequiredArgsConstructor
+@Slf4j
 public class TmdbApiClientService {
 
-    private final RestTemplate restTemplate;
+    private final WebClient webClient;
 
-    @Value("${tmdb.api.key}")
-    private String apiKey;
+    private final String apiKey;
 
-    private static final String BASE_URL = "https://api.themoviedb.org/3";
+    public TmdbApiClientService(@Qualifier("tmdbWebClient") WebClient webClient,
+                                @Value("${tmdb.api.key}") String apiKey) {
+        this.webClient = webClient;
+        this.apiKey = apiKey;
+    }
 
     public List<MovieDto> searchMoviesByGenre(Integer genreCode) {
-        log.debug("TMDB 영화 검색 요청 - 장르코드: {}", genreCode);
+        log.debug("🔍 TMDB 영화 검색 요청 - 장르코드: {}", genreCode);
 
-        String url = BASE_URL + "/discover/movie"
-                + "?api_key=" + apiKey
-                + "&with_genres=" + genreCode
-                + "&language=ko-KR";
-
-        MovieListResponse response = restTemplate.getForObject(url, MovieListResponse.class);
-
-        List<MovieDto> results = response != null ? response.getResults() : List.of();
-
-        log.debug("TMDB 검색 결과 영화 수: {}", results.size());
-        return results;
+        return webClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/discover/movie")
+                        .queryParam("api_key", apiKey)
+                        .queryParam("with_genres", genreCode)
+                        .queryParam("language", "ko-KR")
+                        .build())
+                .retrieve()
+                .bodyToMono(MovieListResponse.class)
+                .map(response -> {
+                    List<MovieDto> results = response.getResults();
+                    log.debug("🎬 TMDB 검색 결과 영화 수: {}", results.size());
+                    return results;
+                })
+                .block(); // 필요 시 동기 호출 (Spring MVC에서 사용 시 block 필수)
     }
 
     public MovieDto getMovieDetails(String movieId) {
-        log.debug("TMDB 영화 상세 조회 요청 - movieId: {}", movieId);
+        log.debug("📄 TMDB 영화 상세 조회 요청 - movieId: {}", movieId);
 
-        String url = BASE_URL + "/movie/" + movieId + "?api_key=" + apiKey;
-
-        return restTemplate.getForObject(url, MovieDto.class);
+        return webClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/movie/" + movieId)
+                        .queryParam("api_key", apiKey)
+                        .build())
+                .retrieve()
+                .bodyToMono(MovieDto.class)
+                .block();
     }
 
     public String getMovieTrailer(String movieId) {
-        log.debug("TMDB 영화 트레일러 조회 요청 - movieId: {}", movieId);
+        log.debug("🎞️ TMDB 영화 트레일러 조회 요청 - movieId: {}", movieId);
 
-        String url = BASE_URL + "/movie/" + movieId + "/videos"
-                + "?api_key=" + apiKey
-                + "&language=ko-KR";
+        return webClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/movie/" + movieId + "/videos")
+                        .queryParam("api_key", apiKey)
+                        .queryParam("language", "ko-KR")
+                        .build())
+                .retrieve()
+                .bodyToMono(MovieTrailerResponse.class)
+                .map(response -> {
+                    if (response.getResults() == null) return "";
 
-        MovieTrailerResponse response = restTemplate.getForObject(url, MovieTrailerResponse.class);
-
-        if (response != null && response.getResults() != null) {
-            return response.getResults().stream()
-                    .filter(video -> "YouTube".equalsIgnoreCase(video.getSite())
-                            && "Trailer".equalsIgnoreCase(video.getType()))
-                    .findFirst()
-                    .map(video -> "https://www.youtube.com/embed/" + video.getKey())
-                    .orElse(null);
-        }
-
-        return null;
+                    return response.getResults().stream()
+                            .filter(video -> "YouTube".equalsIgnoreCase(video.getSite())
+                                    && "Trailer".equalsIgnoreCase(video.getType()))
+                            .findFirst()
+                            .map(video -> "https://www.youtube.com/embed/" + video.getKey())
+                            .orElse("");
+                })
+                .block();
     }
 }

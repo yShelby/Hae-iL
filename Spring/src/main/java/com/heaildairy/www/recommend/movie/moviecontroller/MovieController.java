@@ -156,10 +156,13 @@ import com.heaildairy.www.auth.repository.UserRepository;
 import com.heaildairy.www.auth.user.CustomUser;
 import com.heaildairy.www.diary.entity.DiaryEntity;
 import com.heaildairy.www.diary.repository.DiaryRepository;
+import com.heaildairy.www.emotion.dto.FlaskResponseDto;
 import com.heaildairy.www.emotion.entity.MoodDetail;
 import com.heaildairy.www.emotion.repository.MoodDetailRepository;
+import com.heaildairy.www.emotion.service.FlaskService;
 import com.heaildairy.www.recommend.movie.moviedto.MovieDto;
 import com.heaildairy.www.recommend.movie.movieentity.DisLikeMoviesEntity;
+import com.heaildairy.www.recommend.movie.movieresponse.MovieListResponse;
 import com.heaildairy.www.recommend.movie.movieservice.DisLikeMoviesService;
 import com.heaildairy.www.recommend.movie.movieservice.RecommendMovieService;
 import lombok.RequiredArgsConstructor;
@@ -170,9 +173,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Slf4j
 @RestController
@@ -185,72 +186,76 @@ public class MovieController {
     private final DiaryRepository diaryRepository;
     private final MoodDetailRepository moodDetailRepository;
     private final UserRepository userRepository;
-
-
     /**
      * 오늘 작성한 일기 기반 감정을 조회하여 그 감정에 맞는 영화 추천
      * 인증된 사용자만 접근 가능
      */
-    @GetMapping
-    public ResponseEntity<List<MovieDto>> recommendTodayMovie(
+
+    @GetMapping()
+    public ResponseEntity<List<MovieDto>> recommendByTodayWeightedEmotion(
             @AuthenticationPrincipal CustomUser customUser) {
+        if (customUser == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 
-        log.info("인증 사용자: {}", customUser);
+        Optional<UserEntity> userOpt = userRepository.findById(customUser.getUserId());
+        if (userOpt.isEmpty()) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 
-        // 인증 여부 확인
-        if (customUser == null) {
-            log.warn("❌ 인증된 사용자가 아닙니다.");
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
+//        List<MovieDto> recommended = recommendMovieService.recommendByTodayDiaryWeighted(userOpt.get());
+//        return recommended.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(recommended);
+        // ⚠️ 변경된 서비스 메소드 호출 (영화 + 감정 모두 포함)
+        MovieListResponse response = (MovieListResponse) recommendMovieService.recommendByTodayDiaryWeighted(userOpt.get());
 
-        // userId 꺼내서 UserEntity 다시 조회
-        Integer userId = customUser.getUserId();
-        Optional<UserEntity> userOpt = userRepository.findById(userId);
-        if (userOpt.isEmpty()) {
-            log.warn("❌ 사용자 정보가 존재하지 않습니다. userId={}", userId);
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-        UserEntity user = userOpt.get();  // 이제 진짜 UserEntity 확보
-
-        // 오늘 날짜 일기 조회
-        LocalDate today = LocalDate.now();
-        Optional<DiaryEntity> todayDiary = diaryRepository.findByUserUserIdAndDiaryDate(userId, today);
-
-        if (todayDiary.isPresent()) {
-            DiaryEntity diary = todayDiary.get();
-            List<MoodDetail> moods = moodDetailRepository.findByDiaryDiaryId(diary.getDiaryId());
-
-            if (!moods.isEmpty()) {
-                String topEmotion = moods.stream()
-                        .max(Comparator.comparing(MoodDetail::getPercentage))
-                        .map(MoodDetail::getEmotionType)
-                        .orElse(null);
-
-                log.info("🎯 감정 분석 결과: {}", topEmotion);
-
-                if (topEmotion != null && !topEmotion.equalsIgnoreCase("중립/기타")) {
-                    List<MovieDto> movies = recommendMovieService.recommendByEmotion(topEmotion, user);
-                    if (!movies.isEmpty()) {
-                        return ResponseEntity.ok(movies);
-                    }
-                    log.info("🎬 해당 감정에 맞는 영화 추천 결과가 없습니다.");
-                    return ResponseEntity.noContent().build();
-                }
-            } else {
-                log.info("📭 감정 정보가 없습니다.");
-            }
-        } else {
-            log.info("📭 오늘 작성된 일기가 없습니다.");
-        }
-
-        // Fallback: 초기 설문 기반 추천
-        List<MovieDto> fallback = recommendMovieService.recommendByInitialSurvey(user);
-        if (fallback.isEmpty()) {
-            log.info("초기 설문 기반 추천 결과 없음");
+        if (response.getResults().isEmpty()) {
             return ResponseEntity.noContent().build();
         }
-        return ResponseEntity.ok(fallback);
+
+        return ResponseEntity.ok(response.getResults());
     }
+
+
+//    @GetMapping("/top3/today")
+//    public ResponseEntity<Map<String, List<MovieDto>>> recommendByTodayTop3Emotions(
+//            @AuthenticationPrincipal CustomUser customUser) {
+//
+//        if (customUser == null) {
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+//        }
+//
+//        Integer userId = customUser.getUserId();
+//        Optional<UserEntity> userOpt = userRepository.findById(userId);
+//        if (userOpt.isEmpty()) {
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+//        }
+//        UserEntity user = userOpt.get();
+//
+//        Optional<DiaryEntity> todayDiary = diaryRepository.findByUserUserIdAndDiaryDate(userId, LocalDate.now());
+//        if (todayDiary.isEmpty()) {
+//            return ResponseEntity.noContent().build();
+//        }
+//
+//        List<MoodDetail> moods = moodDetailRepository.findByDiaryDiaryId(todayDiary.get().getDiaryId());
+//        if (moods.isEmpty()) {
+//            return ResponseEntity.noContent().build();
+//        }
+//
+//        // 상위 3개 감정 추출
+//        List<MoodDetail> top3Moods = moods.stream()
+//                .sorted(Comparator.comparing(MoodDetail::getPercentage).reversed())
+//                .toList();
+//
+//        Map<String, List<MovieDto>> result = new LinkedHashMap<>();
+//        for (MoodDetail mood : top3Moods) {
+//            if (!mood.getEmotionType().equalsIgnoreCase("중립/기타")) {
+//                List<MovieDto> movies = recommendMovieService.recommendByEmotion(mood.getEmotionType(), user);
+//                result.put(mood.getEmotionType(), movies);
+//            }
+//        }
+//
+//        if (result.isEmpty()) {
+//            return ResponseEntity.noContent().build();
+//        }
+//        return ResponseEntity.ok(result);
+//    }
+
 
     /**
      * 사용자가 특정 영화를 '싫어요'로 저장 요청
