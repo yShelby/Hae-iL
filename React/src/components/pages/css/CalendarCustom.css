@@ -24,3 +24,30 @@
   flex-grow: 1; /* 가운데 정렬을 위해 */
   text-align: center;
 }
+
+/* 이벤트 내용 텍스트 중앙 정렬 및 숨김 처리 */
+.rbc-event-content {
+  text-align: center;
+  width: 100%; /* 내용도 100% 너비 사용 */
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 !Important;
+  visibility: hidden; /* 제목 텍스트 숨기기 */
+}
+
+/* 직접 만드는 툴팁 스타일 */
+.custom-tooltip {
+  position: fixed; /* 화면 기준으로 위치 고정 */
+  background-color: rgba(0, 0, 0, 0.8); /* 반투명 검정 배경 */
+  color: white; /* 흰색 글씨 */
+  padding: 8px 12px; /* 내부 여백 */
+  border-radius: 6px; /* 둥근 모서리 */
+  font-size: 14px; /* 폰트 크기 */
+  z-index: 1001; /* 다른 요소들 위에 보이도록 설정 */
+  pointer-events: none; /* 툴팁이 마우스 이벤트를 방해하지 않도록 설정 */
+  white-space: nowrap; /* 툴팁 내용이 한 줄로 표시되도록 설정 */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 그림자 효과 */
+  transition: opacity 0.2s; /* 부드러운 전환 효과 (필요 시) */
+}

@@ -22,6 +22,7 @@ import DashboardPage from "@pages/DashboardPage.jsx";
 import JournalPage from "@pages/JournalPage.jsx";
 import GalleryPage from "@pages/GalleryPage.jsx";
 import CalendarPage from "@pages/CalendarPage.jsx";
+import Calendar from "@features/calendar/Calendar.jsx";
 
 function App() {
     return (
@@ -47,7 +48,7 @@ function App() {
                 </Route>
 
                 {/* 캘린더 페이지 라우트 */}
-                <Route path="calendar" element={<CalendarPage />} />
+                <Route path="calendar" element={<Calendar />} />
             </Route>
         </Routes>
 
