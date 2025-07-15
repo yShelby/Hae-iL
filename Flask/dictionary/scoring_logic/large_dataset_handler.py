@@ -1,7 +1,7 @@
 from collections import Counter
 
-from scoring_logic.percentage_calculator import _percentage_calculator
-from scoring_logic.polarity_calculator import _polarity_calculator
+from .percentage_calculator import _percentage_calculator
+from .polarity_calculator import _polarity_calculator
 
 
 def _large_dataset_handler(results_emotion : list[dict], labels_count: list[tuple[str, int]], p_threshold_la : int, p_threshold_lb : int, min_count : int, top_label : int, top_tag: int, neutral_threshold : int) -> tuple[list[dict], list[dict], list[dict]]:
