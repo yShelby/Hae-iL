@@ -16,14 +16,9 @@ public class FlaskResponseDTO {
     @JsonProperty("mood_score")
     private Integer moodScore;
 
-    private String sentiment;
-
     private List<FlaskEmotionDetailDTO> details;
 
     private List<String> tags;
-
-    @JsonProperty("custom_tags")
-    private List<String> customTags;
 
     @Data
     @NoArgsConstructor
@@ -31,7 +26,30 @@ public class FlaskResponseDTO {
     public static class FlaskEmotionDetailDTO {
         @JsonProperty("emotion_type")
         private String emotionType;
-
-        private Double percentage;
+        private Integer percentage;
     }
 }
+
+// public class FlaskResponseDTO {
+//     @JsonProperty("mood_score")
+//     private Integer moodScore;
+
+//     private String sentiment;
+
+//     private List<FlaskEmotionDetailDTO> details;
+
+//     private List<String> tags;
+
+//     @JsonProperty("custom_tags")
+//     private List<String> customTags;
+
+//     @Data
+//     @NoArgsConstructor
+//     @AllArgsConstructor
+//     public static class FlaskEmotionDetailDTO {
+//         @JsonProperty("emotion_type")
+//         private String emotionType;
+
+//         private Double percentage;
+//     }
+// }

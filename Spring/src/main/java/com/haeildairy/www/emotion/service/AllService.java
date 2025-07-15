@@ -81,7 +81,7 @@ public class AllService {
      */
     private List<FlaskResponseDTO.FlaskEmotionDetailDTO> convertMoodDetailToFlaskDetail(List<MoodDetailDTO> moodDetailDTOs) {
         return moodDetailDTOs.stream()
-                .map(dto -> new FlaskResponseDTO.FlaskEmotionDetailDTO(dto.getEmotionType(), dto.getPercentage().doubleValue()))
+                .map(dto -> new FlaskResponseDTO.FlaskEmotionDetailDTO(dto.getEmotionType(), dto.getPercentage().intValue()))
                 .toList();
     }
 }
