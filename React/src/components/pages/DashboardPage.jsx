@@ -51,8 +51,14 @@ const DashboardPage = () => {
                     <h3 className="title">나의 감정 키워드</h3>
                     <WordCloud words={wordData} isLoading={isLoading} />
                 </div>
-                <div className="placeholder-box" style={{flex: 1, padding: 0, alignItems: 'stretch', justifyContent: 'stretch'}}>
-                    <DailyMission/>
+                <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+                    {/* DailyMission 컨테이너에서 flex: 1을 제거하여 내용에 따라 높이가 결정되도록 수정 */}
+                    <div className="placeholder-box" style={{ padding: 0, alignItems: 'stretch', justifyContent: 'stretch', marginBottom: '1rem' }}>
+                        <DailyMission/>
+                    </div>
+                    <div className="placeholder-box" style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <span>???</span>
+                    </div>
                 </div>
             </div>
         </>

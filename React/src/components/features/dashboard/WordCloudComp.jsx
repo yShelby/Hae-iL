@@ -79,7 +79,7 @@ const WordCloudComp = () => {
         const values = wordData.map(w => w.value);
         const minValue = Math.min(...values);
         const maxValue = Math.max(...values);
-        const minFont = 20, maxFont = 120;
+        const minFont = 25, maxFont = 180;
         if (maxValue === minValue) return minFont;
         return minFont + ((Number(word.value) - minValue) / (maxValue - minValue)) * (maxFont - minFont);
     };
@@ -122,10 +122,27 @@ const WordCloudComp = () => {
     // 단어 회전(각도)을 위한 함수(-90도 ~ 90도)
     // const rotate = () => Math.random() * 180 - 90;
 
+    /**
+     * 단어 회전(각도) 결정 함수
+     * - 빈도수가 높은 (크기가 큰) 단어는 0도로 고정하여 수평으로 표시
+     * - 나머지 작은 단어들은 0도(수평) 또는 90도(수직)로만 무작위 회전
+     */
     const rotate = useCallback((word) => {
+        // 큰 텍스트의 기준을 정의(예: 최대 빈도수의 60% 이상)
+        const values = wordData.map(w => w.value);
+        const maxValue = Math.max(...values);
+        const BIG_WORD_THRESHOLD = maxValue * 0.6; // 이 값은 데이터 분포에 따라 조절 가능
+
+        // 기준보다 큰 단어는 0도로 고정
+        if (word.value >= BIG_WORD_THRESHOLD) {
+            return 0;
+        }
+
+        // 작은 단어는 0도 또는 90도로만 무작위 회전
         const deterministicRandomValue = getDeterministicRandom(word.text, refreshKey);
-        return deterministicRandomValue * 180 - 90; // -90도에서 90도 사이로 "예측 가능하게" 회전
-    }, [refreshKey]); // 이 함수 자체는 변할 필요가 없으므로 의존성 배열은 비워둡니다.
+        return deterministicRandomValue > 0.5 ? 90 : 0;
+
+    }, [wordData, refreshKey]); // wordData가 의존성 배열에 추가되어야 동적으로 기준을 계산 가능
 
     /*
      * react-d3-cloud 라이브러리의 내부 알고리즘은 최적의 레이아웃을 찾기 위해
