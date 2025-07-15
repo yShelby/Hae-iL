@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import './css/WordCloudComp.css';
 import {fetchWordCloudData} from "@api/wordCloudApi.js"; // 워드 클라우드 전용 CSS 파일
 import WordCloud from 'react-d3-cloud';
@@ -6,6 +6,24 @@ import {FaSyncAlt} from "react-icons/fa";
 import WordCloudEmptyState from "@features/dashboard/WordCloudEmptyState.jsx";
 import {useAuth} from "@shared/context/AuthContext.jsx";
 import {useCheckLogin} from "@/hooks/useCheckLogin.js";
+
+/*
+ * - 씨앗 기반(Seeded) 난수 생성 함수
+ * Math.random()은 호출할 때마다 다른 값을 반환하여 라이브러리 레이아웃 계산에 혼란을 준다
+ * 이 함수는 단어 텍스트(씨앗)가 같으면 언제나 동일한 소수(0과 1 사이)를 반환하여,
+ * 각 단어의 회전 각도를 고정시키고 렌더링을 안정화시키는 핵심적인 역할 수행
+ */
+const getDeterministicRandom = (seedText, seedNum) => {
+    const combinedSeed = seedText + seedNum;
+    let hash = 0;
+    for (let i = 0; i < combinedSeed.length; i++) {
+        const char = combinedSeed.charCodeAt(i);
+        hash = (hash << 5) - hash + char;
+        hash |= 0; // 32비트 정수로 변환
+    }
+    const x = Math.sin(hash) * 10000;
+    return x - Math.floor(x);
+};
 
 const WordCloudComp = () => {
     const {user, loading: authLoading} = useAuth();
@@ -100,8 +118,14 @@ const WordCloudComp = () => {
         return `hsl(${hue}, 80%, ${lightness}%)`;
     };
 
+    // react-d3-cloud 에서는 디폴트로 -90도 ~ 90도 회전이 설정되어 있기 때문에 주석 처리
     // 단어 회전(각도)을 위한 함수(-90도 ~ 90도)
     // const rotate = () => Math.random() * 180 - 90;
+
+    const rotate = useCallback((word) => {
+        const deterministicRandomValue = getDeterministicRandom(word.text, refreshKey);
+        return deterministicRandomValue * 180 - 90; // -90도에서 90도 사이로 "예측 가능하게" 회전
+    }, [refreshKey]); // 이 함수 자체는 변할 필요가 없으므로 의존성 배열은 비워둡니다.
 
     /*
      * react-d3-cloud 라이브러리의 내부 알고리즘은 최적의 레이아웃을 찾기 위해
@@ -110,7 +134,7 @@ const WordCloudComp = () => {
      * 라이브러리의 무작위성을 제거. 이를 '결정적(deterministic)' 렌더링이라 하며,
      * 레이아웃 계산을 단 한 번에 끝내도록 강제하여 깜빡임 문제를 근본적으로 해결
      */
-    // const pseudoRandom = () => 0.5;
+    const pseudoRandom = () => 0.5;
 
     // --- 렌더링 로직 ---
     // 1. Auth 정보 로딩 중일 때 (가장 우선)
@@ -142,8 +166,8 @@ const WordCloudComp = () => {
                     fontSize={fontSizeMapper}
                     fill={sentimentColorizer}
                     padding={5} // 단어 간 간격
-                    // rotate={rotate}
-                    // random={pseudoRandom}
+                    rotate={rotate}
+                    random={pseudoRandom}
                 />
             </div>
             <button
