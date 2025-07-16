@@ -42,12 +42,8 @@ const CustomBlockImage = TipTapImage.extend({
     draggable: true,
 });
 
-const DiaryWritePage = ({
-                            initialDiary, selectedDate, isLoading,
-                            onDiaryUpdated,
-                            setSelectedDiaryId,
-                            onEmotionUpdated
-                        }) => {
+// [수정] props를 직접 받는 대신, useOutletContext를 사용하도록 props 선언을 제거
+const DiaryWritePage = (props) => {
     const {user} = useAuth();
     const checkLogin = useCheckLogin(); // 로그인 확인 훅
     const [isEditing, setIsEditing] = useState(false); // ✍️ 에디터 활성 여부
@@ -55,10 +51,21 @@ const DiaryWritePage = ({
     // 추가 - 대시보드와 일기 페이지 간의 질문 상태를 동기화하고, 새로고침 시 두 페이지의 질문이 함께 변경되도록 하기 위해 추가
     const {question} = useQuestion();
 
-    // const {
-    //     // initialDiary, <- 위에서 이미 선언했기 때문에 주석 처리
-    //     onDiaryUpdated, setSelectedDiaryId, onEmotionUpdated
-    // } = useOutletContext();
+    // [추가] props로 데이터가 직접 전달되면 그 값을 사용하고,
+    // 그렇지 않으면(라우터를 통한 직접 접근) useOutletContext()를 사용
+    const outletData = useOutletContext();
+
+    const {
+        initialDiary,
+        onDiaryUpdated,
+        isLoading,
+        onDataChange,
+        setSelectedDiaryId,
+        onEmotionUpdated,
+        selectedDate, // DiaryInfoBar 등에서 사용하기 위해 context에서 가져온다.
+    } = props.initialDiary !== undefined ? props : outletData || {};
+    // = useOutletContext();
+
     // 🧠 TipTap 에디터 초기화 및 확장 구성
     const editor = useEditor({
         extensions: [
@@ -164,7 +171,19 @@ const DiaryWritePage = ({
         if (!editor) return;
 
         const hasDiary = !!initialDiary;
-        const content = hasDiary ? JSON.parse(initialDiary.content) : '';
+        // const content = hasDiary ? JSON.parse(initialDiary.content) : '';
+
+        // content가 undefined, null, 빈 문자열이거나 JSON이 아닌 경우를 대비해서 안전 처리
+        let content = '';
+
+        try {
+            content = hasDiary && initialDiary.content
+                ? JSON.parse(initialDiary.content)
+                : '';
+        } catch (e) {
+            console.warn('initialDiary.content JSON parse error:', e);
+            content = '';
+        }
 
         // 에디터 내용 동기화 (한 곳에서만 처리)
         if (JSON.stringify(editor.getJSON()) !== JSON.stringify(content)) {

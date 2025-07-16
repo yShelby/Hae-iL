@@ -1,3 +1,5 @@
+/* DashboardLayout.css */
+
 /* --- 대시보드 전체 컨테이너 --- */
 .dashboard-container {
     display: flex;
@@ -5,8 +7,9 @@
     width: 100%; /* 부모 요소(MainLayout의 Outlet)에 꽉 차도록 설정 */
     padding: 24px;
     background-color: #f4f7fe;
-    height: calc(100vh - 60px - 48px);
+    /*height: calc(100vh - 60px - 48px);*/
     box-sizing: border-box; /* 패딩이 크기에 포함되도록 설정 */
+    flex-grow: 1;
 }
 
 /* --- 2단 컬럼 공통 스타일 --- */
@@ -24,6 +27,11 @@
 
 .dashboard-right-column {
     flex: 5; /* 오른쪽 컬럼 비율 */
+}
+
+.horizontal-container {
+    display: flex;
+    gap: 20px;
 }
 
 /* 자식 요소(*는 직계 자식 컴포넌트를 의미)에 margin: auto를 적용하여 flex 아이템의 주변 여백을
@@ -69,5 +77,6 @@
     color: #aaa;
     font-size: 1rem;
     font-weight: 500;
+    padding: 20px;
     overflow: hidden; /* 위젯 내부 컨텐츠가 넘칠 경우를 대비 */
 }

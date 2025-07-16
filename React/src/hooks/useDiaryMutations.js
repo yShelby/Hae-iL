@@ -11,8 +11,9 @@
 //   4️⃣ 성공 시 토스트 띄우고, 콜백으로 새 일기 상태 전달
 //   5️⃣ handleDelete 호출 시 삭제 API 요청 → 콜백에 null 전달 후 홈으로 이동
 
-import { useState, useCallback } from 'react';
 import {useOutletContext} from 'react-router-dom';
+import {useState, useCallback} from 'react';
+import {useNavigate} from 'react-router-dom';
 import {showToast} from "@shared/UI/Toast.jsx";
 import {deleteDiaryAPI, saveDiaryAPI, updateDiaryAPI} from "@api/diaryApi.js";
 
@@ -64,16 +65,16 @@ export const useDiaryMutations = ({
 
             // 🔄 수정 모드인 경우: update API 호출
             if (initialDiary?.diaryId) {
-                const { data: updatedDiary } = await updateDiaryAPI(initialDiary.diaryId, dto);
-                showToast.success('일기가 성공적으로 수정되었습니다.', { id: toastId });
+                const {data: updatedDiary} = await updateDiaryAPI(initialDiary.diaryId, dto);
+                showToast.success('일기가 성공적으로 수정되었습니다.', {id: toastId});
 
                 if (onActionSuccess) {
                     onActionSuccess(updatedDiary); // 🔁 수정 결과 반영
                 }
             } else {
                 // 🆕 신규 저장인 경우: save API 호출
-                const { data: newDiary } = await saveDiaryAPI(dto);
-                showToast.success('일기가 성공적으로 저장되었습니다.', { id: toastId });
+                const {data: newDiary} = await saveDiaryAPI(dto);
+                showToast.success('일기가 성공적으로 저장되었습니다.', {id: toastId});
                 onDataChange?.(); // 타임라인 갱신 콜백 호출
                 if (onActionSuccess) {
                     onActionSuccess(newDiary); // 🔁 새 일기 결과 반영
@@ -81,7 +82,7 @@ export const useDiaryMutations = ({
             }
         } catch (error) {
             console.error(error);
-            showToast.error(error.response?.data?.message || '저장에 실패했습니다.', { id: toastId });
+            showToast.error(error.response?.data?.message || '저장에 실패했습니다.', {id: toastId});
         } finally {
             setIsSaving(false); // ✅ 저장 종료
         }
@@ -105,7 +106,7 @@ export const useDiaryMutations = ({
 
         try {
             await deleteDiaryAPI(initialDiary.diaryId); // 📡 삭제 API 호출
-            showToast.success('일기가 삭제되었습니다.', { id: toastId });
+            showToast.success('일기가 삭제되었습니다.', {id: toastId});
 
             if (onActionSuccess) {
                 onActionSuccess(null); // ⛔ 삭제되었으므로 null 전달
@@ -113,7 +114,7 @@ export const useDiaryMutations = ({
 
             // navigate('/'); // 🏠 홈으로 이동
         } catch (error) {
-            showToast.error(error.response?.data?.message || '삭제에 실패했습니다.', { id: toastId });
+            showToast.error(error.response?.data?.message || '삭제에 실패했습니다.', {id: toastId});
         }
     }, [initialDiary, onActionSuccess,
         // navigate

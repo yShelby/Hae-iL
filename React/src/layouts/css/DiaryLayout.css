@@ -1,22 +1,49 @@
 /* DiaryLayout.css */
 
 .three-column-layout {
-    display: flex;
-    width: 100%;
+    /*display: flex;*/
+    display: grid;
+    grid-template-columns: 250px 1fr 250px;
+    width: calc(100% + 60px);
+
+    /*
+      [수정] 부모 요소(.main-content)의 padding(30px)을 무시하고 너비를 채우기 위한 코드
+      - width: calc(100% + 60px); -> 부모의 좌우 padding(30px * 2)만큼 너비를 강제로 늘린다.
+      - margin-left: -30px; -> 늘어난 너비만큼 왼쪽으로 당겨서 위치를 맞춘다.
+      이로써 React 컴포넌트가 부모의 padding 영역까지 차지하게 되어 레이아웃이 깨지지 않는다.
+    */
+    margin-left: -30px;
     height: 100%;
-    overflow: hidden;  /* 추가 - 자식 요소의 높이가 부모를 넘어가지 않도록 설정 */
+    /*overflow: hidden;  !* 추가 - 자식 요소의 높이가 부모를 넘어가지 않도록 설정 *!*/
+    background-color: #f8f9fa; /* 추가 - 전체적인 배경색 통일 */
+    flex-grow: 1;
 }
 
-.left-sidebar {
+.left-sidebar,
+.right-sidebar {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    /*justify-content: space-between;*/
     width: 250px;
     padding: 1rem;
     border-right: 1px solid #ddd;
     background: #f9f9f9;
-    flex-shrink: 0; /* 추가 - 사이드바 자체를 flex 컨테이너로 만들어, 내부 요소(감정분석, 썸네일)의
-                       수직 배치를 안정적으로 제어하고 썸네일을 하단에 고정시키기 위함 */
+
+    /* [추가] 사이드바 자체를 flex 컨테이너로 만들어, 내부 요소(감정분석, 썸네일)의
+       수직 배치를 안정적으로 제어하고 썸네일을 하단에 고정시키기 위함 */
+    /*flex-shrink: 0;*/
+
+    /* [추가] 각 사이드바의 내용이 길어질 경우를 대비해 개별 스크롤을 허용 */
+    overflow-y: auto;
+}
+
+.left-sidebar {
+    border-right: 1px solid #ddd;
+}
+
+.right-sidebar {
+    border-right: none;
+    border-left: 1px solid #e9ecef;
 }
 
 .emotion-analysis {
@@ -39,17 +66,17 @@
 }
 
 .center-editor {
-    flex: 1;
+    /*flex: 1;*/
     /*padding: 1rem;*/
     /*overflow-y: auto;*/
 
-    /* [수정] padding을 제거하고, flexbox 컨테이너로 변경
-       이유: 자식 요소(timeline-header, outlet-container)의 레이아웃을
-            flex로 직접 제어하기 위함 */
+    /* [수정]
+       자식 요소(timeline-header, outlet-container)의 레이아웃을
+       flex로 직접 제어하기 위함 */
     display: flex;
     flex-direction: column;
-    min-width: 500px;
-    overflow: hidden;
+    min-width: 0;
+    overflow: hidden; /* 자식인 .outlet-container에서 스크롤을 제어하므로 이 부분은 hidden을 유지 */
 }
 
 /* 추가 - Outlet을 감싸는 컨테이너 스타일
@@ -60,18 +87,10 @@
     display: flex;
     flex-direction: column;
 
-    overflow: hidden;
+    /* 내용이 컨테이너보다 길어질 때만 세로 스크롤바가 나타나도록 한다 */
+    overflow-y: auto;
     padding: 1rem; /* 기존 .center-editor의 padding을 여기로 이동 */
     min-height: 0; /* flex 아이템의 크기가 비정상적으로 커지는 것을 방지 */
-}
-
-.right-sidebar {
-    min-width: 300px;
-    width: 300px;
-    padding: 1rem;
-    border-left: 1px solid #ddd;
-    background: #fafafa;
-    flex-shrink: 0; /* 추가 - 너비 고정 */
 }
 
 .timeline-card.active {

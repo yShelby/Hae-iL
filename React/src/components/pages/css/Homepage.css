@@ -1,0 +1,14 @@
+/* Homepage.css */
+
+.homepage-container {
+    width: 100%;
+    overflow-x: hidden;
+}
+
+.homepage-section {
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+}

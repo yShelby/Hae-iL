@@ -17,20 +17,19 @@ import {formatDateToString} from "@shared/utils/dateUtils.js";
 import { motion as Motion } from 'framer-motion';
 import { pageVariants } from '@shared/animation/page-variants';
 
-const DiaryLayout = () => {
+const DiaryLayout = ({children}) => { // children(자식 comp) 추가
     const checkLogin = useCheckLogin();
-    const navigate = useNavigate();
+   // const navigate = useNavigate();
     const location = useLocation(); // ✅ 페이지 이동 시 전달된 state를 받기 위해 추가
-    // const {
-    //     selectedDate,
-    //     setSelectedDate,
-    // } = useDiaryData();
+    const {
+        selectedDate,
+        setSelectedDate,
+    } = useDiaryData();
 
     /**
      * 수정
      * location.state?.date가 있으면 그 값을, 없으면 오늘 날짜를 selectedDate의 초기값으로 사용
      */
-    const [selectedDate, setSelectedDate] = useState(location.state?.date || formatDateToString(new Date()));
     const [selectedDiaryId, setSelectedDiaryId] = useState(null); // 선택된 일기 ID 상태
     const [initialDiary, setInitialDiary] = useState(null); // 초기 일기 데이터 상태
     const [isDiaryLoading, setIsDiaryLoading] = useState(true); // 일기 데이터 로딩 상태 추가
@@ -45,7 +44,7 @@ const DiaryLayout = () => {
     const handleSelectDate = (dateStr) => {
         if (!checkLogin()) return;
         setSelectedDate(dateStr);
-        navigate(`/diary/date/${dateStr}`);
+        // navigate(`/diary/date/${dateStr}`);
     };
 
     const handleDataChange = () => {
@@ -94,6 +93,19 @@ const DiaryLayout = () => {
                 setSelectedDiaryId(null); // 실패 시 감정 분석도 초기화
             });
     };
+
+    // [추가] Outlet context 또는 children props로 전달할 데이터 객체
+    const contextValue = {
+        initialDiary,
+        setSelectedDiaryId,
+        isLoading: timelineLoading,
+        onDiaryUpdated: handleDiaryUpdated,
+        onEmotionUpdated: handleEmotionUpdated,
+        onDataChange: handleDataChange,
+        selectedDate,
+        setSelectedDate,
+    };
+
     return (
         <Motion.main
             className="main-content three-column-layout"
@@ -127,10 +139,10 @@ const DiaryLayout = () => {
                     )}
                 </div>
                 {/* 추가 - Outlet을 div로 감싸서 레이아웃 제어를 위한 컨테이너 추가
-                                    - 중앙 컬럼(.center-editor) 내부에서 타임라인 헤더를 제외한
-                                    - 나머지 공간을 Outlet이 모두 차지하게 만들어, DiaryWritePage가
-                                    - 이 컨테이너 안에서만 렌더링되고 스크롤되도록 하기 위함
-                                */}
+                        - 중앙 컬럼(.center-editor) 내부에서 타임라인 헤더를 제외한
+                        - 나머지 공간을 Outlet이 모두 차지하게 만들어, DiaryWritePage가
+                        - 이 컨테이너 안에서만 렌더링되고 스크롤되도록 하기 위함
+                */}
                 <div className="outlet-container">
                 <Outlet context={{
                     initialDiary,
@@ -145,9 +157,9 @@ const DiaryLayout = () => {
 
             {/* 우측: 건강 위젯 */}
             <aside className="right-sidebar">
-                <ExerciseWidget date={selectedDate} onDataChange={handleDataChange} />
-                <SleepWidget date={selectedDate} onDataChange={handleDataChange} />
-                <MealWidget date={selectedDate} onDataChange={handleDataChange} />
+                <ExerciseWidget date={selectedDate} onDataChange={handleDataChange}/>
+                <SleepWidget date={selectedDate} onDataChange={handleDataChange}/>
+                <MealWidget date={selectedDate} onDataChange={handleDataChange}/>
             </aside>
 
             {/* 다이어리 레이아웃 내에만 갤러리 모달 포함 */}

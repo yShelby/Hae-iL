@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useState} from 'react';
+import React, {useMemo, useState} from 'react';
 import {formatDateToString, addDays, getStartOfWeek, getEndOfWeek} from '@shared/utils/dateUtils.js';
 import DatePicker, {registerLocale} from 'react-datepicker';
 import ko from 'date-fns/locale/ko'; // 🇰🇷 한글 로케일
