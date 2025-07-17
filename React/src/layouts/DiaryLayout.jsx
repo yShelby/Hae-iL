@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
-import { Outlet } from 'react-router-dom';
+import {Outlet, useLocation} from 'react-router-dom';
 import { useWeeklyTimeline } from '@/hooks/useWeeklyTimeline.js';
-import { useDiaryData } from '@/hooks/useDiaryData.js';
+// import { useDiaryData } from '@/hooks/useDiaryData.js';
 import { useCheckLogin } from '@/hooks/useCheckLogin.js';
 import { useNavigate } from 'react-router-dom';
 import TimelineView from "@features/timeline/TimelineView.jsx";
@@ -13,17 +13,27 @@ import GalleryModal from "@features/gallery/GalleryModal.jsx";
 import './css/DiaryLayout.css';
 import EmotionPage from "@pages/EmotionPage.jsx";
 import {fetchDiaryByDateAPI} from "@api/diaryApi.js";
+import {formatDateToString} from "@shared/utils/dateUtils.js";
 
 const DiaryLayout = () => {
     const checkLogin = useCheckLogin();
     const navigate = useNavigate();
-    const {
-        selectedDate,
-        setSelectedDate,
-    } = useDiaryData();
+    const location = useLocation(); // ✅ 페이지 이동 시 전달된 state를 받기 위해 추가
+    // const {
+    //     selectedDate,
+    //     setSelectedDate,
+    // } = useDiaryData();
+
+    /**
+     * 수정
+     * location.state?.date가 있으면 그 값을, 없으면 오늘 날짜를 selectedDate의 초기값으로 사용
+     */
+    const [selectedDate, setSelectedDate] = useState(location.state?.date || formatDateToString(new Date()));
     const [selectedDiaryId, setSelectedDiaryId] = useState(null); // 선택된 일기 ID 상태
     const [initialDiary, setInitialDiary] = useState(null); // 초기 일기 데이터 상태
+    const [isDiaryLoading, setIsDiaryLoading] = useState(true); // 일기 데이터 로딩 상태 추가
     const [emotionRefreshKey, setEmotionRefreshKey] = useState(0); // 감정 분석 새로고침 키
+
     const {
         data: timelineData,
         loading: timelineLoading,
@@ -117,6 +127,8 @@ const DiaryLayout = () => {
                 <Outlet context={{
                     initialDiary,
                     setSelectedDiaryId,
+                    selectedDate, // ✅ 추가: 자식 컴포넌트(DiaryWritePage)가 현재 날짜를 알 수 있도록 전달
+                    isLoading: isDiaryLoading, // ✅ 추가: 일기 로딩 상태 전달
                     onDiaryUpdated: handleDiaryUpdated,
                     onEmotionUpdated: handleEmotionUpdated,
                     onDataChange: handleDataChange,}}  />

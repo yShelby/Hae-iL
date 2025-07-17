@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.heaildairy.www.auth.entity.UserEntity;
 import com.heaildairy.www.auth.repository.UserRepository;
+import com.heaildairy.www.dashboard.todolist.service.TodoListService;
 import com.heaildairy.www.diary.dto.DiaryDto;
 import com.heaildairy.www.diary.entity.DiaryEntity;
 import com.heaildairy.www.diary.repository.DiaryRepository;
@@ -50,6 +51,7 @@ public class DiaryService {
     private final S3Service s3Service;
     private final FlaskService flaskService;
     private final AllService allService;
+    private final TodoListService todoListService; // TodoListService 의존성 주입
 
     /**
      * 📝 일기 저장
@@ -79,6 +81,16 @@ public class DiaryService {
         DiaryEntity savedDiary = diaryRepository.save(diary);
 
         extractAndSaveImage(savedDiary);
+
+        // 일기를 작성해도 '오늘의 미션'에 체크 표시가 되지 않는 문제를 해결하기 위함
+        try {
+            // 오늘 날짜와 일기 작성 날짜가 같을 경우에만 미션 완료 처리
+            if (dto.getDiaryDate().isEqual(LocalDate.now())) {
+                todoListService.markAsCompleted(userId, "diary");
+            }
+        } catch (Exception e) {
+            log.error("Diary 생성 후 TodoList 업데이트 실패: {}", e.getMessage());
+        }
 
         try {
             // 감정분석요청(Flask 서버 호출)
@@ -155,7 +167,18 @@ public class DiaryService {
             galleryRepository.delete(image);
         }
 
+        LocalDate diaryDate = diary.getDiaryDate(); // ✅ 삭제 전에 날짜 정보 저장
         diaryRepository.delete(diary);
+
+        // 추가
+        try {
+            if (diaryDate.isEqual(LocalDate.now())) { // ✅ 수정된 코드
+                todoListService.markAsIncomplete(userId, "diary");
+            }
+        } catch (Exception e) {
+            log.error("일기 삭제 후 TodoList 업데이트 실패: {}", e.getMessage());
+        }
+
     }
 
     /**

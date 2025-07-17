@@ -25,10 +25,10 @@ public class ExerciseLog {
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity user;
 
-    @Column(name = "exercise_date",nullable = false)
+    @Column(name = "exercise_date", nullable = false)
     private LocalDate exerciseDate; // 운동 날짜
 
-    @Column(name = "exercise_type",length = 100, nullable = false)
+    @Column(name = "exercise_type", length = 100, nullable = false)
     private String exerciseType; // 운동 종류
 
     @Column(nullable = true)

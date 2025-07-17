@@ -21,6 +21,9 @@ import DashboardPage from "@pages/DashboardPage.jsx";
 import JournalPage from "@pages/JournalPage.jsx";
 import GalleryPage from "@pages/GalleryPage.jsx";
 import {QuestionProvider} from "@shared/context/QuestionContext.jsx";
+import SleepWidget from "@features/health/SleepWidget.jsx";
+import ExerciseWidget from "@features/health/ExerciseWidget.jsx";
+import MealWidget from "@features/health/MealWidget.jsx";
 
 function App() {
     return (
@@ -39,6 +42,11 @@ function App() {
                         <Route index element={<DiaryWritePage/>}/>
                         <Route path="date/:date" element={<DiaryDatePage/>}/>
                         <Route path=":diaryId" element={<DiaryIdPage/>}/>
+
+                        {/* ✅ 아래 3개 미션 경로 추가 */}
+                        <Route path="sleep/date/:date" element={<SleepWidget />} />
+                        <Route path="exercise/date/:date" element={<ExerciseWidget />} />
+                        <Route path="meal/date/:date" element={<MealWidget/>} />
                     </Route>
 
                     {/* 대시보드 카운트 클릭시 journal과 gallery로 가도록 경로 추가 */}

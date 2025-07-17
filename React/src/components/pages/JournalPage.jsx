@@ -18,15 +18,10 @@ const JournalPage = () => {
     // 추가 : 사용자가 선택하거나 새로 생성한 저널의 전체 데이터를 저장할 상태
     // 이 데이터를 Viewer에게 직접 전달하여 불필요한 로딩을 막습니다.
     const [selectedJournalData, setSelectedJournalData] = useState(null);
-
     const [refreshKey, setRefreshKey] = useState(0); // 목록을 새로고침(즉시 반영)하기 위한 key 상태
-
     const [selectedCategory, setSelectedCategory] = useState('all'); // 필터 카테고리 선택 상태 추가
-
     const {user} = useAuth(); // 현재 로그인된 사용자 정보 가져오기
-
     const checkLogin = useCheckLogin();
-
     const [isModalOpen, setIsModalOpen] = useState(false); // 삭제 확인 모달 관련 상태
 
     // ✅ 저널 아이템을 클릭했을 때 실행되는 함수 (상세보기로 전환)

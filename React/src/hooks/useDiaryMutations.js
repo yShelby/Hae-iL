@@ -12,7 +12,7 @@
 //   5️⃣ handleDelete 호출 시 삭제 API 요청 → 콜백에 null 전달 후 홈으로 이동
 
 import { useState, useCallback } from 'react';
-import {useNavigate, useOutletContext} from 'react-router-dom';
+import {useOutletContext} from 'react-router-dom';
 import {showToast} from "@shared/UI/Toast.jsx";
 import {deleteDiaryAPI, saveDiaryAPI, updateDiaryAPI} from "@api/diaryApi.js";
 
@@ -25,7 +25,7 @@ export const useDiaryMutations = ({
                                       editor,                     // 🖋️ TipTap 에디터 인스턴스
                                       user,                       // 🙋 로그인 유저 정보
                                   }) => {
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
 
     // ⏳ 저장 중 여부 상태
     const [isSaving, setIsSaving] = useState(false);
@@ -111,11 +111,13 @@ export const useDiaryMutations = ({
                 onActionSuccess(null); // ⛔ 삭제되었으므로 null 전달
             }
 
-            navigate('/'); // 🏠 홈으로 이동
+            // navigate('/'); // 🏠 홈으로 이동
         } catch (error) {
             showToast.error(error.response?.data?.message || '삭제에 실패했습니다.', { id: toastId });
         }
-    }, [initialDiary, onActionSuccess, navigate]);
+    }, [initialDiary, onActionSuccess,
+        // navigate
+    ]);
 
     // 🟨 삭제 확인 모달 열기
     const confirmDelete = () => setIsConfirmOpen(true);

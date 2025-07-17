@@ -2,6 +2,7 @@ package com.heaildairy.www.journal.service;
 
 import com.heaildairy.www.auth.entity.UserEntity;
 import com.heaildairy.www.auth.repository.UserRepository;
+import com.heaildairy.www.dashboard.todolist.service.TodoListService;
 import com.heaildairy.www.journal.dto.JournalRequestDto;
 import com.heaildairy.www.journal.dto.JournalResponseDto;
 import com.heaildairy.www.journal.entity.Category;
@@ -13,6 +14,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,14 +25,23 @@ public class JournalService {
 
     private final JournalRepository journalRepository;
     private final UserRepository userRepository;
+    private final TodoListService todoListService; // TodoListService 의존성 주입
+
 
     public Long createJournal(Integer userId, JournalRequestDto requestDto) {
         UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("해당 사용자를 찾을 수 없습니다. ID: "+ userId));
 
         JournalEntity journal = new JournalEntity(user, requestDto);
-
         JournalEntity savedJournal = journalRepository.save(journal);
+
+        // 추가
+        try {
+            todoListService.markAsCompleted(userId, "journaling");
+        } catch (Exception e) {
+            // 미션 상태 업데이트가 실패해도 저널 저장은 롤백되지 않도록 예외 처리
+            System.err.println("Journal 생성 후 TodoList 업데이트 실패: " + e.getMessage());
+        }
 
         return savedJournal.getJournalId();
     }
@@ -78,7 +89,17 @@ public class JournalService {
             throw new AccessDeniedException("이 저널을 삭제할 권한이 없습니다.");
         }
 
+        LocalDate journalDate = journal.getJournalDate(); // ✅ 삭제 전에 날짜 정보 저장
         journalRepository.delete(journal);
+
+        // 추가
+        try {
+            if (journalDate != null && journalDate.isEqual(LocalDate.now())) {
+                todoListService.markAsIncomplete(userId, "journaling");
+            }
+        } catch (Exception e) {
+            System.err.println("저널 삭제 후 TodoList 업데이트 실패: " + e.getMessage());
+        }
     }
 
     // ID로 특정 저널을 조회하는 메소드

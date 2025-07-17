@@ -9,7 +9,7 @@ export const DAILY_MISSIONS = [
 // 각 미션 ID에 해당하는 페이지 경로를 매핑하는 객체
 // 이 객체를 사용하여 클릭 시 올바른 페이지로 동적 라우팅을 구현
 export const MISSION_NAV_PATHS = {
-    diary: '/diary/new',
+    diary: '/diary',
     sleep: '/diary',
     exercise: '/diary',
     meal: '/diary',

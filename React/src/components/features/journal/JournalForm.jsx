@@ -167,6 +167,7 @@ export const JournalForm = ({onSubmit, onCancel, initialData, isSubmitting}) => 
                         maxDate={new Date()} // 선택 가능한 최대 날짜 (오늘까지)
                         className="hidden-datepicker"
                         popperPlacement="bottom" // 캘린더가 버튼 바로 아래 오른쪽에 위치하도록 설정
+                        showMonthYearDropdown
                     />
                 </div>
             </div>

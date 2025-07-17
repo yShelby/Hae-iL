@@ -46,11 +46,34 @@ const DailyMission = () => {
         fetchStatus();
     }, [authLoading, user]);
 
+    const getKoreanDateISOString = () => {
+        const now = new Date();
+        // 현재 로컬 시간을 UTC 시간으로 변환 (getTimezoneOffset은 분 단위로 UTC와의 차이를 반환하므로 밀리초로 변환)
+        const utc = now.getTime() + (now.getTimezoneOffset() * 60 * 1000);
+        // 한국 시간(UTC+9) 오프셋을 밀리초로 정의합니다.
+        const KST_OFFSET = 9 * 60 * 60 * 1000;
+        // UTC 시간에 KST 오프셋을 더해 한국 시간대의 Date 객체를 생성
+        const koreanTime = new Date(utc + KST_OFFSET);
+        // ISO 형식(YYYY-MM-DDTHH:mm:ss.sssZ)으로 변환 후, 날짜 부분만 잘라내어 반환
+        return koreanTime.toISOString().slice(0, 10);
+    };
+
     // 클릭 시 해당 페이지로 이동시키는 함수
     const handleNavigate = (missionId) => {
         const path = MISSION_NAV_PATHS[missionId];
         if (path) {
-            navigate(path);
+            // 'diary' 또는 'journal' 페이지로 이동할 때 오늘 날짜 정보를 함께 전달
+            if (missionId === 'diary') {
+                const today = getKoreanDateISOString();
+                navigate(`/diary/date/${today}`);
+            } else if (missionId === 'journaling') {
+                // 저널링의 경우, 특정 날짜로 이동하는 로직이 필요하다면 여기에 추가 가능
+                // 현재는 state로 전달하는 방식을 유지
+                const today = getKoreanDateISOString();
+                navigate(path, { state: { date: today } });
+            } else {
+                navigate(path);
+            }
         } else {
             console.warn(`'${missionId}'에 대한 경로가 지정되지 않았습니다.`);
         }
