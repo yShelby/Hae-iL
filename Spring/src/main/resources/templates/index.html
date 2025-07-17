@@ -12,7 +12,7 @@
     <aside class="sidebar">
         <h1 class="logo">Haeil - 해일</h1>
 
-        <!-- 로그인 상태가 아닐 때 -->
+        <!-- 로그인 상태가 아닐 때. -->
         <div th:unless="${session.user != null}">
             <form id="loginForm" class="login-form">
                 <input type="email" id="email" name="email" placeholder="이메일" required>
