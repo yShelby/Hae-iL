@@ -4,7 +4,10 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
+
+import java.nio.charset.StandardCharsets;
 
 @Configuration
 public class WebClientConfig {
@@ -18,6 +21,7 @@ public class WebClientConfig {
     public WebClient tmdbWebClient() {
         return WebClient.builder()
                 .baseUrl(tmdbBaseUrl)
+                .defaultHeader(HttpHeaders.ACCEPT_CHARSET, StandardCharsets.UTF_8.name())
                 .build();
     }
 
@@ -30,6 +34,7 @@ public class WebClientConfig {
     public WebClient flaskWebClient() {
         return WebClient.builder()
                 .baseUrl(flaskBaseUrl)
+                .defaultHeader(HttpHeaders.ACCEPT_CHARSET, StandardCharsets.UTF_8.name())
                 .build();
     }
 }

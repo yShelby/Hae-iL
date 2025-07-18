@@ -48,6 +48,8 @@ function RecommendText({emotion}){
     const textChoice = (emotion) => {
         const filteredList = List.filter(item => item.emotion === emotion);
 
+        console.log("현재감정 : ",emotion)
+
         if (!filteredList.length) return "추천할 수 있는 영화가 없습니다.";
 
         const randomIndex = Math.floor(Math.random() * filteredList.length);

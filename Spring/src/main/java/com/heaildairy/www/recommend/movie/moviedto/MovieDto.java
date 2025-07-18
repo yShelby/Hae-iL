@@ -1,15 +1,23 @@
 package com.heaildairy.www.recommend.movie.moviedto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.List;
 
 @Getter
 @Setter
 public class MovieDto {
-    private Integer id;
+    @JsonProperty("id")
+    private Integer movieKey;
     private String title;
     private String overview;
-    private Double vote_average;
+    @JsonProperty("vote_average")
+    private Double voteAverage;
     private String trailerUrl;
-    private String poster_path;
+    @JsonProperty("poster_path")
+    private String posterPath;
+    private List<String> castNames;
+    private String directorName;
 }

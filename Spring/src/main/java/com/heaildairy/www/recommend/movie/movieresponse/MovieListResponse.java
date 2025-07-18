@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.Map;
 
 /*
  * TMDB에서 영화 목록을 조회한 후, 클라이언트에게 전달하기 위한 응답 객체입니다.
@@ -18,6 +19,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MovieListResponse {
-    private List<MovieDto> results;
+    private List<MovieDto> combinedResults;
+    private Map<String, List<MovieDto>> resultsByEmotion;
     private List<MoodDetailDto> moods;
 }

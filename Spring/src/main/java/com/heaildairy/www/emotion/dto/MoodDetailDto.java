@@ -1,9 +1,11 @@
 package com.heaildairy.www.emotion.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.heaildairy.www.emotion.entity.MoodDetail;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @Data
 @NoArgsConstructor
 public class MoodDetailDto {

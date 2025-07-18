@@ -160,6 +160,7 @@ import com.heaildairy.www.emotion.dto.FlaskResponseDto;
 import com.heaildairy.www.emotion.entity.MoodDetail;
 import com.heaildairy.www.emotion.repository.MoodDetailRepository;
 import com.heaildairy.www.emotion.service.FlaskService;
+import com.heaildairy.www.recommend.movie.moviedto.DisLikeMoviesDto;
 import com.heaildairy.www.recommend.movie.moviedto.MovieDto;
 import com.heaildairy.www.recommend.movie.movieentity.DisLikeMoviesEntity;
 import com.heaildairy.www.recommend.movie.movieresponse.MovieListResponse;
@@ -191,25 +192,113 @@ public class MovieController {
      * 인증된 사용자만 접근 가능
      */
 
-    @GetMapping()
-    public ResponseEntity<List<MovieDto>> recommendByTodayWeightedEmotion(
+//    @GetMapping()
+//    public ResponseEntity<List<MovieDto>> recommendByTodayWeightedEmotion(
+//            @AuthenticationPrincipal CustomUser customUser) {
+//        if (customUser == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+//
+//        Optional<UserEntity> userOpt = userRepository.findById(customUser.getUserId());
+//        if (userOpt.isEmpty()) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+//
+////        List<MovieDto> recommended = recommendMovieService.recommendByTodayDiaryWeighted(userOpt.get());
+////        return recommended.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(recommended);
+//        // ⚠️ 변경된 서비스 메소드 호출 (영화 + 감정 모두 포함)
+//        MovieListResponse response = (MovieListResponse) recommendMovieService.recommendByTodayDiaryWeighted(userOpt.get());
+//
+//        if (response.getResults().isEmpty()) {
+//            return ResponseEntity.noContent().build();
+//        }
+//
+//        return ResponseEntity.ok(response.getResults());
+//    }
+
+    @GetMapping
+    public ResponseEntity<MovieListResponse> recommendByTodayWeightedEmotion(
             @AuthenticationPrincipal CustomUser customUser) {
-        if (customUser == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 
+        if (customUser == null) {
+            log.warn("❌ 인증 안 된 사용자 요청");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
         Optional<UserEntity> userOpt = userRepository.findById(customUser.getUserId());
-        if (userOpt.isEmpty()) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-
-//        List<MovieDto> recommended = recommendMovieService.recommendByTodayDiaryWeighted(userOpt.get());
-//        return recommended.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(recommended);
-        // ⚠️ 변경된 서비스 메소드 호출 (영화 + 감정 모두 포함)
-        MovieListResponse response = (MovieListResponse) recommendMovieService.recommendByTodayDiaryWeighted(userOpt.get());
-
-        if (response.getResults().isEmpty()) {
-            return ResponseEntity.noContent().build();
+        if (userOpt.isEmpty()) {
+            log.warn("❌ 사용자 ID로 조회 실패 - userId: {}", customUser.getUserId());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
-        return ResponseEntity.ok(response.getResults());
+        UserEntity user = userOpt.get();
+        log.info("🔎 사용자 조회 성공 - userId: {}", user.getUserId());
+
+        // 오늘 일기 조회
+        Optional<DiaryEntity> todayDiary = diaryRepository.findByUserUserIdAndDiaryDate(user.getUserId(), LocalDate.now());
+
+        boolean hasEmotion = false;
+        if (todayDiary.isPresent()) {
+            log.info("📅 오늘 일기 발견 - diaryId: {}", todayDiary.get().getDiaryId());
+            List<MoodDetail> moodDetails = moodDetailRepository.findByDiaryDiaryId(todayDiary.get().getDiaryId());
+            log.info("🎭 오늘 일기 감정 개수: {}", moodDetails.size());
+            if (!moodDetails.isEmpty()) {
+                hasEmotion = true;
+                log.info("✅ 오늘 일기에 감정 데이터 있음");
+            } else {
+                log.info("⚠️ 오늘 일기 감정 데이터 없음");
+            }
+        } else {
+            log.info("⚠️ 오늘 일기 없음");
+        }
+
+        MovieListResponse response;
+
+        if (hasEmotion) {
+            response = recommendMovieService.recommendByTodayDiaryWeighted(user);
+            log.info("📌 오늘 일기 기반 감정 추천 실행 - userId: {}", user.getUserId());
+        } else {
+            List<MovieDto> movies = recommendMovieService.recommendByInitialSurvey(user);
+            response = new MovieListResponse(movies, Map.of(), List.of());
+            log.info("📌 초기 설문 기반 추천 실행 - userId: {}", user.getUserId());
+        }
+
+        log.info("moods: {}", response.getMoods());
+        log.info("combinedResults: {}", response.getCombinedResults());
+        log.info("resultsByEmotion: {}", response.getResultsByEmotion());
+
+        if (response.getCombinedResults().isEmpty() && response.getResultsByEmotion().isEmpty()) {
+            log.info("🔍 추천 결과 없음 - userId: {}", user.getUserId());
+        }
+
+        return ResponseEntity.ok(response);
     }
+
+//    @GetMapping
+//    public ResponseEntity<MovieListResponse> recommendByTodayWeightedEmotion(
+//            @AuthenticationPrincipal CustomUser customUser) {
+//
+//        if (customUser == null) {
+//            log.warn("❌ 인증 안 된 사용자 요청");
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+//        }
+//        Optional<UserEntity> userOpt = userRepository.findById(customUser.getUserId());
+//        if (userOpt.isEmpty()) {
+//            log.warn("❌ 사용자 ID로 조회 실패 - userId: {}", customUser.getUserId());
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+//        }
+//
+//        // 🎯 감정 + 영화 DTO 포함 응답
+//        MovieListResponse response = recommendMovieService.recommendByTodayDiaryWeighted(userOpt.get());
+//
+//        // ✅ 디버깅 로그 추가
+//        log.info("📌 감정 기반 추천 응답 생성 완료 - userId: {}", userOpt.get().getUserId());
+//        log.info("moods: {}", response.getMoods());
+//        log.info("combinedResults: {}", response.getCombinedResults());
+//        log.info("resultsByEmotion: {}", response.getResultsByEmotion());
+//
+//        if (response.getCombinedResults().isEmpty() || response.getResultsByEmotion().isEmpty()) {
+//            log.info("🔍 추천 결과 없음 - userId: {}", userOpt.get().getUserId());
+//            return ResponseEntity.ok(response); // ❗ 감정(moods)는 있으니 결과 보내기
+//        }
+//
+//        return ResponseEntity.ok(response);
+//    }
 
 
 //    @GetMapping("/top3/today")
@@ -263,17 +352,17 @@ public class MovieController {
      */
     @PostMapping("/dislike")
     public ResponseEntity<String> saveDislikeMovie(
-            @RequestParam String movieKey,
-            @AuthenticationPrincipal UserEntity user
+            @RequestParam Integer movieKey,
+            @AuthenticationPrincipal CustomUser customUser
     ) {
-        log.info("싫어요 영화 저장 요청: movieKey={}, user={}", movieKey, (user != null ? user.getEmail() : "null"));
+        log.info("싫어요 영화 저장 요청: movieKey={}, user={}", movieKey, (customUser != null ? customUser.getUserId() : "null"));
 
-        if (user == null) {
+        if (customUser == null) {
             log.warn("❌ 인증 안 된 사용자 요청");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("인증이 필요합니다.");
         }
 
-        boolean saved = disLikeMoviesService.saveDisLikeMovie(movieKey, user);
+        boolean saved = disLikeMoviesService.saveDisLikeMovie(movieKey, customUser.getUserId());
         if (saved) {
             log.info("영화가 싫어요로 등록되었습니다. movieKey={}", movieKey);
             return ResponseEntity.ok("영화가 싫어요로 등록되었습니다.");
@@ -297,17 +386,12 @@ public class MovieController {
      * 특정 사용자의 '싫어요' 영화 리스트 조회
      */
     @GetMapping("/dislike")
-    public ResponseEntity<?> checkDisLikeMovie(
-            @RequestParam Integer userId
-    ) {
-        log.info("사용자 싫어요 영화 조회 요청: userId={}", userId);
-        List<DisLikeMoviesEntity> exists = disLikeMoviesService.getDislikeMoviesByUser(userId);
-        if (exists.isEmpty()) {
-            log.info("싫어요한 영화가 없습니다. userId={}", userId);
-            return ResponseEntity.ok("싫어요한 영화가 없습니다.");
-        } else {
-            return ResponseEntity.ok(exists);
+    public ResponseEntity<List<DisLikeMoviesDto>> getDislikedMovies(
+            @AuthenticationPrincipal CustomUser user) {
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
+        List<DisLikeMoviesDto> dislikedMovies = disLikeMoviesService.getDislikeMoviesByUserDto(user.getUserId());
+        return ResponseEntity.ok(dislikedMovies);
     }
-
 }

@@ -1,68 +1,61 @@
 import MovieList from "@features/recommend/MovieList.jsx";
 import {useEffect, useState} from "react";
-import axios from "axios";
 import RecommendText from "@features/recommend/RecommendText.jsx";
-import {fetchEmotionByDiaryId} from "@api/emotionApi.js";
+import { fetchRecommendedMovies} from "@api/recommendMovieApi.js";
 
 function RecommendMoviePage(){
 
-    const [movies, setMovies] = useState([]);
-    const [emotionResult, setEmotionResult] = useState(null);
+    const [emotionResult, setEmotionResult] = useState([]);
+    const [moviesByPage, setMoviesByPage] = useState({});
+    const [currentEmotionIndex, setCurrentEmotionIndex] = useState(0);
 
-    // useEffect(() => {
-    //     axios.get(`/api/recommend/movies`, { withCredentials: true })
-    //         .then((res) => {
-    //             const data = res.data;
-    //             // data가 배열이라면 감정별로 그룹핑
-    //             if (Array.isArray(data)) {
-    //                 const grouped = data.reduce((acc, movie) => {
-    //                     const emotion = emotionResult.emotion_type || "기타";
-    //                     if (!acc[emotion]) acc[emotion] = [];
-    //                     acc[emotion].push(movie);
-    //                     console.log(emotion)
-    //                     return acc;
-    //                 }, {});
-    //                 setMovies(grouped);
-    //             } else {
-    //                 // 이미 감정별 객체라면 그대로 사용
-    //                 setMovies(data.movies || {});
-    //             }
-    //         })
-    //         .catch((error) => {
-    //             console.error("영화 추천 API 호출 실패:", error);
-    //             setMovies({});
-    //         });
-    // }, []);
     useEffect(() => {
-        // emotionResult가 준비되었을 때만 요청
-        if (!emotionResult) return;
+        fetchRecommendedMovies()
+            .then((data) => {
+                console.log("🎬 Api 응답 데이터:", data);
+                console.log("🎬 감정 타입:", data.moods?.emotionType || "알 수 없음");
 
-        axios.get(`/api/recommend/movies`, { withCredentials: true })
-            .then((res) => {
-                const data = res.data;
+                setEmotionResult([
+                    "종합추천",
+                    data.moods?.[0]?.emotionType || "알 수 없음",
+                    data.moods?.[1]?.emotionType || "알 수 없음",
+                    data.moods?.[2]?.emotionType || "알 수 없음",
+                ]);
 
-                const emotion = emotionResult.emotion_type || "기타";
-                console.log("감정:", emotion)
-
-                // data가 배열이라면 해당 감정으로 묶어서 그룹핑
-                const grouped = Array.isArray(data)
-                    ? { [emotion]: data }
-                    : data.movies || {};
-
-                setMovies(grouped);
+                console.log("🎬 감정 타입:", data.moods?.emotionType || "알 수 없음");
+                setMoviesByPage({
+                    "종합추천": data.combinedResults,
+                    [data.moods[0]?.emotionType]: data.resultsByEmotion[data.moods[0]?.emotionType] || [],
+                    [data.moods[1]?.emotionType]: data.resultsByEmotion[data.moods[1]?.emotionType] || [],
+                    [data.moods[2]?.emotionType]: data.resultsByEmotion[data.moods[2]?.emotionType] || [],
+                });
             })
             .catch((error) => {
-                console.error("영화 추천 API 호출 실패:", error);
-                setMovies({});
+                console.error("❌ 영화 추천 API 호출 실패:", error);
+                setMoviesByPage({});
+                setEmotionResult([]);
             });
-    }, [emotionResult]); // ✅ 감정 정보가 바뀔 때마다 실행
+    }, []);
 
+    if (emotionResult.length === 0) {
+        return <div>감정 분석 결과를 불러오는 중입니다...</div>;
+    }
+
+    const currentEmotion = emotionResult[currentEmotionIndex] || "알 수 없음";
+
+    const nextEmotion = () => {
+        setCurrentEmotionIndex((prev) =>
+            prev < emotionResult.length - 1 ? prev + 1 : 0
+        );
+    };
 
     return (
         <div>
-            <RecommendText emotion={emotionResult?.emotion_type || "알 수 없음"} />
-            <MovieList emotionToMovies={movies} />
-            <button>></button>
+            <RecommendText emotion={currentEmotion} />
+            <MovieList movies={moviesByPage[currentEmotion]} emotion={currentEmotion} />
+            <button className="next-emotion-btn" onClick={nextEmotion}>
+                다음 감정 보기
+            </button>
         </div>
     )
 }

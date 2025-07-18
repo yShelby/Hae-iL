@@ -13,6 +13,7 @@ import com.heaildairy.www.recommend.movie.movieentity.EmotionGenreMapEntity;
 import com.heaildairy.www.recommend.movie.movierepository.DisLikeMoviesRepository;
 import com.heaildairy.www.recommend.movie.movierepository.EmotionGenreMapRepository;
 import com.heaildairy.www.recommend.movie.moviedto.MovieDto;
+import com.heaildairy.www.recommend.movie.movieresponse.MovieCreditsResponse;
 import com.heaildairy.www.recommend.movie.movieresponse.MovieListResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -41,14 +42,14 @@ public class RecommendMovieService {
     private final MoodDetailRepository moodDetailRepository;
 
 
-    public List<MovieDto> recommendByTodayDiaryWeighted(UserEntity user) {
+    public MovieListResponse recommendByTodayDiaryWeighted(UserEntity user) {
         // 1. 오늘 일기 조회
         Optional<DiaryEntity> todayDiary = diaryRepository.findByUserUserIdAndDiaryDate(user.getUserId(), LocalDate.now());
-        if (todayDiary.isEmpty()) return List.of();
+        if (todayDiary.isEmpty()) return new MovieListResponse(List.of(), Map.of(), List.of());
 
         // 2. 감정 리스트 가져오기
         List<MoodDetail> moodDetails = moodDetailRepository.findByDiaryDiaryId(todayDiary.get().getDiaryId());
-        if (moodDetails.isEmpty()) return List.of();
+        if (moodDetails.isEmpty()) return new MovieListResponse(List.of(), Map.of(), List.of());
 
         // 3. 감정-장르 가중치 계산
         Map<Integer, Double> genreScores = new HashMap<>();
@@ -63,107 +64,196 @@ public class RecommendMovieService {
             }
         }
 
-        // 4. 장르 점수 내림차순 정렬
+        // 4. 장르 점수 내림차순 정렬 (상위 장르 추출)
         List<Integer> topGenres = genreScores.entrySet().stream()
                 .sorted(Map.Entry.<Integer, Double>comparingByValue().reversed())
                 .map(Map.Entry::getKey)
                 .collect(Collectors.toList());
 
-        // 5. TMDB에서 영화 검색
-        List<String> dislikedMovieKeys = disLikeMoviesRepository.findByUser_UserId(user.getUserId())
+        // 5. 유저가 싫어요한 영화 키 조회
+        List<Integer> dislikedMovieKeys = disLikeMoviesRepository.findByUser_UserId(user.getUserId())
                 .stream().map(DisLikeMoviesEntity::getMovieKey).toList();
 
-        Map<Integer, MovieDto> finalMovies = new LinkedHashMap<>();
+        // 6. 장르 기반 추천 영화 조회 (최종 종합 추천 목록)
+        Set<Integer> usedMovieIds = new HashSet<>();
+        List<MovieDto> combinedResults = new ArrayList<>();
         for (Integer genreCode : topGenres) {
+            if (combinedResults.size() >= 10) break;
+
             List<MovieDto> candidates = tmdbApiClientService.searchMoviesByGenre(genreCode);
             for (MovieDto movie : candidates) {
-                if (!dislikedMovieKeys.contains(String.valueOf(movie.getId()))) {
-                    finalMovies.putIfAbsent(movie.getId(), movie);
+                if (combinedResults.size() >= 10) break;
+                if (!dislikedMovieKeys.contains(movie.getMovieKey()) && usedMovieIds.add(movie.getMovieKey())) {
+                    combinedResults.add(movie);
                 }
             }
         }
 
-        // 6. 트레일러 추가
-        finalMovies.values().forEach(movie -> {
-            movie.setTrailerUrl(tmdbApiClientService.getMovieTrailer(String.valueOf(movie.getId())));
+        combinedResults.forEach(movie ->{
+            MovieDto movieDto = tmdbApiClientService.getMovieCreditsWithDetails(movie.getMovieKey().toString());
+            movie.setCastNames(movieDto.getCastNames());
+            movie.setDirectorName(movieDto.getDirectorName());
         });
 
-        List<MovieDto> movies = new ArrayList<>(finalMovies.values());
+        // 7. 트레일러 추가
+        combinedResults.forEach(movie ->
+                movie.setTrailerUrl(tmdbApiClientService.getMovieTrailer(String.valueOf(movie.getMovieKey())))
+        );
 
-        List<MoodDetailDto> moodDtos = moodDetails.stream()
-                .map(MoodDetailDto::fromEntity) // MoodDetail → MoodDetailDto 변환 메서드 필요
-                .collect(Collectors.toList());
+        // 8. 감정별 상세 추천 결과 구성
+        Map<String, List<MovieDto>> resultsByEmotion = new LinkedHashMap<>();
+        for (MoodDetail mood : moodDetails) {
+            System.out.println("Emotion (raw): [" + mood.getEmotionType() + "]");
 
+            String emotion = mood.getEmotionType();
+            double emotionPercentage = mood.getPercentage();
 
-        return new MovieListResponse(movies, moodDtos).getResults();
-    }
+            Map<Integer, Double> genreScoresByEmotion = new HashMap<>();
+            List<EmotionGenreMapEntity> mappings = emotionGenreMapRepository.findByEmotionTypeOrdered(emotion);
+            for (EmotionGenreMapEntity mapping : mappings) {
+                genreScoresByEmotion.put(mapping.getGenreCode(), mapping.getGenreWeight() * emotionPercentage);
+            }
 
+            System.out.println("Emotion: " + emotion + ", GenreScores: " + genreScoresByEmotion);
 
-    /**
-     * 감정 기반 영화 추천 메서드 (동기 방식)
-     *
-     * @param emotionType 감정 유형 (예: "기쁨", "슬픔")
-     * @param user 현재 로그인한 사용자 정보
-     * @return 추천 영화 리스트
-     */
-    public List<MovieDto> recommendByEmotion(String emotionType, UserEntity user) {
-        log.info("영화 추천 요청 - 감정: {}, userId: {}", emotionType, user.getUserId());
-
-        boolean useSurveyInstead = (emotionType == null || emotionType.equalsIgnoreCase("중립/기타"));
-
-        List<EmotionGenreMapEntity> genreWeights;
-        if (useSurveyInstead) {
-            genreWeights = generateGenreWeightsFromInitialSurvey(user);
-            log.info("초기 설문 기반 추천 사용, 계산된 장르 가중치: {}", genreWeights);
-        } else {
-            genreWeights = emotionGenreMapRepository.findByEmotionTypeOrdered(emotionType);
-            log.debug("감정 기반 장르 가중치: {}", genreWeights);
-        }
-
-        // 2. 현재 사용자가 싫어요 표시한 영화 키 리스트 조회
-        List<String> dislikedMovieKeys = disLikeMoviesRepository.findByUser_UserId(user.getUserId())
-                .stream()
-                .map(entity -> entity.getMovieKey())
-                .collect(Collectors.toList());
-        log.debug("제외할 영화 키: {}", dislikedMovieKeys);
-
-        // 3. 장르별로 TMDB API 호출 → 영화 검색 → 싫어요 영화 제거
-        List<MovieDto> combinedMovies = new ArrayList<>();
-
-        for (EmotionGenreMapEntity genreMap : genreWeights) {
-            Integer genreCode = genreMap.getGenreCode();
-            log.debug("장르 [{}]에 대한 영화 검색 시작", genreCode);
-
-            // TMDB API 동기 호출
-            List<MovieDto> movies = tmdbApiClientService.searchMoviesByGenre(genreCode);
-
-            // 싫어요 영화 필터링
-            List<MovieDto> filtered = movies.stream()
-                    .filter(movie -> !dislikedMovieKeys.contains(String.valueOf(movie.getId())))
+            List<Integer> sortedGenres = genreScoresByEmotion.entrySet().stream()
+                    .sorted(Map.Entry.<Integer, Double>comparingByValue().reversed())
+                    .map(Map.Entry::getKey)
                     .collect(Collectors.toList());
 
-            log.debug("장르 [{}] 필터링 후 남은 영화 수: {}", genreCode, filtered.size());
+            System.out.println("Sorted Genres for " + emotion + ": " + sortedGenres);
 
-            combinedMovies.addAll(filtered);
+            Set<Integer> emotionUsedMovieIds = new HashSet<>();
+            List<MovieDto> emotionResults = new ArrayList<>();
+
+            for (Integer genreCode : sortedGenres) {
+                if (emotionResults.size() >= 10) break;
+
+                List<MovieDto> candidates = tmdbApiClientService.searchMoviesByGenre(genreCode);
+                for (MovieDto movie : candidates) {
+                    if (emotionResults.size() >= 10) break;
+                    if (!dislikedMovieKeys.contains(movie.getMovieKey()) && emotionUsedMovieIds.add(movie.getMovieKey())) {
+                        movie.setTrailerUrl(tmdbApiClientService.getMovieTrailer(String.valueOf(movie.getMovieKey())));
+                        emotionResults.add(movie);
+                    }
+                }
+            }
+
+            emotionResults.forEach(movie -> {
+                MovieDto movieDto = tmdbApiClientService.getMovieCreditsWithDetails(movie.getMovieKey().toString());
+                movie.setCastNames(movieDto.getCastNames());
+                movie.setDirectorName(movieDto.getDirectorName());
+            });
+
+            resultsByEmotion.put(emotion, emotionResults);
         }
 
-        // 4. 중복 영화 제거
-        Map<Integer, MovieDto> distinctMovies = new LinkedHashMap<>();
-        for (MovieDto movie : combinedMovies) {
-            distinctMovies.putIfAbsent(movie.getId(), movie);
-        }
+        // 9. 감정 DTO 변환
+        List<MoodDetailDto> moodDtos = moodDetails.stream()
+                .map(MoodDetailDto::fromEntity)
+                .toList();
 
-        // 5. 영화마다 트레일러 URL 조회 후 추가 (동기 호출)
-        for (MovieDto movie : distinctMovies.values()) {
-            String trailerUrl = tmdbApiClientService.getMovieTrailer(String.valueOf(movie.getId()));
-            movie.setTrailerUrl(trailerUrl);
-        }
-
-        List<MovieDto> result = new ArrayList<>(distinctMovies.values());
-        log.info("최종 추천 영화 수: {}", result.size());
-
-        return result;
+        // 10. 최종 응답
+        return new MovieListResponse(combinedResults, resultsByEmotion, moodDtos);
     }
+
+
+//    public MovieListResponse recommendByTodayDiaryWeighted(UserEntity user) {
+//        // 1. 오늘 일기 조회
+//        Optional<DiaryEntity> todayDiary = diaryRepository.findByUserUserIdAndDiaryDate(user.getUserId(), LocalDate.now());
+//        if (todayDiary.isEmpty()) return new MovieListResponse(List.of(), Map.of(), List.of());
+//
+//        // 2. 감정 리스트 가져오기
+//        List<MoodDetail> moodDetails = moodDetailRepository.findByDiaryDiaryId(todayDiary.get().getDiaryId());
+//
+//        // 3. 감정이 없거나 전부 '중립/기타'일 경우: 설문 기반 추천
+//        boolean useSurveyInstead = (moodDetails == null || moodDetails.isEmpty()
+//                || moodDetails.stream().allMatch(m -> m.getEmotionType().equals("중립/기타")));
+//
+//        List<EmotionGenreMapEntity> genreWeights;
+//        if (useSurveyInstead) {
+//            genreWeights = generateGenreWeightsFromInitialSurvey(user);
+//            log.info("초기 설문 기반 추천 사용, 계산된 장르 가중치: {}", genreWeights);
+//        } else {
+//            // 4. 감정-장르 가중치 계산
+//            Map<Integer, Double> genreScores = new HashMap<>();
+//            for (MoodDetail mood : moodDetails) {
+//                List<EmotionGenreMapEntity> mappings = emotionGenreMapRepository.findByEmotionTypeOrdered(mood.getEmotionType());
+//                for (EmotionGenreMapEntity mapping : mappings) {
+//                    genreScores.merge(
+//                            mapping.getGenreCode(),
+//                            mapping.getGenreWeight() * mood.getPercentage(),
+//                            Double::sum
+//                    );
+//                }
+//            }
+//
+//            // 5. 장르 점수 내림차순 정렬
+//            List<Integer> topGenres = genreScores.entrySet().stream()
+//                    .sorted(Map.Entry.<Integer, Double>comparingByValue().reversed())
+//                    .map(Map.Entry::getKey)
+//                    .collect(Collectors.toList());
+//
+//            genreWeights = topGenres.stream()
+//                    .map(code -> new EmotionGenreMapEntity(null, null, code,
+//                            genreScores.getOrDefault(code, 0.0)))
+//                    .toList();
+//            log.debug("감정 기반 장르 가중치: {}", genreWeights);
+//        }
+//
+//        // 6. 싫어요 리스트 조회
+//        List<String> dislikedMovieKeys = disLikeMoviesRepository.findByUser_UserId(user.getUserId())
+//                .stream().map(DisLikeMoviesEntity::getMovieKey).toList();
+//
+//        // 7. 감정 기반 추천 영화 구성
+//        Map<String, List<MovieDto>> resultsByEmotion = new LinkedHashMap<>();
+//        List<MovieDto> combinedResults = new ArrayList<>();
+//
+//        Set<Integer> usedMovieIds = new HashSet<>();
+//        for (EmotionGenreMapEntity genreWeight : genreWeights) {
+//            int genreCode = genreWeight.getGenreCode();
+//            List<MovieDto> candidates = tmdbApiClientService.searchMoviesByGenre(genreCode);
+//
+//            for (MovieDto movie : candidates) {
+//                if (combinedResults.size() >= 10) break;
+//                if (!dislikedMovieKeys.contains(String.valueOf(movie.getId())) && usedMovieIds.add(movie.getId())) {
+//                    movie.setTrailerUrl(tmdbApiClientService.getMovieTrailer(String.valueOf(movie.getId())));
+//                    combinedResults.add(movie);
+//                }
+//            }
+//            if (combinedResults.size() >= 10) break;
+//        }
+//
+//        // 감정별 추천은 useSurvey일 경우 빈 Map으로 대체
+//        if (!useSurveyInstead) {
+//            for (MoodDetail mood : moodDetails) {
+//                String emotion = mood.getEmotionType();
+//                List<Integer> genreCodes = emotionGenreMapRepository.findByEmotionTypeOrdered(emotion)
+//                        .stream().map(EmotionGenreMapEntity::getGenreCode).toList();
+//
+//                Set<Integer> innerUsed = new HashSet<>();
+//                List<MovieDto> emotionResults = new ArrayList<>();
+//                for (Integer genreCode : genreCodes) {
+//                    if (emotionResults.size() >= 10) break;
+//                    List<MovieDto> candidates = tmdbApiClientService.searchMoviesByGenre(genreCode);
+//                    for (MovieDto movie : candidates) {
+//                        if (emotionResults.size() >= 10) break;
+//                        if (!dislikedMovieKeys.contains(String.valueOf(movie.getId())) && innerUsed.add(movie.getId())) {
+//                            movie.setTrailerUrl(tmdbApiClientService.getMovieTrailer(String.valueOf(movie.getId())));
+//                            emotionResults.add(movie);
+//                        }
+//                    }
+//                }
+//                resultsByEmotion.put(emotion, emotionResults);
+//            }
+//        }
+//
+//        List<MoodDetailDto> moodDtos = moodDetails.stream()
+//                .map(MoodDetailDto::fromEntity)
+//                .toList();
+//
+//        return new MovieListResponse(combinedResults, resultsByEmotion, moodDtos);
+//    }
     /**
      * 초기 설문 기반 장르 가중치 생성 메서드
      * - 사용자의 초기 설문 결과를 기반으로 장르 가중치를 생성함
@@ -212,22 +302,22 @@ public class RecommendMovieService {
     private List<MovieDto> recommendByGenreWeights(
             List<EmotionGenreMapEntity> genreWeights, UserEntity user
     ) {
-        List<String> disliked = disLikeMoviesRepository.findByUser_UserId(user.getUserId())
+        List<Integer> disliked = disLikeMoviesRepository.findByUser_UserId(user.getUserId())
                 .stream().map(e -> e.getMovieKey()).collect(Collectors.toList());
 
         List<MovieDto> combined = new ArrayList<>();
         for (EmotionGenreMapEntity em : genreWeights) {
             List<MovieDto> movies = tmdbApiClientService.searchMoviesByGenre(em.getGenreCode());
             combined.addAll(movies.stream()
-                    .filter(m -> !disliked.contains(String.valueOf(m.getId())))
+                    .filter(m -> !disliked.contains(String.valueOf(m.getMovieKey())))
                     .collect(Collectors.toList()));
         }
 
         Map<Integer, MovieDto> distinct = new LinkedHashMap<>();
-        combined.forEach(m -> distinct.putIfAbsent(m.getId(), m));
+        combined.forEach(m -> distinct.putIfAbsent(m.getMovieKey(), m));
 
         distinct.values().forEach(m ->
-                m.setTrailerUrl(tmdbApiClientService.getMovieTrailer(String.valueOf(m.getId()))));
+                m.setTrailerUrl(tmdbApiClientService.getMovieTrailer(String.valueOf(m.getMovieKey()))));
 
         return new ArrayList<>(distinct.values());
     }
@@ -244,6 +334,10 @@ public class RecommendMovieService {
         }
 
         Map<Integer, EmotionGenreMapEntity> map = new HashMap<>();
+        if (initEmo == null || initEmo.isEmpty()) {
+            initEmo = Collections.emptyList();
+        } // 현재 설문이 없어 임시로 코드 추가, 설문 구현후 코드 제거
+
         for (String emo : initEmo) {
             emotionGenreMapRepository.findByEmotionTypeOrdered(emo).stream()
                     .filter(e -> initGenres.contains(e.getGenreName()))
