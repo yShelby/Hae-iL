@@ -1,11 +1,11 @@
-import React, {useState, useEffect, useCallback} from 'react';
+import React, {useState, useEffect, useCallback, useRef} from 'react';
 import './css/WordCloudComp.css';
 import {fetchWordCloudData} from "@api/wordCloudApi.js"; // 워드 클라우드 전용 CSS 파일
-import WordCloud from 'react-d3-cloud';
 import {FaSyncAlt} from "react-icons/fa";
 import WordCloudEmptyState from "@features/dashboard/WordCloudEmptyState.jsx";
 import {useAuth} from "@shared/context/AuthContext.jsx";
 import {useCheckLogin} from "@/hooks/useCheckLogin.js";
+import CustomWordCloud from "@features/dashboard/CustomWordCloud.jsx";
 
 /*
  * - 씨앗 기반(Seeded) 난수 생성 함수
@@ -25,7 +25,7 @@ const getDeterministicRandom = (seedText, seedNum) => {
     return x - Math.floor(x);
 };
 
-const WordCloudComp = () => {
+const WordCloud = () => {
     const {user, loading: authLoading} = useAuth();
     const checkLogin = useCheckLogin();
     const [wordData, setWordData] = useState([]);
@@ -33,6 +33,12 @@ const WordCloudComp = () => {
     const [isInitialLoading, setIsInitialLoading] = useState(true);
     const [isRefreshing, setIsRefreshing] = useState(false);
     const [refreshKey, setRefreshKey] = useState(0);
+
+    // 워드클라우드를 그릴 부모 컨테이너의 크기를 동적으로 감지하기 위해 useRef를 사용
+    // 이를 통해 화면 크기가 변경되어도 워드클라우드가 깨지지 않고 자동으로 리사이징되는
+    // 반응형 디자인을 구현 가능
+    const containerRef = useRef(null);
+    const [dimensions, setDimensions] = useState({width: 0, height: 0});
 
     const handleRefresh = () => {
         // 1. 먼저 로그인 상태를 확인
@@ -55,7 +61,7 @@ const WordCloudComp = () => {
             // refreshKey가 0일 때(최초 로드)가 아니면 isRefreshing을 true로 설정
             if (refreshKey > 0) {
                 setIsRefreshing(true);
-            }else {
+            } else {
                 // user 객체가 들어온 직후, 최초 로딩 상태를 true로 확실하게 설정
                 setIsInitialLoading(true);
             }
@@ -73,13 +79,31 @@ const WordCloudComp = () => {
         loadData();
     }, [refreshKey, user]);
 
-    // --- react-d3-cloud를 위한 헬퍼 함수 ---
+    // 컨테이너의 크기가 변경될 때마다 dimensions state를 업데이트하여
+    // CustomWordCloud 컴포넌트에 새로운 크기를 전달하고 리렌더링을 유발
+    useEffect(() => {
+        const updateDimensions = () => {
+            if (containerRef.current) {
+                setDimensions({
+                    width: containerRef.current.offsetWidth,
+                    height: containerRef.current.offsetHeight,
+                });
+            }
+        };
+
+        updateDimensions(); // 초기 사이즈 설정
+        window.addEventListener('resize', updateDimensions); // 창 크기 변경 감지
+        return () => window.removeEventListener('resize', updateDimensions);
+    }, []); // 컴포넌트 마운트 시 한 번만 실행
+
+
+    // --- d3-cloud를 위한 헬퍼 함수 ---
     // 1. 폰트 크기 계산 함수: value(빈도수)를 실제 폰트 크기(px)로 변환
     const fontSizeMapper = (word) => {
         const values = wordData.map(w => w.value);
         const minValue = Math.min(...values);
         const maxValue = Math.max(...values);
-        const minFont = 25, maxFont = 180;
+        const minFont = 15, maxFont = 90;
         if (maxValue === minValue) return minFont;
         return minFont + ((Number(word.value) - minValue) / (maxValue - minValue)) * (maxFont - minFont);
     };
@@ -144,15 +168,6 @@ const WordCloudComp = () => {
 
     }, [wordData, refreshKey]); // wordData가 의존성 배열에 추가되어야 동적으로 기준을 계산 가능
 
-    /*
-     * react-d3-cloud 라이브러리의 내부 알고리즘은 최적의 레이아웃을 찾기 위해
-     * 여러 번의 중간 렌더링을 거치면서 화면이 여러 번 바뀌는 것처럼 보인다
-     * 이 현상을 막기 위해, random prop에 항상 0.5를 반환하는 함수를 전달하여
-     * 라이브러리의 무작위성을 제거. 이를 '결정적(deterministic)' 렌더링이라 하며,
-     * 레이아웃 계산을 단 한 번에 끝내도록 강제하여 깜빡임 문제를 근본적으로 해결
-     */
-    const pseudoRandom = () => 0.5;
-
     // --- 렌더링 로직 ---
     // 1. Auth 정보 로딩 중일 때 (가장 우선)
     if (authLoading) {
@@ -161,7 +176,18 @@ const WordCloudComp = () => {
 
     // 2. 비로그인 시에는 "데이터 없음" 상태를 보여준다
     if (!user) {
-        return <WordCloudEmptyState onRefresh={handleRefresh} isLoading={isRefreshing} />;
+        // 데이터가 없는 경우와 레이아웃을 통일하고, 새로고침 버튼을 일관되게 표시하기 위해
+        // WordCloudEmptyState를 직접 사용하는 대신 아래의 JSX 구조를 사용
+        return (
+            <div className="wordcloud-container-with-button">
+                <div className="wordcloud-display-area">
+                    <WordCloudEmptyState />
+                </div>
+                <button onClick={handleRefresh} className="refresh-button" title="새로고침" disabled={isRefreshing}>
+                    <FaSyncAlt className={isRefreshing ? 'spin' : ''}/>
+                </button>
+            </div>
+        );
     }
 
     // 3. 로그인 상태 & '최초' 로딩 시에만 "로딩 중..." 메시지를 보여준다
@@ -171,32 +197,43 @@ const WordCloudComp = () => {
 
     // 4. 로딩이 끝났지만 표시할 데이터가 없을 때 (서버 응답이 빈 배열)
     if (wordData.length === 0) {
-        return <WordCloudEmptyState onRefresh={handleRefresh} isLoading={isRefreshing} />;
+        return <WordCloudEmptyState onRefresh={handleRefresh} isLoading={isRefreshing}/>;
     }
 
     return (
         <div className="wordcloud-container-with-button">
-            <div className="wordcloud-display-area">
-                <WordCloud
-                    data={wordData}
-                    font="Noto Sans KR, Malgun Gothic, sans-serif"
-                    fontSize={fontSizeMapper}
-                    fill={sentimentColorizer}
-                    padding={5} // 단어 간 간격
-                    rotate={rotate}
-                    random={pseudoRandom}
-                />
+            {/* ref를 이 div에 연결하여 동적으로 너비와 높이를 측정
+                이 div의 크기가 곧 워드클라우드가 그려질 캔버스의 크기가 된다. */}
+            <div ref={containerRef} className="wordcloud-display-area">
+                {/* 측정된 dimensions가 유효할 때(너비와 높이가 0이 아닐 때)만
+                    CustomWordCloud를 렌더링하여 불필요한 계산을 방지 */}
+                {dimensions.width > 0 && dimensions.height > 0 && (
+                    <CustomWordCloud
+                        data={wordData}
+                        width={dimensions.width}
+                        height={dimensions.height}
+                        fontFamily="Noto Sans KR, Malgun Gothic, sans-serif"
+                        padding={5}
+                        fontSizeMapper={fontSizeMapper}
+                        sentimentColorizer={sentimentColorizer}
+                        rotate={rotate}
+                    />
+                )}
             </div>
-            <button
-                onClick={handleRefresh}
-                className="refresh-button"
-                title="새로고침"
-                disabled={isRefreshing}
-            >
-                <FaSyncAlt />
-            </button>
+            {/* 로그인한 사용자에게는 항상 새로고침 버튼이 보이도록 바깥으로 이동시킨다.
+                이렇게 하면 데이터가 있든 없든 일관된 UI를 제공 가능 */}
+            {user && (
+                <button
+                    onClick={handleRefresh}
+                    className="refresh-button"
+                    title="새로고침"
+                    disabled={isRefreshing}
+                >
+                    <FaSyncAlt className={isRefreshing ? 'spin' : ''}/>
+                </button>
+            )}
         </div>
     );
 };
 
-export default WordCloudComp;
+export default WordCloud;

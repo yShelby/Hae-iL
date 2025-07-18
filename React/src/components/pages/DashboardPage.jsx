@@ -3,7 +3,7 @@ import MyRecordStatus from "@features/dashboard/MyRecordStatus.jsx";
 import DailyMission from "@features/dashboard/DailyMission.jsx";
 import "./css/DashboardPage.css";
 import TodayQuestion from "@features/dashboard/TodayQuestion.jsx";
-import WordCloud from "@features/dashboard/WordCloudComp.jsx";
+import WordCloud from "@features/dashboard/WordCloud.jsx";
 
 const DashboardPage = () => {
 
