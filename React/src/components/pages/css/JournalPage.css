@@ -4,6 +4,7 @@
     height: calc(100vh - 100px); /* 앱의 헤더 높이를 고려하여 조정 */
     padding: 20px;
     box-sizing: border-box;
+    width: 100%;
 }
 
 .left-panel {

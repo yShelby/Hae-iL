@@ -1,6 +1,5 @@
 package com.haeildiary.www.mood.service;
 
-
 import com.haeildiary.www.diary.entity.DiaryEntity;
 import com.haeildiary.www.mood.dto.FlaskResponseDTO;
 import com.haeildiary.www.mood.dto.MoodDetailDTO;

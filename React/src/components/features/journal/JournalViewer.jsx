@@ -4,36 +4,42 @@ import {FaStar} from 'react-icons/fa';
 import './css/JournalViewer.css';
 
 export const JournalViewer = ({journalId, onEdit, onDelete, initialData}) => {
-    const [journal, setJournal] = useState(initialData);
-    const [loading, setLoading] = useState(!initialData);
+    const [journal, setJournal] = useState(null);
+    const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        // // journalId가 없으면 API를 호출 x
-        // if (!journalId) return;
-
-        // 수정 - initialData가 없을 때만 서버에서 데이터를 새로 불러옵니다.
-        if (journalId && !initialData) {
+        // 수정 - initialData가 없을 때만 서버에서 데이터를 새로 불러온다.
+        if (journalId) {
             setLoading(true);
+            setError(null);
+            // [수정] initialData가 있고, 그 ID가 현재 journalId와 일치하면 fetching 없이 바로 보여준다.
+            // (저장/수정 직후의 시나리오)
+            if (initialData && initialData.id === journalId) {
+                setJournal(initialData);
+                setLoading(false);
+                return;
+            }
             const fetchJournal = async () => {
                 try {
                     const data = await getJournalById(journalId);
                     setJournal(data);
                 } catch (e) {
                     setError('저널을 불러오는 데 실패했습니다.');
+                    console.error(e); // 디버깅을 위해 에러 로그 출력
                 } finally {
                     setLoading(false);
                 }
             };
             fetchJournal();
         }
-        // 추가 - initialData가 변경될 경우(예: 다른 글을 저장한 직후)를 대비해
-        // journal 상태를 업데이트하고 로딩 상태를 false로 유지
-        else if (initialData) {
-            setJournal(initialData);
-            setLoading(false);
-        }
-    }, [journalId, initialData]); // initialData도 의존성 배열에 추가
+        // // 추가 - initialData가 변경될 경우(예: 다른 글을 저장한 직후)를 대비해
+        // // journal 상태를 업데이트하고 로딩 상태를 false로 유지
+        // else if (initialData) {
+        //     setJournal(initialData);
+        //     setLoading(false);
+        // }
+    }, [journalId]);
 
     // ⭐ 별점 UI를 렌더링하는 유틸 함수
     const renderStars = (rating = 0) => {

@@ -8,8 +8,6 @@ import com.haeildiary.www.mood.repository.MoodEntryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-
-
 @Service
 @RequiredArgsConstructor
 public class MoodEntryService {

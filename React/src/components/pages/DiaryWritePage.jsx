@@ -42,7 +42,12 @@ const CustomBlockImage = TipTapImage.extend({
     draggable: true,
 });
 
-const DiaryWritePage = ({initialDiary, selectedDate, isLoading}) => {
+const DiaryWritePage = ({
+                            initialDiary, selectedDate, isLoading,
+                            onDiaryUpdated,
+                            setSelectedDiaryId,
+                            onEmotionUpdated
+                        }) => {
     const {user} = useAuth();
     const checkLogin = useCheckLogin(); // 로그인 확인 훅
     const [isEditing, setIsEditing] = useState(false); // ✍️ 에디터 활성 여부
@@ -50,10 +55,10 @@ const DiaryWritePage = ({initialDiary, selectedDate, isLoading}) => {
     // 추가 - 대시보드와 일기 페이지 간의 질문 상태를 동기화하고, 새로고침 시 두 페이지의 질문이 함께 변경되도록 하기 위해 추가
     const {question} = useQuestion();
 
-    const {
-        // initialDiary, <- 위에서 이미 선언했기 때문에 주석 처리
-        onDiaryUpdated, setSelectedDiaryId, onEmotionUpdated
-    } = useOutletContext();
+    // const {
+    //     // initialDiary, <- 위에서 이미 선언했기 때문에 주석 처리
+    //     onDiaryUpdated, setSelectedDiaryId, onEmotionUpdated
+    // } = useOutletContext();
     // 🧠 TipTap 에디터 초기화 및 확장 구성
     const editor = useEditor({
         extensions: [
@@ -70,7 +75,7 @@ const DiaryWritePage = ({initialDiary, selectedDate, isLoading}) => {
     });
 
     // 📄 제목/날씨 등 폼 상태 관리 훅
-    const {diaryState, setField} = useDiaryForm(initialDiary);
+    const {diaryState, setField, resetForm} = useDiaryForm(initialDiary);
 
     // ☁️ 이미지 업로드 훅 (에디터 연동 + S3 전송 준비)
     const {handleImageUpload, uploadPendingImagesToS3} = useImageUpload(editor);
@@ -207,21 +212,12 @@ const DiaryWritePage = ({initialDiary, selectedDate, isLoading}) => {
     // };
 
     // [수정]
-    // '닫기/취소' 시 에디터 내용뿐만 아니라 제목, 날씨 등 폼 전체의 상태를
-    // 원래대로 복원해야 데이터 불일치를 방지하고 사용자 혼란을 줄이기 가능
     const handleCancelWriting = () => {
-        if (initialDiary) {
-            // 수정 중 '취소': 기존 일기 내용으로 에디터와 폼 상태를 모두 복원
-            const content = initialDiary.content ? JSON.parse(initialDiary.content) : '';
-            editor?.commands.setContent(content, false);
-            setField('title', initialDiary.title || '');
-            setField('weather', initialDiary.weather || 'sunny');
-
-            // 수정 모드를 취소하고 '읽기 전용' 상태로 전환
-            editor?.setEditable(false);
-        } else {
-            // 새 작성 중 '닫기': 에디터 뷰를 닫고 초기 '작성하기' 화면으로 돌아간다
-            setIsEditing(false);
+        // ✅ 수정
+        setIsEditing(false); // 에디터 뷰를 닫는다
+        resetForm(); // 폼(제목, 날씨) 상태를 초기값으로 리셋
+        if (editor) {
+            editor.commands.clearContent(); // 에디터 내용 비우기
         }
     };
 

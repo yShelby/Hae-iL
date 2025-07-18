@@ -2,6 +2,7 @@ package com.haeildiary.www.health.service;
 
 import com.haeildiary.www.auth.entity.UserEntity;
 import com.haeildiary.www.auth.repository.UserRepository;
+import com.haeildiary.www.dashboard.todolist.service.TodoListService;
 import com.haeildiary.www.health.dto.ExerciseLogDto;
 import com.haeildiary.www.health.entity.ExerciseLog;
 import com.haeildiary.www.health.repository.ExerciseLogRepository;
@@ -21,6 +22,7 @@ public class ExerciseLogService {
 
     private final ExerciseLogRepository exerciseLogRepository;
     private final UserRepository userRepository;
+    private final TodoListService todoListService; // ✅ 추가: 의존성 주입
 
     /**
      * 🏋️‍♂️ 운동 기록 저장
@@ -38,7 +40,7 @@ public class ExerciseLogService {
                     throw new IllegalStateException("해당 날짜에 이미 운동 기록이 존재합니다.");
                 });
 
-        ExerciseLog log = ExerciseLog.builder()
+        ExerciseLog exerciseLog = ExerciseLog.builder()
                 .user(user)
                 .exerciseDate(dto.getExerciseDate())
                 .exerciseType(dto.getExerciseType())
@@ -46,7 +48,16 @@ public class ExerciseLogService {
                 .intensity(dto.getIntensity())
                 .build();
 
-        ExerciseLog saved = exerciseLogRepository.save(log);
+        try {
+            if (dto.getExerciseDate().isEqual(LocalDate.now())) {
+                todoListService.markAsCompleted(userId, "exercise");
+            }
+        } catch (Exception e) {
+            log.error("운동 기록 저장 후 TodoList 업데이트 실패: {}", e.getMessage());
+        }
+
+
+        ExerciseLog saved = exerciseLogRepository.save(exerciseLog);
         return ExerciseLogDto.Response.fromEntity(saved);
     }
 
@@ -55,19 +66,28 @@ public class ExerciseLogService {
      */
     @Transactional
     public ExerciseLogDto.Response updateExerciseLog(Long exerciseId, Integer userId, ExerciseLogDto.UpdateRequest dto) {
-        ExerciseLog log = exerciseLogRepository.findById(exerciseId)
+        ExerciseLog exerciseLog = exerciseLogRepository.findById(exerciseId)
                 .orElseThrow(() -> new NoSuchElementException("운동 기록을 찾을 수 없습니다."));
 
-        if (!log.getUser().getUserId().equals(userId)) {
+        if (!exerciseLog.getUser().getUserId().equals(userId)) {
             throw new SecurityException("운동 기록 수정 권한이 없습니다.");
         }
 
-        log.setExerciseDate(dto.getExerciseDate());
-        log.setExerciseType(dto.getExerciseType());
-        log.setDuration(dto.getDuration());
-        log.setIntensity(dto.getIntensity());
+        exerciseLog.setExerciseDate(dto.getExerciseDate());
+        exerciseLog.setExerciseType(dto.getExerciseType());
+        exerciseLog.setDuration(dto.getDuration());
+        exerciseLog.setIntensity(dto.getIntensity());
 
-        return ExerciseLogDto.Response.fromEntity(log);
+        // 수정 시에도 미션 완료 로직 추가
+        try {
+            if (dto.getExerciseDate().isEqual(LocalDate.now())) {
+                todoListService.markAsCompleted(userId, "exercise");
+            }
+        } catch (Exception e) {
+            log.error("운동 기록 수정 후 TodoList 업데이트 실패: {}", e.getMessage());
+        }
+
+        return ExerciseLogDto.Response.fromEntity(exerciseLog);
     }
 
     /**
@@ -75,14 +95,23 @@ public class ExerciseLogService {
      */
     @Transactional
     public void deleteExerciseLog(Long exerciseId, Integer userId) {
-        ExerciseLog log = exerciseLogRepository.findById(exerciseId)
+        ExerciseLog exerciseLog = exerciseLogRepository.findById(exerciseId)
                 .orElseThrow(() -> new NoSuchElementException("운동 기록을 찾을 수 없습니다."));
 
-        if (!log.getUser().getUserId().equals(userId)) {
+        if (!exerciseLog.getUser().getUserId().equals(userId)) {
             throw new SecurityException("운동 기록 삭제 권한이 없습니다.");
         }
 
-        exerciseLogRepository.delete(log);
+        LocalDate exerciseDate = exerciseLog.getExerciseDate(); // ✅ 삭제 전에 날짜 정보 저장
+        exerciseLogRepository.delete(exerciseLog);
+
+        try {
+            if (exerciseDate.isEqual(LocalDate.now())) {
+                todoListService.markAsIncomplete(userId, "exercise");
+            }
+        } catch (Exception e) {
+            log.error("운동 기록 삭제 후 TodoList 업데이트 실패: {}", e.getMessage());
+        }
     }
 
     /**

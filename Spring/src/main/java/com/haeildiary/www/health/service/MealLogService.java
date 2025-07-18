@@ -2,6 +2,7 @@ package com.haeildiary.www.health.service;
 
 import com.haeildiary.www.auth.entity.UserEntity;
 import com.haeildiary.www.auth.repository.UserRepository;
+import com.haeildiary.www.dashboard.todolist.service.TodoListService;
 import com.haeildiary.www.health.dto.MealLogDto;
 import com.haeildiary.www.health.entity.MealLog;
 import com.haeildiary.www.health.repository.MealLogRepository;
@@ -21,6 +22,7 @@ public class MealLogService {
 
     private final MealLogRepository mealLogRepository;
     private final UserRepository userRepository;
+    private final TodoListService todoListService; // ✅ 추가: 의존성 주입
 
     /**
      * 🍱 식사 기록 저장
@@ -45,6 +47,16 @@ public class MealLogService {
                 .build();
 
         MealLog saved = mealLogRepository.save(mealLog);
+
+        // 추가
+        try {
+            if (dto.getMealDate().isEqual(LocalDate.now())) {
+                todoListService.markAsCompleted(userId, "meal");
+            }
+        } catch (Exception e) {
+            log.error("식사 기록 저장 후 TodoList 업데이트 실패: {}", e.getMessage());
+        }
+
         return MealLogDto.Response.fromEntity(saved);
     }
 
@@ -66,6 +78,15 @@ public class MealLogService {
         mealLog.setDinner(dto.getDinner());
         mealLog.setSnack(dto.getSnack());
 
+        // 수정 시에도 미션 완료 로직 추가
+        try {
+            if (dto.getMealDate().isEqual(LocalDate.now())) {
+                todoListService.markAsCompleted(userId, "meal");
+            }
+        } catch (Exception e) {
+            log.error("식사 기록 수정 후 TodoList 업데이트 실패: {}", e.getMessage());
+        }
+
         return MealLogDto.Response.fromEntity(mealLog);
     }
 
@@ -81,7 +102,17 @@ public class MealLogService {
             throw new SecurityException("해당 식사 기록에 대한 권한이 없습니다.");
         }
 
+        LocalDate mealDate = mealLog.getMealDate(); // ✅ 삭제 전에 날짜 정보 저장
         mealLogRepository.delete(mealLog);
+
+        // 추가
+        try {
+            if (mealDate.isEqual(LocalDate.now())) {
+                todoListService.markAsIncomplete(userId, "meal");
+            }
+        } catch (Exception e) {
+            log.error("식사 기록 삭제 후 TodoList 업데이트 실패: {}", e.getMessage());
+        }
     }
 
     /**

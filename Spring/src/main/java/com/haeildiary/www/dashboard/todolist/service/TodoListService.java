@@ -76,4 +76,21 @@ public class TodoListService {
             todoListRepository.save(newTodo);
         }
     }
+
+    /**
+     * 수정
+     * - markAsIncomplete 메서드를 새로 추가
+     * - userId와 activityType, 그리고 오늘 날짜를 기준으로 TodoListEntity를 찾는다.
+     * - 찾은 엔티티가 존재하고, 현재 완료 상태(isCompleted=true)일 경우에만 false로 변경하여 불필요한 DB 업데이트를 방지
+     */
+    @Transactional
+    public void markAsIncomplete(Integer userId, String activityType) {
+        LocalDate today = LocalDate.now();
+        todoListRepository.findByUser_UserIdAndActivityTypeAndTodoDate(userId, activityType, today)
+                .ifPresent(todo -> {
+                    if (todo.isCompleted()) {
+                        todo.updateCompletion(false);
+                    }
+                });
+    }
 }
