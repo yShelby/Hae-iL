@@ -24,7 +24,6 @@ public class CsvEmotionGenreLoaderService implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         List<EmotionGenreMapEntity> dataList = new ArrayList<>();
-
         try (CSVReader reader = new CSVReader(new InputStreamReader(
                 new ClassPathResource("emotion_genre_map.csv").getInputStream(), "UTF-8"))) {
 

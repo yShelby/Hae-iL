@@ -38,26 +38,3 @@ public class WebClientConfig {
                 .build();
     }
 }
-
-//    @Bean
-//    public WebClient webClient(){
-//        return WebClient.builder()
-//                .baseUrl("http://localhost:5000")
-//                .build();
-//    }
-//
-//    @Bean
-//    public RestTemplate restTemplate() {
-//        return new RestTemplate();
-//    }
-//
-//    @Value("${tmdb.base-url}") // application.yml 또는 properties에서 주입
-//    private String tmdbBaseUrl;
-//
-//    @Bean
-//    public WebClient tmdbWebClient() {
-//        return WebClient.builder()
-//                .baseUrl(tmdbBaseUrl)
-//                .build();
-//    }
-//}

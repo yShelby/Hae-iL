@@ -3,8 +3,8 @@ import EmotionResult from "../features/emotions/EmotionsResults.jsx";
 import {fetchEmotionByDiaryId} from "@api/emotionApi.js";
 
 function EmotionPage({ selectedDiaryId, refreshKey  }) {
-    const [loading, setLoading] = useState(false);
     const [emotionResult, setEmotionResult] = useState(null);
+    const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
     useEffect(() => {
@@ -28,6 +28,7 @@ function EmotionPage({ selectedDiaryId, refreshKey  }) {
                 setLoading(false);
             });
     }, [selectedDiaryId, refreshKey]);
+
 
     return (
         <div style={{ padding: 20 }}>

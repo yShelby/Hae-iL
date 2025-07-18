@@ -8,33 +8,18 @@ import com.heaildairy.www.recommend.movie.movierepository.DisLikeMoviesRepositor
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import java.time.LocalDateTime;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class DisLikeMoviesService {
 
-
-    @Autowired
-    private UserRepository userRepository;  // userId로 조회할 수 있어야 함
+    private final UserRepository userRepository;  // userId로 조회할 수 있어야 함
     private final DisLikeMoviesRepository disLikeMoviesRepository;
-
-    public List<DisLikeMoviesDto> findDislikeMoviesByUser(Integer userId){
-        List<DisLikeMoviesEntity> disLikeMoviesEntities = disLikeMoviesRepository.findByUser_UserId(userId);
-        return disLikeMoviesEntities.stream()
-                .map(disLikeMoviesEntity -> {
-                    DisLikeMoviesDto disLikeMoviesDTO = new DisLikeMoviesDto();
-                    disLikeMoviesDTO.setDislikeId(disLikeMoviesEntity.getDislikeId());
-                    disLikeMoviesDTO.setMovieKey(disLikeMoviesEntity.getMovieKey());
-                    return disLikeMoviesDTO;
-                })
-                .collect(Collectors.toList());
-
-    }
 
     public boolean saveDisLikeMovie(Integer movieKey, Integer userId){
         // 1. UserEntity 조회
@@ -61,21 +46,11 @@ public class DisLikeMoviesService {
         return true;
     }
 
-    public void deleteDisLikeMovie(Integer dislikeId) {
-        log.info("유저의 싫어요 영화 삭제요청 - userId: {}", dislikeId);
-        disLikeMoviesRepository.deleteById(dislikeId);
-    }
-
-    public List<DisLikeMoviesDto> getDislikeMoviesByUserDto(Integer userId) {
-        log.info("유저의 싫어요 영화 조회 - userId: {}", userId);
-        List<DisLikeMoviesEntity> entities = disLikeMoviesRepository.findByUser_UserId(userId);
-
-        return entities.stream()
-                .map(entity -> new DisLikeMoviesDto(
-                        entity.getDislikeId(),
-                        entity.getMovieKey(),
-                        entity.getCreatedAt()
-                ))
-                .collect(Collectors.toList());
+    // 매일 오전 10시에 실행
+    @Scheduled(cron = "0 0 10 * * *")
+    public void cleanOldDislikes() {
+        LocalDateTime threshold = LocalDateTime.now().minusMonths(1);
+        disLikeMoviesRepository.deleteOldDislikes(threshold);
+        log.info("한 달 지난 싫어요 영화 데이터를 삭제했습니다.");
     }
 }

@@ -13,8 +13,6 @@ function MovieList({ movies, emotion }) {
         setTrailerUrl("");
     };
 
-
-
     return (
         <div>
             <h3 className="emotion-title">🎭 감정: {emotion}</h3>
@@ -82,7 +80,7 @@ function MovieList({ movies, emotion }) {
                                 <div className="overview-fallback">
                                     <h2 className={"modal-title"}>{selectedMovie.title}</h2>
                                     <h3 className={"modal-director"}>감독 : {selectedMovie.directorName}</h3>
-                                    <h3 className={"modal-cast"}>출연진 : {selectedMovie.castNames}</h3>
+                                    <h3 className={"modal-cast"}>출연진 : {selectedMovie.castNames.join(', ')}</h3>
                                     <p className={"modal-overview"}>{selectedMovie.overview || "줄거리 정보가 없습니다."}</p>
                                 </div>
                             )}
