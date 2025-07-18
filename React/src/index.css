@@ -1,3 +1,5 @@
+/* index.css */
+
 *, *::before, *::after {
     box-sizing: border-box;
     margin: 0;
@@ -27,4 +29,16 @@ a {
 button {
     cursor: pointer;
     font-family: inherit;
+}
+
+/* 가상 스크롤 구현 시, 브라우저의 기본 스크롤바를 숨긴다.
+  스크롤 기능은 GSAP Observer가 담당하므로 UI는 필요 x */
+body, html {
+    overflow: hidden;
+}
+
+/* 일부 레이아웃 컴포넌트가 자체적으로 스크롤바를 생성하는 것을 방지
+  모든 스크롤은 window 레벨에서 제어된다 */
+.main-content, .main-content-area {
+    overflow: hidden !important;
 }

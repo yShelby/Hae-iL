@@ -1,38 +1,12 @@
-// 📦 React 및 DOM 렌더링 관련 라이브러리
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import {BrowserRouter} from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import "./index.css";
-
-// 🌐 전역 상태 컨텍스트 (인증 / 갤러리 모달)
-
-// 🏠 메인 앱 컴포넌트
-
-// 🎨 전역 스타일
 import './index.css';
 import {GalleryProvider} from "@features/gallery/GalleryContext.jsx";
 import App from "@/App.jsx";
 import {AuthProvider} from "@shared/context/AuthContext.jsx";
-
-/* =================================================================
- * 🚀 Entry Point: index.jsx
- *
- * 📌 역할:
- *  - React 앱의 루트 DOM 요소에 애플리케이션 렌더링
- *  - 전역 라우팅 및 컨텍스트 상태 제공
- *
- * 🔄 데이터 흐름:
- *  1️⃣ <React.StrictMode>: 개발 시 경고 및 안전 검사 활성화
- *     ⬇
- *  2️⃣ <BrowserRouter>: 라우팅 기능 전역 적용
- *     ⬇
- *  3️⃣ <AuthProvider>: 로그인 상태/유저정보 전역 제공
- *     ⬇
- *  4️⃣ <GalleryProvider>: 갤러리 모달 상태 전역 제공
- *     ⬇
- *  5️⃣ <App />: 전체 UI와 라우팅 렌더링
- * ================================================================= */
+import {ScrollAnimationProvider} from "@shared/context/ScrollAnimationContext.jsx";
 
 // 🧱 1. 루트 DOM 요소 가져오기
 const root = ReactDOM.createRoot(document.getElementById('react-root'));
@@ -48,8 +22,15 @@ root.render(
                 <AuthProvider>
                     {/* 🖼️ 4. 갤러리 상태 전역 관리 */}
                     <GalleryProvider>
-                        {/* 🧩 5. 실제 앱 컴포넌트 렌더링 */}
-                        <App/>
+                        {/* [추가] App 컴포넌트를 ScrollAnimationProvider로 감싸준다.
+                           - App 컴포넌트 및 그 하위의 모든 컴포넌트들이 라우팅 정보(useLocation)와
+                           - 애니메이션 상태(isAnimating)에 접근해야 하므로, 라우터(BrowserRouter)의
+                           - 자식 요소이면서 App의 부모 요소 위치에 Provider를 추가 필요
+                        */}
+                        <ScrollAnimationProvider>
+                            {/* 🧩 5. 실제 앱 컴포넌트 렌더링 */}
+                            <App/>
+                        </ScrollAnimationProvider>
                     </GalleryProvider>
                 </AuthProvider>
             </BrowserRouter>

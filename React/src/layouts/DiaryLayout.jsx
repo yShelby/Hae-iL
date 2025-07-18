@@ -14,6 +14,8 @@ import './css/DiaryLayout.css';
 import EmotionPage from "@pages/EmotionPage.jsx";
 import {fetchDiaryByDateAPI} from "@api/diaryApi.js";
 import {formatDateToString} from "@shared/utils/dateUtils.js";
+import { motion as Motion } from 'framer-motion';
+import { pageVariants } from '@shared/animation/page-variants';
 
 const DiaryLayout = () => {
     const checkLogin = useCheckLogin();
@@ -93,7 +95,13 @@ const DiaryLayout = () => {
             });
     };
     return (
-        <main className="main-content three-column-layout">
+        <Motion.main
+            className="main-content three-column-layout"
+            variants={pageVariants}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+        >
             {/* 좌측 사이드바 */}
             <aside className="left-sidebar">
                 <div className="emotion-analysis">
@@ -144,7 +152,7 @@ const DiaryLayout = () => {
 
             {/* 다이어리 레이아웃 내에만 갤러리 모달 포함 */}
             <GalleryModal />
-        </main>
+        </Motion.main>
     );
 };
 

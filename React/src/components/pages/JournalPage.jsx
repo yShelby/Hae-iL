@@ -10,6 +10,9 @@ import {ConfirmModal} from "@shared/UI/ConfirmModal.jsx";
 import {JournalViewer} from "@features/journal/JournalViewer.jsx";
 import "./css/JournalPage.css"
 import {useCheckLogin} from "@/hooks/useCheckLogin.js";
+import { motion as Motion } from 'framer-motion';
+import { pageVariants } from '@shared/animation/page-variants';
+
 
 const JournalPage = () => {
     // UI 상태를 관리하는 viewMode 상태. mode: 'list'|'create'|'edit', journalId: 수정할 저널의 ID
@@ -121,7 +124,13 @@ const JournalPage = () => {
     };
 
     return (
-        <>
+        <Motion.div
+            className="journal-page-wrapper"
+            variants={pageVariants}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+        >
             <div className="journal-page-container two-column">
                 {/* 왼쪽 패널: 저널 목록 */}
                 <div className="left-panel">
@@ -152,7 +161,7 @@ const JournalPage = () => {
                 onConfirm={handleDeleteConfirm}
                 message="정말로 이 저널을 삭제하시겠습니까?"
             />
-        </>
+        </Motion.div>
     );
 };
 

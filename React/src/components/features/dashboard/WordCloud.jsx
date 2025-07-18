@@ -49,39 +49,67 @@ const WordCloud = () => {
         }
     };
 
+    /**
+     * [useEffect 1] 최초 데이터 로딩 전용
+     * 📌 역할: 오직 user.id가 유효해졌을 때 단 한 번만 실행되어 초기 데이터를 불러온다.
+     * 이후에는 refreshKey나 다른 리렌더링에 전혀 반응 x
+     */
     useEffect(() => {
-        if (!user) {
+        if (!user || !user.id) {
             setIsInitialLoading(false);
-            setIsRefreshing(false);
             setWordData([]); // 혹시 모를 데이터 잔여물 제거
             return;
         }
 
-        const loadData = async () => {
-            // refreshKey가 0일 때(최초 로드)가 아니면 isRefreshing을 true로 설정
-            if (refreshKey > 0) {
-                setIsRefreshing(true);
-            } else {
-                // user 객체가 들어온 직후, 최초 로딩 상태를 true로 확실하게 설정
+        const initialLoad = async () => {
                 setIsInitialLoading(true);
-            }
             try {
                 const data = await fetchWordCloudData();
-                setWordData(data);
+                setWordData(data || []); // API 응답이 null일 경우를 대비해 빈 배열로 처리
             } catch (error) {
                 console.error("WordCloud 컴포넌트에서 데이터를 가져오는 데 실패했습니다.", error);
                 setWordData([]);
             } finally {
                 setIsInitialLoading(false);
+            }
+        };
+        initialLoad();
+    }, [user?.id]); // 🎯 의존성 배열에 user.id만 넣어, 사용자 로그인 시에만 반응하도록 제한
+
+    /**
+     * [useEffect 2] 새로고침 전용
+     * 📌 역할: 오직 '새로고침' 버튼 클릭으로 인해 refreshKey가 변경되었을 때만 실행된다.
+     */
+    useEffect(() => {
+        // refreshKey가 0일 때(컴포넌트 최초 마운트 시)는 실행하지 않도록 방지
+        if (refreshKey === 0) {
+            return;
+        }
+
+        if (!user || !user.id) {
+            return; // 혹시 유저가 로그아웃한 경우 방지
+        }
+
+        const refreshData = async () => {
+            setIsRefreshing(true);
+            try {
+                const data = await fetchWordCloudData();
+                setWordData(data || []);
+            } catch (error) {
+                console.error("WordCloud 새로고침에 실패했습니다.", error);
+            } finally {
                 setIsRefreshing(false);
             }
         };
-        loadData();
-    }, [refreshKey, user]);
+
+        refreshData();
+    }, [refreshKey]); // 🎯 의존성 배열에 refreshKey만 넣어, 새로고침 버튼 클릭에만 반응하도록 제한
+
 
     // 컨테이너의 크기가 변경될 때마다 dimensions state를 업데이트하여
     // CustomWordCloud 컴포넌트에 새로운 크기를 전달하고 리렌더링을 유발
     useEffect(() => {
+        // 크기를 측정하고 state를 업데이트하는 함수
         const updateDimensions = () => {
             if (containerRef.current) {
                 setDimensions({
@@ -92,24 +120,38 @@ const WordCloud = () => {
         };
 
         updateDimensions(); // 초기 사이즈 설정
-        window.addEventListener('resize', updateDimensions); // 창 크기 변경 감지
-        return () => window.removeEventListener('resize', updateDimensions);
+        /** [추가] 부모의 애니메이션이 끝났다는 신호를 수신하는 리스너를 추가
+         * 📌 이유: 최초 측정 시점이 너무 빨라 크기를 0으로 측정하는 문제를 해결하기 위해,
+         * 부모의 레이아웃이 안정된 후(애니메이션 완료 후) 크기를 다시 측정하도록 한다. */
+        window.addEventListener('layoutAnimationComplete', updateDimensions);
+        // 창 크기가 변경될 때도 크기를 다시 측정
+        window.addEventListener('resize', updateDimensions);
+
+        // 컴포넌트가 사라질 때 등록했던 모든 이벤트 리스너를 정리(메모리 누수 방지)
+        return () => {
+            window.removeEventListener('layoutAnimationComplete', updateDimensions);
+            window.removeEventListener('resize', updateDimensions);
+        }
     }, []); // 컴포넌트 마운트 시 한 번만 실행
 
 
     // --- d3-cloud를 위한 헬퍼 함수 ---
     // 1. 폰트 크기 계산 함수: value(빈도수)를 실제 폰트 크기(px)로 변환
-    const fontSizeMapper = (word) => {
+    const fontSizeMapper = useCallback((word) =>  {
+        if (wordData.length === 0) return 10; // 데이터가 없을 때 기본값
+
         const values = wordData.map(w => w.value);
         const minValue = Math.min(...values);
         const maxValue = Math.max(...values);
         const minFont = 15, maxFont = 90;
         if (maxValue === minValue) return minFont;
         return minFont + ((Number(word.value) - minValue) / (maxValue - minValue)) * (maxFont - minFont);
-    };
+    }, [wordData]); // 🎯 wordData가 변경될 때만 이 함수를 새로 만든다.
 
     // 2. 색상 결정 함수: sentiment 값에 따라 색상을 반환
-    const sentimentColorizer = (word) => {
+    const sentimentColorizer = useCallback((word) => {
+        if (wordData.length === 0) return '#000'; // 데이터가 없을 때 기본값
+
         // 1. 감성에 따라 기본 색상(Hue) 결정
         let hue;
         switch (word.sentiment) {
@@ -140,7 +182,7 @@ const WordCloud = () => {
 
         // 3. 최종 HSL 색상 문자열 반환
         return `hsl(${hue}, 80%, ${lightness}%)`;
-    };
+    }, [wordData]);
 
     // react-d3-cloud 에서는 디폴트로 -90도 ~ 90도 회전이 설정되어 있기 때문에 주석 처리
     // 단어 회전(각도)을 위한 함수(-90도 ~ 90도)
