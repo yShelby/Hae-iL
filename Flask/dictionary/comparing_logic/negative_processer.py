@@ -7,12 +7,12 @@
         # -> 조건에 해당될 경우 감정어 무효화(polarity = 0, label = '', tag = '') ex) 싫지 않다, 안 좋다, 실망하지는 않았다 ...
 
 
-def _negative_processer(emotion_list:list[dict], negative_list:list[dict]) -> list[dict]:
+def _negative_processer(mood_list:list[dict], negative_list:list[dict]) -> list[dict]:
     """
     부정어 + 감정어를 처리하는 함수
     
     Args:
-        emotions_list: 감정어 리스트 (sentence_index, word_index 포함)
+        moods_list: 감정어 리스트 (sentence_index, word_index 포함)
         negative_list: 부정어 리스트 (sentence_index, word_index 포함)
     
     Returns:
@@ -29,7 +29,7 @@ def _negative_processer(emotion_list:list[dict], negative_list:list[dict]) -> li
     # 2. 부정어 + 감정어 처리
     process_result = []
 
-    for emo_item in emotion_list:
+    for emo_item in mood_list:
         emo_sent_idx = emo_item["sentence_index"]
         emo_word_idx = emo_item["word_index"]
         

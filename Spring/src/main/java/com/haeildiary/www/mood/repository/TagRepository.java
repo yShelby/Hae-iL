@@ -1,6 +1,6 @@
-package com.haeildiary.www.emotion.repository;
+package com.haeildiary.www.mood.repository;
 
-import com.haeildiary.www.emotion.entity.Tag;
+import com.haeildiary.www.mood.entity.Tag;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

@@ -1,13 +1,13 @@
-package com.haeildiary.www.emotion.service;
+package com.haeildiary.www.mood.service;
 
 
 import com.haeildiary.www.diary.entity.DiaryEntity;
-import com.haeildiary.www.emotion.dto.FlaskResponseDTO;
-import com.haeildiary.www.emotion.dto.MoodDetailDTO;
-import com.haeildiary.www.emotion.dto.MoodEntryDTO;
-import com.haeildiary.www.emotion.dto.TagDTO;
-import com.haeildiary.www.emotion.entity.MoodEntry;
-import com.haeildiary.www.emotion.entity.Tag;
+import com.haeildiary.www.mood.dto.FlaskResponseDTO;
+import com.haeildiary.www.mood.dto.MoodDetailDTO;
+import com.haeildiary.www.mood.dto.MoodEntryDTO;
+import com.haeildiary.www.mood.dto.TagDTO;
+import com.haeildiary.www.mood.entity.MoodEntry;
+import com.haeildiary.www.mood.entity.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -79,7 +79,7 @@ public class AllService {
      */
     private List<FlaskResponseDTO.FlaskEmotionDetailDTO> convertMoodDetailToFlaskDetail(List<MoodDetailDTO> moodDetailDTOs) {
         return moodDetailDTOs.stream()
-                .map(dto -> new FlaskResponseDTO.FlaskEmotionDetailDTO(dto.getEmotionType(), dto.getPercentage().doubleValue()))
+                .map(dto -> new FlaskResponseDTO.FlaskEmotionDetailDTO(dto.getEmotionType(), dto.getPercentage().intValue()))
                 .toList();
     }
 }

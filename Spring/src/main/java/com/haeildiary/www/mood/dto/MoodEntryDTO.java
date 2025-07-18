@@ -1,4 +1,4 @@
-package com.haeildiary.www.emotion.dto;
+package com.haeildiary.www.mood.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

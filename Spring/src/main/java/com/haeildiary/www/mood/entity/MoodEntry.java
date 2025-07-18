@@ -1,4 +1,4 @@
-package com.haeildiary.www.emotion.entity;
+package com.haeildiary.www.mood.entity;
 
 import com.haeildiary.www.diary.entity.DiaryEntity;
 import jakarta.persistence.*;

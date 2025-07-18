@@ -3,7 +3,6 @@ package com.haeildiary.www.dashboard.count.controller;
 import com.haeildiary.www.auth.user.CustomUser;
 import com.haeildiary.www.dashboard.count.dto.CountStatsResponseDto;
 import com.haeildiary.www.dashboard.count.service.CountService;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

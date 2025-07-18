@@ -1,10 +1,10 @@
-package com.haeildiary.www.emotion.service;
+package com.haeildiary.www.mood.service;
 
 
 import com.haeildiary.www.diary.entity.DiaryEntity;
-import com.haeildiary.www.emotion.dto.MoodEntryDTO;
-import com.haeildiary.www.emotion.entity.MoodEntry;
-import com.haeildiary.www.emotion.repository.MoodEntryRepository;
+import com.haeildiary.www.mood.dto.MoodEntryDTO;
+import com.haeildiary.www.mood.entity.MoodEntry;
+import com.haeildiary.www.mood.repository.MoodEntryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
