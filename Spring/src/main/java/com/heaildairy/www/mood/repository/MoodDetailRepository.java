@@ -1,10 +1,9 @@
-package com.heaildairy.www.emotion.repository;
+package com.heaildairy.www.mood.repository;
 
-import com.heaildairy.www.emotion.entity.MoodDetail;
+import com.heaildairy.www.mood.entity.MoodDetail;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface MoodDetailRepository extends JpaRepository<MoodDetail, Long> {
     List<MoodDetail> findByDiaryDiaryId(Long diaryId);

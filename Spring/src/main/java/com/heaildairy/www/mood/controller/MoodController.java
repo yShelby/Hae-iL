@@ -1,11 +1,9 @@
-package com.heaildairy.www.emotion.controller;
+package com.heaildairy.www.mood.controller;
 
 
 import com.heaildairy.www.auth.user.CustomUser;
-import com.heaildairy.www.diary.entity.DiaryEntity;
-import com.heaildairy.www.emotion.dto.FlaskResponseDTO;
-import com.heaildairy.www.emotion.service.AllService;
-import com.heaildairy.www.emotion.service.FlaskService;
+import com.heaildairy.www.mood.dto.FlaskResponseDTO;
+import com.heaildairy.www.mood.service.AllService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/analyze")
 @RequiredArgsConstructor
 @CrossOrigin(origins = "http://localhost:5173") // accessing different ports(5173 vs 8080)
-public class EmotionController {
+public class MoodController {
 
     private final AllService allService;
     /**

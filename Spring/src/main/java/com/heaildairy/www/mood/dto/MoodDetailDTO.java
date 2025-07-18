@@ -1,9 +1,7 @@
-package com.heaildairy.www.emotion.dto;
+package com.heaildairy.www.mood.dto;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.math.BigDecimal;
 
 @Data
 @NoArgsConstructor

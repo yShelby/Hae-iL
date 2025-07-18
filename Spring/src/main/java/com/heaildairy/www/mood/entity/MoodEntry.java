@@ -1,4 +1,4 @@
-package com.heaildairy.www.emotion.entity;
+package com.heaildairy.www.mood.entity;
 
 import com.heaildairy.www.diary.entity.DiaryEntity;
 import jakarta.persistence.*;
@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor

@@ -1,4 +1,4 @@
-package com.heaildairy.www.emotion.entity;
+package com.heaildairy.www.mood.entity;
 
 import com.heaildairy.www.diary.entity.DiaryEntity;
 import jakarta.persistence.*;
@@ -11,20 +11,24 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-@Table(name = "Tag")
+@Table(name = "MoodDetail")
 @Entity
-public class Tag {
+public class MoodDetail {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "tag_id")
-    private Long tagId;
+    @Column(name = "detail_id")
+    private Long detailId;
 
-    @Column(name = "tag_name", length = 50, nullable = false)
-    private String tagName;
-
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "diary_id", nullable = false,
-            foreignKey = @ForeignKey(name = "fk_tag_diary_id"))
+    foreignKey = @ForeignKey(name = "diary_id"))
     private DiaryEntity diary;
+
+    @Column(name = "percentage", nullable = false)
+    private Integer percentage;
+
+    @Column(name = "emotion_type",length = 50)
+    private String emotionType;
+
 }

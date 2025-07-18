@@ -15,9 +15,9 @@
 package com.heaildairy.www.diary.entity;
 
 import com.heaildairy.www.auth.entity.UserEntity;
-import com.heaildairy.www.emotion.entity.MoodDetail;
-import com.heaildairy.www.emotion.entity.MoodEntry;
-import com.heaildairy.www.emotion.entity.Tag;
+import com.heaildairy.www.mood.entity.MoodDetail;
+import com.heaildairy.www.mood.entity.MoodEntry;
+import com.heaildairy.www.mood.entity.Tag;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;

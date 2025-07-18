@@ -1,6 +1,6 @@
-package com.heaildairy.www.emotion.service;
+package com.heaildairy.www.mood.service;
 
-import com.heaildairy.www.emotion.dto.FlaskResponseDTO;
+import com.heaildairy.www.mood.dto.FlaskResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
