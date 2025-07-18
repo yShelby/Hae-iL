@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {Outlet, useLocation} from 'react-router-dom';
 import { useWeeklyTimeline } from '@/hooks/useWeeklyTimeline.js';
-// import { useDiaryData } from '@/hooks/useDiaryData.js';
 import { useCheckLogin } from '@/hooks/useCheckLogin.js';
 import { useNavigate } from 'react-router-dom';
 import TimelineView from "@features/timeline/TimelineView.jsx";
@@ -16,14 +15,21 @@ import {fetchDiaryByDateAPI} from "@api/diaryApi.js";
 import {formatDateToString} from "@shared/utils/dateUtils.js";
 import { motion as Motion } from 'framer-motion';
 import { pageVariants } from '@shared/animation/page-variants';
+import {useDiaryData} from "@/hooks/useDiaryData.js";
 
 const DiaryLayout = ({children}) => { // children(자식 comp) 추가
     const checkLogin = useCheckLogin();
    // const navigate = useNavigate();
     const location = useLocation(); // ✅ 페이지 이동 시 전달된 state를 받기 위해 추가
+    // useDiaryData 훅에서 상태/함수 가져오기
     const {
+        user,
         selectedDate,
         setSelectedDate,
+        diaryForDate: initialDiary,
+        isLoading: isDiaryLoading,
+        handleDateClick,   // 날짜 선택 시 네비게이션 및 상태 변경 포함
+        handleDiaryUpdated,
     } = useDiaryData();
 
     /**
@@ -31,8 +37,6 @@ const DiaryLayout = ({children}) => { // children(자식 comp) 추가
      * location.state?.date가 있으면 그 값을, 없으면 오늘 날짜를 selectedDate의 초기값으로 사용
      */
     const [selectedDiaryId, setSelectedDiaryId] = useState(null); // 선택된 일기 ID 상태
-    const [initialDiary, setInitialDiary] = useState(null); // 초기 일기 데이터 상태
-    const [isDiaryLoading, setIsDiaryLoading] = useState(true); // 일기 데이터 로딩 상태 추가
     const [emotionRefreshKey, setEmotionRefreshKey] = useState(0); // 감정 분석 새로고침 키
 
     const {
@@ -55,21 +59,6 @@ const DiaryLayout = ({children}) => { // children(자식 comp) 추가
         setSelectedDiaryId(initialDiary?.diaryId ?? null);
     }, [initialDiary]);
 
-    // 초기 일기 데이터를 선택된 날짜로부터 불러오기
-    useEffect(() => {
-        if (!selectedDate) {
-            setInitialDiary(null);
-            return;
-        }
-        fetchDiaryByDateAPI(selectedDate)
-            .then((res) => {
-                setInitialDiary(res.data ?? null);
-            })
-            .catch((err) => {
-                console.warn("일기 조회 실패:", err);
-                setInitialDiary(null);
-            });
-    }, [selectedDate]);
     // 감정 분석 결과가 수정되었을 때 호출하는 함수
     const handleEmotionUpdated = () => {
         // 감정 분석 결과 갱신용 키 증가시키기 (강제 리렌더링/데이터 재조회 유도)
@@ -78,34 +67,6 @@ const DiaryLayout = ({children}) => { // children(자식 comp) 추가
         // 선택된 일기 데이터도 다시 가져오기
         handleDiaryUpdated();
     };
-
-    // 선택된 날짜가 변경될 때마다 초기 일기 데이터 갱신
-    const handleDiaryUpdated = () => {
-        if (!selectedDate) return;
-        fetchDiaryByDateAPI(selectedDate)
-            .then((res) => {
-                const diary = res.data ?? null;
-                setInitialDiary(diary);
-                setSelectedDiaryId(diary?.diaryId ?? null);
-            })
-            .catch(() => {
-                setInitialDiary(null);
-                setSelectedDiaryId(null); // 실패 시 감정 분석도 초기화
-            });
-    };
-
-    // [추가] Outlet context 또는 children props로 전달할 데이터 객체
-    const contextValue = {
-        initialDiary,
-        setSelectedDiaryId,
-        isLoading: timelineLoading,
-        onDiaryUpdated: handleDiaryUpdated,
-        onEmotionUpdated: handleEmotionUpdated,
-        onDataChange: handleDataChange,
-        selectedDate,
-        setSelectedDate,
-    };
-
     return (
         <Motion.main
             className="main-content three-column-layout"
@@ -135,6 +96,7 @@ const DiaryLayout = ({children}) => { // children(자식 comp) 추가
                             data={timelineData}
                             onSelectDate={handleSelectDate}
                             selectedDate={selectedDate}
+                            isLoggedIn={!!user} // 로그인 여부 전달
                         />
                     )}
                 </div>

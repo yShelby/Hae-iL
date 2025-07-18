@@ -25,16 +25,14 @@ export const useDiaryMutations = ({
                                       diaryState,                 // ✍️ 제목 등 기타 상태
                                       editor,                     // 🖋️ TipTap 에디터 인스턴스
                                       user,                       // 🙋 로그인 유저 정보
+                                      onDataChange,               // 🔄 타임라인 갱신 콜백 (일기 저장 후)
                                   }) => {
-    // const navigate = useNavigate();
-
     // ⏳ 저장 중 여부 상태
     const [isSaving, setIsSaving] = useState(false);
 
     // ❗ 삭제 확인 모달 상태
     const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 
-    const { onDataChange } = useOutletContext();
     // 💾 일기 저장 or 수정 핸들러
     const handleSave = useCallback(async () => {
         // 🚨 저장 조건 검사: 에디터/로그인 여부/중복 저장 방지

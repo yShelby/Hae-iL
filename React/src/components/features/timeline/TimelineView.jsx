@@ -8,7 +8,7 @@ import {useCheckLogin} from "@/hooks/useCheckLogin.js";
 
 registerLocale('ko', ko); // 로케일 등록
 
-export default function TimelineView({ data = [], selectedDate, onSelectDate }) {
+export default function TimelineView({ data = [], selectedDate, onSelectDate, isLoggedIn }) {
     const checkLogin = useCheckLogin();
     // 내부 상태: 달력 UI 표시 여부 제어
     const [showCalendar, setShowCalendar] = useState(false);
@@ -114,10 +114,10 @@ export default function TimelineView({ data = [], selectedDate, onSelectDate }) 
                         >
                             <h4>{date}</h4>
                             <div className="card-icons">
-                                {hasDiary && <span title="일기">📝</span>}
-                                {hasSleep && <span title="수면">💤</span>}
-                                {hasExercise && <span title="운동">🏋️</span>}
-                                {hasMeal && <span title="식사">🍽️</span>}
+                                {isLoggedIn && hasDiary && <span title="일기">📝</span>}
+                                {isLoggedIn && hasSleep && <span title="수면">💤</span>}
+                                {isLoggedIn && hasExercise && <span title="운동">🏋️</span>}
+                                {isLoggedIn && hasMeal && <span title="식사">🍽️</span>}
                             </div>
                         </div>
                     );

@@ -42,8 +42,7 @@ const CustomBlockImage = TipTapImage.extend({
     draggable: true,
 });
 
-// [수정] props를 직접 받는 대신, useOutletContext를 사용하도록 props 선언을 제거
-const DiaryWritePage = (props) => {
+const DiaryWritePage = () => {
     const {user} = useAuth();
     const checkLogin = useCheckLogin(); // 로그인 확인 훅
     const [isEditing, setIsEditing] = useState(false); // ✍️ 에디터 활성 여부
@@ -51,21 +50,15 @@ const DiaryWritePage = (props) => {
     // 추가 - 대시보드와 일기 페이지 간의 질문 상태를 동기화하고, 새로고침 시 두 페이지의 질문이 함께 변경되도록 하기 위해 추가
     const {question} = useQuestion();
 
-    // [추가] props로 데이터가 직접 전달되면 그 값을 사용하고,
-    // 그렇지 않으면(라우터를 통한 직접 접근) useOutletContext()를 사용
-    const outletData = useOutletContext();
-
     const {
         initialDiary,
-        onDiaryUpdated,
+        selectedDate,
         isLoading,
-        onDataChange,
+        onDiaryUpdated,
         setSelectedDiaryId,
         onEmotionUpdated,
-        selectedDate, // DiaryInfoBar 등에서 사용하기 위해 context에서 가져온다.
-    } = props.initialDiary !== undefined ? props : outletData || {};
-    // = useOutletContext();
-
+        onDataChange,
+    } = useOutletContext();
     // 🧠 TipTap 에디터 초기화 및 확장 구성
     const editor = useEditor({
         extensions: [
@@ -87,18 +80,6 @@ const DiaryWritePage = (props) => {
     // ☁️ 이미지 업로드 훅 (에디터 연동 + S3 전송 준비)
     const {handleImageUpload, uploadPendingImagesToS3} = useImageUpload(editor);
 
-    // const onActionSuccess = async (updatedDiaryOrNull) => {
-    //     if (updatedDiaryOrNull) {
-    //         setSelectedDiaryId?.(updatedDiaryOrNull.diaryId);  // 감정 분석 트리거
-    //         onDiaryUpdated?.();  // 부모에게 다시 일기 불러오라고 요청
-    //         onEmotionUpdated?.(); // 감정 분석 결과 새로고침
-    //         setIsEditing(true);  // 저장 후에도 에디터 유지
-    //     } else {
-    //         setSelectedDiaryId?.(null);  // 삭제 시 감정 결과 초기화
-    //         setIsEditing(false);
-    //     }
-    // };
-
     // 삭제 성공 시에도 onDiaryUpdated, onEmotionUpdated를 호출하여 부모 컴포넌트의 상태를
     // 즉시 동기화해야 데이터 정합성이 유지되고 사용자 경험(UX)이 개선된다
     const onActionSuccess = (updatedDiaryOrNull) => {
@@ -106,11 +87,13 @@ const DiaryWritePage = (props) => {
             setSelectedDiaryId?.(updatedDiaryOrNull.diaryId);
             onDiaryUpdated?.();
             onEmotionUpdated?.();
+            onDataChange?.();
         } else { // 삭제 성공 시
             setSelectedDiaryId?.(null);
             onDiaryUpdated?.(); // 캘린더 등 목록 UI 갱신을 위해 호출
             onEmotionUpdated?.(); // 감정 분석 UI 갱신을 위해 호출
             setIsEditing(false); // 작성기 뷰를 닫고 초기 화면으로 전환
+            onDataChange?.();
         }
     };
 
@@ -131,37 +114,6 @@ const DiaryWritePage = (props) => {
         editor,
         user,
     });
-
-    // // 📥 [초기 데이터 세팅 + 로그인 확인] useEffect
-    // useEffect(() => {
-    //     const hasContent = !!initialDiary;
-    //
-    //     // 1. 에디터 내용 설정: initialDiary가 변경될 때마다 에디터 내용을 업데이트
-    //     const content = initialDiary?.content ? JSON.parse(initialDiary.content) : '';
-    //     if (JSON.stringify(editor.getJSON()) !== JSON.stringify(content)) {
-    //         editor.commands.setContent(content, false);
-    //     }
-    //
-    //     // 🚫 비로그인 상태에서 기존 일기 불러온 경우 → 편집 불가 + 내용 비움
-    //     if (hasContent && !user) {
-    //         setIsEditing(false);
-    //         if (editor) {
-    //             editor.setEditable(false);
-    //             editor.commands.clearContent();
-    //         }
-    //         return;
-    //     }
-    //
-    //     // ✅ 로그인 상태일 경우: 기존 일기 있으면 편집 가능하게 세팅
-    //     setIsEditing(hasContent);
-    //     if (editor) {
-    //         editor.setEditable(hasContent);
-    //         const content = initialDiary?.content ? JSON.parse(initialDiary.content) : '';
-    //         if (JSON.stringify(editor.getJSON()) !== JSON.stringify(content)) {
-    //             editor.commands.setContent(content, false);
-    //         }
-    //     }
-    // }, [initialDiary, editor, user]);
 
     // [수정]
     // '뷰(View) 상태'와 '편집(Edit) 상태'를 명확히 분리하여 UX와 코드 안정성을 개선
@@ -215,24 +167,8 @@ const DiaryWritePage = (props) => {
         }
     };
 
-    // // 추가 - "닫기" 버튼 클릭 시 -> 에디터 비활성화
-    // const handleCancelWriting = () => {
-    //     setIsEditing(false);
-    //     if (editor) {
-    //         editor.setEditable(false);
-    //         // 기존 일기가 있었다면, 그 내용으로 복원
-    //         if (initialDiary) {
-    //             const content = initialDiary.content ? JSON.parse(initialDiary.content) : '';
-    //             editor.commands.setContent(content, false);
-    //         } else { // 새 일기였다면 내용 비우기
-    //             editor.commands.clearContent();
-    //         }
-    //     }
-    // };
-
-    // [수정]
+    // ✖️ "닫기" 버튼 클릭 시 → 에디터 비활성화 및 폼 초기화
     const handleCancelWriting = () => {
-        // ✅ 수정
         setIsEditing(false); // 에디터 뷰를 닫는다
         resetForm(); // 폼(제목, 날씨) 상태를 초기값으로 리셋
         if (editor) {
