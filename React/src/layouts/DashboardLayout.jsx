@@ -17,7 +17,7 @@ const DashboardLayout = () => {
     const handleAnimationComplete = () => {
         /**
          * ✨ [추가] 커스텀 이벤트 발생
-         * 📌 이유: 애니메이션이 끝났다는 사실을 하위 컴포넌트(WordCloud 등)에
+         * 📌 이유: 애니메이션이 끝났다는 사실을 하위 컴포넌트(WordCloudComp 등)에
          * 알려주기 위한 신호를 window 객체를 통해 알려준다
          * 이 신호를 받은 컴포넌트는 자신의 크기를 다시 측정하게 된다.
          */
