@@ -1,108 +1,86 @@
 import React, { useState, useEffect } from 'react';
 import cloud from 'd3-cloud';
 
-/**
- * @typedef {object} WordData - 워드클라우드에 사용될 데이터 타입
- * @property {string} text - 표시될 단어
- * @property {number} value - 단어의 가중치 (폰트 크기 결정)
- * @property {string} sentiment - 감정 ('positive', 'negative', 'neutral')
- */
+const CustomWordCloud = ({ words, width, height }) => {
+    // d3-cloud가 계산을 마치면 여기에 결과(위치, 크기 등)가 저장된다.
+    const [laidOutWords, setLaidOutWords] = useState([]);
 
-/**
- * d3-cloud를 직접 사용하여 만든 React 19 호환 워드클라우드 컴포넌트
- * @param {{
- * data: WordData[];
- * width: number;
- * height: number;
- * }} props
- */
-const CustomWordCloud = (
-    { data, width, height, fontFamily, padding, fontSizeMapper, sentimentColorizer, rotate,
-    }) => {
-    const [words, setWords] = useState([]);
-    const [status, setStatus] = useState('initializing');
+    // 파도 아이콘 SVG의 <path> 태그에서 'd' 속성값을 그대로 사용
+    const svgPathData = "M485.27,310.45C474.06,172.85,383.45,32.45,242.66,4.28,234.48,2.64,226.12,2.35,218.14,0h-52.7l-36.76,7.97c-28.96,8.43-65.67,29.96-86.42,52.06C25.66,77.72-.51,112.27,17.74,136.06c5.97,7.78,14.84,13.48,24.66,14.54,15.64,1.69,33.07-7.29,46.65-14.36,2.81-1.46,7.46-5.46,9.61-6.32,2.34-.94,1.56.95,1.83,1.8,7.31,22.89,24.45,27.33,46.5,20.8,10.28-3.04,13.74-9.61,22.57-13.87,37.08,43.16,14.47,120.11-20.66,157.94-2.22,2.39-14.25,13.86-16.2,14.44-5.06,1.51-14.48-.46-19.7-1.86-20.44-5.46-27.34-23.34-51.12-21.16-14.81,1.36-22.5,13.18-35.33,18.58-9.83,4.14-20.12,4.42-26.57,14.48v178.92h500v-176.47c-3.39-6.39-8.51-9.82-14.73-13.08Z";
 
-    // d3-cloud 라이브러리의 레이아웃 계산은 리소스 소모가 있을 수 있으므로,
-    // data, width, height가 변경될 때만 실행되도록 useEffect를 사용.
+    // d3-cloud 레이아웃 계산 로직
     useEffect(() => {
-        // 데이터가 없거나, 너비/높이가 유효하지 않으면 계산을 실행 x
-        if (!data || data.length === 0 || !width || !height) {
-            setWords([]);
-            return;
-        }
+        // 렌더링에 필요한 값이 준비되지 않았으면 계산을 시작 x
+        if (!words || !width || !height) return;
 
-        // d3-cloud 계산이 시작되기 직전에 상태를 'processing'으로 변경합니다.
-        setStatus('processing');
+        const layoutSize = [500, 500];
 
-        // d3-cloud 레이아웃 설정
+        // 폰트 크기 계산 함수
+        const calculateFontSize = (word) => Math.log2(word.value) * 5 + 5;
+
+        // d3-cloud 레이아웃 생성 및 설정
         const layout = cloud()
-            .size([width, height])
-            .words(data.map(d => ({ ...d }))) // 원본 데이터 복사
-            .padding(padding)
-            .rotate(rotate)
-            .font(fontFamily)
-            .fontSize(fontSizeMapper)
-            .on('end', (calculatedWords) => {
-                setWords(calculatedWords);
-                // 계산이 모두 완료되면 상태를 'done'으로 변경하여
-                // '생성 중...' 메시지를 사라지게 한다
-                setStatus('done');
+            .size(layoutSize) // 전체 캔버스 크기
+            .words(words.map(w => ({ ...w, size: calculateFontSize(w) }))) // 단어와 계산된 폰트 크기 전달
+            .padding(10) // 단어 간 여백
+            .rotate(() => (Math.random() > 0.5 ? 90 : 0)) // 50% 확률로 90도 회전
+            .font('Noto Sans KR, Malgun Gothic, sans-serif')
+            .fontSize(d => d.size)
+            // 'end' 이벤트: 모든 단어의 위치 계산이 끝나면 호출된다.
+            .on('end', words => {
+                setLaidOutWords(words); // 계산 결과를 상태에 저장하여 렌더링을 트리거
             });
 
-        layout.start(); // 레이아웃 계산 시작
+        // 레이아웃 계산 시작
+        layout.start();
 
-        // 컴포넌트가 언마운트되거나 재계산이 필요할 때, 진행 중이던 계산을 중지하여
-        // 메모리 누수를 방지
-        return () => {
-            layout.stop();
-        }
+    }, [words, width, height]); // 의존성 배열: 이 값들이 바뀔 때마다 재계산
 
-    }, [data, width, height, fontFamily, padding, fontSizeMapper, sentimentColorizer, rotate]);
-
-    // SVG 내부에서 G(그룹) 태그를 사용하고 transform으로 중앙 정렬하면,
-    // d3-cloud가 계산한 x, y 좌표를 그대로 사용하면서도 전체 클라우드를 쉽게 중앙에 배치 가능
+    // 순수 SVG를 이용한 렌더링
+    // 캔버스가 아닌 SVG로 그리므로 getImageData 오류가 발생 x
     return (
-        <div style={{ width, height, position: 'relative' }}>
-            {status === 'processing' && (
-                <div style={{
-                    position: 'absolute',
-                    top: '50%', left: '50%',
-                    transform: 'translate(-50%, -50%)',
-                    color: '#6c757d'
-                }}>
-                    워드클라우드 생성 중...
-                </div>
-            )}
-            <svg width={width} height={height}>
-                <g transform={`translate(${width / 2},${height / 2})`}>
-                    {words.map((word) => (
+        <svg width={width} height={height}
+             viewBox="0 0 500 500" preserveAspectRatio="xMidYMid meet">
+            <defs>
+                {/* clipPath는 보이지 않는 마스크(틀)를 정의 */}
+                <clipPath id="wordcloud-shape-mask">
+                    {/* SVG Path 데이터를 여기에 넣어 틀의 모양을 결정 */}
+                    <path d={svgPathData} />
+                </clipPath>
+            </defs>
+            {/* 테두리를 보기 위한 로직 - 추후 제건 */}
+            <path
+                d={svgPathData}
+                fill="none"
+                stroke="#CBD5E1" // 테두리 색상 (더 연한 회색으로 변경)
+                strokeWidth="2"
+            />
+            {/* 워드클라우드 전체를 <g> 태그로 감싸고 clipPath 속성을 적용
+              이로써 워드클라우드는 clipPath에 정의된 모양대로 잘려서 보이게 된다.
+            */}
+            <g clipPath="url(#wordcloud-shape-mask)">
+                {/* d3-cloud는 [0,0]을 중심으로 단어를 배치하므로,
+                  전체 그룹을 캔버스 중앙으로 이동시켜 정중앙에 보이게 한다.
+                */}
+                <g transform={`translate(250, 250)`}>
+                    {laidOutWords.map((word) => (
                         <text
-                            key={word.text + word.value} // key는 고유해야 한다
-                            textAnchor="middle"
+                            key={word.text + word.value}
+                            textAnchor="middle" // 텍스트 정렬 기준을 중앙으로
                             transform={`translate(${word.x}, ${word.y}) rotate(${word.rotate})`}
                             style={{
                                 fontSize: word.size,
-                                fontFamily: word.font,
-                                fill: sentimentColorizer(word),
-                                cursor: 'pointer',
-                                transition: 'transform 0.2s ease-out, fill 0.2s ease-out',
-                            }}
-                            // 추가 기능: 마우스 호버 시 단어 강조 효과
-                            onMouseOver={(e) => {
-                                e.currentTarget.style.transform = `translate(${word.x}, ${word.y}) rotate(${word.rotate}) scale(1.1)`;
-                                e.currentTarget.style.fill = '#FF8C00'; // 강조 색상 (DarkOrange)
-                            }}
-                            onMouseOut={(e) => {
-                                e.currentTarget.style.transform = `translate(${word.x}, ${word.y}) rotate(${word.rotate}) scale(1)`;
-                                e.currentTarget.style.fill = sentimentColorizer(word);
+                                fontFamily: 'Noto Sans KR, Malgun Gothic, sans-serif',
+                                fill: word.sentiment === 'positive' ? '#3498DB' :
+                                    word.sentiment === 'negative' ? '#E74C3C' : '#47e026',
                             }}
                         >
                             {word.text}
                         </text>
                     ))}
                 </g>
-            </svg>
-        </div>
+            </g>
+        </svg>
     );
 };
 
