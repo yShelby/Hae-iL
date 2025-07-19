@@ -26,7 +26,7 @@ public class MoodDetailService {
         for (MoodDetailDTO dto : dtoList) {
             MoodDetail moodDetail = new MoodDetail();
             moodDetail.setDiary(diaryEntity);
-            moodDetail.setEmotionType(dto.getEmotionType());
+            moodDetail.setMoodType(dto.getMoodType());
             moodDetail.setPercentage(dto.getPercentage());
             moodDetailRepository.save(moodDetail);
         }
@@ -38,7 +38,7 @@ public class MoodDetailService {
         return moodDetails.stream()
                 .map(entity -> {
                     MoodDetailDTO dto = new MoodDetailDTO();
-                    dto.setEmotionType(entity.getEmotionType());
+                    dto.setMoodType(entity.getMoodType());
                     dto.setPercentage(entity.getPercentage());
                     dto.setDiaryId(diaryId);
                     return dto;

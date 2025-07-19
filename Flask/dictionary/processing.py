@@ -136,7 +136,7 @@ def extract_mood_with_dict(json_text) -> dict:
     # 3. 케이스 분기
     if not labels_count : # 1) 감정 결과 없음
         polarity_score = 0
-        label_list = [{"label" : "중립/기타", "count" : 0, "percentage" : 0}]
+        label_list = [{"label" : "중립/기타", "count" : 0, "percentage" : 100}]
         tag_list = ["#무난한"]
 
     elif labels_count[0][1] < small_threshold : # 2) 소량 데이터 : 최빈도 레이블 < small_threshold

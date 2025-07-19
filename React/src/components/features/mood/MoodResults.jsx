@@ -1,8 +1,8 @@
 import React from 'react';
-import './css/EmtionResult.css'
-import EmotionTags from "@features/emotions/EmotionsTags.jsx";
+import './css/MoodResult.css'
+import MoodTags from "@features/mood/MoodTags.jsx";
 
-export default function EmotionResult({ result }) {
+export default function MoodResult({ result }) {
     const { details, mood_score, tags } = result;
 
     return (
@@ -13,34 +13,34 @@ export default function EmotionResult({ result }) {
                 감정 점수: <strong>{mood_score}</strong>점
             </div>
 
-            <div className="emotion-details">
+            <div className="mood-details">
                 <h3>감정 분포</h3>
-                <ul className="emotion-bars">
-                    {details.map((emotion, index) => (
-                        <li key={index} className="emotion-bar-item">
-                            <span className="emotion-label">{emotion.emotion_type}</span>
+                <ul className="mood-bars">
+                    {details.map((mood, index) => (
+                        <li key={index} className="mood-bar-item">
+                            <span className="mood-label">{mood.mood_type}</span>
                             <div className="progress-bar">
                                 <div
                                     className="progress-fill"
                                     style={{
-                                        width: `${emotion.percentage}%`,
-                                        backgroundColor: getColorForEmotion(emotion.emotion_type),
+                                        width: `${mood.percentage}%`,
+                                        backgroundColor: getColorForMood(mood.mood_type),
                                     }}
                                 ></div>
-                                <span className="progress-percent">{emotion.percentage}%</span>
+                                <span className="progress-percent">{mood.percentage}%</span>
                             </div>
                         </li>
                     ))}
                 </ul>
             </div>
 
-            <EmotionTags tags={tags} />
+            <MoodTags tags={tags} />
         </div>
     );
 }
 
 // 감정에 따른 색상 맵핑 함수
-const getColorForEmotion = (type) => {
+const getColorForMood = (type) => {
     switch (type) {
         case '기쁨': return '#fbc02d';
         case '분노': return '#e53935';

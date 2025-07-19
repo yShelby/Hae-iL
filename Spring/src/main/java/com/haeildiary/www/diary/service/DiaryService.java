@@ -96,7 +96,7 @@ public class DiaryService {
             // 감정분석요청(Flask 서버 호출)
             FlaskResponseDTO analysis = flaskService.callAnalyze(savedDiary.getContent());
             // 감정 분석 결과 저장
-            allService.allEmotion(analysis, savedDiary);
+            allService.allMood(analysis, savedDiary);
             log.info("감정 분석 성공: {}", analysis);
         } catch (Exception e) {
             log.error("감정 분석 실패: {}", e.getMessage());
@@ -132,7 +132,7 @@ public class DiaryService {
             FlaskResponseDTO analysis = flaskService.callAnalyze(diary.getContent());
 
             // 감정 분석 결과 저장
-            allService.allEmotion(analysis, diary);
+            allService.allMood(analysis, diary);
 
             log.info("감정 분석 성공: {}", analysis);
         } catch (Exception e) {

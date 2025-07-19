@@ -1,24 +1,24 @@
 import React, {useEffect, useState} from "react";
-import EmotionResult from "../features/emotions/EmotionsResults.jsx";
-import {fetchEmotionByDiaryId} from "@api/emotionApi.js";
+import MoodResult from "@features/mood/MoodResults.jsx";
+import {fetchMoodByDiaryId} from "@api/moodApi.js";
 
-function EmotionPage({ selectedDiaryId, refreshKey  }) {
+function MoodPage({ selectedDiaryId, refreshKey  }) {
     const [loading, setLoading] = useState(false);
-    const [emotionResult, setEmotionResult] = useState(null);
+    const [moodResult, setMoodResult] = useState(null);
     const [error, setError] = useState(null);
 
     useEffect(() => {
         if (!selectedDiaryId) {
-            setEmotionResult(null);
+            setMoodResult(null);
             return;
         }
 
         setLoading(true);
         setError(null);
 
-        fetchEmotionByDiaryId(selectedDiaryId)
+        fetchMoodByDiaryId(selectedDiaryId)
             .then(response => {
-                setEmotionResult(response.data);
+                setMoodResult(response.data);
             })
             .catch(err => {
                 console.error("감정 분석 조회 실패:", err);
@@ -33,10 +33,10 @@ function EmotionPage({ selectedDiaryId, refreshKey  }) {
         <div style={{ padding: 20 }}>
             {loading && <p>분석 결과 불러오는 중...</p>}
             {error && <p style={{ color: "red" }}>{error}</p>}
-            {!loading && !error && !emotionResult && <p>일기를 작성해주세요.</p>}
-            {emotionResult && <EmotionResult result={emotionResult} />}
+            {!loading && !error && !moodResult && <p>일기를 작성해주세요.</p>}
+            {moodResult && <MoodResult result={moodResult} />}
         </div>
     );
 }
 
-export default EmotionPage;
+export default MoodPage;

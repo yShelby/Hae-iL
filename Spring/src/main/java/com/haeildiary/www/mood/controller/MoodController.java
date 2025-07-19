@@ -25,7 +25,7 @@ public class MoodController {
      * @return 감정 분석 결과 DTO
      */
     @GetMapping("/{diaryId}")
-    public ResponseEntity<FlaskResponseDTO> getEmotionByDiaryId(
+    public ResponseEntity<FlaskResponseDTO> getMoodByDiaryId(
             @PathVariable Long diaryId,
             @AuthenticationPrincipal CustomUser customUser) {
 
