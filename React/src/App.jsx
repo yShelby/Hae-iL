@@ -21,7 +21,6 @@ import DashboardLayout from "@/layouts/DashboardLayout.jsx";
 import DashboardPage from "@pages/DashboardPage.jsx";
 import JournalPage from "@pages/JournalPage.jsx";
 import GalleryPage from "@pages/GalleryPage.jsx";
-import CalendarPage from "@pages/CalendarPage.jsx";
 import Calendar from "@features/calendar/Calendar.jsx";
 
 function App() {

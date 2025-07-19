@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { addMonths, subMonths, startOfMonth, endOfMonth, startOfWeek, endOfWeek, addDays, isSameDay } from "date-fns";
 import { useAuth } from '../auth/AuthContext';
+import { useCheckLogin } from '@/hooks/useCheckLogin.js'
 import { useCalendarData } from '@/hooks/useCalendarData.js';
 import CalendarHead from "./CalendarHead";
 import CalendarGrid from "./CalendarGrid";
@@ -20,11 +21,12 @@ const CalendarWrapper = styled.div`
 `;
 
 function Calendar({
-                      width = "550px",      // 전체 캘린더 너비
+                      width = "900px",      // 전체 캘린더 너비
                       height = "auto",      // 전체 캘린더 높이
-                      cellHeight = "60px"   // 셀 높이
+                      cellHeight = "100px"   // 셀 높이
                   }) {
     const { user, loading } = useAuth();
+    const checkLogin = useCheckLogin();
     const [currentDate, setCurrentDate] = useState(new Date());
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth() + 1;
@@ -62,6 +64,11 @@ function Calendar({
         days = [];
     }
 
+    const handleSelectedDate = (date) => {
+        if (!checkLogin()) return; // 비로그인일 경우 토스트만 띄우고 중단
+        setSelectedDate(date); // 로그인된 경우에만 state 업데이트
+    }
+
     return (
         <CalendarWrapper width={width} height={height}>
             <CalendarHead
@@ -74,10 +81,10 @@ function Calendar({
                 rows={rows}
                 currentDate={currentDate}
                 selectedDate={selectedDate}
-                onSelectDate={setSelectedDate}
+                onSelectDate={handleSelectedDate}
                 calendarEntries={calendarEntries || []}
                 isLoggedIn={!!user}
-                width="500px"         // 캘린더 전체 너비 조절
+                width="800px"         // 캘린더 전체 너비 조절
                 cellHeight={cellHeight}
             />
         </CalendarWrapper>
