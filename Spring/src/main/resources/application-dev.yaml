@@ -13,3 +13,4 @@ spring:
     hibernate:
       ddl-auto: update # 개발시 update
 #      ddl-auto: create # 필요시 create
+
