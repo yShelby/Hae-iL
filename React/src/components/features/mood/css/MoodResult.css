@@ -42,9 +42,32 @@
     height: 50px;
 }
 
+.selected-mood-info.fade-in {
+    animation: moodFadeIn 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.mood-score.fade-in, .tags-list.fade-in {
+    animation: moodFadeIn 1.5s cubic-bezier(0.4, 0, 0.7, 1);
+}
+
+@keyframes moodFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(16px) scale(0.97);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
 /* Tag 스타일 */
 .mood-tags-container {
     margin-top: 20px;
+}
+
+.tags-box{
+    padding: 10px;
 }
 
 .tags-list {
