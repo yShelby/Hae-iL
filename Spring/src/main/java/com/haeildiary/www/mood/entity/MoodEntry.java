@@ -1,6 +1,7 @@
 package com.haeildiary.www.mood.entity;
 
 import com.haeildiary.www.diary.entity.DiaryEntity;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,7 +15,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Entity
-@Table(name = "MoodEntries")
+@Table(name = "MoodEntry")
 public class MoodEntry {
 
     @Id

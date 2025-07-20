@@ -15,7 +15,7 @@ import {useLocation, useNavigate} from "react-router-dom";
 export const ScrollAnimationContext = createContext(null);
 
 // 페이지 경로의 순서를 명확하게 정의. 이 순서대로 스크롤 전환이 일어난다.
-const PAGE_ROUTES = ['/', '/diary', '/journal'];
+const PAGE_ROUTES = ['/', '/diary', '/calendar','/journal'];
 
 /**
  * 스크롤 애니메이션 상태를 제공하는 Provider 컴포넌트.

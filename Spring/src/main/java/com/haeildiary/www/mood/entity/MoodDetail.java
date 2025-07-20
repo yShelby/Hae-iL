@@ -1,6 +1,7 @@
 package com.haeildiary.www.mood.entity;
 
 import com.haeildiary.www.diary.entity.DiaryEntity;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

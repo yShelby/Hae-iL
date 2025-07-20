@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Outlet, useLocation} from 'react-router-dom';
+import {Outlet, useLocation , useParams } from 'react-router-dom';
 import { useWeeklyTimeline } from '@/hooks/useWeeklyTimeline.js';
 import { useCheckLogin } from '@/hooks/useCheckLogin.js';
 import { useNavigate } from 'react-router-dom';
@@ -18,6 +18,7 @@ import { pageVariants } from '@shared/animation/page-variants';
 import {useDiaryData} from "@/hooks/useDiaryData.js";
 
 const DiaryLayout = ({children}) => { // children(자식 comp) 추가
+    const { date : urlDate } = useParams(); // URL에서 날짜 추출
     const checkLogin = useCheckLogin();
    // const navigate = useNavigate();
     const location = useLocation(); // ✅ 페이지 이동 시 전달된 state를 받기 위해 추가
@@ -28,7 +29,7 @@ const DiaryLayout = ({children}) => { // children(자식 comp) 추가
         setSelectedDate,
         diaryForDate: initialDiary,
         isLoading: isDiaryLoading,
-        handleDateClick,   // 날짜 선택 시 네비게이션 및 상태 변경 포함
+        handleDateClick,   // 날짜 선택된     시 네비게이션 및 상태 변경 포함
         handleDiaryUpdated,
     } = useDiaryData();
 
@@ -39,6 +40,12 @@ const DiaryLayout = ({children}) => { // children(자식 comp) 추가
     const [selectedDiaryId, setSelectedDiaryId] = useState(null); // 선택된 일기 ID 상태
     const [emotionRefreshKey, setEmotionRefreshKey] = useState(0); // 감정 분석 새로고침 키
 
+    // URL에서 날짜가 있으면 selectedDate를 업데이트
+     useEffect(() => {
+             if (urlDate && urlDate !== selectedDate) {
+                 setSelectedDate(urlDate);
+             }
+         }, [urlDate, selectedDate, setSelectedDate]);
     const {
         data: timelineData,
         loading: timelineLoading,

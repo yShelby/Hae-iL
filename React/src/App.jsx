@@ -26,6 +26,7 @@ import ExerciseWidget from "@features/health/ExerciseWidget.jsx";
 import MealWidget from "@features/health/MealWidget.jsx";
 import {useVirtualScroll} from "@/hooks/useVirtualScroll.js";
 import {AnimatePresence} from "framer-motion";
+import Calendar from "@features/calendar/Calendar.jsx";
 
 /**
  * ✨ [추가] 애니메이션과 라우팅을 실제로 처리하는 내부 컴포넌트
@@ -65,6 +66,8 @@ const AnimatedRoutes = () => {
                     <Route path="gallery" element={<DiaryLayout/>}>
                         <Route index element={<GalleryPage/>}/>
                     </Route>
+                    {/* 캘린더 페이지 라우트 */}
+                    <Route path="calendar" element={<Calendar />} />
                 </Route>
             </Routes>
         </AnimatePresence>

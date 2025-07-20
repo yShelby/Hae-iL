@@ -14,9 +14,7 @@ export default function TimelineView({ data = [], selectedDate, onSelectDate, is
     const [showCalendar, setShowCalendar] = useState(false);
 
     // selectedDate가 없으면 오늘 날짜로 초기화
-    const baseDate = useMemo(() => {
-        return selectedDate ? new Date(selectedDate) : new Date();
-    }, [selectedDate]);
+    const baseDate = selectedDate ? new Date(selectedDate) : new Date();
 
     // 이번 주 월요일 기준
     const startOfWeek = getStartOfWeek(baseDate);
