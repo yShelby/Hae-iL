@@ -1,4 +1,8 @@
+<<<<<<<< HEAD:Spring/src/main/java/com/haeildiary/www/s3/dto/PresignedUrlDto.java
 package com.haeildiary.www.s3.dto;
+========
+package com.haeildairy.www.s3.dto;
+>>>>>>>> 6bc13512348a3a61e256c68c020ee317d3a728a3:Spring/src/main/java/com/haeildairy/www/s3/dto/PresignedUrlDto.java
 
 import lombok.Builder;
 import lombok.Getter;

@@ -1,7 +1,14 @@
+<<<<<<<< HEAD:Spring/src/main/java/com/haeildiary/www/dashboard/weather/controller/WeatherController.java
 package com.haeildiary.www.dashboard.weather.controller;
 
 import com.haeildiary.www.dashboard.weather.dto.WeatherDto;
 import com.haeildiary.www.dashboard.weather.service.WeatherService;
+========
+package com.haeildairy.www.dashboard.weather.controller;
+
+import com.haeildairy.www.dashboard.weather.dto.WeatherDto;
+import com.haeildairy.www.dashboard.weather.service.WeatherService;
+>>>>>>>> 6bc13512348a3a61e256c68c020ee317d3a728a3:Spring/src/main/java/com/haeildairy/www/dashboard/weather/controller/WeatherController.java
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

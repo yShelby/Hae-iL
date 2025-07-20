@@ -1,7 +1,14 @@
+<<<<<<<< HEAD:Spring/src/main/java/com/haeildiary/www/auth/repository/RefreshTokenRepository.java
 package com.haeildiary.www.auth.repository;
 
 import com.haeildiary.www.auth.entity.RefreshToken;
 import com.haeildiary.www.auth.entity.UserEntity;
+========
+package com.haeildairy.www.auth.repository;
+
+import com.haeildairy.www.auth.entity.RefreshToken;
+import com.haeildairy.www.auth.entity.UserEntity;
+>>>>>>>> 6bc13512348a3a61e256c68c020ee317d3a728a3:Spring/src/main/java/com/haeildairy/www/auth/repository/RefreshTokenRepository.java
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

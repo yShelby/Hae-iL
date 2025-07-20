@@ -1,3 +1,4 @@
+<<<<<<<< HEAD:Spring/src/main/java/com/haeildiary/www/timeline/service/TimelineService.java
 package com.haeildiary.www.timeline.service;
 
 import com.haeildiary.www.diary.repository.DiaryRepository;
@@ -5,6 +6,15 @@ import com.haeildiary.www.health.repository.ExerciseLogRepository;
 import com.haeildiary.www.health.repository.MealLogRepository;
 import com.haeildiary.www.health.repository.SleepLogRepository;
 import com.haeildiary.www.timeline.dto.TimelineDto;
+========
+package com.haeildairy.www.timeline.service;
+
+import com.haeildairy.www.diary.repository.DiaryRepository;
+import com.haeildairy.www.health.repository.ExerciseLogRepository;
+import com.haeildairy.www.health.repository.MealLogRepository;
+import com.haeildairy.www.health.repository.SleepLogRepository;
+import com.haeildairy.www.timeline.dto.TimelineDto;
+>>>>>>>> 6bc13512348a3a61e256c68c020ee317d3a728a3:Spring/src/main/java/com/haeildairy/www/timeline/service/TimelineService.java
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

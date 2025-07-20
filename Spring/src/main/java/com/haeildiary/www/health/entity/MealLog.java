@@ -1,6 +1,12 @@
+<<<<<<<< HEAD:Spring/src/main/java/com/haeildiary/www/health/entity/MealLog.java
 package com.haeildiary.www.health.entity;
 
 import com.haeildiary.www.auth.entity.UserEntity;
+========
+package com.haeildairy.www.health.entity;
+
+import com.haeildairy.www.auth.entity.UserEntity;
+>>>>>>>> 6bc13512348a3a61e256c68c020ee317d3a728a3:Spring/src/main/java/com/haeildairy/www/health/entity/MealLog.java
 import jakarta.persistence.*;
 import lombok.*;
 

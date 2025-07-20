@@ -11,7 +11,11 @@
 //    → ViewController가 요청을 "/" 경로(index.html)로 강제 포워딩
 //    → React Router가 클라이언트 라우팅 처리
 
+<<<<<<<< HEAD:Spring/src/main/java/com/haeildiary/www/common/WebConfig.java
 package com.haeildiary.www.common;
+========
+package com.haeildairy.www.common;
+>>>>>>>> 6bc13512348a3a61e256c68c020ee317d3a728a3:Spring/src/main/java/com/haeildairy/www/common/WebConfig.java
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;

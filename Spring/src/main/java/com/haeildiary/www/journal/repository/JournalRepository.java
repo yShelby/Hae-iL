@@ -1,8 +1,16 @@
+<<<<<<<< HEAD:Spring/src/main/java/com/haeildiary/www/journal/repository/JournalRepository.java
 package com.haeildiary.www.journal.repository;
 
 import com.haeildiary.www.auth.entity.UserEntity;
 import com.haeildiary.www.journal.entity.Category;
 import com.haeildiary.www.journal.entity.JournalEntity;
+========
+package com.haeildairy.www.journal.repository;
+
+import com.haeildairy.www.auth.entity.UserEntity;
+import com.haeildairy.www.journal.entity.Category;
+import com.haeildairy.www.journal.entity.JournalEntity;
+>>>>>>>> 6bc13512348a3a61e256c68c020ee317d3a728a3:Spring/src/main/java/com/haeildairy/www/journal/repository/JournalRepository.java
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

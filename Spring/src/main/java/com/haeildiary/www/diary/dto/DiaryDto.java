@@ -1,7 +1,14 @@
+<<<<<<<< HEAD:Spring/src/main/java/com/haeildiary/www/diary/dto/DiaryDto.java
 package com.haeildiary.www.diary.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.haeildiary.www.diary.entity.DiaryEntity;
+========
+package com.haeildairy.www.diary.dto;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.haeildairy.www.diary.entity.DiaryEntity;
+>>>>>>>> 6bc13512348a3a61e256c68c020ee317d3a728a3:Spring/src/main/java/com/haeildairy/www/diary/dto/DiaryDto.java
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;

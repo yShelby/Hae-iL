@@ -1,8 +1,16 @@
+<<<<<<<< HEAD:Spring/src/main/java/com/haeildiary/www/timeline/controller/TimelineController.java
 package com.haeildiary.www.timeline.controller;
 
 import com.haeildiary.www.auth.user.CustomUser;
 import com.haeildiary.www.timeline.dto.TimelineDto;
 import com.haeildiary.www.timeline.service.TimelineService;
+========
+package com.haeildairy.www.timeline.controller;
+
+import com.haeildairy.www.auth.user.CustomUser;
+import com.haeildairy.www.timeline.dto.TimelineDto;
+import com.haeildairy.www.timeline.service.TimelineService;
+>>>>>>>> 6bc13512348a3a61e256c68c020ee317d3a728a3:Spring/src/main/java/com/haeildairy/www/timeline/controller/TimelineController.java
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;

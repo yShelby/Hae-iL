@@ -1,3 +1,4 @@
+<<<<<<<< HEAD:Spring/src/main/java/com/haeildiary/www/health/service/SleepLogService.java
 package com.haeildiary.www.health.service;
 
 import com.haeildiary.www.auth.entity.UserEntity;
@@ -5,6 +6,15 @@ import com.haeildiary.www.auth.repository.UserRepository;
 import com.haeildiary.www.health.dto.SleepLogDto;
 import com.haeildiary.www.health.entity.SleepLog;
 import com.haeildiary.www.health.repository.SleepLogRepository;
+========
+package com.haeildairy.www.health.service;
+
+import com.haeildairy.www.auth.entity.UserEntity;
+import com.haeildairy.www.auth.repository.UserRepository;
+import com.haeildairy.www.health.dto.SleepLogDto;
+import com.haeildairy.www.health.entity.SleepLog;
+import com.haeildairy.www.health.repository.SleepLogRepository;
+>>>>>>>> 6bc13512348a3a61e256c68c020ee317d3a728a3:Spring/src/main/java/com/haeildairy/www/health/service/SleepLogService.java
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

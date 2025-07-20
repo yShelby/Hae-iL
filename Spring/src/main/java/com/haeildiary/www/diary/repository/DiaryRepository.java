@@ -1,7 +1,14 @@
+<<<<<<<< HEAD:Spring/src/main/java/com/haeildiary/www/diary/repository/DiaryRepository.java
 package com.haeildiary.www.diary.repository;
 
 import com.haeildiary.www.auth.entity.UserEntity;
 import com.haeildiary.www.diary.entity.DiaryEntity;
+========
+package com.haeildairy.www.diary.repository;
+
+import com.haeildairy.www.auth.entity.UserEntity;
+import com.haeildairy.www.diary.entity.DiaryEntity;
+>>>>>>>> 6bc13512348a3a61e256c68c020ee317d3a728a3:Spring/src/main/java/com/haeildairy/www/diary/repository/DiaryRepository.java
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

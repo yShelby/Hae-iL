@@ -1,7 +1,14 @@
+<<<<<<<< HEAD:Spring/src/main/java/com/haeildiary/www/journal/entity/JournalEntity.java
 package com.haeildiary.www.journal.entity;
 
 import com.haeildiary.www.auth.entity.UserEntity;
 import com.haeildiary.www.journal.dto.JournalRequestDto;
+========
+package com.haeildairy.www.journal.entity;
+
+import com.haeildairy.www.auth.entity.UserEntity;
+import com.haeildairy.www.journal.dto.JournalRequestDto;
+>>>>>>>> 6bc13512348a3a61e256c68c020ee317d3a728a3:Spring/src/main/java/com/haeildairy/www/journal/entity/JournalEntity.java
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;

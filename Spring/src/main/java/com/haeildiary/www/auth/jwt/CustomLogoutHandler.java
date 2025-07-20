@@ -1,6 +1,12 @@
+<<<<<<<< HEAD:Spring/src/main/java/com/haeildiary/www/auth/jwt/CustomLogoutHandler.java
 package com.haeildiary.www.auth.jwt;
 
 import com.haeildiary.www.auth.event.LogoutEvent; // LogoutEvent 임포트
+========
+package com.haeildairy.www.auth.jwt;
+
+import com.haeildairy.www.auth.event.LogoutEvent; // LogoutEvent 임포트
+>>>>>>>> 6bc13512348a3a61e256c68c020ee317d3a728a3:Spring/src/main/java/com/haeildairy/www/auth/jwt/CustomLogoutHandler.java
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;

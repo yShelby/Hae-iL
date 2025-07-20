@@ -1,8 +1,13 @@
+<<<<<<<< HEAD:Spring/src/main/java/com/haeildiary/www/diary/service/DiaryService.java
 package com.haeildiary.www.diary.service;
+========
+package com.haeildairy.www.diary.service;
+>>>>>>>> 6bc13512348a3a61e256c68c020ee317d3a728a3:Spring/src/main/java/com/haeildairy/www/diary/service/DiaryService.java
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+<<<<<<<< HEAD:Spring/src/main/java/com/haeildiary/www/diary/service/DiaryService.java
 import com.haeildiary.www.auth.entity.UserEntity;
 import com.haeildiary.www.auth.repository.UserRepository;
 import com.haeildiary.www.diary.dto.DiaryDto;
@@ -11,6 +16,16 @@ import com.haeildiary.www.diary.repository.DiaryRepository;
 import com.haeildiary.www.gallery.entity.GalleryEntity;
 import com.haeildiary.www.gallery.repository.GalleryRepository;
 import com.haeildiary.www.s3.service.S3Service;
+========
+import com.haeildairy.www.auth.entity.UserEntity;
+import com.haeildairy.www.auth.repository.UserRepository;
+import com.haeildairy.www.diary.dto.DiaryDto;
+import com.haeildairy.www.diary.entity.DiaryEntity;
+import com.haeildairy.www.diary.repository.DiaryRepository;
+import com.haeildairy.www.gallery.entity.GalleryEntity;
+import com.haeildairy.www.gallery.repository.GalleryRepository;
+import com.haeildairy.www.s3.service.S3Service;
+>>>>>>>> 6bc13512348a3a61e256c68c020ee317d3a728a3:Spring/src/main/java/com/haeildairy/www/diary/service/DiaryService.java
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

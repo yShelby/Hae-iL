@@ -1,3 +1,4 @@
+<<<<<<<< HEAD:Spring/src/main/java/com/haeildiary/www/auth/service/UserService.java
 package com.haeildiary.www.auth.service;
 
 import com.haeildiary.www.auth.config.AESUtil;
@@ -9,6 +10,19 @@ import com.haeildiary.www.auth.repository.RefreshTokenRepository;
 import com.haeildiary.www.auth.repository.UserRepository;
 import com.haeildiary.www.auth.user.UserStatus;
 import com.haeildiary.www.s3.service.S3Service; // S3Service 임포트 추가
+========
+package com.haeildairy.www.auth.service;
+
+import com.haeildairy.www.auth.config.AESUtil;
+import com.haeildairy.www.auth.dto.RegisterRequestDto;
+import com.haeildairy.www.auth.entity.RefreshToken;
+import com.haeildairy.www.auth.entity.UserEntity;
+import com.haeildairy.www.auth.jwt.JwtProvider;
+import com.haeildairy.www.auth.repository.RefreshTokenRepository;
+import com.haeildairy.www.auth.repository.UserRepository;
+import com.haeildairy.www.auth.user.UserStatus;
+import com.haeildairy.www.s3.service.S3Service; // S3Service 임포트 추가
+>>>>>>>> 6bc13512348a3a61e256c68c020ee317d3a728a3:Spring/src/main/java/com/haeildairy/www/auth/service/UserService.java
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;

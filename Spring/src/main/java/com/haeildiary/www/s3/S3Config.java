@@ -1,4 +1,8 @@
+<<<<<<<< HEAD:Spring/src/main/java/com/haeildiary/www/s3/S3Config.java
 package com.haeildiary.www.s3;
+========
+package com.haeildairy.www.s3;
+>>>>>>>> 6bc13512348a3a61e256c68c020ee317d3a728a3:Spring/src/main/java/com/haeildairy/www/s3/S3Config.java
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

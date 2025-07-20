@@ -9,7 +9,11 @@
 //   📍 4. 상태 코드가 404면 index.html로 렌더링 (SPA 라우팅 유지)
 //   📍 5. 그 외 상태는 error.html 등 기본 에러 페이지로 이동
 
+<<<<<<<< HEAD:Spring/src/main/java/com/haeildiary/www/common/controller/SpaErrorController.java
 package com.haeildiary.www.common.controller;
+========
+package com.haeildairy.www.common.controller;
+>>>>>>>> 6bc13512348a3a61e256c68c020ee317d3a728a3:Spring/src/main/java/com/haeildairy/www/common/controller/SpaErrorController.java
 
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.http.HttpServletRequest;

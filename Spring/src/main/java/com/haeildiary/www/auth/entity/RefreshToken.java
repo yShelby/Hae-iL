@@ -1,4 +1,8 @@
+<<<<<<<< HEAD:Spring/src/main/java/com/haeildiary/www/auth/entity/RefreshToken.java
 package com.haeildiary.www.auth.entity;
+========
+package com.haeildairy.www.auth.entity;
+>>>>>>>> 6bc13512348a3a61e256c68c020ee317d3a728a3:Spring/src/main/java/com/haeildairy/www/auth/entity/RefreshToken.java
 
 import jakarta.persistence.*;
 import lombok.Builder;

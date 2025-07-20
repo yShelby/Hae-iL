@@ -1,8 +1,16 @@
+<<<<<<<< HEAD:Spring/src/main/java/com/haeildiary/www/auth/service/MyUserDetailService.java
 package com.haeildiary.www.auth.service;
 
 import com.haeildiary.www.auth.entity.UserEntity;
 import com.haeildiary.www.auth.repository.UserRepository;
 import com.haeildiary.www.auth.user.CustomUser;
+========
+package com.haeildairy.www.auth.service;
+
+import com.haeildairy.www.auth.entity.UserEntity;
+import com.haeildairy.www.auth.repository.UserRepository;
+import com.haeildairy.www.auth.user.CustomUser;
+>>>>>>>> 6bc13512348a3a61e256c68c020ee317d3a728a3:Spring/src/main/java/com/haeildairy/www/auth/service/MyUserDetailService.java
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
@@ -15,7 +23,11 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
+<<<<<<<< HEAD:Spring/src/main/java/com/haeildiary/www/auth/service/MyUserDetailService.java
 import com.haeildiary.www.auth.user.UserStatus;
+========
+import com.haeildairy.www.auth.user.UserStatus;
+>>>>>>>> 6bc13512348a3a61e256c68c020ee317d3a728a3:Spring/src/main/java/com/haeildairy/www/auth/service/MyUserDetailService.java
 
 /**
  * 📂 MyUserDetailService.java

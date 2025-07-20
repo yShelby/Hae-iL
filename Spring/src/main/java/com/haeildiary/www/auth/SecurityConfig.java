@@ -20,10 +20,17 @@
 //     * 401 Unauthorized 응답 반환 대신 need-login 페이지로 리다이렉트로 변경하여
 //        실제 동작을 반영
 
+<<<<<<<< HEAD:Spring/src/main/java/com/haeildiary/www/auth/SecurityConfig.java
 package com.haeildiary.www.auth;
 
 import com.haeildiary.www.auth.jwt.CustomLogoutHandler;
 import com.haeildiary.www.auth.jwt.JwtAuthenticationFilter;
+========
+package com.haeildairy.www.auth;
+
+import com.haeildairy.www.auth.jwt.CustomLogoutHandler;
+import com.haeildairy.www.auth.jwt.JwtAuthenticationFilter;
+>>>>>>>> 6bc13512348a3a61e256c68c020ee317d3a728a3:Spring/src/main/java/com/haeildairy/www/auth/SecurityConfig.java
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

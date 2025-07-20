@@ -1,3 +1,4 @@
+<<<<<<<< HEAD:Spring/src/main/java/com/haeildiary/www/journal/service/JournalService.java
 package com.haeildiary.www.journal.service;
 
 import com.haeildiary.www.auth.entity.UserEntity;
@@ -7,6 +8,17 @@ import com.haeildiary.www.journal.dto.JournalResponseDto;
 import com.haeildiary.www.journal.entity.Category;
 import com.haeildiary.www.journal.entity.JournalEntity;
 import com.haeildiary.www.journal.repository.JournalRepository;
+========
+package com.haeildairy.www.journal.service;
+
+import com.haeildairy.www.auth.entity.UserEntity;
+import com.haeildairy.www.auth.repository.UserRepository;
+import com.haeildairy.www.journal.dto.JournalRequestDto;
+import com.haeildairy.www.journal.dto.JournalResponseDto;
+import com.haeildairy.www.journal.entity.Category;
+import com.haeildairy.www.journal.entity.JournalEntity;
+import com.haeildairy.www.journal.repository.JournalRepository;
+>>>>>>>> 6bc13512348a3a61e256c68c020ee317d3a728a3:Spring/src/main/java/com/haeildairy/www/journal/service/JournalService.java
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;

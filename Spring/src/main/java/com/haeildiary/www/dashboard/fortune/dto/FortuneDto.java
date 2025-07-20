@@ -1,4 +1,8 @@
+<<<<<<<< HEAD:Spring/src/main/java/com/haeildiary/www/dashboard/fortune/dto/FortuneDto.java
 package com.haeildiary.www.dashboard.fortune.dto;
+========
+package com.haeildairy.www.dashboard.fortune.dto;
+>>>>>>>> 6bc13512348a3a61e256c68c020ee317d3a728a3:Spring/src/main/java/com/haeildairy/www/dashboard/fortune/dto/FortuneDto.java
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

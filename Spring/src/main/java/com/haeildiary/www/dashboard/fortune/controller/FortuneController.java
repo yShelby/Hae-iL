@@ -1,8 +1,16 @@
+<<<<<<<< HEAD:Spring/src/main/java/com/haeildiary/www/dashboard/fortune/controller/FortuneController.java
 package com.haeildiary.www.dashboard.fortune.controller;
 
 import com.haeildiary.www.auth.user.CustomUser;
 import com.haeildiary.www.dashboard.fortune.dto.FortuneDto;
 import com.haeildiary.www.dashboard.fortune.service.FortuneService;
+========
+package com.haeildairy.www.dashboard.fortune.controller;
+
+import com.haeildairy.www.auth.user.CustomUser;
+import com.haeildairy.www.dashboard.fortune.dto.FortuneDto;
+import com.haeildairy.www.dashboard.fortune.service.FortuneService;
+>>>>>>>> 6bc13512348a3a61e256c68c020ee317d3a728a3:Spring/src/main/java/com/haeildairy/www/dashboard/fortune/controller/FortuneController.java
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

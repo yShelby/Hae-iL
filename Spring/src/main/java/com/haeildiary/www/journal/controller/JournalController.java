@@ -1,9 +1,18 @@
+<<<<<<<< HEAD:Spring/src/main/java/com/haeildiary/www/journal/controller/JournalController.java
 package com.haeildiary.www.journal.controller;
 
 import com.haeildiary.www.auth.user.CustomUser;
 import com.haeildiary.www.journal.dto.JournalRequestDto;
 import com.haeildiary.www.journal.dto.JournalResponseDto;
 import com.haeildiary.www.journal.service.JournalService;
+========
+package com.haeildairy.www.journal.controller;
+
+import com.haeildairy.www.auth.user.CustomUser;
+import com.haeildairy.www.journal.dto.JournalRequestDto;
+import com.haeildairy.www.journal.dto.JournalResponseDto;
+import com.haeildairy.www.journal.service.JournalService;
+>>>>>>>> 6bc13512348a3a61e256c68c020ee317d3a728a3:Spring/src/main/java/com/haeildairy/www/journal/controller/JournalController.java
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

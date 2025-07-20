@@ -12,10 +12,17 @@
 // 4️⃣ 🗂️ 조회/수정 시 이 엔티티를 통해 데이터 매핑됨
 // 5️⃣ ✏️ 수정 시 updatedAt 자동 변경됨
 
+<<<<<<<< HEAD:Spring/src/main/java/com/haeildiary/www/diary/entity/DiaryEntity.java
 package com.haeildiary.www.diary.entity;
 
 import com.haeildiary.www.auth.entity.UserEntity;
 import com.haeildiary.www.emotion.entity.MoodEntry;
+========
+package com.haeildairy.www.diary.entity;
+
+import com.haeildairy.www.auth.entity.UserEntity;
+import com.haeildairy.www.emotion.entity.MoodEntry;
+>>>>>>>> 6bc13512348a3a61e256c68c020ee317d3a728a3:Spring/src/main/java/com/haeildairy/www/diary/entity/DiaryEntity.java
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;

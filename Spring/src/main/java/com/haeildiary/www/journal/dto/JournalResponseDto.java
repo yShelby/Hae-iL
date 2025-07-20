@@ -1,6 +1,12 @@
+<<<<<<<< HEAD:Spring/src/main/java/com/haeildiary/www/journal/dto/JournalResponseDto.java
 package com.haeildiary.www.journal.dto;
 
 import com.haeildiary.www.journal.entity.JournalEntity;
+========
+package com.haeildairy.www.journal.dto;
+
+import com.haeildairy.www.journal.entity.JournalEntity;
+>>>>>>>> 6bc13512348a3a61e256c68c020ee317d3a728a3:Spring/src/main/java/com/haeildairy/www/journal/dto/JournalResponseDto.java
 import lombok.Getter;
 
 import java.time.LocalDate;

@@ -1,8 +1,16 @@
+<<<<<<<< HEAD:Spring/src/main/java/com/haeildiary/www/diary/controller/DiaryController.java
 package com.haeildiary.www.diary.controller;
 
 import com.haeildiary.www.auth.user.CustomUser;
 import com.haeildiary.www.diary.dto.DiaryDto;
 import com.haeildiary.www.diary.service.DiaryService;
+========
+package com.haeildairy.www.diary.controller;
+
+import com.haeildairy.www.auth.user.CustomUser;
+import com.haeildairy.www.diary.dto.DiaryDto;
+import com.haeildairy.www.diary.service.DiaryService;
+>>>>>>>> 6bc13512348a3a61e256c68c020ee317d3a728a3:Spring/src/main/java/com/haeildairy/www/diary/controller/DiaryController.java
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;

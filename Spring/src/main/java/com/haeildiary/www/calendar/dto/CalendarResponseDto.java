@@ -1,4 +1,8 @@
+<<<<<<<< HEAD:Spring/src/main/java/com/haeildiary/www/calendar/dto/CalendarResponseDto.java
 package com.haeildiary.www.calendar.dto;
+========
+package com.haeildairy.www.calendar.dto;
+>>>>>>>> 6bc13512348a3a61e256c68c020ee317d3a728a3:Spring/src/main/java/com/haeildairy/www/calendar/dto/CalendarResponseDto.java
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

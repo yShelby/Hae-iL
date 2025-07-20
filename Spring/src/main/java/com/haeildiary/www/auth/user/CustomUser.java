@@ -1,4 +1,8 @@
+<<<<<<<< HEAD:Spring/src/main/java/com/haeildiary/www/auth/user/CustomUser.java
 package com.haeildiary.www.auth.user; // CustomUser가 service 패키지에 있다고 가정
+========
+package com.haeildairy.www.auth.user; // CustomUser가 service 패키지에 있다고 가정
+>>>>>>>> 6bc13512348a3a61e256c68c020ee317d3a728a3:Spring/src/main/java/com/haeildairy/www/auth/user/CustomUser.java
 
 import lombok.Getter;
 import lombok.Setter;

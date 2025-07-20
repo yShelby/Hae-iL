@@ -1,3 +1,4 @@
+<<<<<<<< HEAD:Spring/src/main/java/com/haeildiary/www/timeline/dto/TimelineDto.java
 package com.haeildiary.www.timeline.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -5,6 +6,15 @@ import com.haeildiary.www.diary.entity.DiaryEntity;
 import com.haeildiary.www.health.entity.ExerciseLog;
 import com.haeildiary.www.health.entity.MealLog;
 import com.haeildiary.www.health.entity.SleepLog;
+========
+package com.haeildairy.www.timeline.dto;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.haeildairy.www.diary.entity.DiaryEntity;
+import com.haeildairy.www.health.entity.ExerciseLog;
+import com.haeildairy.www.health.entity.MealLog;
+import com.haeildairy.www.health.entity.SleepLog;
+>>>>>>>> 6bc13512348a3a61e256c68c020ee317d3a728a3:Spring/src/main/java/com/haeildairy/www/timeline/dto/TimelineDto.java
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

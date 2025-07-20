@@ -1,7 +1,14 @@
+<<<<<<<< HEAD:Spring/src/main/java/com/haeildiary/www/gallery/dto/GalleryDto.java
 package com.haeildiary.www.gallery.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.haeildiary.www.gallery.entity.GalleryEntity;
+========
+package com.haeildairy.www.gallery.dto;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.haeildairy.www.gallery.entity.GalleryEntity;
+>>>>>>>> 6bc13512348a3a61e256c68c020ee317d3a728a3:Spring/src/main/java/com/haeildairy/www/gallery/dto/GalleryDto.java
 import lombok.Builder;
 import lombok.Getter;
 

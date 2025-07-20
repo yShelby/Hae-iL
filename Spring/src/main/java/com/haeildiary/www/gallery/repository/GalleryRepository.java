@@ -1,7 +1,14 @@
+<<<<<<<< HEAD:Spring/src/main/java/com/haeildiary/www/gallery/repository/GalleryRepository.java
 package com.haeildiary.www.gallery.repository;
 
 import com.haeildiary.www.auth.entity.UserEntity;
 import com.haeildiary.www.gallery.entity.GalleryEntity;
+========
+package com.haeildairy.www.gallery.repository;
+
+import com.haeildairy.www.auth.entity.UserEntity;
+import com.haeildairy.www.gallery.entity.GalleryEntity;
+>>>>>>>> 6bc13512348a3a61e256c68c020ee317d3a728a3:Spring/src/main/java/com/haeildairy/www/gallery/repository/GalleryRepository.java
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 import java.util.Optional;

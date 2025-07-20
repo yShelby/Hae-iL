@@ -1,6 +1,12 @@
+<<<<<<<< HEAD:Spring/src/main/java/com/haeildiary/www/s3/service/S3Service.java
 package com.haeildiary.www.s3.service;
 
 import com.haeildiary.www.s3.dto.PresignedUrlDto;
+========
+package com.haeildairy.www.s3.service;
+
+import com.haeildairy.www.s3.dto.PresignedUrlDto;
+>>>>>>>> 6bc13512348a3a61e256c68c020ee317d3a728a3:Spring/src/main/java/com/haeildairy/www/s3/service/S3Service.java
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;

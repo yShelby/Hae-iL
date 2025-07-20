@@ -1,4 +1,8 @@
+<<<<<<<< HEAD:Spring/src/main/java/com/haeildiary/www/auth/service/PhoneStatus.java
 package com.haeildiary.www.auth.service;
+========
+package com.haeildairy.www.auth.service;
+>>>>>>>> 6bc13512348a3a61e256c68c020ee317d3a728a3:Spring/src/main/java/com/haeildairy/www/auth/service/PhoneStatus.java
 
 public enum PhoneStatus {
     AVAILABLE("사용 가능한 전화번호입니다."),

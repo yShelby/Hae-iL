@@ -1,6 +1,12 @@
+<<<<<<<< HEAD:Spring/src/main/java/com/haeildiary/www/health/dto/ExerciseLogDto.java
 package com.haeildiary.www.health.dto;
 
 import com.haeildiary.www.health.entity.ExerciseLog;
+========
+package com.haeildairy.www.health.dto;
+
+import com.haeildairy.www.health.entity.ExerciseLog;
+>>>>>>>> 6bc13512348a3a61e256c68c020ee317d3a728a3:Spring/src/main/java/com/haeildairy/www/health/dto/ExerciseLogDto.java
 import lombok.*;
 
 import java.time.LocalDate;

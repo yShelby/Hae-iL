@@ -1,7 +1,14 @@
+<<<<<<<< HEAD:Spring/src/main/java/com/haeildiary/www/gallery/entity/GalleryEntity.java
 package com.haeildiary.www.gallery.entity;
 
 import com.haeildiary.www.auth.entity.UserEntity;
 import com.haeildiary.www.diary.entity.DiaryEntity;
+========
+package com.haeildairy.www.gallery.entity;
+
+import com.haeildairy.www.auth.entity.UserEntity;
+import com.haeildairy.www.diary.entity.DiaryEntity;
+>>>>>>>> 6bc13512348a3a61e256c68c020ee317d3a728a3:Spring/src/main/java/com/haeildairy/www/gallery/entity/GalleryEntity.java
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;

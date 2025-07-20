@@ -1,6 +1,12 @@
+<<<<<<<< HEAD:Spring/src/main/java/com/haeildiary/www/health/dto/MealLogDto.java
 package com.haeildiary.www.health.dto;
 
 import com.haeildiary.www.health.entity.MealLog;
+========
+package com.haeildairy.www.health.dto;
+
+import com.haeildairy.www.health.entity.MealLog;
+>>>>>>>> 6bc13512348a3a61e256c68c020ee317d3a728a3:Spring/src/main/java/com/haeildairy/www/health/dto/MealLogDto.java
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 

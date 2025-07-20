@@ -1,4 +1,8 @@
+<<<<<<<< HEAD:Spring/src/main/java/com/haeildiary/www/auth/controller/AuthController.java
 package com.haeildiary.www.auth.controller;
+========
+package com.haeildairy.www.auth.controller;
+>>>>>>>> 6bc13512348a3a61e256c68c020ee317d3a728a3:Spring/src/main/java/com/haeildairy/www/auth/controller/AuthController.java
 
 /**
  * 📂 AuthController.java
@@ -19,6 +23,7 @@ package com.haeildiary.www.auth.controller;
  * 8️⃣ Access Token 재발급 → Refresh Token 검증 → 새 토큰 발급
  */
 
+<<<<<<<< HEAD:Spring/src/main/java/com/haeildiary/www/auth/controller/AuthController.java
 import com.haeildiary.www.auth.dto.ChangePWRequestDto;
 import com.haeildiary.www.auth.dto.FindPWRequestDto;
 import com.haeildiary.www.auth.dto.LoginRequestDto;
@@ -28,6 +33,17 @@ import com.haeildiary.www.auth.service.*;
 import com.haeildiary.www.auth.jwt.JwtProvider;
 import com.haeildiary.www.auth.service.*;
 import com.haeildiary.www.auth.user.CustomUser;
+========
+import com.haeildairy.www.auth.dto.ChangePWRequestDto;
+import com.haeildairy.www.auth.dto.FindPWRequestDto;
+import com.haeildairy.www.auth.dto.LoginRequestDto;
+import com.haeildairy.www.auth.dto.RegisterRequestDto;
+import com.haeildairy.www.auth.entity.UserEntity;
+import com.haeildairy.www.auth.service.*;
+import com.haeildairy.www.auth.service.*;
+import com.haeildairy.www.auth.jwt.JwtProvider;
+import com.haeildairy.www.auth.user.CustomUser;
+>>>>>>>> 6bc13512348a3a61e256c68c020ee317d3a728a3:Spring/src/main/java/com/haeildairy/www/auth/controller/AuthController.java
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;

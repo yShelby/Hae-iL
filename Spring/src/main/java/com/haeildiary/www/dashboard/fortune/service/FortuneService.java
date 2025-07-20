@@ -1,3 +1,4 @@
+<<<<<<<< HEAD:Spring/src/main/java/com/haeildiary/www/dashboard/fortune/service/FortuneService.java
 package com.haeildiary.www.dashboard.fortune.service;
 
 import com.haeildiary.www.auth.entity.UserEntity;
@@ -5,6 +6,15 @@ import com.haeildiary.www.auth.repository.UserRepository;
 import com.haeildiary.www.dashboard.fortune.dto.FortuneDto;
 import com.haeildiary.www.dashboard.fortune.entity.FortuneEntity;
 import com.haeildiary.www.dashboard.fortune.repository.FortuneRepository;
+========
+package com.haeildairy.www.dashboard.fortune.service;
+
+import com.haeildairy.www.auth.entity.UserEntity;
+import com.haeildairy.www.auth.repository.UserRepository;
+import com.haeildairy.www.dashboard.fortune.dto.FortuneDto;
+import com.haeildairy.www.dashboard.fortune.entity.FortuneEntity;
+import com.haeildairy.www.dashboard.fortune.repository.FortuneRepository;
+>>>>>>>> 6bc13512348a3a61e256c68c020ee317d3a728a3:Spring/src/main/java/com/haeildairy/www/dashboard/fortune/service/FortuneService.java
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

@@ -1,7 +1,14 @@
+<<<<<<<< HEAD:Spring/src/main/java/com/haeildiary/www/s3/controller/S3Controller.java
 package com.haeildiary.www.s3.controller;
 
 import com.haeildiary.www.s3.dto.PresignedUrlDto;
 import com.haeildiary.www.s3.service.S3Service;
+========
+package com.haeildairy.www.s3.controller;
+
+import com.haeildairy.www.s3.dto.PresignedUrlDto;
+import com.haeildairy.www.s3.service.S3Service;
+>>>>>>>> 6bc13512348a3a61e256c68c020ee317d3a728a3:Spring/src/main/java/com/haeildairy/www/s3/controller/S3Controller.java
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

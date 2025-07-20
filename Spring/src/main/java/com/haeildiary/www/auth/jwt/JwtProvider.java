@@ -12,10 +12,17 @@
 // 4️⃣ 토큰 검증 → 사용자 정보 조회 → SecurityContext에 등록
 // 5️⃣ 만료된 토큰인 경우에도 extractToken()을 통해 Claims는 추출 가능
 
+<<<<<<<< HEAD:Spring/src/main/java/com/haeildiary/www/auth/jwt/JwtProvider.java
 package com.haeildiary.www.auth.jwt;
 
 import com.haeildiary.www.auth.user.CustomUser;
 import com.haeildiary.www.auth.service.MyUserDetailService;
+========
+package com.haeildairy.www.auth.jwt;
+
+import com.haeildairy.www.auth.user.CustomUser;
+import com.haeildairy.www.auth.service.MyUserDetailService;
+>>>>>>>> 6bc13512348a3a61e256c68c020ee317d3a728a3:Spring/src/main/java/com/haeildairy/www/auth/jwt/JwtProvider.java
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
