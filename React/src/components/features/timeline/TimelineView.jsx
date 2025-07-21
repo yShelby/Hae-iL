@@ -5,11 +5,14 @@ import ko from 'date-fns/locale/ko'; // 🇰🇷 한글 로케일
 import 'react-datepicker/dist/react-datepicker.css';
 import '../timeline/css/TimelineView.css'
 import {useCheckLogin} from "@/hooks/useCheckLogin.js";
+import {useNavigate} from "react-router-dom";
 
 registerLocale('ko', ko); // 로케일 등록
 
 export default function TimelineView({ data = [], selectedDate, onSelectDate, isLoggedIn }) {
     const checkLogin = useCheckLogin();
+    const navigate = useNavigate(); // [추가]
+
     // 내부 상태: 달력 UI 표시 여부 제어
     const [showCalendar, setShowCalendar] = useState(false);
 
@@ -47,17 +50,23 @@ export default function TimelineView({ data = [], selectedDate, onSelectDate, is
     const handleDateClick = (date) => {
         if (!checkLogin()) return; // 로그인 안되어 있으면 알림만 띄움
         onSelectDate && onSelectDate(date);
+        // [추가] 'fade' 애니메이션을 지정하여 다이어리 작성 페이지로 이동
+        navigate(`/diary/date/${date}`, { state: { animationType: 'fade' } });
     };
 
     // 이전 주, 다음 주 이동
     const handlePrevWeek = () => {
         const prevWeekDate = addDays(startOfWeek, -7);
         onSelectDate && onSelectDate(formatDateToString(prevWeekDate));
+        // [추가] 'slideRight' 애니메이션을 지정(콘텐츠가 오른쪽에서 나타남)
+        navigate(`/diary/date/${prevWeekDate}`, { state: { animationType: 'slideRight' } });
     };
 
     const handleNextWeek = () => {
         const nextWeekDate = addDays(startOfWeek, 7);
         onSelectDate && onSelectDate(formatDateToString(nextWeekDate));
+        // [추가] 'slideLeft' 애니메이션을 지정(콘텐츠가 왼쪽에서 나타남)
+        navigate(`/diary/date/${nextWeekDate}`, { state: { animationType: 'slideLeft' } });
     };
 
     // 달력에서 날짜 선택 시 처리
@@ -65,6 +74,8 @@ export default function TimelineView({ data = [], selectedDate, onSelectDate, is
         if (!date) return;
         setShowCalendar(false);
         onSelectDate && onSelectDate(formatDateToString(date));
+        // [추가] 달력에서 날짜 선택 시에도 'fade' 애니메이션을 적용
+        navigate(`/diary/date/${date}`, { state: { animationType: 'fade' } });
     };
 
     return (

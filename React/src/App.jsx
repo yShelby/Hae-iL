@@ -24,9 +24,9 @@ import {QuestionProvider} from "@shared/context/QuestionContext.jsx";
 import SleepWidget from "@features/health/SleepWidget.jsx";
 import ExerciseWidget from "@features/health/ExerciseWidget.jsx";
 import MealWidget from "@features/health/MealWidget.jsx";
-// import {useVirtualScroll} from "@/hooks/useVirtualScroll.js";
 import {AnimatePresence} from "framer-motion";
 import Calendar from "@features/calendar/Calendar.jsx";
+import AnimationLayout from "@/layouts/AnimationLayout.jsx";
 
 /**
  * ✨ [추가] 애니메이션과 라우팅을 실제로 처리하는 내부 컴포넌트
@@ -45,9 +45,9 @@ const AnimatedRoutes = () => {
             window.haeIlHistory.navigate = navigate;
         }
     }, [navigate]); // navigate 함수가 변경될 때만 다시 실행된다(일반적으로는 한 번만 실행).
-    
-    // 가상 스크롤 훅을 호출하여 이 컴포넌트가 렌더링될 때 스크롤 제어를 활성화
-    // useVirtualScroll();
+
+    // [추가] AnimatePresence가 최상위 경로 변경(예: /diary -> /journal)에만 반응하도록 key를 수정
+    const topLevelKey = location.pathname.split('/')[1] || 'root';
 
     return (
         // AnimatePresence는 자식 컴포넌트가 DOM에서 제거될 때 퇴장 애니메이션을 실행 가능
@@ -59,25 +59,28 @@ const AnimatedRoutes = () => {
               반드시 key가 변경되어야 합니다. location.pathname은 URL이 바뀔 때마다
               고유한 값을 가지므로 key로 사용하기에 적합
             */}
-            <Routes location={location} key={location.pathname}>
+            <Routes location={location} key={topLevelKey}>
                 <Route path="/" element={<MainLayout/>}>
-                    <Route path={""} element={<DashboardLayout/>}>
-                        <Route index element={<DashboardPage/>}/>
+                    <Route element={<AnimationLayout/>}>
+                        <Route path={""} element={<DashboardLayout/>}>
+                            <Route index element={<DashboardPage/>}/>
+                        </Route>
+
+                        <Route path="diary" element={<DiaryLayout/>}>
+                            <Route index element={<DiaryWritePage/>}/>
+                            <Route path="date/:date" element={<DiaryDatePage/>}/>
+                            <Route path=":diaryId" element={<DiaryIdPage/>}/>
+                            <Route path="sleep/date/:date" element={<SleepWidget />} />
+                            <Route path="exercise/date/:date" element={<ExerciseWidget />} />
+                            <Route path="meal/date/:date" element={<MealWidget/>} />
+                        </Route>
+
+                        <Route path="journal" element={<JournalPage/>}/>
+                        <Route path="gallery" element={<DiaryLayout/>}>
+                            <Route index element={<GalleryPage/>}/>
+                        </Route>
+                        <Route path="calendar" element={<Calendar/>}/>
                     </Route>
-                    <Route path="diary" element={<DiaryLayout/>}>
-                        <Route index element={<DiaryWritePage/>}/>
-                        <Route path="date/:date" element={<DiaryDatePage/>}/>
-                        <Route path=":diaryId" element={<DiaryIdPage/>}/>
-                        <Route path="sleep/date/:date" element={<SleepWidget />} />
-                        <Route path="exercise/date/:date" element={<ExerciseWidget />} />
-                        <Route path="meal/date/:date" element={<MealWidget/>} />
-                    </Route>
-                    <Route path="journal" element={<JournalPage/>}/>
-                    <Route path="gallery" element={<DiaryLayout/>}>
-                        <Route index element={<GalleryPage/>}/>
-                    </Route>
-                    {/* 캘린더 페이지 라우트 */}
-                    <Route path="calendar" element={<Calendar />} />
                 </Route>
             </Routes>
         </AnimatePresence>
@@ -115,7 +118,7 @@ function App() {
             {/*        </Route>*/}
             {/*    </Route>*/}
             {/*</Routes>*/}
-            <AnimatedRoutes />
+            <AnimatedRoutes/>
         </QuestionProvider>
     );
 }

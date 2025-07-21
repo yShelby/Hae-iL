@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from 'react';
-import {Outlet, useLocation , useParams } from 'react-router-dom';
-import { useWeeklyTimeline } from '@/hooks/useWeeklyTimeline.js';
-import { useCheckLogin } from '@/hooks/useCheckLogin.js';
-import { useNavigate } from 'react-router-dom';
+import {Outlet, Route, Routes, useLocation, useParams} from 'react-router-dom';
+import {useWeeklyTimeline} from '@/hooks/useWeeklyTimeline.js';
+import {useCheckLogin} from '@/hooks/useCheckLogin.js';
+import {useNavigate} from 'react-router-dom';
 import TimelineView from "@features/timeline/TimelineView.jsx";
 import ExerciseWidget from "@features/health/ExerciseWidget.jsx";
 import SleepWidget from "@features/health/SleepWidget.jsx";
@@ -13,15 +13,19 @@ import './css/DiaryLayout.css';
 import MoodPage from "@pages/MoodPage.jsx";
 import {fetchDiaryByDateAPI} from "@api/diaryApi.js";
 import {formatDateToString} from "@shared/utils/dateUtils.js";
-import { motion as Motion } from 'framer-motion';
-import { pageVariants } from '@shared/animation/page-variants';
+import {AnimatePresence, motion as Motion} from 'framer-motion';
 import {useDiaryData} from "@/hooks/useDiaryData.js";
+import {usePageAnimation} from "@/hooks/usePageAnimation.js";
+import DiaryIdPage from "@pages/DiaryIdPage.jsx";
+import DiaryDatePage from "@pages/DiaryDatePage.jsx";
+import DiaryWritePage from "@pages/DiaryWritePage.jsx";
 
 const DiaryLayout = ({children}) => { // children(자식 comp) 추가
-    const { date : urlDate } = useParams(); // URL에서 날짜 추출
+    const {date: urlDate} = useParams(); // URL에서 날짜 추출
     const checkLogin = useCheckLogin();
-   // const navigate = useNavigate();
+    // const navigate = useNavigate();
     const location = useLocation(); // ✅ 페이지 이동 시 전달된 state를 받기 위해 추가
+
     // useDiaryData 훅에서 상태/함수 가져오기
     const {
         user,
@@ -40,12 +44,16 @@ const DiaryLayout = ({children}) => { // children(자식 comp) 추가
     const [selectedDiaryId, setSelectedDiaryId] = useState(null); // 선택된 일기 ID 상태
     const [emotionRefreshKey, setEmotionRefreshKey] = useState(0); // 감정 분석 새로고침 키
 
+    // [추가] 내부 콘텐츠 애니메이션을 위한 훅 호출
+    const animationProps = usePageAnimation();
+    const {key, ...restAnimationProps} = animationProps; // key 분리
+
     // URL에서 날짜가 있으면 selectedDate를 업데이트
-     useEffect(() => {
-             if (urlDate && urlDate !== selectedDate) {
-                 setSelectedDate(urlDate);
-             }
-         }, [urlDate, selectedDate, setSelectedDate]);
+    useEffect(() => {
+        if (urlDate && urlDate !== selectedDate) {
+            setSelectedDate(urlDate);
+        }
+    }, [urlDate, selectedDate, setSelectedDate]);
     const {
         data: timelineData,
         loading: timelineLoading,
@@ -75,13 +83,7 @@ const DiaryLayout = ({children}) => { // children(자식 comp) 추가
         handleDiaryUpdated();
     };
     return (
-        <Motion.main
-            className="main-content three-column-layout"
-            variants={pageVariants}
-            initial="initial"
-            animate="animate"
-            exit="exit"
-        >
+        <main className="main-content three-column-layout">
             {/* 좌측 사이드바 */}
             <aside className="left-sidebar">
                 <div className="emotion-analysis">
@@ -91,7 +93,7 @@ const DiaryLayout = ({children}) => { // children(자식 comp) 추가
                     />
                 </div>
                 <div className="sidebar-gallery">
-                    <GalleryThumbnail />
+                    <GalleryThumbnail/>
                 </div>
             </aside>
 
@@ -113,14 +115,20 @@ const DiaryLayout = ({children}) => { // children(자식 comp) 추가
                         - 이 컨테이너 안에서만 렌더링되고 스크롤되도록 하기 위함
                 */}
                 <div className="outlet-container">
-                <Outlet context={{
-                    initialDiary,
-                    setSelectedDiaryId,
-                    selectedDate, // ✅ 추가: 자식 컴포넌트(DiaryWritePage)가 현재 날짜를 알 수 있도록 전달
-                    isLoading: isDiaryLoading, // ✅ 추가: 일기 로딩 상태 전달
-                    onDiaryUpdated: handleDiaryUpdated,
-                    onEmotionUpdated: handleEmotionUpdated,
-                    onDataChange: handleDataChange,}}  />
+                    {/* [추가] DiaryLayout 내부의 콘텐츠 전환을 위한 AnimatePresence */}
+                    <AnimatePresence mode={"wait"}>
+                        <Motion.div key={key} {...restAnimationProps}>
+                            <Outlet context={{
+                                initialDiary,
+                                setSelectedDiaryId,
+                                selectedDate, // ✅ 추가: 자식 컴포넌트(DiaryWritePage)가 현재 날짜를 알 수 있도록 전달
+                                isLoading: isDiaryLoading, // ✅ 추가: 일기 로딩 상태 전달
+                                onDiaryUpdated: handleDiaryUpdated,
+                                onEmotionUpdated: handleEmotionUpdated,
+                                onDataChange: handleDataChange,
+                            }}/>
+                        </Motion.div>
+                    </AnimatePresence>
                 </div>
             </section>
 
@@ -132,8 +140,8 @@ const DiaryLayout = ({children}) => { // children(자식 comp) 추가
             </aside>
 
             {/* 다이어리 레이아웃 내에만 갤러리 모달 포함 */}
-            <GalleryModal />
-        </Motion.main>
+            <GalleryModal/>
+        </main>
     );
 };
 
