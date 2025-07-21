@@ -172,7 +172,7 @@ export default function MoodResult({ result }) {
                             pointerEvents: 'none' // 차트 클릭/터치 이벤트 방해하지 않도록
                         }}
                     >
-                        <span style={{font: "bold 45px sans-serif", color: getNameAndColorForMood(selectedMood.label).color || "#333"}}>
+                        <span style={{font: chartStyle.perFont, color: getNameAndColorForMood(selectedMood.label).color}}>
                         {displayPercent}
                         </span>
                     </div>
@@ -197,8 +197,11 @@ const chartStyle = {
     //chart
     chartBorderWidth : 2,
     chartBorderColor: '#fff',
-    chartHoverOffset: 24,
+    chartHoverOffset: 15,
     chartHoverBorderWidth: 3,
+
+    //percentage number
+    perFont : "bold 32px sans-serif",
 
     //canvas
     canvasResponsive: true,// 상위 component에 크기를 맞춤(비율x)
