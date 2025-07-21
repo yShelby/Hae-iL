@@ -4,13 +4,12 @@ import { formatDateToString } from '@shared/utils/dateUtils.js';
 
 const DiaryPage = () => {
     const navigate = useNavigate();
-    const location = useLocation();
 
     useEffect(() => {
         const today = new Date();
         const todayStr = formatDateToString(today);
         navigate(`/diary/date/${todayStr}`, { replace: true }); // URL 강제 이동
-    }, [navigate, location]);
+    }, [navigate]);
 
     return null; // 리다이렉트만 하므로 화면 없음
 };

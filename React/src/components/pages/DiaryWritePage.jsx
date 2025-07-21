@@ -30,7 +30,7 @@ import WeatherSelector from "@features/diary/WeatherSelector.jsx";
 import DiaryEditor from "@features/diary/DiaryEditor.jsx";
 import {ConfirmModal} from "@shared/UI/ConfirmModal.jsx";
 import {useCheckLogin} from "@/hooks/useCheckLogin.js";
-import {useOutletContext, useParams} from "react-router-dom";
+import {useOutletContext} from "react-router-dom";
 import {useAuth} from "@shared/context/AuthContext.jsx";
 import {useQuestion} from "@shared/context/QuestionContext.jsx";
 import QuestionDisplay from "@features/diary/QuestionDisplay.jsx";
@@ -46,7 +46,6 @@ const DiaryWritePage = () => {
     const {user} = useAuth();
     const checkLogin = useCheckLogin(); // 로그인 확인 훅
     const [isEditing, setIsEditing] = useState(false); // ✍️ 에디터 활성 여부
-    const { date: routeDate } = useParams(); // URL에서 날짜 추출
 
     // 추가 - 대시보드와 일기 페이지 간의 질문 상태를 동기화하고, 새로고침 시 두 페이지의 질문이 함께 변경되도록 하기 위해 추가
     const {question} = useQuestion();
@@ -61,6 +60,7 @@ const DiaryWritePage = () => {
         onDataChange,
         setSelectedDate,
     } = useOutletContext();
+
     // 🧠 TipTap 에디터 초기화 및 확장 구성
     const editor = useEditor({
         extensions: [
@@ -82,20 +82,16 @@ const DiaryWritePage = () => {
     // ☁️ 이미지 업로드 훅 (에디터 연동 + S3 전송 준비)
     const {handleImageUpload, uploadPendingImagesToS3} = useImageUpload(editor);
 
-    // 삭제 성공 시에도 onDiaryUpdated, onEmotionUpdated를 호출하여 부모 컴포넌트의 상태를
-    // 즉시 동기화해야 데이터 정합성이 유지되고 사용자 경험(UX)이 개선된다
+    // 삭제 성공 시에도 onDiaryUpdated, onEmotionUpdated를 호출하여 부모 컴포넌트의 상태를 즉시 동기화
     const onActionSuccess = (updatedDiaryOrNull) => {
+        onDiaryUpdated?.(); // 캘린더 등 목록 UI 갱신을 위해 호출
+        onEmotionUpdated?.(); // 감정 분석 UI 갱신을 위해 호출
+        onDataChange?.(); // 선택된 날짜의 데이터 변경을 부모 컴포넌트에 알림
         if (updatedDiaryOrNull) { // 저장 또는 수정 성공 시
             setSelectedDiaryId?.(updatedDiaryOrNull.diaryId);
-            onDiaryUpdated?.();
-            onEmotionUpdated?.();
-            onDataChange?.();
         } else { // 삭제 성공 시
             setSelectedDiaryId?.(null);
-            onDiaryUpdated?.(); // 캘린더 등 목록 UI 갱신을 위해 호출
-            onEmotionUpdated?.(); // 감정 분석 UI 갱신을 위해 호출
             setIsEditing(false); // 작성기 뷰를 닫고 초기 화면으로 전환
-            onDataChange?.();
         }
     };
 
@@ -125,15 +121,11 @@ const DiaryWritePage = () => {
         if (!editor) return;
 
         const hasDiary = !!initialDiary;
-        // const content = hasDiary ? JSON.parse(initialDiary.content) : '';
-
-        // content가 undefined, null, 빈 문자열이거나 JSON이 아닌 경우를 대비해서 안전 처리
         let content = '';
 
         try {
             content = hasDiary && initialDiary.content
-                ? JSON.parse(initialDiary.content)
-                : '';
+                ? JSON.parse(initialDiary.content) : '';
         } catch (e) {
             console.warn('initialDiary.content JSON parse error:', e);
             content = '';
