@@ -27,6 +27,7 @@ import MealWidget from "@features/health/MealWidget.jsx";
 import {AnimatePresence} from "framer-motion";
 import Calendar from "@features/calendar/Calendar.jsx";
 import AnimationLayout from "@/layouts/AnimationLayout.jsx";
+import DiaryPage from "@pages/DairyPage.jsx";
 
 /**
  * ✨ [추가] 애니메이션과 라우팅을 실제로 처리하는 내부 컴포넌트
@@ -59,6 +60,7 @@ const AnimatedRoutes = () => {
               반드시 key가 변경되어야 합니다. location.pathname은 URL이 바뀔 때마다
               고유한 값을 가지므로 key로 사용하기에 적합
             */}
+            {/*             <Routes location={location} key={location.pathname}> */}
             <Routes location={location} key={topLevelKey}>
                 <Route path="/" element={<MainLayout/>}>
                     <Route element={<AnimationLayout/>}>
@@ -67,20 +69,23 @@ const AnimatedRoutes = () => {
                         </Route>
 
                         <Route path="diary" element={<DiaryLayout/>}>
-                            <Route index element={<DiaryWritePage/>}/>
+                            <Route index element={<DiaryPage/>}/>
                             <Route path="date/:date" element={<DiaryDatePage/>}/>
                             <Route path=":diaryId" element={<DiaryIdPage/>}/>
-                            <Route path="sleep/date/:date" element={<SleepWidget />} />
-                            <Route path="exercise/date/:date" element={<ExerciseWidget />} />
-                            <Route path="meal/date/:date" element={<MealWidget/>} />
+                            <Route path="sleep/date/:date" element={<SleepWidget/>}/>
+                            <Route path="exercise/date/:date" element={<ExerciseWidget/>}/>
+                            <Route path="meal/date/:date" element={<MealWidget/>}/>
                         </Route>
 
                         <Route path="journal" element={<JournalPage/>}/>
+
                         <Route path="gallery" element={<DiaryLayout/>}>
                             <Route index element={<GalleryPage/>}/>
                         </Route>
+                        {/* 캘린더 페이지 라우트 */}
                         <Route path="calendar" element={<Calendar/>}/>
                     </Route>
+
                 </Route>
             </Routes>
         </AnimatePresence>
@@ -91,33 +96,6 @@ function App() {
     return (
         // 오늘의 질문이 dashboard와 diary 간 공유를 위해 추가
         <QuestionProvider>
-            {/*/!*🧭 최상위 라우터: 라우팅을 관리하는 라우트 컨테이너*!/*/}
-            {/*<Routes>*/}
-            {/*    <Route path="/" element={<MainLayout/>}>*/}
-            {/*        /!* 루트 대시보드 전용 레이아웃 예시*!/*/}
-            {/*        <Route path={""} element={<DashboardLayout/>}>*/}
-            {/*            <Route index element={<DashboardPage/>}/>*/}
-            {/*        </Route>*/}
-
-            {/*        /!* 다이어리 전용 레이아웃 *!/*/}
-            {/*        <Route path="diary" element={<DiaryLayout/>}>*/}
-            {/*            <Route index element={<DiaryWritePage/>}/>*/}
-            {/*            <Route path="date/:date" element={<DiaryDatePage/>}/>*/}
-            {/*            <Route path=":diaryId" element={<DiaryIdPage/>}/>*/}
-
-            {/*            /!* ✅ 아래 3개 미션 경로 추가 *!/*/}
-            {/*            <Route path="sleep/date/:date" element={<SleepWidget />} />*/}
-            {/*            <Route path="exercise/date/:date" element={<ExerciseWidget />} />*/}
-            {/*            <Route path="meal/date/:date" element={<MealWidget/>} />*/}
-            {/*        </Route>*/}
-
-            {/*        /!* 대시보드 카운트 클릭시 journal과 gallery로 가도록 경로 추가 *!/*/}
-            {/*        <Route path="journal" element={<JournalPage/>}/>*/}
-            {/*        <Route path="gallery" element={<DiaryLayout/>}>*/}
-            {/*            <Route index element={<GalleryPage/>}/>*/}
-            {/*        </Route>*/}
-            {/*    </Route>*/}
-            {/*</Routes>*/}
             <AnimatedRoutes/>
         </QuestionProvider>
     );

@@ -1,4 +1,4 @@
-import React, {useMemo, useState} from 'react';
+import React, {forwardRef, useMemo, useRef, useState} from 'react';
 import {formatDateToString, addDays, getStartOfWeek, getEndOfWeek} from '@shared/utils/dateUtils.js';
 import DatePicker, {registerLocale} from 'react-datepicker';
 import ko from 'date-fns/locale/ko'; // 🇰🇷 한글 로케일
@@ -72,11 +72,17 @@ export default function TimelineView({ data = [], selectedDate, onSelectDate, is
     // 달력에서 날짜 선택 시 처리
     const handleCalendarChange = (date) => {
         if (!date) return;
-        setShowCalendar(false);
         onSelectDate && onSelectDate(formatDateToString(date));
         // [추가] 달력에서 날짜 선택 시에도 'fade' 애니메이션을 적용
         navigate(`/diary/date/${date}`, { state: { animationType: 'fade' } });
     };
+
+    // 버튼을 input 역할로 대체한 커스텀 컴포넌트
+    const CalendarButton = forwardRef(({ value, onClick }, ref) => (
+        <button type="button" onClick={onClick} ref={ref} aria-label="달력 열기">
+            📆
+        </button>
+    ));
 
     return (
         <div className="timeline-wrapper">
@@ -84,25 +90,21 @@ export default function TimelineView({ data = [], selectedDate, onSelectDate, is
             <div className="timeline-controls">
                 <button onClick={handlePrevWeek} aria-label="이전 주" >◀</button>
                 <span className="week-range">
-                    {formatDateToString(startOfWeek)} ~ {formatDateToString(endOfWeek)}
+                    {baseDate.getFullYear()}년 {baseDate.getMonth() + 1}월
                 </span>
                 <button onClick={handleNextWeek} aria-label="다음 주">▶</button>
-                <button onClick={() => setShowCalendar(prev => !prev)} aria-label="달력 열기">
-                    📆
-                </button>
-            </div>
-            {/* 달력 UI (보일 때만) */}
-            {showCalendar && (
                 <div className="calendar-wrapper">
                     <DatePicker
                         selected={baseDate}
                         onChange={handleCalendarChange}
                         locale="ko"
-                        inline
                         maxDate={new Date()}
+                        withPortal
+                        showPopperArrow={false}
+                        customInput={<CalendarButton />}
                     />
                 </div>
-            )}
+            </div>
 
             {/* 주간 타임라인 카드 */}
             <div className="timeline-cards">
@@ -121,7 +123,7 @@ export default function TimelineView({ data = [], selectedDate, onSelectDate, is
                             className={`timeline-card ${isActive ? 'active' : ''}`}
                             onClick={() => handleDateClick(date)}
                         >
-                            <h4>{date}</h4>
+                            <h4>{new Date(date).getDate()}</h4>
                             <div className="card-icons">
                                 {isLoggedIn && hasDiary && <span title="일기">📝</span>}
                                 {isLoggedIn && hasSleep && <span title="수면">💤</span>}

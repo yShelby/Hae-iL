@@ -48,7 +48,7 @@ const JournalEditor = ({ journalId, onSaveSuccess, onCancel }) => {
             const response = await apiCall();
             // 수정 - API 응답에서 ID만 추출하는 대신, 응답으로 받은 저널 객체 전체를 onSaveSuccess 콜백으로 전달
             // 이렇게 하면 부모 컴포넌트가 이 데이터를 바로 Viewer에게 넘겨줄 수 있습니다.
-            onSaveSuccess(response.data); // 저널 객체 전체를 전달
+            onSaveSuccess(response); // 저널 객체 전체를 전달
             showToast.success(`저널이 성공적으로 ${isEditMode ? '수정' : '등록'}되었습니다.`);
             // const newJournalId = response?.data?.id;
             // onSaveSuccess(newJournalId); // 상위 컴포넌트에 성공 알림 및 새 id 전달

@@ -11,19 +11,13 @@ import GalleryThumbnail from "@features/gallery/GalleryThumbnail.jsx";
 import GalleryModal from "@features/gallery/GalleryModal.jsx";
 import './css/DiaryLayout.css';
 import MoodPage from "@pages/MoodPage.jsx";
-import {fetchDiaryByDateAPI} from "@api/diaryApi.js";
-import {formatDateToString} from "@shared/utils/dateUtils.js";
-import {AnimatePresence, motion as Motion} from 'framer-motion';
 import {useDiaryData} from "@/hooks/useDiaryData.js";
 import {usePageAnimation} from "@/hooks/usePageAnimation.js";
-import DiaryIdPage from "@pages/DiaryIdPage.jsx";
-import DiaryDatePage from "@pages/DiaryDatePage.jsx";
-import DiaryWritePage from "@pages/DiaryWritePage.jsx";
 
-const DiaryLayout = ({children}) => { // children(자식 comp) 추가
-    const {date: urlDate} = useParams(); // URL에서 날짜 추출
+const DiaryLayout = () => {
+    const { date : urlDate } = useParams(); // URL에서 날짜 추출
     const checkLogin = useCheckLogin();
-    // const navigate = useNavigate();
+    const navigate = useNavigate();
     const location = useLocation(); // ✅ 페이지 이동 시 전달된 state를 받기 위해 추가
 
     // useDiaryData 훅에서 상태/함수 가져오기
@@ -33,14 +27,9 @@ const DiaryLayout = ({children}) => { // children(자식 comp) 추가
         setSelectedDate,
         diaryForDate: initialDiary,
         isLoading: isDiaryLoading,
-        handleDateClick,   // 날짜 선택된     시 네비게이션 및 상태 변경 포함
         handleDiaryUpdated,
     } = useDiaryData();
 
-    /**
-     * 수정
-     * location.state?.date가 있으면 그 값을, 없으면 오늘 날짜를 selectedDate의 초기값으로 사용
-     */
     const [selectedDiaryId, setSelectedDiaryId] = useState(null); // 선택된 일기 ID 상태
     const [emotionRefreshKey, setEmotionRefreshKey] = useState(0); // 감정 분석 새로고침 키
 
@@ -49,11 +38,11 @@ const DiaryLayout = ({children}) => { // children(자식 comp) 추가
     const {key, ...restAnimationProps} = animationProps; // key 분리
 
     // URL에서 날짜가 있으면 selectedDate를 업데이트
-    useEffect(() => {
-        if (urlDate && urlDate !== selectedDate) {
-            setSelectedDate(urlDate);
-        }
-    }, [urlDate, selectedDate, setSelectedDate]);
+     useEffect(() => {
+             if (urlDate && urlDate !== selectedDate) {
+                 setSelectedDate(urlDate);
+             }
+         }, [urlDate, selectedDate, setSelectedDate]);
     const {
         data: timelineData,
         loading: timelineLoading,
@@ -63,7 +52,7 @@ const DiaryLayout = ({children}) => { // children(자식 comp) 추가
     const handleSelectDate = (dateStr) => {
         if (!checkLogin()) return;
         setSelectedDate(dateStr);
-        // navigate(`/diary/date/${dateStr}`);
+        navigate(`/diary/date/${dateStr}`);
     };
 
     const handleDataChange = () => {
@@ -93,7 +82,7 @@ const DiaryLayout = ({children}) => { // children(자식 comp) 추가
                     />
                 </div>
                 <div className="sidebar-gallery">
-                    <GalleryThumbnail/>
+                    <GalleryThumbnail />
                 </div>
             </aside>
 
@@ -106,6 +95,7 @@ const DiaryLayout = ({children}) => { // children(자식 comp) 추가
                             onSelectDate={handleSelectDate}
                             selectedDate={selectedDate}
                             isLoggedIn={!!user} // 로그인 여부 전달
+                            setSelectedDate={setSelectedDate}
                         />
                     )}
                 </div>
@@ -115,20 +105,29 @@ const DiaryLayout = ({children}) => { // children(자식 comp) 추가
                         - 이 컨테이너 안에서만 렌더링되고 스크롤되도록 하기 위함
                 */}
                 <div className="outlet-container">
-                    {/* [추가] DiaryLayout 내부의 콘텐츠 전환을 위한 AnimatePresence */}
-                    <AnimatePresence mode={"wait"}>
-                        <Motion.div key={key} {...restAnimationProps}>
-                            <Outlet context={{
-                                initialDiary,
-                                setSelectedDiaryId,
-                                selectedDate, // ✅ 추가: 자식 컴포넌트(DiaryWritePage)가 현재 날짜를 알 수 있도록 전달
-                                isLoading: isDiaryLoading, // ✅ 추가: 일기 로딩 상태 전달
-                                onDiaryUpdated: handleDiaryUpdated,
-                                onEmotionUpdated: handleEmotionUpdated,
-                                onDataChange: handleDataChange,
-                            }}/>
-                        </Motion.div>
-                    </AnimatePresence>
+                <Outlet context={{
+                    initialDiary,
+                    setSelectedDiaryId,
+                    selectedDate, // 자식 컴포넌트(DiaryWritePage)가 현재 날짜를 알 수 있도록 전달
+                    setSelectedDate, // 날짜 변경 함수 추가
+                    isLoading: isDiaryLoading, // 일기 로딩 상태 전달
+                    onDiaryUpdated: handleDiaryUpdated,
+                    onEmotionUpdated: handleEmotionUpdated,
+                    onDataChange: handleDataChange,}}  />
+{/*                      */}{/* [추가] DiaryLayout 내부의 콘텐츠 전환을 위한 AnimatePresence */}
+{/*                     <AnimatePresence mode={"wait"}> */}
+{/*                         <Motion.div key={key} {...restAnimationProps}> */}
+{/*                             <Outlet context={{ */}
+{/*                                 initialDiary, */}
+{/*                                 setSelectedDiaryId, */}
+{/*                                 selectedDate, // ✅ 추가: 자식 컴포넌트(DiaryWritePage)가 현재 날짜를 알 수 있도록 전달 */}
+{/*                                 isLoading: isDiaryLoading, // ✅ 추가: 일기 로딩 상태 전달 */}
+{/*                                 onDiaryUpdated: handleDiaryUpdated, */}
+{/*                                 onEmotionUpdated: handleEmotionUpdated, */}
+{/*                                 onDataChange: handleDataChange, */}
+{/*                             }}/> */}
+{/*                         </Motion.div> */}
+{/*                     </AnimatePresence> */}
                 </div>
             </section>
 
@@ -140,7 +139,7 @@ const DiaryLayout = ({children}) => { // children(자식 comp) 추가
             </aside>
 
             {/* 다이어리 레이아웃 내에만 갤러리 모달 포함 */}
-            <GalleryModal/>
+            <GalleryModal />
         </main>
     );
 };

@@ -110,7 +110,6 @@ export const useDiaryMutations = ({
                 onActionSuccess(null); // ⛔ 삭제되었으므로 null 전달
             }
 
-            // navigate('/'); // 🏠 홈으로 이동
         } catch (error) {
             showToast.error(error.response?.data?.message || '삭제에 실패했습니다.', {id: toastId});
         }

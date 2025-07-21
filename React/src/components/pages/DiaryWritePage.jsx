@@ -58,7 +58,9 @@ const DiaryWritePage = () => {
         setSelectedDiaryId,
         onEmotionUpdated,
         onDataChange,
+        setSelectedDate,
     } = useOutletContext();
+
     // 🧠 TipTap 에디터 초기화 및 확장 구성
     const editor = useEditor({
         extensions: [
@@ -80,20 +82,16 @@ const DiaryWritePage = () => {
     // ☁️ 이미지 업로드 훅 (에디터 연동 + S3 전송 준비)
     const {handleImageUpload, uploadPendingImagesToS3} = useImageUpload(editor);
 
-    // 삭제 성공 시에도 onDiaryUpdated, onEmotionUpdated를 호출하여 부모 컴포넌트의 상태를
-    // 즉시 동기화해야 데이터 정합성이 유지되고 사용자 경험(UX)이 개선된다
+    // 삭제 성공 시에도 onDiaryUpdated, onEmotionUpdated를 호출하여 부모 컴포넌트의 상태를 즉시 동기화
     const onActionSuccess = (updatedDiaryOrNull) => {
+        onDiaryUpdated?.(); // 캘린더 등 목록 UI 갱신을 위해 호출
+        onEmotionUpdated?.(); // 감정 분석 UI 갱신을 위해 호출
+        onDataChange?.(); // 선택된 날짜의 데이터 변경을 부모 컴포넌트에 알림
         if (updatedDiaryOrNull) { // 저장 또는 수정 성공 시
             setSelectedDiaryId?.(updatedDiaryOrNull.diaryId);
-            onDiaryUpdated?.();
-            onEmotionUpdated?.();
-            onDataChange?.();
         } else { // 삭제 성공 시
             setSelectedDiaryId?.(null);
-            onDiaryUpdated?.(); // 캘린더 등 목록 UI 갱신을 위해 호출
-            onEmotionUpdated?.(); // 감정 분석 UI 갱신을 위해 호출
             setIsEditing(false); // 작성기 뷰를 닫고 초기 화면으로 전환
-            onDataChange?.();
         }
     };
 
@@ -123,15 +121,11 @@ const DiaryWritePage = () => {
         if (!editor) return;
 
         const hasDiary = !!initialDiary;
-        // const content = hasDiary ? JSON.parse(initialDiary.content) : '';
-
-        // content가 undefined, null, 빈 문자열이거나 JSON이 아닌 경우를 대비해서 안전 처리
         let content = '';
 
         try {
             content = hasDiary && initialDiary.content
-                ? JSON.parse(initialDiary.content)
-                : '';
+                ? JSON.parse(initialDiary.content) : '';
         } catch (e) {
             console.warn('initialDiary.content JSON parse error:', e);
             content = '';
