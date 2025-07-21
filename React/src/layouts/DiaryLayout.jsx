@@ -51,7 +51,7 @@ const DiaryLayout = () => {
 
     const handleSelectDate = (dateStr) => {
         if (!checkLogin()) return;
-        setSelectedDate(dateStr);
+        // setSelectedDate(dateStr);
         navigate(`/diary/date/${dateStr}`);
     };
 

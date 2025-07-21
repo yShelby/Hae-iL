@@ -1,4 +1,4 @@
-import React, {forwardRef, useMemo, useRef, useState} from 'react';
+import React, {forwardRef, useMemo} from 'react';
 import {formatDateToString, addDays, getStartOfWeek, getEndOfWeek} from '@shared/utils/dateUtils.js';
 import DatePicker, {registerLocale} from 'react-datepicker';
 import ko from 'date-fns/locale/ko'; // 🇰🇷 한글 로케일
@@ -12,9 +12,6 @@ registerLocale('ko', ko); // 로케일 등록
 export default function TimelineView({ data = [], selectedDate, onSelectDate, isLoggedIn }) {
     const checkLogin = useCheckLogin();
     const navigate = useNavigate(); // [추가]
-
-    // 내부 상태: 달력 UI 표시 여부 제어
-    const [showCalendar, setShowCalendar] = useState(false);
 
     // selectedDate가 없으면 오늘 날짜로 초기화
     const baseDate = selectedDate ? new Date(selectedDate) : new Date();
@@ -57,24 +54,30 @@ export default function TimelineView({ data = [], selectedDate, onSelectDate, is
     // 이전 주, 다음 주 이동
     const handlePrevWeek = () => {
         const prevWeekDate = addDays(startOfWeek, -7);
-        onSelectDate && onSelectDate(formatDateToString(prevWeekDate));
+        // onSelectDate && onSelectDate(formatDateToString(prevWeekDate));
+        const prevWeekDateString = formatDateToString(prevWeekDate); // YYYY-MM-DD 형식으로 변환
+        onSelectDate?.(prevWeekDateString);
         // [추가] 'slideRight' 애니메이션을 지정(콘텐츠가 오른쪽에서 나타남)
-        navigate(`/diary/date/${prevWeekDate}`, { state: { animationType: 'slideRight' } });
+        navigate(`/diary/date/${prevWeekDateString}`, { state: { animationType: 'slideRight' } });
     };
 
     const handleNextWeek = () => {
         const nextWeekDate = addDays(startOfWeek, 7);
-        onSelectDate && onSelectDate(formatDateToString(nextWeekDate));
+        // onSelectDate && onSelectDate(formatDateToString(nextWeekDate));
+        const nextWeekDateString = formatDateToString(nextWeekDate); // YYYY-MM-DD 형식으로 변환
+        onSelectDate?.(nextWeekDateString);
         // [추가] 'slideLeft' 애니메이션을 지정(콘텐츠가 왼쪽에서 나타남)
-        navigate(`/diary/date/${nextWeekDate}`, { state: { animationType: 'slideLeft' } });
+        navigate(`/diary/date/${nextWeekDateString}`, { state: { animationType: 'slideLeft' } });
     };
 
     // 달력에서 날짜 선택 시 처리
     const handleCalendarChange = (date) => {
         if (!date) return;
-        onSelectDate && onSelectDate(formatDateToString(date));
+        // onSelectDate && onSelectDate(formatDateToString(date));
+        const dateString = formatDateToString(date); // YYYY-MM-DD 형식으로 변환
+        onSelectDate?.(dateString);
         // [추가] 달력에서 날짜 선택 시에도 'fade' 애니메이션을 적용
-        navigate(`/diary/date/${date}`, { state: { animationType: 'fade' } });
+        navigate(`/diary/date/${dateString}`, { state: { animationType: 'fade' } });
     };
 
     // 버튼을 input 역할로 대체한 커스텀 컴포넌트

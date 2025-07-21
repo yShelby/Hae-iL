@@ -9,25 +9,6 @@ import {usePageAnimation} from "@/hooks/usePageAnimation.js";
 
 const DashboardLayout = () => {
 
-    // const animationProps = usePageAnimation();
-    // const { key, ...restAnimationProps } = animationProps; // key 분리
-    //
-    // /**
-    //  * ✨ [추가] 애니메이션 완료 핸들러
-    //  * 📌 이유: Framer Motion의 onAnimationComplete 콜백을 사용하여,
-    //  * 등장 애니메이션이 완전히 끝났을 때를 감지
-    //  */
-    // const handleAnimationComplete = () => {
-    //     /**
-    //      * ✨ [추가] 커스텀 이벤트 발생
-    //      * 📌 이유: 애니메이션이 끝났다는 사실을 하위 컴포넌트(WordCloudComp 등)에
-    //      * 알려주기 위한 신호를 window 객체를 통해 알려준다
-    //      * 이 신호를 받은 컴포넌트는 자신의 크기를 다시 측정하게 된다.
-    //      */
-    //     window.dispatchEvent(new Event('layoutAnimationComplete'));
-    // };
-
-
     return (
         <main className="dashboard-container">
             {/* --- ⬇️ 좌측 컬럼 ⬇️ --- */}
