@@ -16,16 +16,16 @@ public class FlaskResponseDTO {
     @JsonProperty("mood_score")
     private Integer moodScore;
 
-    private List<FlaskEmotionDetailDTO> details;
+    private List<FlaskMoodDetailDTO> details;
 
     private List<String> tags;
 
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class FlaskEmotionDetailDTO {
-        @JsonProperty("emotion_type")
-        private String emotionType;
+    public static class FlaskMoodDetailDTO {
+        @JsonProperty("mood_type")
+        private String moodType;
         private Integer percentage;
     }
 }

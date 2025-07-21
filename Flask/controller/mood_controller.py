@@ -1,5 +1,5 @@
 from flask import request, jsonify, Blueprint
-from service.emotion_service import MoodDiaryService
+from service.mood_service import MoodDiaryService
 import traceback
 
 # 1. 블루프린트 객체 생성
