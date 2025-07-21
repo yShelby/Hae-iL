@@ -24,9 +24,10 @@ import {QuestionProvider} from "@shared/context/QuestionContext.jsx";
 import SleepWidget from "@features/health/SleepWidget.jsx";
 import ExerciseWidget from "@features/health/ExerciseWidget.jsx";
 import MealWidget from "@features/health/MealWidget.jsx";
-// import {useVirtualScroll} from "@/hooks/useVirtualScroll.js";
+import {useVirtualScroll} from "@/hooks/useVirtualScroll.js";
 import {AnimatePresence} from "framer-motion";
 import Calendar from "@features/calendar/Calendar.jsx";
+import Charts from "@pages/Charts.jsx";
 
 /**
  * ✨ [추가] 애니메이션과 라우팅을 실제로 처리하는 내부 컴포넌트
@@ -37,7 +38,7 @@ const AnimatedRoutes = () => {
     const location = useLocation();
 
     // 가상 스크롤 훅을 호출하여 이 컴포넌트가 렌더링될 때 스크롤 제어를 활성화
-    // useVirtualScroll();
+    useVirtualScroll();
 
     return (
         // AnimatePresence는 자식 컴포넌트가 DOM에서 제거될 때 퇴장 애니메이션을 실행 가능
@@ -68,6 +69,8 @@ const AnimatedRoutes = () => {
                     </Route>
                     {/* 캘린더 페이지 라우트 */}
                     <Route path="calendar" element={<Calendar />} />
+                    {/* 차트 페이지 라우트 */}
+                    <Route path="charts" element={<Charts/>}/>
                 </Route>
             </Routes>
         </AnimatePresence>
