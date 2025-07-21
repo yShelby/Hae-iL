@@ -169,15 +169,9 @@ function CalendarGrid({
     function handleDoubleClick(date) {
         if (!isLoggedIn) return; // 비로그인 분기는 추후 추가
         const dateStr = format(date, 'yyyy-MM-dd');
-        const entry = entryMap.get(dateStr);
 
-        if (entry && entry.diaryId) {
-            // 작성된 일기 상세 페이지로 이동
-            navigate(`/diary/${entry.diaryId}`);
-        } else {
-            // 일기 작성 페이지로 이동
-            navigate(`/diary/date/${dateStr}`);
-        }
+        onSelectDate && onSelectDate(date);  // 날짜 상태 반영
+        navigate(`/diary/date/${dateStr}`);
     }
 
 

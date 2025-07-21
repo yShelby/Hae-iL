@@ -30,7 +30,7 @@ import WeatherSelector from "@features/diary/WeatherSelector.jsx";
 import DiaryEditor from "@features/diary/DiaryEditor.jsx";
 import {ConfirmModal} from "@shared/UI/ConfirmModal.jsx";
 import {useCheckLogin} from "@/hooks/useCheckLogin.js";
-import {useOutletContext} from "react-router-dom";
+import {useOutletContext, useParams} from "react-router-dom";
 import {useAuth} from "@shared/context/AuthContext.jsx";
 import {useQuestion} from "@shared/context/QuestionContext.jsx";
 import QuestionDisplay from "@features/diary/QuestionDisplay.jsx";
@@ -46,6 +46,7 @@ const DiaryWritePage = () => {
     const {user} = useAuth();
     const checkLogin = useCheckLogin(); // 로그인 확인 훅
     const [isEditing, setIsEditing] = useState(false); // ✍️ 에디터 활성 여부
+    const { date: routeDate } = useParams(); // URL에서 날짜 추출
 
     // 추가 - 대시보드와 일기 페이지 간의 질문 상태를 동기화하고, 새로고침 시 두 페이지의 질문이 함께 변경되도록 하기 위해 추가
     const {question} = useQuestion();
@@ -58,6 +59,7 @@ const DiaryWritePage = () => {
         setSelectedDiaryId,
         onEmotionUpdated,
         onDataChange,
+        setSelectedDate,
     } = useOutletContext();
     // 🧠 TipTap 에디터 초기화 및 확장 구성
     const editor = useEditor({

@@ -17,10 +17,10 @@ import { motion as Motion } from 'framer-motion';
 import { pageVariants } from '@shared/animation/page-variants';
 import {useDiaryData} from "@/hooks/useDiaryData.js";
 
-const DiaryLayout = ({children}) => { // children(자식 comp) 추가
+const DiaryLayout = () => {
     const { date : urlDate } = useParams(); // URL에서 날짜 추출
     const checkLogin = useCheckLogin();
-   // const navigate = useNavigate();
+    const navigate = useNavigate();
     const location = useLocation(); // ✅ 페이지 이동 시 전달된 state를 받기 위해 추가
     // useDiaryData 훅에서 상태/함수 가져오기
     const {
@@ -29,14 +29,9 @@ const DiaryLayout = ({children}) => { // children(자식 comp) 추가
         setSelectedDate,
         diaryForDate: initialDiary,
         isLoading: isDiaryLoading,
-        handleDateClick,   // 날짜 선택된     시 네비게이션 및 상태 변경 포함
         handleDiaryUpdated,
     } = useDiaryData();
 
-    /**
-     * 수정
-     * location.state?.date가 있으면 그 값을, 없으면 오늘 날짜를 selectedDate의 초기값으로 사용
-     */
     const [selectedDiaryId, setSelectedDiaryId] = useState(null); // 선택된 일기 ID 상태
     const [emotionRefreshKey, setEmotionRefreshKey] = useState(0); // 감정 분석 새로고침 키
 
@@ -55,7 +50,7 @@ const DiaryLayout = ({children}) => { // children(자식 comp) 추가
     const handleSelectDate = (dateStr) => {
         if (!checkLogin()) return;
         setSelectedDate(dateStr);
-        // navigate(`/diary/date/${dateStr}`);
+        navigate(`/diary/date/${dateStr}`);
     };
 
     const handleDataChange = () => {
@@ -104,6 +99,7 @@ const DiaryLayout = ({children}) => { // children(자식 comp) 추가
                             onSelectDate={handleSelectDate}
                             selectedDate={selectedDate}
                             isLoggedIn={!!user} // 로그인 여부 전달
+                            setSelectedDate={setSelectedDate}
                         />
                     )}
                 </div>
@@ -116,8 +112,9 @@ const DiaryLayout = ({children}) => { // children(자식 comp) 추가
                 <Outlet context={{
                     initialDiary,
                     setSelectedDiaryId,
-                    selectedDate, // ✅ 추가: 자식 컴포넌트(DiaryWritePage)가 현재 날짜를 알 수 있도록 전달
-                    isLoading: isDiaryLoading, // ✅ 추가: 일기 로딩 상태 전달
+                    selectedDate, // 자식 컴포넌트(DiaryWritePage)가 현재 날짜를 알 수 있도록 전달
+                    setSelectedDate, // 날짜 변경 함수 추가
+                    isLoading: isDiaryLoading, // 일기 로딩 상태 전달
                     onDiaryUpdated: handleDiaryUpdated,
                     onEmotionUpdated: handleEmotionUpdated,
                     onDataChange: handleDataChange,}}  />

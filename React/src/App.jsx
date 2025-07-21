@@ -13,7 +13,6 @@ import React from 'react';
 import {Routes, Route, useLocation} from 'react-router-dom';
 import MainLayout from './layouts/MainLayout.jsx';
 import DiaryLayout from "@/layouts/DiaryLayout.jsx";
-import DiaryWritePage from "@pages/DiaryWritePage.jsx";
 import DiaryDatePage from "@pages/DiaryDatePage.jsx";
 import DiaryIdPage from "@pages/DiaryIdPage.jsx";
 import DashboardLayout from "@/layouts/DashboardLayout.jsx";
@@ -27,6 +26,7 @@ import MealWidget from "@features/health/MealWidget.jsx";
 import {useVirtualScroll} from "@/hooks/useVirtualScroll.js";
 import {AnimatePresence} from "framer-motion";
 import Calendar from "@features/calendar/Calendar.jsx";
+import DiaryPage from "@pages/DairyPage.jsx";
 
 /**
  * ✨ [추가] 애니메이션과 라우팅을 실제로 처리하는 내부 컴포넌트
@@ -55,7 +55,7 @@ const AnimatedRoutes = () => {
                         <Route index element={<DashboardPage/>}/>
                     </Route>
                     <Route path="diary" element={<DiaryLayout/>}>
-                        <Route index element={<DiaryWritePage/>}/>
+                        <Route index element={<DiaryPage/>}/>
                         <Route path="date/:date" element={<DiaryDatePage/>}/>
                         <Route path=":diaryId" element={<DiaryIdPage/>}/>
                         <Route path="sleep/date/:date" element={<SleepWidget />} />
