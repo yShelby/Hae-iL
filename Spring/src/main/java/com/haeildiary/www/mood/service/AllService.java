@@ -27,8 +27,8 @@ public class AllService {
      * - 이미 데이터가 존재하면 update 처리
      */
     @Transactional
-    public void allEmotion(FlaskResponseDTO flaskResult, DiaryEntity diaryEntity) {
-        log.info("allEmotion 시작: diaryId={}, flaskResult={}", diaryEntity.getDiaryId(), flaskResult);
+    public void allMood(FlaskResponseDTO flaskResult, DiaryEntity diaryEntity) {
+        log.info("allMood 시작: diaryId={}, flaskResult={}", diaryEntity.getDiaryId(), flaskResult);
         // 1) MoodEntry 저장 (감정 점수 저장)
         MoodEntryDTO moodEntryDTO = new MoodEntryDTO();
         moodEntryDTO.setDiaryId(diaryEntity.getDiaryId());
@@ -39,7 +39,7 @@ public class AllService {
         List<MoodDetailDTO> detailDTOs = flaskResult.getDetails().stream()
                 .map(detail -> {
                     MoodDetailDTO detailDTO = new MoodDetailDTO();
-                    detailDTO.setEmotionType(detail.getEmotionType());
+                    detailDTO.setMoodType(detail.getMoodType());
                     detailDTO.setPercentage(detail.getPercentage() != null ? detail.getPercentage().intValue() : (int) 0.0);
                     detailDTO.setDiaryId(diaryEntity.getDiaryId());
                     return detailDTO;
@@ -64,8 +64,8 @@ public class AllService {
         List<MoodDetailDTO> details = moodDetailService.findByDiaryId(diaryId);
         List<String> tagNames = tagService.findTagNamesByDiaryId(diaryId);
 
-        // MoodDetailDTO → FlaskEmotionDetailDTO 변환 호출
-        List<FlaskResponseDTO.FlaskEmotionDetailDTO> flaskDetails = convertMoodDetailToFlaskDetail(details);
+        // MoodDetailDTO → FlaskMoodDetailDTO 변환 호출
+        List<FlaskResponseDTO.FlaskMoodDetailDTO> flaskDetails = convertMoodDetailToFlaskDetail(details);
         // FlaskResponseDTO 생성
         return FlaskResponseDTO.builder()
                 .moodScore(moodEntry.getMoodScore())
@@ -76,9 +76,9 @@ public class AllService {
     /**
      * 상세 감정 정보 변환
      */
-    private List<FlaskResponseDTO.FlaskEmotionDetailDTO> convertMoodDetailToFlaskDetail(List<MoodDetailDTO> moodDetailDTOs) {
-        return moodDetailDTOs.stream()
-                .map(dto -> new FlaskResponseDTO.FlaskEmotionDetailDTO(dto.getEmotionType(), dto.getPercentage().intValue()))
+    private List<FlaskResponseDTO.FlaskMoodDetailDTO> convertMoodDetailToFlaskDetail(List<MoodDetailDTO> moodDetailDTOS) {
+        return moodDetailDTOS.stream()
+                .map(dto -> new FlaskResponseDTO.FlaskMoodDetailDTO(dto.getMoodType(), dto.getPercentage().intValue()))
                 .toList();
     }
 }

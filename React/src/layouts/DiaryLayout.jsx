@@ -10,7 +10,7 @@ import MealWidget from "@features/health/MealWidget.jsx";
 import GalleryThumbnail from "@features/gallery/GalleryThumbnail.jsx";
 import GalleryModal from "@features/gallery/GalleryModal.jsx";
 import './css/DiaryLayout.css';
-import EmotionPage from "@pages/EmotionPage.jsx";
+import MoodPage from "@pages/MoodPage.jsx";
 import {fetchDiaryByDateAPI} from "@api/diaryApi.js";
 import {formatDateToString} from "@shared/utils/dateUtils.js";
 import { motion as Motion } from 'framer-motion';
@@ -85,7 +85,7 @@ const DiaryLayout = ({children}) => { // children(자식 comp) 추가
             {/* 좌측 사이드바 */}
             <aside className="left-sidebar">
                 <div className="emotion-analysis">
-                    <EmotionPage
+                    <MoodPage
                         refreshKey={emotionRefreshKey} // 갱신 키 전달
                         selectedDiaryId={selectedDiaryId}
                     />
