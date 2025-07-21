@@ -8,6 +8,6 @@ import lombok.NoArgsConstructor;
 public class MoodDetailDTO {
     private Long detailId;
     private Integer percentage;
-    private String emotionType;
+    private String moodType;
     private Long diaryId;
 }

@@ -29,7 +29,7 @@ public class MoodDetail {
     @Column(name = "percentage", nullable = false)
     private Integer percentage;
 
-    @Column(name = "emotion_type",length = 50)
-    private String emotionType;
+    @Column(name = "mood_type",length = 50)
+    private String moodType;
 
 }

@@ -1,0 +1,93 @@
+.mood-results {
+    width: 200px;
+}
+
+.mood-score {
+    text-align: center;
+    white-space: pre-line;
+    font-size: 18px;
+    margin-bottom: 16px;
+    font-weight: bold;
+
+    background: #f0f8ff;
+    border-radius: 10px;
+    padding: 10px;
+
+}
+
+.mood-details {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 200px;
+}
+
+.mood-details h3 {
+    margin-bottom: 8px;
+    font-size: 16px;
+    color: #444;
+}
+
+.doughnut-chart{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    padding: 20px;
+    width: 250px;
+    height: 250px;
+}
+
+.selected-mood-info {
+    height: 50px;
+}
+
+.selected-mood-info.fade-in {
+    animation: moodFadeIn 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.mood-score.fade-in, .tags-list.fade-in {
+    animation: moodFadeIn 1.5s cubic-bezier(0.4, 0, 0.7, 1);
+}
+
+@keyframes moodFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(16px) scale(0.97);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Tag 스타일 */
+.mood-tags-container {
+    margin-top: 20px;
+}
+
+.tags-box{
+    padding: 10px;
+}
+
+.tags-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+.tag-item {
+    background-color: #f0f0f0;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 14px;
+    color: #333;
+}
+
+.no-tags {
+    font-style: italic;
+    color: #888;
+}

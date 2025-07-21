@@ -40,7 +40,7 @@ class MoodDiaryService:
             # 샘플 : {'polarity': -84, 'label': [{'label': '슬픔/우울', 'percentage': 47}, {'label': '분노/짜증', 'percentage': 33}, {'label': '불안/걱정', 'percentage': 20}], 'tag': ['#불안한', '#지친']}
             return_result =  {
                 "mood_score" : polarity, #Spring의 moodScore
-                "details" : [{"emotion_type": item["label"], "percentage": item["percentage"]} for item in labels], #Spring의 details
+                "details" : [{"mood_type": item["label"], "percentage": item["percentage"]} for item in labels], #Spring의 details
                 "tags": tags
             }
             
