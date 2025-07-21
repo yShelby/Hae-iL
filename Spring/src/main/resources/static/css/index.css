@@ -197,11 +197,11 @@ body {
     margin-top: 0;
 }
 
-/* [추가] 내비게이션 메뉴 스타일 */
 .main-nav {
-    margin-top: 2rem;
-    margin-bottom: 2rem;
-    text-align: left;
+    /* [수정] 기존 margin-top/bottom을 좀 더 명확한 간격으로 조정 */
+    margin-top: 40px; /* 사용자 정보 영역과 메뉴 사이의 간격 */
+    border-top: 1px solid #34495e; /* 구분선 추가 */
+    padding-top: 20px; /* 구분선과 메뉴 사이의 간격 */
 }
 
 .main-nav ul {
@@ -210,24 +210,45 @@ body {
     margin: 0;
 }
 
-.main-nav li a {
+.main-nav li {
+    margin-bottom: 8px; /* 메뉴 아이템 간의 수직 간격 */
+}
+
+/* [수정] a 태그가 아닌 button 태그에 스타일을 적용 */
+.main-nav button {
+    /* 버튼 기본 스타일 초기화 */
+    background: none;
+    border: none;
+    padding: 0;
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
+    outline: inherit;
+
+    /* 커스텀 스타일 적용 */
     display: block;
+    width: 100%;
     padding: 15px 20px;
     color: var(--light-text);
     text-decoration: none;
+    text-align: left; /* 텍스트 왼쪽 정렬 */
     border-radius: 8px;
     transition: background-color 0.2s, color 0.2s;
     font-size: 16px;
 }
 
-.main-nav li a:hover {
+.main-nav button:hover {
     background-color: #34495e;
     color: white;
 }
 
-/* JavaScript가 현재 경로와 일치하는 메뉴에 동적으로 추가해 줄 클래스 */
+/* [삭제] .active 클래스는 JavaScript로 동적 제어가 필요하며,
+   Thymeleaf와 React가 분리된 현 구조에서는 구현이 복잡합니다.
+   우선순위가 높은 기능이 아니므로 일단 제거하고, 필요 시 추후 구현을 논의 */
+/*
 .main-nav li a.active {
     background-color: var(--primary-color);
     color: white;
     font-weight: 700;
 }
+*/

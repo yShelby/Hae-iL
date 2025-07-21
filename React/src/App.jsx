@@ -10,7 +10,7 @@
 //   3️⃣ MainLayout 내부의 <Routes>가 다시 세부 경로 처리 (다이어리, 캘린더, 갤러리 등등)
 
 import React from 'react';
-import {Routes, Route, useLocation} from 'react-router-dom';
+import {Routes, Route, useLocation, useNavigate} from 'react-router-dom';
 import MainLayout from './layouts/MainLayout.jsx';
 import DiaryLayout from "@/layouts/DiaryLayout.jsx";
 import DiaryWritePage from "@pages/DiaryWritePage.jsx";
@@ -35,7 +35,17 @@ import Calendar from "@features/calendar/Calendar.jsx";
  */
 const AnimatedRoutes = () => {
     const location = useLocation();
+    const navigate = useNavigate();
 
+    // [추가] React의 navigate 함수를 전역 '우체통'에 할당
+    // useEffect를 사용하여 컴포넌트가 렌더링될 때 안정적으로 할당되도록 한다.
+    React.useEffect(() => {
+        // window.haeIlHistory 객체가 존재하는지 확인하고 navigate 함수를 할당
+        if (window.haeIlHistory) {
+            window.haeIlHistory.navigate = navigate;
+        }
+    }, [navigate]); // navigate 함수가 변경될 때만 다시 실행된다(일반적으로는 한 번만 실행).
+    
     // 가상 스크롤 훅을 호출하여 이 컴포넌트가 렌더링될 때 스크롤 제어를 활성화
     // useVirtualScroll();
 
