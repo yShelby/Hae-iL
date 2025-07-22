@@ -1,8 +1,10 @@
 #  감정 분석 코드 파일
-from Flask.model.ai_name import tokenizer_6, model_6, device, tokenizer_2C, model_2C
+from model.ai_name import (tokenizer_6, model_6, device, tokenizer_2C, model_2C)
 from model.utils import label2mood_6
 import torch
+import numpy as np
 
+# 긍정/부정 예측 : WhitePeak/bert-base-cased-Korean-sentiment 사용
 def predict_polarity(text):
     inputs = tokenizer_2C(text, return_tensors="pt", truncation=True, padding=True)
     # 인풋딕셔너리에 토크나이저_2C로 토큰화한 데이터를 넣는다.
@@ -42,7 +44,9 @@ def predict_polarity(text):
     else:
         print("부정 판단")
         return "부정", polarity_probs, pos_prob, neg_prob
-    
+
+# 감정 라벨 예측 : Jinuuuu/KoELECTRA_fine_tunning_emotion
+
 def predict_6_moods(text, top_k=3):
     inputs = tokenizer_6(text, return_tensors="pt", padding=True, truncation=True, max_length=512)
     inputs = {k: v.to(device) for k, v in inputs.items()}
@@ -50,6 +54,7 @@ def predict_6_moods(text, top_k=3):
         logits = model_6(**inputs).logits
     probs = torch.softmax(logits, dim=1).squeeze().cpu().numpy()
     top_idx = probs.argsort()[::-1][:top_k]
+
     return [(label2mood_6[idx], round(float(probs[idx]), 2)) for idx in top_idx], probs
 
 def two_stage_mood_classification(text):
@@ -58,7 +63,7 @@ def two_stage_mood_classification(text):
     print(f"polarity: {polarity}, polarity_probs: {polarity_probs}")
     top_labels, label_probs = predict_6_moods(text)
     print(f"top_labels: {top_labels}")
-    polarity_result = int(round((pos_prob - neg_prob)*100, 0))
+    polarity_result = int(np.round((pos_prob - neg_prob)*100, 0))
     
         # 여기 mood_probs는 numpy.ndarray임
     return {
