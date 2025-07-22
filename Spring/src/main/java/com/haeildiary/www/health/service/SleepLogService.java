@@ -2,6 +2,7 @@ package com.haeildiary.www.health.service;
 
 import com.haeildiary.www.auth.entity.UserEntity;
 import com.haeildiary.www.auth.repository.UserRepository;
+import com.haeildiary.www.dashboard.todolist.service.TodoListService;
 import com.haeildiary.www.health.dto.SleepLogDto;
 import com.haeildiary.www.health.entity.SleepLog;
 import com.haeildiary.www.health.repository.SleepLogRepository;
@@ -21,6 +22,7 @@ import java.util.NoSuchElementException;
 public class SleepLogService {
     private final SleepLogRepository sleepLogRepository;
     private final UserRepository userRepository;
+    private final TodoListService todoListService; // ✅ 추가: 의존성 주입
 
     /**
      * 🛌 수면 기록 저장
@@ -48,6 +50,15 @@ public class SleepLogService {
 
         SleepLog saved = sleepLogRepository.save(sleepLog);
 
+        // 추가
+        try {
+            if (dto.getSleepDate().isEqual(LocalDate.now())) {
+                todoListService.markAsCompleted(userId, "sleep");
+            }
+        } catch (Exception e) {
+            log.error("수면 기록 저장 후 TodoList 업데이트 실패: {}", e.getMessage());
+        }
+
         return SleepLogDto.Response.fromEntity(saved);
     }
 
@@ -68,6 +79,15 @@ public class SleepLogService {
         sleepLog.setWaketime(dto.getWaketime());
         sleepLog.setTotalHours(calculateSleepHours(dto.getBedtime(), dto.getWaketime()));
 
+        // 수정 시에도 미션 완료 로직 추가
+        try {
+            if (dto.getSleepDate().isEqual(LocalDate.now())) {
+                todoListService.markAsCompleted(userId, "sleep");
+            }
+        } catch (Exception e) {
+            log.error("수면 기록 수정 후 TodoList 업데이트 실패: {}", e.getMessage());
+        }
+
         return SleepLogDto.Response.fromEntity(sleepLog);
     }
 
@@ -84,7 +104,17 @@ public class SleepLogService {
             throw new SecurityException("User does not have permission to delete this sleep log.");
         }
 
+        LocalDate sleepDate = sleepLog.getSleepDate(); // ✅ 삭제 전에 날짜 정보 저장
         sleepLogRepository.delete(sleepLog);
+
+        // 추가
+        try {
+            if (sleepDate.isEqual(LocalDate.now())) {
+                todoListService.markAsIncomplete(userId, "sleep");
+            }
+        } catch (Exception e) {
+            log.error("수면 기록 삭제 후 TodoList 업데이트 실패: {}", e.getMessage());
+        }
     }
 
     /**

@@ -22,13 +22,13 @@ public class TagService {
      * 여러 태그 저장 - 일기마다 별도 태그 엔티티 생성
      */
     @Transactional
-    public List<Tag> saveOrUpdateTags(List<TagDto> tagDtoList, DiaryEntity diaryEntity) {
+    public List<Tag> saveOrUpdateTags(List<TagDto> tagDTOList, DiaryEntity diaryEntity) {
         // 기존 태그 삭제
         tagRepository.deleteByDiaryDiaryId(diaryEntity.getDiaryId());
 
         // 새 태그 저장
         List<Tag> savedTags = new ArrayList<>();
-        for (TagDto dto : tagDtoList) {
+        for (TagDto dto : tagDTOList) {
             Tag tag = new Tag();
             tag.setTagName(dto.getTagName());
             tag.setDiary(diaryEntity);

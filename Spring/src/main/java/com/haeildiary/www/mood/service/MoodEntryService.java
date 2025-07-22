@@ -2,13 +2,11 @@ package com.haeildiary.www.mood.service;
 
 
 import com.haeildiary.www.diary.entity.DiaryEntity;
-import com.haeildiary.www.mood.dto.MoodEntryDto;
+import com.haeildiary.www.mood.dto.MoodEntryDTO;
 import com.haeildiary.www.mood.entity.MoodEntry;
 import com.haeildiary.www.mood.repository.MoodEntryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-
 
 @Service
 @RequiredArgsConstructor
@@ -17,7 +15,7 @@ public class MoodEntryService {
     // 무드 엔트리 저장소
     private final MoodEntryRepository moodEntryRepository;
 
-    public MoodEntry saveOrUpdateMoodEntry(MoodEntryDto dto, DiaryEntity diaryEntity) {
+    public MoodEntry saveOrUpdateMoodEntry(MoodEntryDTO dto, DiaryEntity diaryEntity) {
         // diaryId로 기존 데이터 조회
         MoodEntry existing = moodEntryRepository.findByDiaryDiaryId(diaryEntity.getDiaryId()).orElse(null);
         if (existing != null) {

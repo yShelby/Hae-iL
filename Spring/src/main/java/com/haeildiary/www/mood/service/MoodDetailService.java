@@ -2,7 +2,7 @@ package com.haeildiary.www.mood.service;
 
 
 import com.haeildiary.www.diary.entity.DiaryEntity;
-import com.haeildiary.www.mood.dto.MoodDetailDto;
+import com.haeildiary.www.mood.dto.MoodDetailDTO;
 import com.haeildiary.www.mood.entity.MoodDetail;
 import com.haeildiary.www.mood.repository.MoodDetailRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,27 +18,27 @@ public class MoodDetailService {
     private final MoodDetailRepository moodDetailRepository;
 
     @Transactional
-    public void saveOrUpdateMoodDetails(List<MoodDetailDto> dtoList, DiaryEntity diaryEntity) {
+    public void saveOrUpdateMoodDetails(List<MoodDetailDTO> dtoList, DiaryEntity diaryEntity) {
         // 기존 데이터 삭제
         moodDetailRepository.deleteByDiaryDiaryId(diaryEntity.getDiaryId());
 
         // 새 데이터 저장
-        for (MoodDetailDto dto : dtoList) {
+        for (MoodDetailDTO dto : dtoList) {
             MoodDetail moodDetail = new MoodDetail();
             moodDetail.setDiary(diaryEntity);
-            moodDetail.setEmotionType(dto.getEmotionType());
+            moodDetail.setMoodType(dto.getMoodType());
             moodDetail.setPercentage(dto.getPercentage());
             moodDetailRepository.save(moodDetail);
         }
     }
 
     // 조회용 (diaryId로 MoodDetail 목록 조회)
-    public List<MoodDetailDto> findByDiaryId(Long diaryId) {
+    public List<MoodDetailDTO> findByDiaryId(Long diaryId) {
         List<MoodDetail> moodDetails = moodDetailRepository.findByDiaryDiaryId(diaryId);
         return moodDetails.stream()
                 .map(entity -> {
-                    MoodDetailDto dto = new MoodDetailDto();
-                    dto.setEmotionType(entity.getEmotionType());
+                    MoodDetailDTO dto = new MoodDetailDTO();
+                    dto.setMoodType(entity.getMoodType());
                     dto.setPercentage(entity.getPercentage());
                     dto.setDiaryId(diaryId);
                     return dto;

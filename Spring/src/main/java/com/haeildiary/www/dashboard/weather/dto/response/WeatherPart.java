@@ -9,6 +9,5 @@ import lombok.Setter;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class WeatherPart {
     private String main;
-    private String description;
     private String icon;
 }

@@ -12,26 +12,20 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class FlaskResponseDto {
+public class FlaskResponseDTO {
     @JsonProperty("mood_score")
     private Integer moodScore;
 
-    private String sentiment;
-
-    private List<FlaskEmotionDetailDTO> details;
+    private List<FlaskMoodDetailDTO> details;
 
     private List<String> tags;
-
-    @JsonProperty("custom_tags")
-    private List<String> customTags;
 
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class FlaskEmotionDetailDTO {
-        @JsonProperty("emotion_type")
-        private String emotionType;
-
-        private Double percentage;
+    public static class FlaskMoodDetailDTO {
+        @JsonProperty("mood_type")
+        private String moodType;
+        private Integer percentage;
     }
 }

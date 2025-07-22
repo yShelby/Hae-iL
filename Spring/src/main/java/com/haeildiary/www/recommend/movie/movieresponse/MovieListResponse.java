@@ -1,6 +1,6 @@
 package com.haeildiary.www.recommend.movie.movieresponse;
 
-import com.haeildiary.www.mood.dto.MoodDetailDto;
+import com.haeildiary.www.mood.dto.MoodDetailDTO;
 import com.haeildiary.www.recommend.movie.moviedto.MovieDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -22,7 +22,7 @@ import java.util.Map;
 public class MovieListResponse {
     private List<MovieDto> combinedResults;
     private Map<String, List<MovieDto>> resultsByEmotion;
-    private List<MoodDetailDto> moods;
+    private List<MoodDetailDTO> moods;
     private boolean noChange = false; // 변경 여부 플래그 기본값 false
 
     public static MovieListResponse noChange() {

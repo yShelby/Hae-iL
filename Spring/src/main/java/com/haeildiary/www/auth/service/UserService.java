@@ -1,6 +1,5 @@
 package com.haeildiary.www.auth.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.haeildiary.www.auth.config.AESUtil;
 import com.haeildiary.www.auth.dto.RegisterRequestDto;
 import com.haeildiary.www.auth.entity.RefreshToken;
@@ -17,9 +16,11 @@ import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -65,18 +66,6 @@ public class UserService {
         newUser.setName(requestDto.getName());
         newUser.setEncryptedPhoneNumber(encryptedPhone);
         newUser.setNickname(requestDto.getNickname());
-
-        // 감정/장르 JSON 변환
-        ObjectMapper objectMapper = new ObjectMapper();
-        try {
-            String emotionJson = objectMapper.writeValueAsString(requestDto.getInitialEmotion());
-            String genreJson = objectMapper.writeValueAsString(requestDto.getInitialGenre());
-
-            newUser.setInitialEmotion(emotionJson);
-            newUser.setInitialGenre(genreJson);
-        } catch (Exception e) {
-            throw new RuntimeException("JSON 직렬화 실패", e);
-        }
 
         UserEntity savedUser = userRepository.save(newUser); // DB 저장
 

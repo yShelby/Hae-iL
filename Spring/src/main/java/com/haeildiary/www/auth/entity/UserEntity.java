@@ -7,6 +7,7 @@ import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.io.Serializable; // Serializable 임포트 추가
+import java.time.LocalDate;
 import java.time.LocalDateTime; // LocalDateTime 임포트 (Java 8 이상)
 
 @Entity
@@ -60,9 +61,9 @@ public class UserEntity implements Serializable { // Serializable 구현 추가
     // 이 필드는 "하루에 한 번만 쿠키를 열 수 있다"는 핵심 비즈니스 로직을 구현하기 위해
     // 반드시 필요한 데이터 사용자가 마지막으로 쿠키를 연 날짜를 저장하여 오늘 날짜와 비교하는 용도로 사용
     @Column(name = "last_fortune_opened_date")
-    private LocalDateTime lastFortuneOpenedDate;
+    private LocalDate lastFortuneOpenedDate;
 
-    public void updateLastFortuneOpenedDate(LocalDateTime date) {
+    public void updateLastFortuneOpenedDate(LocalDate date) {
         this.lastFortuneOpenedDate = date;
     }
 
@@ -78,8 +79,8 @@ public class UserEntity implements Serializable { // Serializable 구현 추가
 //    }
 
     // 이 필드는 초기 감정 상태와 장르 상태를 JSON 형태로 저장하기 위해 추가
-    @Column(name="initial_emotion", nullable = false,columnDefinition = "json")
+    @Column(name="initial_emotion", nullable = true,columnDefinition = "json")
     private String initialEmotion; // 초기 감정 상태를 JSON 형태로 저장
-    @Column(name="inital_genre", nullable = false,columnDefinition = "json")
+    @Column(name="inital_genre", nullable = true,columnDefinition = "json")
     private String initialGenre; // 초기 장르 상태를 JSON 형태로 저장
 }

@@ -10,6 +10,6 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 public class EmotionGenreMapId implements Serializable {
-    private String emotionType;
+    private String moodType;
     private Integer genreCode;
 }

@@ -16,8 +16,8 @@ import lombok.Setter;
 public class EmotionGenreMapEntity {
 
     @Id
-    @Column(name = "emotion_type")
-    private String emotionType;
+    @Column(name = "mood_type")
+    private String moodType;
 
     @Id
     @Column(name = "genre_code")

@@ -17,4 +17,9 @@ public class FortuneEntity {
 
     @Column(nullable = false, columnDefinition = "TEXT")
     private String message;
+
+    // CSV 데이터 주입을 위한 생성자
+    public FortuneEntity(String message) {
+        this.message = message;
+    }
 }

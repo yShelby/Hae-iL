@@ -5,6 +5,7 @@ import com.haeildiary.www.auth.repository.UserRepository;
 import com.haeildiary.www.auth.user.CustomUser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.authentication.DisabledException;

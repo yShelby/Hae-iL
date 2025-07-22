@@ -7,8 +7,8 @@ import lombok.Getter;
 @Getter
 @Builder
 public class WeatherDto {
-    private String main; // 날씨 상태
-    private String description; // 상세 설명
-    private String icon;
-    private Double temp;
+    private String city;     // 1. 도시 (시/구/동)
+    private String icon;     // 2. 날씨 아이콘 ID
+    private String main;     // 3. 날씨 내용 (예: "Clear", "Clouds")
+    private Double temp;     // 4. 현재 온도
 }

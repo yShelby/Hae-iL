@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface EmotionGenreMapRepository extends JpaRepository<EmotionGenreMapEntity, Integer> {
 
-    @Query("select e from EmotionGenreMapEntity e where e.emotionType = :emotionType order by e.genreWeight desc")
-    List<EmotionGenreMapEntity> findByEmotionTypeOrdered(@Param("emotionType") String emotionType);
+    @Query("select e from EmotionGenreMapEntity e where e.moodType = :moodType order by e.genreWeight desc")
+    List<EmotionGenreMapEntity> findByEmotionTypeOrdered(@Param("moodType") String emotionType);
 
 }

@@ -8,16 +8,17 @@ import lombok.NoArgsConstructor;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Data
 @NoArgsConstructor
-public class MoodDetailDto {
+public class MoodDetailDTO {
     private Long detailId;
     private Integer percentage;
-    private String emotionType;
+    private String moodType;
     private Long diaryId;
 
-    public static MoodDetailDto fromEntity(MoodDetail moodDetail) {
-        MoodDetailDto dto = new MoodDetailDto();
-        dto.setEmotionType(moodDetail.getEmotionType());
+    public static MoodDetailDTO fromEntity(MoodDetail moodDetail){
+        MoodDetailDTO dto = new MoodDetailDTO();
+        dto.setMoodType(moodDetail.getMoodType());
         dto.setPercentage(moodDetail.getPercentage());
         return dto;
     }
+
 }

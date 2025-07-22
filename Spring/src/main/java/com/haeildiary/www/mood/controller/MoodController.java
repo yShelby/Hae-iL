@@ -2,7 +2,7 @@ package com.haeildiary.www.mood.controller;
 
 
 import com.haeildiary.www.auth.user.CustomUser;
-import com.haeildiary.www.mood.dto.FlaskResponseDto;
+import com.haeildiary.www.mood.dto.FlaskResponseDTO;
 import com.haeildiary.www.mood.service.AllService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/analyze")
 @RequiredArgsConstructor
 @CrossOrigin(origins = "http://localhost:5173") // accessing different ports(5173 vs 8080)
-public class EmotionController {
+public class MoodController {
 
     private final AllService allService;
     /**
@@ -25,11 +25,11 @@ public class EmotionController {
      * @return 감정 분석 결과 DTO
      */
     @GetMapping("/{diaryId}")
-    public ResponseEntity<FlaskResponseDto> getEmotionByDiaryId(
+    public ResponseEntity<FlaskResponseDTO> getMoodByDiaryId(
             @PathVariable Long diaryId,
             @AuthenticationPrincipal CustomUser customUser) {
 
-        FlaskResponseDto result = allService.findByDiary(diaryId);
+        FlaskResponseDTO result = allService.findByDiary(diaryId);
 
         if (result == null) {
             return ResponseEntity.notFound().build();

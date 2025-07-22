@@ -32,7 +32,7 @@ public class CsvEmotionGenreLoaderService implements CommandLineRunner {
 
             while ((line = reader.readNext()) != null) {
                 EmotionGenreMapEntity entity = new EmotionGenreMapEntity();
-                entity.setEmotionType(line[0]);
+                entity.setMoodType(line[0]);
                 entity.setGenreCode(Integer.parseInt(line[2]));
                 entity.setGenreName(line[1]);
                 entity.setGenreWeight(Double.parseDouble(line[3]));

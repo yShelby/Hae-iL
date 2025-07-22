@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class MoodEntryDto {
+public class MoodEntryDTO {
     private Long diaryId;
     private Integer moodScore;
 }

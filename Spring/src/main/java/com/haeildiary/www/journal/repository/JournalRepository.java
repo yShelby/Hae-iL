@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface JournalRepository extends JpaRepository<JournalEntity, Long> {
@@ -32,4 +33,17 @@ public interface JournalRepository extends JpaRepository<JournalEntity, Long> {
 
     // 추가 - dashboardCount를 위한 사용자의 전체 저널(리뷰) 개수를 세는 메소드
     long countByUser(UserEntity user);
+
+    /**
+     * 추가 - 특정 사용자와 기간에 해당하는 모든 저널 작성 날짜를 중복 없이 조회합
+     * @param userId User의 ID
+     * @param startDate 조회 시작일
+     * @param endDate 조회 종료일
+     * @return 날짜 목록 (List<LocalDate>)
+     */
+    @Query("SELECT DISTINCT j.journalDate FROM JournalEntity j WHERE j.user.userId = :userId AND j.journalDate BETWEEN :startDate AND :endDate")
+    List<LocalDate> findDistinctByUserIdAndDateBetween(@Param("userId") Integer userId, @Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
+
+    // 추가 - 특정 사용자가 특정 날짜에 저널을 작성했는지 확인하는 메서드
+    boolean existsByUser_UserIdAndJournalDate(Integer userId, LocalDate date);
 }

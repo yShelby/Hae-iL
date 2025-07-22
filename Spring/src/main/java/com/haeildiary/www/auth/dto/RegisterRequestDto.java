@@ -37,9 +37,9 @@ public class RegisterRequestDto {
 
     private String profileImage;
 
-//    @ValidEmotionSelection
+    //    @ValidEmotionSelection
     private List<String> initialEmotion;
 
-//    @ValidGenreSelection
+    //    @ValidGenreSelection
     private List<String> initialGenre;
 }

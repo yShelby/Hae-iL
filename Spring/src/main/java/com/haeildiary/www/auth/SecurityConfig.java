@@ -30,6 +30,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -81,10 +82,11 @@ public class SecurityConfig {
 //               .requestMatchers("/**").permitAll() // 항상 허용
                 .requestMatchers("/", "/login/jwt","/need-login", "/register", "/register/newUser",
                         "/reissue", "/find-email", "/find-email/verify", "/find-password", "/find-password/send", "/find-password/login",
-                        "/api/s3/profile-presigned-url", "/diary", "/diary/**",
-                        "/api/dashboard", "/api/dashboard/**", "/movie/**" // dashboard도 접근 권한 추가
+                        "/api/s3/profile-presigned-url", "/diary", "/diary/**", "/movie",
+                        "/api/dashboard", "/api/dashboard/**", "/calendar", "/calendar/**" // dashboard, calendar 접근 권한 추가
                 ).permitAll() // 인증 불필요 경로
-                .requestMatchers("/css/**","/js/**","/image/**").permitAll() // 정적 리소스 허용
+                // 경로 image -> images로 수정
+                .requestMatchers("/css/**","/js/**","/images/**").permitAll() // 정적 리소스 허용
                 .anyRequest().authenticated() // 나머지 모든 요청은 반드시 인증 필요
         );
 
@@ -107,6 +109,8 @@ public class SecurityConfig {
         return http.build();  // 최종적으로 Security 설정을 빌드하여 반환
     }
 
+
+
     // CORS 설정 Bean 추가
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
@@ -118,6 +122,12 @@ public class SecurityConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration); // 모든 경로에 대해 CORS 설정 적용
         return source;
+    }
+
+    // WebSecurityCustomizer 빈 추가: 정적 리소스 경로를 Spring Security 필터 체인에서 완전히 제외
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return (web) -> web.ignoring().requestMatchers("/css/**", "/js/**", "/image/**");
     }
 
 }

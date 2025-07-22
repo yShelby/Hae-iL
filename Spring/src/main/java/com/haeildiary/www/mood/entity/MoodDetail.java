@@ -1,6 +1,7 @@
 package com.haeildiary.www.mood.entity;
 
 import com.haeildiary.www.diary.entity.DiaryEntity;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -28,7 +29,7 @@ public class MoodDetail {
     @Column(name = "percentage", nullable = false)
     private Integer percentage;
 
-    @Column(name = "emotion_type",length = 50)
-    private String emotionType;
+    @Column(name = "mood_type",length = 50)
+    private String moodType;
 
 }
