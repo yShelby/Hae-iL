@@ -5,7 +5,9 @@ import NormalBarChart from "@features/charts/NormalBarChart.jsx";
 import RadarChart from "@features/charts/RadarChart.jsx";
 import {Button} from "@shared/UI/Button.jsx";
 import {useState} from "react";
+import {CategoryScale, Chart, LinearScale} from "chart.js";
 
+Chart.register(LinearScale,CategoryScale);
 
 export default function Charts(){
 
@@ -15,6 +17,10 @@ export default function Charts(){
     // 2. 버튼 명과 토글 핸들러
     const isWeekly = mode === 'weekly';
     const toggleMode = () => setMode(isWeekly ? 'monthly' : 'weekly');
+
+    // === 차트 디폴트 스타일 ===
+    Chart.defaults.font.family = defaultChartStyle.fontFamily;
+    Chart.defaults.font.weight = defaultChartStyle.fontWeight;
 
     return(
         <div className={"charts-page"}>
@@ -32,6 +38,8 @@ export default function Charts(){
                             data={dummyData.weeklyScores}
                             chartTitle="주간 기분 변화"
                             chartStyle={weeklyLineStyle}
+                            chartFontSize={chartFontSize.weeklyLineStyle}
+                            gridColor = {gridColor}
                         />
                     ) : (
                         <LineCharts
@@ -39,34 +47,45 @@ export default function Charts(){
                             data={dummyData.monthlyScores}
                             chartTitle="월간 기분 변화"
                             chartStyle={monthlyLineStyle}
+                            chartFontSize={chartFontSize.monthlyLineStyle}
+                            gridColor = {gridColor}
                         />
                     )}
                 </div>
             <div className={"sleep-exercise-chart"}>
                 <div className={"sleep-chart"}>
                     <h3>수면 차트</h3>
-                    <FloatingBarChart dates = {dummyData.weeklyDates} data = {dummyData.sleepData} chartTitle = {"주간 수면 시간"} chartStyle = {sleepBarStyle}/>
+                    <FloatingBarChart dates = {dummyData.weeklyDates} data = {dummyData.sleepData} chartTitle = {"주간 수면 시간"} chartStyle = {sleepBarStyle} chartFontSize={chartFontSize.sleepBarStyle} gridColor = {gridColor} />
                 </div>
                 <div className={"exercise-chart"}>
                     <h3>운동 차트</h3>
-                    <NormalBarChart dates = {dummyData.weeklyDates} data = {dummyData.exerciseData} chartTitle = {"주간 운동 시간"} chartStyle = {exerciseBarStyle}/>
+                    <NormalBarChart dates = {dummyData.weeklyDates} data = {dummyData.exerciseData} chartTitle = {"주간 운동 시간"} chartStyle = {exerciseBarStyle} chartFontSize={chartFontSize.exerciseBarStyle} gridColor = {gridColor} />
                 </div>
             </div>
             </div>
             <div className={"diagnosis-chart"}>
                 <h3>자가진단 차트</h3>
-                <RadarChart previousData = {dummyData.lastMonthData} data = {dummyData.thisMonthData} chartStyleThis = {diagnosisRadarStyle} chartStylePrevious = {previousDiagnosisRadarStyle} />
+                <RadarChart previousData = {dummyData.lastMonthData} data = {dummyData.thisMonthData} chartStyleThis = {diagnosisRadarStyle} chartStylePrevious = {previousDiagnosisRadarStyle} chartFontSize={chartFontSize.diagnosisRadarStyle} gridColor = {gridColor}/>
             </div>
         </div>
     )
 }
 
 //=============================================================
-//=== chart 스타일 ===
+//=== 테마 분기에 따른 chart 스타일 ===
+const defaultChartStyle = {
+    fontFamily : 'SeoYoon',
+    fontWeight : 'normal',
+}
+
+const gridColor = {
+    color: 'rgba(0, 0, 0, 0.06)'
+}
+
 const weeklyLineStyle = {
     borderColor: 'rgba(75,192,192,1)',
     backgroundColor: 'rgba(75,192,192,0.1)',
-    fill: false,
+    fill: 'start',
     tension: 0.4,
     pointRadius: 3,
 }
@@ -74,7 +93,7 @@ const weeklyLineStyle = {
 const monthlyLineStyle = {
     borderColor: 'rgba(75,192,192,1)',
     backgroundColor: 'rgba(75,192,192,0.1)',
-    fill: false,
+    fill: 'start',
     tension: 0.4,
     pointRadius: 3,
 }
@@ -84,12 +103,14 @@ const sleepBarStyle = {
     borderColor: "rgba(54, 162, 235, 1)",
     borderWidth: 2,
     borderSkipped: false,
+    borderRadius: 7,
 }
 
 const exerciseBarStyle = {
     backgroundColor: "rgba(255, 206, 86, 0.5)",
     borderColor: "rgba(255, 206, 86, 1)",
     borderWidth: 2,
+    borderRadius: 10,
 }
 
 const diagnosisRadarStyle = {
@@ -97,7 +118,7 @@ const diagnosisRadarStyle = {
     borderColor: 'rgba(255,99,132,1)',
     pointBackgroundColor: 'rgba(255,99,132,1)',
     pointBorderColor: 'rgba(255,99,132,1)',
-    pointRadius: 4,
+    pointRadius: 2,
     borderWidth: 2,
 }
 
@@ -106,8 +127,17 @@ const previousDiagnosisRadarStyle = {
     borderColor: 'rgba(54,162,235,1)',
     pointBackgroundColor: 'rgba(54,162,235,1)',
     pointBorderColor: 'rgba(54,162,235,1)',
-    pointRadius: 4,
+    pointRadius: 2,
     borderWidth: 2,
+    borderDash: [3, 3],
+}
+
+const chartFontSize = {
+    weeklyLineStyle : 12,
+    monthlyLineStyle : 9,
+    sleepBarStyle : 12,
+    exerciseBarStyle : 12,
+    diagnosisRadarStyle : 16
 }
 
 //=============================================================

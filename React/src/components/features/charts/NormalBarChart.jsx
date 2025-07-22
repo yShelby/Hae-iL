@@ -17,7 +17,7 @@ ChartJS.register(
     Legend
 );
 
-export default function NormalBarChart({ dates, data, chartTitle, chartStyle }) {
+export default function NormalBarChart({ dates, data, chartTitle, chartStyle, chartFontSize, gridColor }) {
     const chartData = {
         labels: dates,
         datasets: [
@@ -33,7 +33,6 @@ export default function NormalBarChart({ dates, data, chartTitle, chartStyle }) 
         responsive: true,
         plugins: {
             legend: { display: false },
-            title: { display: true, text: chartTitle },
             tooltip: {
                 callbacks: {
                     label(ctx) {
@@ -44,11 +43,24 @@ export default function NormalBarChart({ dates, data, chartTitle, chartStyle }) 
             }
         },
         scales: {
+            x : {
+                ticks: {
+                    font:{
+                        size:chartFontSize
+                    }
+                },
+                grid: {
+                    ...gridColor,
+                },
+            },
             y: {
                 beginAtZero: true,
                 ticks: {
                     stepSize: 30,
                     callback: val => formatMinutes(val),
+                },
+                grid: {
+                    display: false
                 }
             }
         }

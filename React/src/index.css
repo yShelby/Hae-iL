@@ -1,5 +1,12 @@
 /* index.css */
 
+/* 폰트 */
+@font-face {
+    font-family: 'SeoYoon'; /* 사용할 폰트의 이름을 정의 */
+    src: url('./assets/fonts/SeoYoon.ttf'); /* 폰트 파일의 위치 */
+}
+
+
 *, *::before, *::after {
     box-sizing: border-box;
     margin: 0;
@@ -42,3 +49,4 @@ body, html {
 .main-content, .main-content-area {
     overflow: hidden !important;
 }
+

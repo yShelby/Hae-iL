@@ -19,7 +19,7 @@ ChartJS.register(
 );
 
 
-export default function RadarChart({previousData, data, chartStyleThis, chartStylePrevious}) {
+export default function RadarChart({previousData, data, chartStyleThis, chartStylePrevious, chartFontSize, gridColor}) {
 
     // === 1. 공통 라벨/총점 ===
     const LABELS = ['우울', '불안', '스트레스'];
@@ -54,10 +54,11 @@ export default function RadarChart({previousData, data, chartStyleThis, chartSty
         plugins: {
             legend: {
                 display: true,
+                reverse: true,
                 labels: {
                     usePointStyle: true,       // 포인트 스타일 사용
                     pointStyle: 'line',        // 'circle', 'rect', 'line', 'triangle' 등 가능
-                    pointStyleWidth: 20
+                    pointStyleWidth: 20,
                 },
             },
             tooltip: {
@@ -69,7 +70,7 @@ export default function RadarChart({previousData, data, chartStyleThis, chartSty
                         const rawScore = datasetIndex === 0 ? data[i] : previousData[i];
                         const maxScore = MAX_SCORES[i];
                         const percent = context.formattedValue;
-                        return `${context.dataset.label}: ${LABELS[i]} ${rawScore} / ${maxScore} (${percent}점)`;
+                        return `${context.dataset.label}: ${Math.round(percent)}점`;
                     }
                 }
             }
@@ -79,14 +80,14 @@ export default function RadarChart({previousData, data, chartStyleThis, chartSty
                 min: 0,
                 max: 100,
                 grid: {
-                    circular: true  // 모양 원형으로
+                    circular: true,  // 모양 원형으로
                 },
                 ticks: {
                     stepSize: 20,
-                    callback: (v) => `${v}`
+                    callback: (v) => `${v}`,
                 },
                 pointLabels: {
-                    font: { size: 16 }
+                    font: { size: chartFontSize }
                 }
             }
         }

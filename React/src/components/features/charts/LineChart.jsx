@@ -24,7 +24,7 @@ ChartJS.register(
 );
 
 
-export default function LineChart({ dates, data, chartTitle, chartStyle }){
+export default function LineChart({ dates, data, chartTitle, chartStyle, chartFontSize, gridColor }){
 
     // === Animation ===
     // 전체 애니메이션 시간(ms)
@@ -83,15 +83,34 @@ export default function LineChart({ dates, data, chartTitle, chartStyle }){
         animation,
         plugins: {
             legend: { display: false },
-            title: { display: true, text: chartTitle },
+            tooltip: {
+                callbacks: {
+                    label: function(context) {
+                        return `감정점수 : ${context.parsed.y}`;
+                    }
+                }
+            }
         },
         scales: {
             x: {
                 ticks:{
-                    autoSkip: false
-                }
+                    autoSkip: false,
+                    font:{
+                        size: chartFontSize
+                    },
+                },
+                grid:{
+                    ...gridColor,
+                },
             },
-            y: { min: -100, max: 100 },
+            y: {
+                min: -100,
+                max: 100,
+                grid: {
+                    display: false,
+
+                },
+            },
         },
     }), [chartTitle]);
 

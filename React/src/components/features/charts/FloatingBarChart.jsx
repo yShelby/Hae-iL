@@ -16,7 +16,7 @@ ChartJS.register(
     Legend
 );
 
-export default function SleepFloatingBarChart({dates, data, chartTitle, chartStyle}) {
+export default function SleepFloatingBarChart({dates, data, chartTitle, chartStyle, chartFontSize, gridColor}) {
 
     // 시간 계산 로직
     // 기본 로직
@@ -66,10 +66,10 @@ export default function SleepFloatingBarChart({dates, data, chartTitle, chartSty
     // data: [[normBed, normWake], ...]
     const normalizedData = data.map(arr => normalizeSleepTime(arr[0], arr[1]));
 
-    // y축 범위 자동계산 (pad 4시간 : minTime - 4h ~ maxTime + 4h)
+    // y축 범위 자동계산 (pad 3시간 : minTime - 3h ~ maxTime + 3h)
     const starts = normalizedData.map(([bed]) => bed);
     const ends   = normalizedData.map(([_, wake]) => wake);
-    const padding = 240;
+    const padding = 180;
     const yMin = Math.max(0, Math.min(...starts) - padding);
     const yMax = Math.min(SLEEP_DAY * 3, Math.max(...ends) + padding);
 
@@ -90,7 +90,6 @@ export default function SleepFloatingBarChart({dates, data, chartTitle, chartSty
         responsive: true,
         plugins: {
             legend: { display: false },
-            title: { display: true, text: chartTitle },
             tooltip: {
                 callbacks: {
                     label(ctx) {
@@ -104,6 +103,16 @@ export default function SleepFloatingBarChart({dates, data, chartTitle, chartSty
             },
         },
         scales: {
+            x: {
+                ticks: {
+                    font:{
+                        size:chartFontSize
+                    }
+                },
+                grid: {
+                    display: false
+                }
+            },
             y: {
                 min: yMin,
                 max: yMax,
@@ -112,7 +121,9 @@ export default function SleepFloatingBarChart({dates, data, chartTitle, chartSty
                     stepSize: 60,
                     callback: (value) => formatHM(value),
                 },
-                title: { display: true, text: '시간' },
+                grid: {
+                    ...gridColor,
+                },
             },
         },
     };
