@@ -47,7 +47,7 @@ export default function TimelineView({ data = [], selectedDate, onSelectDate, is
     const handleDateClick = (date) => {
         if (!checkLogin()) return; // 로그인 안되어 있으면 알림만 띄움
         onSelectDate && onSelectDate(date);
-        navigate(`/diary/date/${date}`);
+        navigate(`/diary/date/${date}`, { state: { animationType: 'none' } });
     };
 
     // 이전 주, 다음 주 이동
@@ -56,7 +56,7 @@ export default function TimelineView({ data = [], selectedDate, onSelectDate, is
         // onSelectDate && onSelectDate(formatDateToString(prevWeekDate));
         const prevWeekDateString = formatDateToString(prevWeekDate); // YYYY-MM-DD 형식으로 변환
         onSelectDate?.(prevWeekDateString);
-        navigate(`/diary/date/${prevWeekDateString}`);
+        navigate(`/diary/date/${prevWeekDateString}`, { state: { animationType: 'none' } });
     };
 
     const handleNextWeek = () => {
@@ -64,7 +64,7 @@ export default function TimelineView({ data = [], selectedDate, onSelectDate, is
         // onSelectDate && onSelectDate(formatDateToString(nextWeekDate));
         const nextWeekDateString = formatDateToString(nextWeekDate); // YYYY-MM-DD 형식으로 변환
         onSelectDate?.(nextWeekDateString);
-        navigate(`/diary/date/${nextWeekDateString}`);
+        navigate(`/diary/date/${nextWeekDateString}`, { state: { animationType: 'none' } });
     };
 
     // 달력에서 날짜 선택 시 처리
@@ -73,7 +73,7 @@ export default function TimelineView({ data = [], selectedDate, onSelectDate, is
         // onSelectDate && onSelectDate(formatDateToString(date));
         const dateString = formatDateToString(date); // YYYY-MM-DD 형식으로 변환
         onSelectDate?.(dateString);
-        navigate(`/diary/date/${dateString}`);
+        navigate(`/diary/date/${dateString}`, { state: { animationType: 'none' } });
     };
 
     // 버튼을 input 역할로 대체한 커스텀 컴포넌트

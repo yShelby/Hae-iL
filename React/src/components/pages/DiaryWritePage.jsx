@@ -63,7 +63,7 @@ const DiaryWritePage = () => {
     } = useOutletContext();
 
     // [추가] Zustand 스토어에서 임시 데이터 관련 상태와 함수를 가져온다.
-    const { drafts, setDraft, clearDraft } = useDiaryDraftStore();
+    const {drafts, setDraft, clearDraft} = useDiaryDraftStore();
     // [추가] 현재 선택된 날짜에 해당하는 임시 데이터를 가져온다.
     const draft = drafts[selectedDate];
 
@@ -125,14 +125,22 @@ const DiaryWritePage = () => {
         // [수정] 새 작성 모드일 때, 임시 데이터(draft)가 있으면 우선적으로 사용
         if (!editor) return
 
-        const hasDiary = !!(initialDiary&&initialDiary.diaryId);
+        const hasDiary = !!(initialDiary && initialDiary.diaryId);
         const hasDraft = !!draft;
         const sourceData = hasDiary ? initialDiary : (hasDraft ? draft : null);
         if (sourceData) {
             // 1. 폼 상태(제목, 날씨) 설정
-            setDiaryState({
-                title: sourceData.title || '',
-                weather: sourceData.weather || '맑음',
+            setDiaryState((prev) => {
+                if (
+                    prev.title !== sourceData.title ||
+                    prev.weather !== sourceData.weather
+                ) {
+                    return {
+                        title: sourceData.title || '',
+                        weather: sourceData.weather || '맑음',
+                    };
+                }
+                return prev;
             });
             // 2. 에디터 내용 설정
             try {
@@ -146,20 +154,33 @@ const DiaryWritePage = () => {
                 editor.commands.clearContent();
             }
         } else {
-                // 2. 데이터가 전혀 없는 경우 (완전 새 글)
-                resetForm();
-                editor.commands.clearContent();
+            // 2. 데이터가 전혀 없는 경우 (완전 새 글)
+            resetForm();
+            editor.commands.clearContent();
         }
 
-        // 3. 편집 상태(isEditing) 및 편집 가능 여부(editable) 설정
-        if (hasDiary || draft) {
+        // // 3. 편집 상태(isEditing) 및 편집 가능 여부(editable) 설정
+        // if (hasDiary || draft) {
+        //     setIsEditing(true);
+        //     editor.setEditable(!!user);
+        // } else {
+        //     setIsEditing(false);
+        //     editor.setEditable(false);
+        // }
+
+        // [수정]
+        // 기존의 `if (hasDiary || draft)` 조건은 임시 저장된 글(draft)만 있어도
+        // 자동으로 편집 모드로 진입시켜 "작성하기" 버튼을 건너뛰게 만들었다
+        // 오직 데이터베이스에 '저장된' 일기(hasDiary)가 있을 경우에만 자동으로 편집 모드가 되도록 변경
+        // 새 글을 작성하거나 임시 저장된 글이 있는 날짜를 선택했을 때 "작성하기" 버튼이 먼저 보인다
+        if (hasDiary) {
             setIsEditing(true);
             editor.setEditable(!!user);
         } else {
             setIsEditing(false);
             editor.setEditable(false);
         }
-    }, [initialDiary, editor, user, selectedDate]); // 의존성 추가
+    }, [initialDiary?.diaryId, editor, user, selectedDate]); // 의존성 추가
 
     // [추가] 사용자가 입력한 내용을 임시 저장하는 함수
     const saveDraft = useCallback(() => {
@@ -234,7 +255,7 @@ const DiaryWritePage = () => {
             {/* 추가 - 날짜 아래 질문을 표시 */}
             <div className="diary-meta-container">
                 {/* [수정] React error #185 방지를 위한 조건부 렌더링 */}
-                {question && <QuestionDisplay question={question} />}
+                {question && <QuestionDisplay question={question}/>}
             </div>
 
             {/* ✍️ 작성 전 안내 UI */}
