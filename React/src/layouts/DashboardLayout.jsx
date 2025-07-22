@@ -4,8 +4,6 @@ import Weather from "@features/dashboard/Weather.jsx";
 import {Outlet} from "react-router-dom";
 import FortuneCookie from "@features/dashboard/FortuneCookie.jsx";
 import DashboardCalendar from "@features/dashboard/DashboardCalendar.jsx";
-import {motion as Motion} from 'framer-motion';
-import {usePageAnimation} from "@/hooks/usePageAnimation.js";
 
 const DashboardLayout = () => {
 

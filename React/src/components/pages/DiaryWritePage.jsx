@@ -122,40 +122,10 @@ const DiaryWritePage = () => {
 
     // [수정] 기존 useEffect 로직을 임시 저장 기능에 맞게 통합하고 재구성
     useEffect(() => {
-        // if (!editor) return;
-        //
-        // const hasDiary = !!initialDiary;
-        // let content = '';
-        //
-        // try {
-        //     content = hasDiary && initialDiary.content
-        //         ? JSON.parse(initialDiary.content) : '';
-        // } catch (e) {
-        //     console.warn('initialDiary.content JSON parse error:', e);
-        //     content = '';
-        // }
-        //
-        // // 에디터 내용 동기화 (한 곳에서만 처리)
-        // if (JSON.stringify(editor.getJSON()) !== JSON.stringify(content)) {
-        //     editor.commands.setContent(content, false);
-        // }
-        //
-        // if (hasDiary) {
-        //     // 기존 일기가 있으면 항상 '에디터 뷰'를 보여준다(isEditing = true)
-        //     setIsEditing(true);
-        //     // '편집 가능' 여부는 로그인 상태에 따라 결정(로그인 시에만 true)
-        //     editor.setEditable(!!user);
-        // } else {
-        //     // 기존 일기가 없으면 '작성하기' 뷰를 보여준다
-        //     setIsEditing(false);
-        //     // '작성하기' 버튼을 누르기 전까지는 편집 불가 상태를 유지
-        //     editor.setEditable(false);
-        // }
-
         // [수정] 새 작성 모드일 때, 임시 데이터(draft)가 있으면 우선적으로 사용
-        if (!editor) return;
+        if (!editor) return
 
-        const hasDiary = !!initialDiary;
+        const hasDiary = !!(initialDiary&&initialDiary.diaryId);
         const hasDraft = !!draft;
         const sourceData = hasDiary ? initialDiary : (hasDraft ? draft : null);
         if (sourceData) {

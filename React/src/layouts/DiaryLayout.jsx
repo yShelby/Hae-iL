@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Outlet, Route, Routes, useLocation, useParams} from 'react-router-dom';
+import {Outlet, useLocation, useParams} from 'react-router-dom';
 import {useWeeklyTimeline} from '@/hooks/useWeeklyTimeline.js';
 import {useCheckLogin} from '@/hooks/useCheckLogin.js';
 import {useNavigate} from 'react-router-dom';
@@ -114,20 +114,6 @@ const DiaryLayout = () => {
                     onDiaryUpdated: handleDiaryUpdated,
                     onEmotionUpdated: handleEmotionUpdated,
                     onDataChange: handleDataChange,}}  />
-{/*                      */}{/* [추가] DiaryLayout 내부의 콘텐츠 전환을 위한 AnimatePresence */}
-{/*                     <AnimatePresence mode={"wait"}> */}
-{/*                         <Motion.div key={key} {...restAnimationProps}> */}
-{/*                             <Outlet context={{ */}
-{/*                                 initialDiary, */}
-{/*                                 setSelectedDiaryId, */}
-{/*                                 selectedDate, // ✅ 추가: 자식 컴포넌트(DiaryWritePage)가 현재 날짜를 알 수 있도록 전달 */}
-{/*                                 isLoading: isDiaryLoading, // ✅ 추가: 일기 로딩 상태 전달 */}
-{/*                                 onDiaryUpdated: handleDiaryUpdated, */}
-{/*                                 onEmotionUpdated: handleEmotionUpdated, */}
-{/*                                 onDataChange: handleDataChange, */}
-{/*                             }}/> */}
-{/*                         </Motion.div> */}
-{/*                     </AnimatePresence> */}
                 </div>
             </section>
 

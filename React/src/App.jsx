@@ -13,7 +13,6 @@ import React from 'react';
 import {Routes, Route, useLocation, useNavigate} from 'react-router-dom';
 import MainLayout from './layouts/MainLayout.jsx';
 import DiaryLayout from "@/layouts/DiaryLayout.jsx";
-import DiaryWritePage from "@pages/DiaryWritePage.jsx";
 import DiaryDatePage from "@pages/DiaryDatePage.jsx";
 import DiaryIdPage from "@pages/DiaryIdPage.jsx";
 import DashboardLayout from "@/layouts/DashboardLayout.jsx";
@@ -68,14 +67,7 @@ const AnimatedRoutes = () => {
                             <Route index element={<DashboardPage/>}/>
                         </Route>
 
-                        <Route path="diary" element={<DiaryLayout/>}>
-                            <Route index element={<DiaryPage/>}/>
-                            <Route path="date/:date" element={<DiaryDatePage/>}/>
-                            <Route path=":diaryId" element={<DiaryIdPage/>}/>
-                            <Route path="sleep/date/:date" element={<SleepWidget/>}/>
-                            <Route path="exercise/date/:date" element={<ExerciseWidget/>}/>
-                            <Route path="meal/date/:date" element={<MealWidget/>}/>
-                        </Route>
+                        <Route path="diary" element={<DiaryLayout/>} />
 
                         <Route path="journal" element={<JournalPage/>}/>
 
@@ -86,6 +78,14 @@ const AnimatedRoutes = () => {
                         <Route path="calendar" element={<Calendar/>}/>
                     </Route>
 
+                    <Route path="diary" element={<DiaryLayout/>}>
+                        <Route index element={<DiaryPage/>}/>
+                        <Route path="date/:date" element={<DiaryDatePage/>}/>
+                        <Route path=":diaryId" element={<DiaryIdPage/>}/>
+                        <Route path="sleep/date/:date" element={<SleepWidget/>}/>
+                        <Route path="exercise/date/:date" element={<ExerciseWidget/>}/>
+                        <Route path="meal/date/:date" element={<MealWidget/>}/>
+                    </Route>
                 </Route>
             </Routes>
         </AnimatePresence>

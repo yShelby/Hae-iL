@@ -47,8 +47,7 @@ export default function TimelineView({ data = [], selectedDate, onSelectDate, is
     const handleDateClick = (date) => {
         if (!checkLogin()) return; // 로그인 안되어 있으면 알림만 띄움
         onSelectDate && onSelectDate(date);
-        // [추가] 'fade' 애니메이션을 지정하여 다이어리 작성 페이지로 이동
-        navigate(`/diary/date/${date}`, { state: { animationType: 'fade' } });
+        navigate(`/diary/date/${date}`);
     };
 
     // 이전 주, 다음 주 이동
@@ -57,8 +56,7 @@ export default function TimelineView({ data = [], selectedDate, onSelectDate, is
         // onSelectDate && onSelectDate(formatDateToString(prevWeekDate));
         const prevWeekDateString = formatDateToString(prevWeekDate); // YYYY-MM-DD 형식으로 변환
         onSelectDate?.(prevWeekDateString);
-        // [추가] 'slideRight' 애니메이션을 지정(콘텐츠가 오른쪽에서 나타남)
-        navigate(`/diary/date/${prevWeekDateString}`, { state: { animationType: 'slideRight' } });
+        navigate(`/diary/date/${prevWeekDateString}`);
     };
 
     const handleNextWeek = () => {
@@ -66,8 +64,7 @@ export default function TimelineView({ data = [], selectedDate, onSelectDate, is
         // onSelectDate && onSelectDate(formatDateToString(nextWeekDate));
         const nextWeekDateString = formatDateToString(nextWeekDate); // YYYY-MM-DD 형식으로 변환
         onSelectDate?.(nextWeekDateString);
-        // [추가] 'slideLeft' 애니메이션을 지정(콘텐츠가 왼쪽에서 나타남)
-        navigate(`/diary/date/${nextWeekDateString}`, { state: { animationType: 'slideLeft' } });
+        navigate(`/diary/date/${nextWeekDateString}`);
     };
 
     // 달력에서 날짜 선택 시 처리
@@ -76,8 +73,7 @@ export default function TimelineView({ data = [], selectedDate, onSelectDate, is
         // onSelectDate && onSelectDate(formatDateToString(date));
         const dateString = formatDateToString(date); // YYYY-MM-DD 형식으로 변환
         onSelectDate?.(dateString);
-        // [추가] 달력에서 날짜 선택 시에도 'fade' 애니메이션을 적용
-        navigate(`/diary/date/${dateString}`, { state: { animationType: 'fade' } });
+        navigate(`/diary/date/${dateString}`);
     };
 
     // 버튼을 input 역할로 대체한 커스텀 컴포넌트
