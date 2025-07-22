@@ -7,7 +7,7 @@
 // - 🔒 로그인 상태에 따라 접근 제어 및 알림 제공
 // - 📆 선택된 날짜 기준으로 다이어리 로딩 및 표시 처리
 
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 
 // 📌 TipTap 확장 모듈 및 커스텀 에디터 확장
 import {useEditor} from '@tiptap/react';
@@ -70,6 +70,9 @@ const DiaryWritePage = () => {
     // [수정] Zustand 스토어에서 필요한 함수만 가져온다.
     const {setDraft, clearDraft, getDraft} = useDiaryDraftStore();
 
+    // [추가] 데이터 로딩/전환 중 임시저장을 막기 위한 플래그
+    const isDataLoading = useRef(false);
+
     // 🧠 TipTap 에디터 초기화 및 확장 구성
     const editor = useEditor({
         extensions: [
@@ -86,8 +89,8 @@ const DiaryWritePage = () => {
     });
 
     // 📄 제목/날씨 등 폼 상태 관리 훅
-    // [추가] setDiaryState 추가로 받아온다.
-    const {diaryState, setField, resetForm, setDiaryState} = useDiaryForm(initialDiary);
+    // [수정] setDiaryState 제거
+    const {diaryState, setField, resetForm} = useDiaryForm(initialDiary);
 
     // ☁️ 이미지 업로드 훅 (에디터 연동 + S3 전송 준비)
     const {handleImageUpload, uploadPendingImagesToS3} = useImageUpload(editor);
@@ -178,15 +181,24 @@ const DiaryWritePage = () => {
     //     }
     // }, [initialDiary?.diaryId, editor, user, selectedDate]); // 의존성 추가
 
-        const draft = getDraft(selectedDate); // [추가] 스토어에서 최신 draft를 가져온다
+
+        // [추가] 데이터 로딩 시작 시, 임시저장 방지 플래그를 true로 설정
+        isDataLoading.current = true;
+
+        // [수정] 전체 임시저장 객체에서 'diary' 키에 해당하는 데이터만 가져온다.
+        // 이렇게 하면 운동, 식사 등 다른 위젯의 임시 데이터와 충돌 x
+        const draft = getDraft(selectedDate)?.diary;
 
         const hasDiary = !!(initialDiary && initialDiary.diaryId);
-        const hasDraft = !!draft;
+        // const hasDraft = !!draft;
 
         // const sourceData = hasDiary ? initialDiary : (hasDraft ? draft : null);
 
-        // [수정] 데이터 소스 결정 : 임시저장(draft) > 기존 일기(initialDiary) > 초기값
-        const sourceData = hasDraft ? draft : (hasDiary ? initialDiary : null);
+        // const sourceData = hasDraft ? draft : (hasDiary ? initialDiary : null);
+
+        // [수정] 데이터 소스를 결정하는 로직을 명확하게 변경
+        // 임시저장된 일기(draft)가 있으면 그것을 최우선으로 사용하고, 없으면 서버에서 불러온 일기(initialDiary)를 사용
+        const sourceData = draft || initialDiary;
 
         if (sourceData) {
             setField('title', sourceData.title || '');
@@ -206,8 +218,12 @@ const DiaryWritePage = () => {
                 editor.commands.clearContent();
             }
         } else {
-            // 데이터가 전혀 없는 경우(완전 새 글)
-            resetForm();
+            // // 데이터가 전혀 없는 경우(완전 새 글)
+            // resetForm();
+            // editor.commands.clearContent();
+            // [수정] setField로 직접 초기화
+            setField('title', '');
+            setField('weather', '맑음');
             editor.commands.clearContent();
         }
 
@@ -219,35 +235,49 @@ const DiaryWritePage = () => {
             setIsEditing(false);
             editor.setEditable(false);
         }
+
+        // [추가] 모든 상태 업데이트가 렌더링에 반영된 후, 임시저장 방지 플래그를 false로 설정
+        // setTimeout을 사용하여 현재 실행 컨텍스트가 완료된 후에 플래그를 변경하도록 보장
+        const timer = setTimeout(() => {
+            isDataLoading.current = false;
+        }, 0);
+        return () => clearTimeout(timer);
+
     }, [initialDiary, selectedDate, editor, user, getDraft, setField, resetForm]);
 
     // [수정] 사용자가 입력한 내용을 임시 저장하는 함수
     const saveDraft = useCallback(() => {
-        // '작성하기'를 눌러 에디터가 활성화된 상태(isEditing)에서만 임시 저장 실행
-        if (!isEditing || !editor) return; // initialDiary -> !isEditing
+        // [수정] 경합 조건을 막기 위해 isDataLoading 플래그를 확인하는 안전장치를 추가
+        if (!isEditing || !editor || isDataLoading.current) return;
 
-        const draftData = {
+        // const draftData = {
+        const diaryDraftData = {
             title: diaryState.title,
             weather: diaryState.weather,
             content: editor.getJSON(),
         };
-        setDraft(selectedDate, draftData);
+        // setDraft(selectedDate, draftData);
+
+        // [수정] 다른 위젯(운동, 식사 등)의 임시 데이터를 덮어쓰지 않도록,
+        // 'diary'라는 고유한 키 안에 일기 데이터를 객체로 넣어 저장
+        setDraft(selectedDate, { diary: diaryDraftData });
     }, [isEditing, editor, diaryState, selectedDate, setDraft]); // 의존성 변경
-
-    // [추가] 에디터 내용이 변경될 때마다 임시 저장 함수를 호출
-    useEffect(() => {
-        if (!isEditing || !editor) return; // initialDiary -> !isEditing
-
-        // 'update' 이벤트는 내용이 변경될 때마다 발생
-        editor.on('update', saveDraft);
-        return () => editor.off('update', saveDraft);
-    }, [isEditing, editor, saveDraft]); // 의존성 변경
 
     // [추가] 제목, 날씨가 변경될 때도 임시 저장
     useEffect(() => {
         if (!isEditing) return; // initialDiary -> !isEditing
         saveDraft();
     }, [diaryState.title, diaryState.weather, isEditing, saveDraft]); // initialDiary -> !isEditing
+
+    // [추가] 에디터 내용이 변경될 때마다 임시 저장 함수를 호출
+    useEffect(() => {
+        if (!isEditing || !editor) return; // initialDiary -> !isEditing
+
+        const handleUpdate = () => saveDraft();
+        // 'update' 이벤트는 내용이 변경될 때마다 발생
+        editor.on('update', handleUpdate);
+        return () => editor.off('update', handleUpdate);
+    }, [isEditing, editor, saveDraft]); // 의존성 변경
 
     // ✨ "작성하기" 버튼 클릭 시 → 에디터 활성화
     const handleStartWriting = () => {
@@ -265,38 +295,35 @@ const DiaryWritePage = () => {
     const handleCancelWriting = () => {
         // [추가] 닫기 버튼은 어떤 경우든 항상 임시 데이터를 삭제
         clearDraft(selectedDate);
-
         setIsEditing(false); // 추가
 
-        // // [추가] 새 글 작성 중에만 임시 데이터를 삭제
-        // if (!initialDiary) {
-        //     clearDraft(selectedDate);
+        // // 기존 일기가 있으면 그 내용으로 되돌리고, 없으면 폼을 리셋
+        // if (initialDiary) {
+        //     setField('title', initialDiary.title || '');
+        //     setField('weather', initialDiary.weather || '맑음');
+        //     try {
+        //         const originalContent = JSON.parse(initialDiary.content || '{}');
+        //         editor.commands.setContent(originalContent, false);
+        //     } catch (e) {
+        //         editor.commands.clearContent();
+        //     }
+        // } else {
+        //     // 원래 데이터가 없던 경우(새 글 작성 중)에는 모든 필드를 비웁니다.
+        //     setField('title', '');
+        //     setField('weather', '맑음');
+        //     if(editor) editor.commands.clearContent();
         // }
-        // setIsEditing(false); // 에디터 뷰를 닫는다
-        // resetForm(); // 폼(제목, 날씨) 상태를 초기값으로 리셋
-        // if (editor) {
-        //     // editor.commands.clearContent(); // 에디터 내용 비우기
-        //     // [수정] 기존 일기가 있으면 그 내용으로 되돌리고, 없으면 비운다.
-        //     const originalContent = initialDiary ? JSON.parse(initialDiary.content || '{}') : '';
-        //     editor.commands.setContent(originalContent, false);
-        // }
+        resetForm();
 
-        // 기존 일기가 있으면 그 내용으로 되돌리고, 없으면 폼을 리셋
-        if (initialDiary) {
-            setField('title', initialDiary.title || '');
-            setField('weather', initialDiary.weather || '맑음');
+        if (editor) {
+            // [추가] 닫기 시 에디터 내용도 useDiaryForm의 상태와 일관성을 맞추기 위해
+            // initialDiary 기준으로 다시 설정
             try {
-                const originalContent = JSON.parse(initialDiary.content || '{}');
+                const originalContent = initialDiary?.content ? JSON.parse(initialDiary.content) : '';
                 editor.commands.setContent(originalContent, false);
             } catch (e) {
                 editor.commands.clearContent();
             }
-        } else {
-            resetForm();
-            if(editor) editor.commands.clearContent();
-        }
-
-        if (editor) {
             editor.setEditable(false);
         }
     };
