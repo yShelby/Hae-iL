@@ -79,7 +79,13 @@ const AnimatedRoutes = () => {
                         <Route path="journal" element={<JournalPage/>}/>
 
                         <Route path="gallery" element={<DiaryLayout/>}>
-                            <Route index element={<GalleryPage/>}/>
+                            <Route index element={
+                                <>
+                                    {/* 갤러리 뒤에 작성하기 버튼이 보이도록 수정 */}
+                                    <DiaryPage/>
+                                    <GalleryPage/>
+                                </>
+                            }/>
                         </Route>
                         {/* 캘린더 페이지 라우트 */}
                         <Route path="calendar" element={<Calendar/>}/>

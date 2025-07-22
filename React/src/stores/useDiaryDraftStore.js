@@ -9,7 +9,7 @@ import { persist, createJSONStorage } from 'zustand/middleware';
  */
 const useDiaryDraftStore = create(
     persist(
-        (set) => ({
+        (set, get) => ({
             // drafts: { [date (YYYY-MM-DD)]: { title, weather, content } }
             drafts: {},
 
@@ -31,8 +31,11 @@ const useDiaryDraftStore = create(
                 return { drafts: newDrafts };
             }),
 
-            // 모든 임시 저장 데이터 초기화 (로그아웃 등 필요시)
-            clearAllDrafts: () => set({ drafts: {} }),
+            // // 모든 임시 저장 데이터 초기화 (로그아웃 등 필요시)
+            // clearAllDrafts: () => set({ drafts: {} }),
+
+            // 특정 날짜의 임시 저장 데이터를 가져온다.
+            getDraft: date => get().drafts[date],
         }),
         {
             name: 'diary-draft-storage', // sessionStorage에 저장될 고유 키
