@@ -9,7 +9,6 @@ import './index.css';
 import {GalleryProvider} from "@features/gallery/GalleryContext.jsx";
 import App from "@/App.jsx";
 import {AuthProvider} from "@shared/context/AuthContext.jsx";
-import {ScrollAnimationProvider} from "@shared/context/ScrollAnimationContext.jsx";
 
 // 🧱 1. 루트 DOM 요소 가져오기
 const root = ReactDOM.createRoot(document.getElementById('react-root'));
@@ -30,10 +29,8 @@ root.render(
                            - 애니메이션 상태(isAnimating)에 접근해야 하므로, 라우터(BrowserRouter)의
                            - 자식 요소이면서 App의 부모 요소 위치에 Provider를 추가 필요
                         */}
-                        <ScrollAnimationProvider>
                             {/* 🧩 5. 실제 앱 컴포넌트 렌더링 */}
                             <App/>
-                        </ScrollAnimationProvider>
                     </GalleryProvider>
                 </AuthProvider>
             </BrowserRouter>

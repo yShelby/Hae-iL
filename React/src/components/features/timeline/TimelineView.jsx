@@ -1,17 +1,17 @@
-import React, {useMemo, useState} from 'react';
+import React, {forwardRef, useMemo} from 'react';
 import {formatDateToString, addDays, getStartOfWeek, getEndOfWeek} from '@shared/utils/dateUtils.js';
 import DatePicker, {registerLocale} from 'react-datepicker';
 import ko from 'date-fns/locale/ko'; // 🇰🇷 한글 로케일
 import 'react-datepicker/dist/react-datepicker.css';
 import '../timeline/css/TimelineView.css'
 import {useCheckLogin} from "@/hooks/useCheckLogin.js";
+import {useNavigate} from "react-router-dom";
 
 registerLocale('ko', ko); // 로케일 등록
 
 export default function TimelineView({ data = [], selectedDate, onSelectDate, isLoggedIn }) {
     const checkLogin = useCheckLogin();
-    // 내부 상태: 달력 UI 표시 여부 제어
-    const [showCalendar, setShowCalendar] = useState(false);
+    const navigate = useNavigate(); // [추가]
 
     // selectedDate가 없으면 오늘 날짜로 초기화
     const baseDate = selectedDate ? new Date(selectedDate) : new Date();
@@ -47,25 +47,45 @@ export default function TimelineView({ data = [], selectedDate, onSelectDate, is
     const handleDateClick = (date) => {
         if (!checkLogin()) return; // 로그인 안되어 있으면 알림만 띄움
         onSelectDate && onSelectDate(date);
+        // [추가] 'fade' 애니메이션을 지정하여 다이어리 작성 페이지로 이동
+        navigate(`/diary/date/${date}`, { state: { animationType: 'fade' } });
     };
 
     // 이전 주, 다음 주 이동
     const handlePrevWeek = () => {
         const prevWeekDate = addDays(startOfWeek, -7);
-        onSelectDate && onSelectDate(formatDateToString(prevWeekDate));
+        // onSelectDate && onSelectDate(formatDateToString(prevWeekDate));
+        const prevWeekDateString = formatDateToString(prevWeekDate); // YYYY-MM-DD 형식으로 변환
+        onSelectDate?.(prevWeekDateString);
+        // [추가] 'slideRight' 애니메이션을 지정(콘텐츠가 오른쪽에서 나타남)
+        navigate(`/diary/date/${prevWeekDateString}`, { state: { animationType: 'slideRight' } });
     };
 
     const handleNextWeek = () => {
         const nextWeekDate = addDays(startOfWeek, 7);
-        onSelectDate && onSelectDate(formatDateToString(nextWeekDate));
+        // onSelectDate && onSelectDate(formatDateToString(nextWeekDate));
+        const nextWeekDateString = formatDateToString(nextWeekDate); // YYYY-MM-DD 형식으로 변환
+        onSelectDate?.(nextWeekDateString);
+        // [추가] 'slideLeft' 애니메이션을 지정(콘텐츠가 왼쪽에서 나타남)
+        navigate(`/diary/date/${nextWeekDateString}`, { state: { animationType: 'slideLeft' } });
     };
 
     // 달력에서 날짜 선택 시 처리
     const handleCalendarChange = (date) => {
         if (!date) return;
-        setShowCalendar(false);
-        onSelectDate && onSelectDate(formatDateToString(date));
+        // onSelectDate && onSelectDate(formatDateToString(date));
+        const dateString = formatDateToString(date); // YYYY-MM-DD 형식으로 변환
+        onSelectDate?.(dateString);
+        // [추가] 달력에서 날짜 선택 시에도 'fade' 애니메이션을 적용
+        navigate(`/diary/date/${dateString}`, { state: { animationType: 'fade' } });
     };
+
+    // 버튼을 input 역할로 대체한 커스텀 컴포넌트
+    const CalendarButton = forwardRef(({ value, onClick }, ref) => (
+        <button type="button" onClick={onClick} ref={ref} aria-label="달력 열기">
+            📆
+        </button>
+    ));
 
     return (
         <div className="timeline-wrapper">
@@ -73,25 +93,21 @@ export default function TimelineView({ data = [], selectedDate, onSelectDate, is
             <div className="timeline-controls">
                 <button onClick={handlePrevWeek} aria-label="이전 주" >◀</button>
                 <span className="week-range">
-                    {formatDateToString(startOfWeek)} ~ {formatDateToString(endOfWeek)}
+                    {baseDate.getFullYear()}년 {baseDate.getMonth() + 1}월
                 </span>
                 <button onClick={handleNextWeek} aria-label="다음 주">▶</button>
-                <button onClick={() => setShowCalendar(prev => !prev)} aria-label="달력 열기">
-                    📆
-                </button>
-            </div>
-            {/* 달력 UI (보일 때만) */}
-            {showCalendar && (
                 <div className="calendar-wrapper">
                     <DatePicker
                         selected={baseDate}
                         onChange={handleCalendarChange}
                         locale="ko"
-                        inline
                         maxDate={new Date()}
+                        withPortal
+                        showPopperArrow={false}
+                        customInput={<CalendarButton />}
                     />
                 </div>
-            )}
+            </div>
 
             {/* 주간 타임라인 카드 */}
             <div className="timeline-cards">
@@ -110,7 +126,7 @@ export default function TimelineView({ data = [], selectedDate, onSelectDate, is
                             className={`timeline-card ${isActive ? 'active' : ''}`}
                             onClick={() => handleDateClick(date)}
                         >
-                            <h4>{date}</h4>
+                            <h4>{new Date(date).getDate()}</h4>
                             <div className="card-icons">
                                 {isLoggedIn && hasDiary && <span title="일기">📝</span>}
                                 {isLoggedIn && hasSleep && <span title="수면">💤</span>}

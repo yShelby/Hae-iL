@@ -4,37 +4,13 @@ import Weather from "@features/dashboard/Weather.jsx";
 import {Outlet} from "react-router-dom";
 import FortuneCookie from "@features/dashboard/FortuneCookie.jsx";
 import DashboardCalendar from "@features/dashboard/DashboardCalendar.jsx";
-import { motion as Motion } from 'framer-motion';
-import {pageVariants} from "@shared/animation/page-variants.js";
+import {motion as Motion} from 'framer-motion';
+import {usePageAnimation} from "@/hooks/usePageAnimation.js";
 
 const DashboardLayout = () => {
 
-    /**
-     * ✨ [추가] 애니메이션 완료 핸들러
-     * 📌 이유: Framer Motion의 onAnimationComplete 콜백을 사용하여,
-     * 등장 애니메이션이 완전히 끝났을 때를 감지
-     */
-    const handleAnimationComplete = () => {
-        /**
-         * ✨ [추가] 커스텀 이벤트 발생
-         * 📌 이유: 애니메이션이 끝났다는 사실을 하위 컴포넌트(WordCloudComp 등)에
-         * 알려주기 위한 신호를 window 객체를 통해 알려준다
-         * 이 신호를 받은 컴포넌트는 자신의 크기를 다시 측정하게 된다.
-         */
-        window.dispatchEvent(new Event('layoutAnimationComplete'));
-    };
-
-
     return (
-        <Motion.main
-            className="dashboard-container"
-            variants={pageVariants}
-            initial="initial"
-            animate="animate"
-            exit="exit"
-            // ✨ [추가] 애니메이션 완료 시 handleAnimationComplete 함수를 호출
-            onAnimationComplete={handleAnimationComplete}
-        >
+        <main className="dashboard-container">
             {/* --- ⬇️ 좌측 컬럼 ⬇️ --- */}
             <div className="dashboard-left-column">
                 <Outlet/>
@@ -54,10 +30,10 @@ const DashboardLayout = () => {
                 </div>
 
                 <div className="calendar-container">
-                    <DashboardCalendar />
+                    <DashboardCalendar/>
                 </div>
             </div>
-        </Motion.main>
+        </main>
     );
 };
 

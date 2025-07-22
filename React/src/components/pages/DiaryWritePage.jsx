@@ -7,7 +7,7 @@
 // - 🔒 로그인 상태에 따라 접근 제어 및 알림 제공
 // - 📆 선택된 날짜 기준으로 다이어리 로딩 및 표시 처리
 
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 
 // 📌 TipTap 확장 모듈 및 커스텀 에디터 확장
 import {useEditor} from '@tiptap/react';
@@ -34,6 +34,7 @@ import {useOutletContext} from "react-router-dom";
 import {useAuth} from "@shared/context/AuthContext.jsx";
 import {useQuestion} from "@shared/context/QuestionContext.jsx";
 import QuestionDisplay from "@features/diary/QuestionDisplay.jsx";
+import useDiaryDraftStore from "@/stores/useDiaryDraftStore.js";
 
 // 🖼️ TipTap Image 확장을 block 요소로 커스터마이징
 const CustomBlockImage = TipTapImage.extend({
@@ -58,7 +59,14 @@ const DiaryWritePage = () => {
         setSelectedDiaryId,
         onEmotionUpdated,
         onDataChange,
+        setSelectedDate,
     } = useOutletContext();
+
+    // [추가] Zustand 스토어에서 임시 데이터 관련 상태와 함수를 가져온다.
+    const { drafts, setDraft, clearDraft } = useDiaryDraftStore();
+    // [추가] 현재 선택된 날짜에 해당하는 임시 데이터를 가져온다.
+    const draft = drafts[selectedDate];
+
     // 🧠 TipTap 에디터 초기화 및 확장 구성
     const editor = useEditor({
         extensions: [
@@ -75,25 +83,22 @@ const DiaryWritePage = () => {
     });
 
     // 📄 제목/날씨 등 폼 상태 관리 훅
-    const {diaryState, setField, resetForm} = useDiaryForm(initialDiary);
+    // [추가] setDiaryState 추가로 받아온다.
+    const {diaryState, setField, resetForm, setDiaryState} = useDiaryForm(initialDiary);
 
     // ☁️ 이미지 업로드 훅 (에디터 연동 + S3 전송 준비)
     const {handleImageUpload, uploadPendingImagesToS3} = useImageUpload(editor);
 
-    // 삭제 성공 시에도 onDiaryUpdated, onEmotionUpdated를 호출하여 부모 컴포넌트의 상태를
-    // 즉시 동기화해야 데이터 정합성이 유지되고 사용자 경험(UX)이 개선된다
+    // 삭제 성공 시에도 onDiaryUpdated, onEmotionUpdated를 호출하여 부모 컴포넌트의 상태를 즉시 동기화
     const onActionSuccess = (updatedDiaryOrNull) => {
+        onDiaryUpdated?.(); // 캘린더 등 목록 UI 갱신을 위해 호출
+        onEmotionUpdated?.(); // 감정 분석 UI 갱신을 위해 호출
+        onDataChange?.(); // 선택된 날짜의 데이터 변경을 부모 컴포넌트에 알림
         if (updatedDiaryOrNull) { // 저장 또는 수정 성공 시
             setSelectedDiaryId?.(updatedDiaryOrNull.diaryId);
-            onDiaryUpdated?.();
-            onEmotionUpdated?.();
-            onDataChange?.();
         } else { // 삭제 성공 시
             setSelectedDiaryId?.(null);
-            onDiaryUpdated?.(); // 캘린더 등 목록 UI 갱신을 위해 호출
-            onEmotionUpdated?.(); // 감정 분석 UI 갱신을 위해 호출
             setIsEditing(false); // 작성기 뷰를 닫고 초기 화면으로 전환
-            onDataChange?.();
         }
     };
 
@@ -115,45 +120,105 @@ const DiaryWritePage = () => {
         user,
     });
 
-    // [수정]
-    // '뷰(View) 상태'와 '편집(Edit) 상태'를 명확히 분리하여 UX와 코드 안정성을 개선
-    // 1. '읽기 전용' 모드 지원: 로그인하지 않아도 기존 일기 내용을 안전하게 보기 가능
-    // 2. 로직 간소화: 중복 코드를 제거하고 조건부 로직을 명확하게 하여 유지보수성을 높인다
+    // [수정] 기존 useEffect 로직을 임시 저장 기능에 맞게 통합하고 재구성
     useEffect(() => {
+        // if (!editor) return;
+        //
+        // const hasDiary = !!initialDiary;
+        // let content = '';
+        //
+        // try {
+        //     content = hasDiary && initialDiary.content
+        //         ? JSON.parse(initialDiary.content) : '';
+        // } catch (e) {
+        //     console.warn('initialDiary.content JSON parse error:', e);
+        //     content = '';
+        // }
+        //
+        // // 에디터 내용 동기화 (한 곳에서만 처리)
+        // if (JSON.stringify(editor.getJSON()) !== JSON.stringify(content)) {
+        //     editor.commands.setContent(content, false);
+        // }
+        //
+        // if (hasDiary) {
+        //     // 기존 일기가 있으면 항상 '에디터 뷰'를 보여준다(isEditing = true)
+        //     setIsEditing(true);
+        //     // '편집 가능' 여부는 로그인 상태에 따라 결정(로그인 시에만 true)
+        //     editor.setEditable(!!user);
+        // } else {
+        //     // 기존 일기가 없으면 '작성하기' 뷰를 보여준다
+        //     setIsEditing(false);
+        //     // '작성하기' 버튼을 누르기 전까지는 편집 불가 상태를 유지
+        //     editor.setEditable(false);
+        // }
+
+        // [수정] 새 작성 모드일 때, 임시 데이터(draft)가 있으면 우선적으로 사용
         if (!editor) return;
 
         const hasDiary = !!initialDiary;
-        // const content = hasDiary ? JSON.parse(initialDiary.content) : '';
-
-        // content가 undefined, null, 빈 문자열이거나 JSON이 아닌 경우를 대비해서 안전 처리
-        let content = '';
-
-        try {
-            content = hasDiary && initialDiary.content
-                ? JSON.parse(initialDiary.content)
-                : '';
-        } catch (e) {
-            console.warn('initialDiary.content JSON parse error:', e);
-            content = '';
+        const hasDraft = !!draft;
+        const sourceData = hasDiary ? initialDiary : (hasDraft ? draft : null);
+        if (sourceData) {
+            // 1. 폼 상태(제목, 날씨) 설정
+            setDiaryState({
+                title: sourceData.title || '',
+                weather: sourceData.weather || '맑음',
+            });
+            // 2. 에디터 내용 설정
+            try {
+                const contentToSet = sourceData.content ? (typeof sourceData.content === 'string'
+                    ? JSON.parse(sourceData.content) : sourceData.content) : '';
+                if (JSON.stringify(editor.getJSON()) !== JSON.stringify(contentToSet)) {
+                    editor.commands.setContent(contentToSet, false);
+                }
+            } catch (e) {
+                console.warn('Content JSON parse error:', e);
+                editor.commands.clearContent();
+            }
+        } else {
+                // 2. 데이터가 전혀 없는 경우 (완전 새 글)
+                resetForm();
+                editor.commands.clearContent();
         }
 
-        // 에디터 내용 동기화 (한 곳에서만 처리)
-        if (JSON.stringify(editor.getJSON()) !== JSON.stringify(content)) {
-            editor.commands.setContent(content, false);
-        }
-
-        if (hasDiary) {
-            // 기존 일기가 있으면 항상 '에디터 뷰'를 보여준다(isEditing = true)
+        // 3. 편집 상태(isEditing) 및 편집 가능 여부(editable) 설정
+        if (hasDiary || draft) {
             setIsEditing(true);
-            // '편집 가능' 여부는 로그인 상태에 따라 결정(로그인 시에만 true)
             editor.setEditable(!!user);
         } else {
-            // 기존 일기가 없으면 '작성하기' 뷰를 보여준다
             setIsEditing(false);
-            // '작성하기' 버튼을 누르기 전까지는 편집 불가 상태를 유지
             editor.setEditable(false);
         }
-    }, [initialDiary, editor, user]);
+    }, [initialDiary, editor, user, selectedDate]); // 의존성 추가
+
+    // [추가] 사용자가 입력한 내용을 임시 저장하는 함수
+    const saveDraft = useCallback(() => {
+        // 수정 모드이거나 에디터가 준비되지 않았으면 임시 저장 x
+        if (initialDiary || !editor) return;
+
+        const draftData = {
+            title: diaryState.title,
+            weather: diaryState.weather,
+            content: editor.getJSON(),
+        };
+        setDraft(selectedDate, draftData);
+    }, [initialDiary, editor, diaryState, selectedDate, setDraft]);
+
+    // [추가] 에디터 내용이 변경될 때마다 임시 저장 함수를 호출
+    useEffect(() => {
+        if (!editor || initialDiary) return; // 수정 모드에서는 임시 저장 x
+
+        // 'update' 이벤트는 내용이 변경될 때마다 발생
+        editor.on('update', saveDraft);
+        return () => editor.off('update', saveDraft);
+    }, [editor, initialDiary, saveDraft]);
+
+    // [추가] 제목, 날씨가 변경될 때도 임시 저장
+    useEffect(() => {
+        if (!initialDiary) {
+            saveDraft();
+        }
+    }, [diaryState.title, diaryState.weather, initialDiary, saveDraft]);
 
     // ✨ "작성하기" 버튼 클릭 시 → 에디터 활성화
     const handleStartWriting = () => {
@@ -169,10 +234,17 @@ const DiaryWritePage = () => {
 
     // ✖️ "닫기" 버튼 클릭 시 → 에디터 비활성화 및 폼 초기화
     const handleCancelWriting = () => {
+        // [추가] 새 글 작성 중에만 임시 데이터를 삭제
+        if (!initialDiary) {
+            clearDraft(selectedDate);
+        }
         setIsEditing(false); // 에디터 뷰를 닫는다
         resetForm(); // 폼(제목, 날씨) 상태를 초기값으로 리셋
         if (editor) {
-            editor.commands.clearContent(); // 에디터 내용 비우기
+            // editor.commands.clearContent(); // 에디터 내용 비우기
+            // [수정] 기존 일기가 있으면 그 내용으로 되돌리고, 없으면 비운다.
+            const originalContent = initialDiary ? JSON.parse(initialDiary.content || '{}') : '';
+            editor.commands.setContent(originalContent, false);
         }
     };
 
@@ -191,7 +263,8 @@ const DiaryWritePage = () => {
             <DiaryInfoBar selectedDate={selectedDate} initialDiary={initialDiary}/>
             {/* 추가 - 날짜 아래 질문을 표시 */}
             <div className="diary-meta-container">
-                <QuestionDisplay question={question}/>
+                {/* [수정] React error #185 방지를 위한 조건부 렌더링 */}
+                {question && <QuestionDisplay question={question} />}
             </div>
 
             {/* ✍️ 작성 전 안내 UI */}

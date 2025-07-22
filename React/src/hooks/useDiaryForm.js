@@ -42,6 +42,11 @@ export const useDiaryForm = (initialDiary) => {
         setDiaryState((prev) => ({ ...prev, [field]: value }));
     }, []);
 
+    // [추가] 폼 상태를 초기값으로 리셋하는 함수. '닫기' 버튼 클릭 시 사용된다.
+    const resetForm = useCallback(() => {
+        setDiaryState({ title: '', weather: '맑음' });
+    }, []);
+
     // 4️⃣ 외부에 상태와 필드 변경 함수를 반환
-    return { diaryState, setField };
+    return { diaryState, setField, resetForm, setDiaryState }; // 의존성 추가
 };
