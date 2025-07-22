@@ -241,14 +241,3 @@ body {
     background-color: #34495e;
     color: white;
 }
-
-/* [삭제] .active 클래스는 JavaScript로 동적 제어가 필요하며,
-   Thymeleaf와 React가 분리된 현 구조에서는 구현이 복잡합니다.
-   우선순위가 높은 기능이 아니므로 일단 제거하고, 필요 시 추후 구현을 논의 */
-/*
-.main-nav li a.active {
-    background-color: var(--primary-color);
-    color: white;
-    font-weight: 700;
-}
-*/

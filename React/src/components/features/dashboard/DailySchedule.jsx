@@ -2,10 +2,10 @@ import {useEffect, useMemo, useState} from "react";
 import {DAILY_MISSIONS, MISSION_NAV_PATHS} from "@features/dashboard/constants.js";
 import {useAuth} from "@shared/context/AuthContext.jsx";
 import {getTodayTodoStatus} from "@api/todoApi.js";
-import "./css/DailyMission.css";
+import "./css/DailySchedule.css";
 import {useNavigate} from "react-router-dom";
 
-const DailyMission = () => {
+const DailySchedule = () => {
     const { user, loading: authLoading } = useAuth();
     const navigate = useNavigate();
 
@@ -80,19 +80,19 @@ const DailyMission = () => {
     };
 
     if (authLoading || isMissionLoading) {
-        return <div className="daily-mission-container"><h4>오늘의 미션</h4><div>로딩 중...</div></div>;
+        return <div className="daily-mission-container"><h4>오늘의 일정</h4><div>로딩 중...</div></div>;
     }
 
     return (
         <div className="daily-mission-container">
-            <h4 className="title">오늘의 미션</h4>
+            <h4 className="title">오늘의 일정</h4>
             {!user ? (
                 <div className="login-prompt">로그인 후 이용해주세요.</div>
             ) : (
                 // 모든 미션 완료 시 메시지를 상단에 표시하고, 그 아래에 항상 미션 목록을 보여준다
                 <>
                     {allMissionsComplete && (
-                        <div className="all-complete-message">오늘의 미션을 모두 완료했습니다!</div>
+                        <div className="all-complete-message">오늘의 일정을 모두 완료했습니다!</div>
                     )}
                     <ul className="mission-list">
                         {DAILY_MISSIONS.map((mission) => (
@@ -112,4 +112,4 @@ const DailyMission = () => {
     );
 };
 
-export default DailyMission;
+export default DailySchedule;

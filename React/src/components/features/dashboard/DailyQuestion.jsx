@@ -1,11 +1,11 @@
 import {useAuth} from "@shared/context/AuthContext.jsx";
-import "./css/TodayQuestion.css";
+import "./css/DailyQuestion.css";
 import {useNavigate} from "react-router-dom";
 import {FaSyncAlt} from "react-icons/fa";
 import {useQuestion} from "@shared/context/QuestionContext.jsx";
 import {format} from "date-fns";
 
-const TodayQuestion = () => {
+const DailyQuestion = () => {
     const { user, loading: authLoading } = useAuth();
     const navigate = useNavigate();
     const {question, isLoading, refreshQuestion} = useQuestion();
@@ -21,15 +21,15 @@ const TodayQuestion = () => {
 
     const renderContent = () => {
         if (authLoading || (isLoading && !question)) {
-            return <div className="status-text">로딩 중...</div>;
+            return <div className="status-text">오늘의 질문 : 로딩 중...</div>;
         }
         if (!user) {
-            return <div className="status-text">로그인 후 질문에 답변해보세요.</div>;
+            return <div className="status-text">오늘의 질문 : 로그인 후 질문에 답변해보세요.</div>;
         }
         return (
             <div className="question-content-wrapper">
                 <p className="question-text" onClick={handleQuestionClick} title="클릭하여 일기 작성하기">
-                    {question}
+                    오늘의 질문 : {question}
                 </p>
                 <button
                     onClick={(e) => {
@@ -47,11 +47,10 @@ const TodayQuestion = () => {
     };
 
     return (
-        <div className="today-question-container">
-            <h4 className="title">오늘의 질문</h4>
+        <>
             {renderContent()}
-        </div>
+        </>
     );
 };
 
-export default TodayQuestion;
+export default DailyQuestion;

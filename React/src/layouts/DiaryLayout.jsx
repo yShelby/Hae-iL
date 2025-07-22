@@ -1,8 +1,7 @@
 import React, {useEffect, useState} from 'react';
-import {Outlet, Route, Routes, useLocation, useParams} from 'react-router-dom';
+import {Outlet, useParams} from 'react-router-dom';
 import {useWeeklyTimeline} from '@/hooks/useWeeklyTimeline.js';
 import {useCheckLogin} from '@/hooks/useCheckLogin.js';
-import {useNavigate} from 'react-router-dom';
 import TimelineView from "@features/timeline/TimelineView.jsx";
 import ExerciseWidget from "@features/health/ExerciseWidget.jsx";
 import SleepWidget from "@features/health/SleepWidget.jsx";
@@ -12,13 +11,10 @@ import GalleryModal from "@features/gallery/GalleryModal.jsx";
 import './css/DiaryLayout.css';
 import MoodPage from "@pages/MoodPage.jsx";
 import {useDiaryData} from "@/hooks/useDiaryData.js";
-import {usePageAnimation} from "@/hooks/usePageAnimation.js";
 
 const DiaryLayout = () => {
     const { date : urlDate } = useParams(); // URL에서 날짜 추출
     const checkLogin = useCheckLogin();
-    const navigate = useNavigate();
-    const location = useLocation(); // ✅ 페이지 이동 시 전달된 state를 받기 위해 추가
 
     // useDiaryData 훅에서 상태/함수 가져오기
     const {
@@ -32,10 +28,6 @@ const DiaryLayout = () => {
 
     const [selectedDiaryId, setSelectedDiaryId] = useState(null); // 선택된 일기 ID 상태
     const [emotionRefreshKey, setEmotionRefreshKey] = useState(0); // 감정 분석 새로고침 키
-
-    // [추가] 내부 콘텐츠 애니메이션을 위한 훅 호출
-    const animationProps = usePageAnimation();
-    const {key, ...restAnimationProps} = animationProps; // key 분리
 
     // URL에서 날짜가 있으면 selectedDate를 업데이트
      useEffect(() => {
@@ -51,8 +43,7 @@ const DiaryLayout = () => {
 
     const handleSelectDate = (dateStr) => {
         if (!checkLogin()) return;
-        // setSelectedDate(dateStr);
-        navigate(`/diary/date/${dateStr}`);
+        setSelectedDate(dateStr);
     };
 
     const handleDataChange = () => {
@@ -102,8 +93,7 @@ const DiaryLayout = () => {
                 {/* 추가 - Outlet을 div로 감싸서 레이아웃 제어를 위한 컨테이너 추가
                         - 중앙 컬럼(.center-editor) 내부에서 타임라인 헤더를 제외한
                         - 나머지 공간을 Outlet이 모두 차지하게 만들어, DiaryWritePage가
-                        - 이 컨테이너 안에서만 렌더링되고 스크롤되도록 하기 위함
-                */}
+                        - 이 컨테이너 안에서만 렌더링되고 스크롤되도록 하기 위함 */}
                 <div className="outlet-container">
                 <Outlet context={{
                     initialDiary,
@@ -114,20 +104,6 @@ const DiaryLayout = () => {
                     onDiaryUpdated: handleDiaryUpdated,
                     onEmotionUpdated: handleEmotionUpdated,
                     onDataChange: handleDataChange,}}  />
-{/*                      */}{/* [추가] DiaryLayout 내부의 콘텐츠 전환을 위한 AnimatePresence */}
-{/*                     <AnimatePresence mode={"wait"}> */}
-{/*                         <Motion.div key={key} {...restAnimationProps}> */}
-{/*                             <Outlet context={{ */}
-{/*                                 initialDiary, */}
-{/*                                 setSelectedDiaryId, */}
-{/*                                 selectedDate, // ✅ 추가: 자식 컴포넌트(DiaryWritePage)가 현재 날짜를 알 수 있도록 전달 */}
-{/*                                 isLoading: isDiaryLoading, // ✅ 추가: 일기 로딩 상태 전달 */}
-{/*                                 onDiaryUpdated: handleDiaryUpdated, */}
-{/*                                 onEmotionUpdated: handleEmotionUpdated, */}
-{/*                                 onDataChange: handleDataChange, */}
-{/*                             }}/> */}
-{/*                         </Motion.div> */}
-{/*                     </AnimatePresence> */}
                 </div>
             </section>
 

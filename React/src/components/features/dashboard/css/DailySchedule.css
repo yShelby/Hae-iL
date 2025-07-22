@@ -1,10 +1,12 @@
+/* DailySchedule.css */
+
 /* 전체 위젯 컨테이너 스타일 */
 .daily-mission-container {
     background-color: #ffffff;
     border-radius: 20px;
     width: 100%;
     height: 100%;
-    padding: 24px;
+    padding: 12px;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;

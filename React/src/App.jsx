@@ -13,7 +13,6 @@ import React from 'react';
 import {Routes, Route, useLocation, useNavigate} from 'react-router-dom';
 import MainLayout from './layouts/MainLayout.jsx';
 import DiaryLayout from "@/layouts/DiaryLayout.jsx";
-import DiaryWritePage from "@pages/DiaryWritePage.jsx";
 import DiaryDatePage from "@pages/DiaryDatePage.jsx";
 import DiaryIdPage from "@pages/DiaryIdPage.jsx";
 import DashboardLayout from "@/layouts/DashboardLayout.jsx";
@@ -38,7 +37,7 @@ const AnimatedRoutes = () => {
     const location = useLocation();
     const navigate = useNavigate();
 
-    // [추가] React의 navigate 함수를 전역 '우체통'에 할당
+    // [추가] React의 navigate 함수를 전역에 할당
     // useEffect를 사용하여 컴포넌트가 렌더링될 때 안정적으로 할당되도록 한다.
     React.useEffect(() => {
         // window.haeIlHistory 객체가 존재하는지 확인하고 navigate 함수를 할당
@@ -85,7 +84,6 @@ const AnimatedRoutes = () => {
                         {/* 캘린더 페이지 라우트 */}
                         <Route path="calendar" element={<Calendar/>}/>
                     </Route>
-
                 </Route>
             </Routes>
         </AnimatePresence>

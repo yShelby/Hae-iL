@@ -42,7 +42,6 @@ const MyRecordStatus = () => {
 
     return (
         <section className="record-status-widget-container">
-            <h2 className="record-status-title">나의 기록 현황</h2>
             <div className="record-status-card-grid">
                 <StatCard
                     icon={<FaBookMedical />}
