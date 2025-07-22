@@ -1,4 +1,4 @@
-/* TodayQuestion.css */
+/* DailyQuestion.css */
 
 /* 전체 위젯 컨테이너 */
 .today-question-container {
@@ -10,15 +10,6 @@
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
-}
-
-/* 위젯 제목 */
-.today-question-container .title {
-    font-size: 1.1rem;
-    font-weight: 600;
-    margin-top: 0;
-    margin-bottom: 16px;
-    color: #333;
 }
 
 /* 로딩 또는 로그인 안내 텍스트 */

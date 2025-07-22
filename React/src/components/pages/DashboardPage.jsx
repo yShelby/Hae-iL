@@ -1,11 +1,14 @@
 import React, {useEffect, useMemo, useState} from 'react';
 import MyRecordStatus from "@features/dashboard/MyRecordStatus.jsx";
-import DailyMission from "@features/dashboard/DailyMission.jsx";
 import "./css/DashboardPage.css";
-import TodayQuestion from "@features/dashboard/TodayQuestion.jsx";
+import DailyQuestion from "@features/dashboard/DailyQuestion.jsx";
 import WordCloudComp from "@features/dashboard/WordCloudComp.jsx";
 import {fetchTestEmotionData} from "@api/wordCloudApi.js";
 import {useAuth} from "@shared/context/AuthContext.jsx";
+import Weather from "@features/dashboard/Weather.jsx";
+import FortuneCookie from "@features/dashboard/FortuneCookie.jsx";
+import DashboardCalendar from "@features/dashboard/DashboardCalendar.jsx";
+import DailySchedule from "@features/dashboard/DailySchedule.jsx";
 
 const DashboardPage = () => {
     // 페이지 레벨에서 사용자 정보 및 워드클라우드 관련 모든 상태를 관리
@@ -86,40 +89,50 @@ const DashboardPage = () => {
 
     return (
         // 이 내용은 DashboardLayout의 <Outlet /> 안으로 렌더링된다.
-        <>
-            <div className="horizontal-container">
-                <div style={{flex: 2}}>
-                    <MyRecordStatus/>
+        // [수정] DashboardPage 에서 2단 칼럼을 모두 구성
+        <div className="dashboard-two-column-layout">
+            {/* 좌측 컬럼 */}
+            <div className="left-column">
+                <div className="component-wrapper">
+                    <MyRecordStatus />
                 </div>
-                <div className="placeholder-box"
-                     style={{flex: 1, padding: 0, alignItems: 'stretch', justifyContent: 'stretch'}}>
-                    <TodayQuestion/>
+                <div className="component-wrapper">
+                    <DailyQuestion />
+                </div>
+
+                <div className="bottom-content-area">
+                    {/* 왼쪽 서브 컬럼 (오늘의 일정) */}
+                    <div className="component-wrapper mission-wrapper">
+                        <DailySchedule />
+                    </div>
+                    {/* 오른쪽 서브 컬럼 (포춘쿠키 + 달력) */}
+                    <div className="cookie-calendar-column">
+                        <div className="component-wrapper">
+                            <FortuneCookie />
+                        </div>
+                        <div className="component-wrapper">
+                            <DashboardCalendar />
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div className="horizontal-container" style={{flexGrow: 1}}>
-                <div className="placeholder-box wordcloud-container" style={{flex: 2}}>
-                    <h3 className="title">나의 감정 키워드</h3>
+
+            {/* 우측 컬럼 */}
+            <div className="right-column">
+                <div className="component-wrapper">
+                    <Weather />
+                </div>
+                <div className="component-wrapper word-cloud-wrapper">
                     <WordCloudComp
-                        key={refreshKey} // [추가] 애니메이션 key 전달
-                        words={formattedWords} // [수정] 변환된 데이터를 props로 전달
+                        key={refreshKey}
+                        words={formattedWords}
                         isLoading={isLoading}
                         isRefreshing={isRefreshing}
                         onRefresh={handleRefresh}
                     />
                 </div>
-                <div style={{flex: 1, display: 'flex', flexDirection: 'column'}}>
-                    {/* DailyMission 컨테이너에서 flex: 1을 제거하여 내용에 따라 높이가 결정되도록 수정 */}
-                    <div className="placeholder-box"
-                         style={{padding: 0, alignItems: 'stretch', justifyContent: 'stretch', marginBottom: '1rem'}}>
-                        <DailyMission/>
-                    </div>
-                    <div className="placeholder-box"
-                         style={{flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-                        <span>???</span>
-                    </div>
-                </div>
             </div>
-        </>
+        </div>
     );
 };
 

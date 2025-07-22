@@ -14,7 +14,7 @@ export const getTodayQuestionAPI = async () => {
         if (error.response?.status !== 401) {
             console.error("오늘의 질문 조회 API 호출 실패:", error);
         }
-        // 에러를 다시 throw하여 호출한 컴포넌트(e.g., TodayQuestion.jsx)에서 catch 가능.
+        // 에러를 다시 throw하여 호출한 컴포넌트(e.g., DailyQuestion.jsx)에서 catch 가능.
         throw error;
     }
 };

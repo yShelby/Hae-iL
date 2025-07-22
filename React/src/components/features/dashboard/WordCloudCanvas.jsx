@@ -24,7 +24,7 @@ const WordCloudCanvas = ({words, width, height}) => {
             const maxWeight = Math.max(...weights);
             const minWeight = Math.min(...weights);
             const minFontSize = 12;
-            const maxFontSize = Math.min(width / 8, height / 8, 40); // 동적 최대 폰트 크기
+            const maxFontSize = Math.min(width / 8, height / 8, 60); // 동적 최대 폰트 크기
             // 컨테이너 너비의 1/8, 높이의 1/8, 그리고 고정값 40px 중에서 가장 작은 값을 최대 폰트 크기로 사용
 
             /* 가장 큰 텍스트를 중앙에 배치하기 위한 로직 추가
@@ -84,7 +84,7 @@ const WordCloudCanvas = ({words, width, height}) => {
 
                 // ellipticity: 타원형의 정도. 1에 가까울수록 원형, 값이 작을수록 납작한 타원형이 된다.
                 // 1보다 큰 경우 위아래로 긴 타원형태로 된다
-                ellipticity: 0.7,
+                ellipticity: 1.8,
 
                 // drawOutOfBound: 단어가 캔버스 밖으로 나가는 것을 허용할지 여부.
                 // false로 설정하여 단어가 잘리는 것을 "반드시" 방지
