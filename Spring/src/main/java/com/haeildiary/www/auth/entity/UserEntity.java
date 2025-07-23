@@ -4,6 +4,7 @@ import com.haeildiary.www.auth.user.UserStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.io.Serializable; // Serializable 임포트 추가
@@ -48,7 +49,8 @@ public class UserEntity implements Serializable { // Serializable 구현 추가
     @Column(name = "profile_image", nullable = true)
     private String profileImage;
 
-    @Column(name = "theme_id", nullable = true)
+//    @ColumnDefault("'theme_1'")
+    @Column(name = "theme_id", nullable = true) // -> theme_name, nullable= false
     private Integer themeId;
 
     @Column(name = "last_login_at", nullable = true)
