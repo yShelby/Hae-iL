@@ -73,8 +73,6 @@ const AnimatedRoutes = () => {
                     <Route path="calendar" element={<Calendar />} />
                     {/* 차트 페이지 라우트 */}
                     <Route path="charts" element={<Charts/>}/>
-                    <Route path="privacy" element={<LegalPrivacyPolicy/>}/>
-                    <Route path="copyright" element={<LegalCopyright/>}/>
                 </Route>
             </Routes>
         </AnimatePresence>
