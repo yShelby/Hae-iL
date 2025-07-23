@@ -1,0 +1,85 @@
+import { addDays, addMonths, format, startOfDay, isBefore, isEqual } from "date-fns";
+import {Button} from "@shared/UI/Button.jsx";
+import {useCallback, useEffect, useState} from "react";
+
+export default function DateNavigator({
+                                          isWeekly,
+                                          onChangeWeekly,
+                                          onChangeMonthly,
+                                          onChangeWeeklyForFetch,
+                                          onChangeMonthlyForFetch,
+                                          onChangeTwoMonthsForFetch
+}){
+    const [currentEndDate, setCurrentEndDate] = useState(new Date());
+
+    // 날짜 리스트 생성 함수
+    const generateDateList = useCallback((isWeekly, endDate) => {
+        const chartLabels = [];
+        const formattedForFetch = [];
+
+        for (let i = isWeekly === 'weekly' ? 7 : 30 ; i > 0; i--) {
+            const date = addDays(endDate, -i + 1); // endDate 포함
+            chartLabels.push(format(date, "M/d"));
+            formattedForFetch.push(format(date, "yyyy-MM-dd"));
+        }
+
+        return {chartLabels, formattedForFetch};
+    }, []);
+
+    // 분기에 따른 label, fetch 도출
+    const handleChangeLabelFetch = useCallback((endDate) => {
+        const formattedDates = generateDateList(isWeekly, endDate); // 날짜 생성
+        const lastMonth = addMonths(endDate, -1); // diagnosis fetch 용 이전 달
+        const currentMonth = addMonths(endDate, 0); // diagnosis fetch 용 현재 달
+
+        if (isWeekly === 'weekly'){ // 주간 그래프만 호출할 때
+            onChangeWeekly(formattedDates.chartLabels); // 주간 라벨
+            onChangeMonthly([]); // 월간 라벨 없음
+            onChangeWeeklyForFetch(formattedDates.formattedForFetch); // 주간 DB 조회 리스트(날짜)
+            onChangeMonthlyForFetch([]); //월간 DB 조회 없음
+        }else{ // 월간 그래프, 주간 그래프 모두 호출할 때
+            onChangeWeekly(formattedDates.chartLabels.slice(-7)); // 주간 라벨
+            onChangeMonthly(formattedDates.chartLabels); // 월간 라벨 전송
+            onChangeWeeklyForFetch(formattedDates.formattedForFetch.slice(-7)); // 주간 DB 조회 리스트(날짜)
+            onChangeMonthlyForFetch(formattedDates.formattedForFetch); // 월간 DB 조회 리스트(날짜)
+        }
+
+        onChangeTwoMonthsForFetch([format(lastMonth, "yyyy-MM"), format(currentMonth, "yyyy-MM")]); // diagnosis Fetch 전송용 리스트(달)
+
+    }, [isWeekly, onChangeWeekly, onChangeMonthly, onChangeWeeklyForFetch, onChangeMonthlyForFetch, onChangeTwoMonthsForFetch]);
+
+    useEffect(()=>{ // currentEndDate 업데이트 때마다 날짜 label 및 fetch 외부 전송
+        handleChangeLabelFetch(currentEndDate);
+    }, [currentEndDate, handleChangeLabelFetch, isWeekly])
+
+    // 이전
+    const onPrev = () => {
+        const prevEndDate = isWeekly === 'weekly' ? addDays(currentEndDate, -7)
+            : addMonths(currentEndDate, -1);
+
+        setCurrentEndDate(prevEndDate); // DateNavigator 내부 date 인식
+    }
+
+    // 다음
+    const onNext = () => {
+        const nextEndDate = isWeekly === 'weekly' ? addDays(currentEndDate, 7)
+            : addMonths(currentEndDate, 1);
+
+        setCurrentEndDate(nextEndDate); // DateNavigator 내부 date 인식
+    }
+
+    // 오늘 이후로 이동 금지
+    const canGoForward = () => {
+        const nextStart = startOfDay(new Date(currentEndDate));
+        const today = startOfDay(new Date());
+        return isBefore(nextStart, today) || isEqual(nextStart, today)
+    };
+
+
+    return (
+        <div>
+            <Button onClick={onPrev}>&lt;</Button>
+            <Button onClick={onNext} disabled={!canGoForward()}>&gt;</Button>
+        </div>
+    );
+}

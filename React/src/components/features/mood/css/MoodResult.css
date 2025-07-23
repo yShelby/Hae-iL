@@ -33,13 +33,14 @@
     justify-content: center;
     align-items: center;
 
-    padding: 20px;
+    padding: 0 20px 0 20px;
     width: 250px;
-    height: 250px;
+    height: 220px;
 }
 
 .selected-mood-info {
     height: 50px;
+    padding : 20px;
 }
 
 .selected-mood-info.fade-in {

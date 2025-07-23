@@ -80,6 +80,7 @@ export default function LineChart({ dates, data, chartTitle, chartStyle, chartFo
 
     const options = useMemo(() => ({
         responsive: true,
+        spanGaps: true,
         animation,
         plugins: {
             legend: { display: false },

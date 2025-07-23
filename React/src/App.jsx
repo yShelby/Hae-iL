@@ -38,7 +38,7 @@ const AnimatedRoutes = () => {
     const location = useLocation();
 
     // 가상 스크롤 훅을 호출하여 이 컴포넌트가 렌더링될 때 스크롤 제어를 활성화
-    useVirtualScroll();
+    // useVirtualScroll();
 
     return (
         // AnimatePresence는 자식 컴포넌트가 DOM에서 제거될 때 퇴장 애니메이션을 실행 가능
