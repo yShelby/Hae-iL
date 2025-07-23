@@ -16,7 +16,6 @@ const DashboardPage = () => {
     const [isRefreshing, setIsRefreshing] = useState(false);
     const [refreshKey, setRefreshKey] = useState(0);
 
-
     // 워드 클라우드 데이터 상태 관리
     // - 페이지 레벨에서 비동기 데이터를 관리하고,
     // - UI 컴포넌트(WordCloudComp)에는 데이터만 전달하는 것이 FSD 구조에 더 적합
@@ -93,10 +92,10 @@ const DashboardPage = () => {
         <div className="dashboard-two-column-layout">
             {/* 좌측 컬럼 */}
             <div className="left-column">
-                <div className="component-wrapper">
+                <div className="component-wrapper count-wrapper">
                     <MyRecordStatus />
                 </div>
-                <div className="component-wrapper">
+                <div className="component-wrapper question-wrapper">
                     <DailyQuestion />
                 </div>
 
@@ -107,10 +106,10 @@ const DashboardPage = () => {
                     </div>
                     {/* 오른쪽 서브 컬럼 (포춘쿠키 + 달력) */}
                     <div className="cookie-calendar-column">
-                        <div className="component-wrapper">
+                        <div className="component-wrapper fortune-cookie-wrapper">
                             <FortuneCookie />
                         </div>
-                        <div className="component-wrapper">
+                        <div className="component-wrapper dashboard-calendar-wrapper">
                             <DashboardCalendar />
                         </div>
                     </div>
@@ -119,7 +118,7 @@ const DashboardPage = () => {
 
             {/* 우측 컬럼 */}
             <div className="right-column">
-                <div className="component-wrapper">
+                <div className="component-wrapper weather-wrapper">
                     <Weather />
                 </div>
                 <div className="component-wrapper word-cloud-wrapper">

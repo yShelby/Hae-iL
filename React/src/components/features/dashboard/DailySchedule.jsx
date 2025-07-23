@@ -79,35 +79,48 @@ const DailySchedule = () => {
         }
     };
 
-    if (authLoading || isMissionLoading) {
-        return <div className="daily-mission-container"><h4>오늘의 일정</h4><div>로딩 중...</div></div>;
-    }
+    // [수정]
+    // 컴포넌트의 레이아웃(제목, 컨텐츠 영역)과 상태(로딩, 로그인 여부)에 따른 UI 렌더링 로직을 분리하여
+    // 코드의 가독성과 유지보수성을 높이기 위함
+    const renderContent = () => {
+        if (authLoading || isMissionLoading) {
+            return <div className="loading-text">로딩 중...</div>;
+        }
 
+        if (!user) {
+            return <div className="login-prompt">로그인 후 이용해주세요.</div>;
+        }
+
+        return (
+            <>
+                {allMissionsComplete && (
+                    <div className="all-complete-message">오늘의 일정을 모두 완료했습니다!</div>
+                )}
+                <ul className="mission-list">
+                    {DAILY_MISSIONS.map((mission) => (
+                        <li key={mission.id} className="mission-item" onClick={() => handleNavigate(mission.id)}>
+                            <div className={`status-icon ${missionStatus[mission.id] ? 'completed' : ""}`}>
+                                {missionStatus[mission.id] && '✓'}
+                            </div>
+                            <span className={`mission-text ${missionStatus[mission.id] ? 'completed' : ""}`}>
+                                {mission.text}
+                            </span>
+                        </li>
+                    ))}
+                </ul>
+            </>
+        );
+    };
+
+    // [수정] '오늘의 일정' 중앙 위치시키기 위해서 div 추가
     return (
-        <div className="daily-mission-container">
-            <h4 className="title">오늘의 일정</h4>
-            {!user ? (
-                <div className="login-prompt">로그인 후 이용해주세요.</div>
-            ) : (
-                // 모든 미션 완료 시 메시지를 상단에 표시하고, 그 아래에 항상 미션 목록을 보여준다
-                <>
-                    {allMissionsComplete && (
-                        <div className="all-complete-message">오늘의 일정을 모두 완료했습니다!</div>
-                    )}
-                    <ul className="mission-list">
-                        {DAILY_MISSIONS.map((mission) => (
-                            <li key={mission.id} className="mission-item" onClick={() => handleNavigate(mission.id)}>
-                                <div className={`status-icon ${missionStatus[mission.id] ? 'completed' : ""}`}>
-                                    {missionStatus[mission.id] && '✓'}
-                                </div>
-                                <span className={`mission-text ${missionStatus[mission.id] ? 'completed' : ""}`}>
-                                    {mission.text}
-                                </span>
-                            </li>
-                        ))}
-                    </ul>
-                </>
-            )}
+        <div className="daily-schedule-wrapper">
+            <div className="daily-mission-container">
+                <div className="title">오늘의 일정</div>
+                <div className="mission-list-content">
+                    {renderContent()}
+                </div>
+            </div>
         </div>
     );
 };
