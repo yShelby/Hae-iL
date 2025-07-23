@@ -3,12 +3,12 @@ import MyRecordStatus from "@features/dashboard/MyRecordStatus.jsx";
 import "./css/DashboardPage.css";
 import DailyQuestion from "@features/dashboard/DailyQuestion.jsx";
 import WordCloudComp from "@features/dashboard/WordCloudComp.jsx";
-import {fetchTestEmotionData} from "@api/wordCloudApi.js";
 import {useAuth} from "@shared/context/AuthContext.jsx";
 import Weather from "@features/dashboard/Weather.jsx";
 import FortuneCookie from "@features/dashboard/FortuneCookie.jsx";
 import DashboardCalendar from "@features/dashboard/DashboardCalendar.jsx";
 import DailySchedule from "@features/dashboard/DailySchedule.jsx";
+import {fetchWordCloudData} from "@api/wordCloudApi.js";
 
 const DashboardPage = () => {
     // 페이지 레벨에서 사용자 정보 및 워드클라우드 관련 모든 상태를 관리
@@ -35,7 +35,7 @@ const DashboardPage = () => {
         const loadInitialData = async () => {
             setIsLoading(true);
             try {
-                const data = await fetchTestEmotionData();
+                const data = await fetchWordCloudData();
                 setWordData(data || []);
             } catch (error) {
                 console.error("DashboardPage에서 초기 워드클라우드 데이터를 가져오는 데 실패했습니다.", error);
