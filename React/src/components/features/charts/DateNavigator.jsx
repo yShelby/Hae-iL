@@ -12,6 +12,20 @@ export default function DateNavigator({
 }){
     const [currentEndDate, setCurrentEndDate] = useState(new Date());
 
+    // ===============================================
+
+    // === 날짜 라벨 관련 생성 로직 ===
+
+    // 주간 버튼이 활성화 되어 있을 때 :
+        // 주간 감정 점수 & 수면 시간 & 운동 시간(End date를 기준으로 지난 7일) +
+        // 자가 진단 점수 (End date를 기준으로 이번달, 지난달)
+    // 월간 버튼이 활성화 되어 있을 때 :
+        // 월간 감정 점수 (End date를 기준으로 지난 30일) +
+        // 수면 시간 & 운동 시간 (End date를 기준으로 지난 7일) +
+        // 자가 진단 점수 (End date를 기준으로 이번달, 지난달)
+
+    // ===============================================
+
     // 날짜 리스트 생성 함수
     const generateDateList = useCallback((isWeekly, endDate) => {
         const chartLabels = [];

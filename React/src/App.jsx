@@ -28,6 +28,8 @@ import {useVirtualScroll} from "@/hooks/useVirtualScroll.js";
 import {AnimatePresence} from "framer-motion";
 import Calendar from "@features/calendar/Calendar.jsx";
 import Charts from "@pages/Charts.jsx";
+import LegalCopyright from "@pages/LegalCopyright.jsx";
+import LegalPrivacyPolicy from "@pages/LegalPrivacyPolicy.jsx";
 
 /**
  * ✨ [추가] 애니메이션과 라우팅을 실제로 처리하는 내부 컴포넌트
@@ -71,6 +73,8 @@ const AnimatedRoutes = () => {
                     <Route path="calendar" element={<Calendar />} />
                     {/* 차트 페이지 라우트 */}
                     <Route path="charts" element={<Charts/>}/>
+                    <Route path="privacy" element={<LegalPrivacyPolicy/>}/>
+                    <Route path="copyright" element={<LegalCopyright/>}/>
                 </Route>
             </Routes>
         </AnimatePresence>

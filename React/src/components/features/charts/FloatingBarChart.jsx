@@ -16,9 +16,18 @@ ChartJS.register(
     Legend
 );
 
-export default function SleepFloatingBarChart({dates, data, chartTitle, chartStyle, chartFontSize, gridColor}) {
+export default function SleepFloatingBarChart({dates, rawData, chartTitle, chartStyle, chartFontSize, gridColor}) {
 
-    // 시간 계산 로직
+    // === raw data 처리 ===
+    // data가 NaN 값으로 들어오는 것 방지
+    const data = Array.isArray(rawData)
+        ? rawData.map(value => Number.isNaN(value) ? null : value)
+        : [];
+
+    // ===============================================
+
+    // === 시간 계산 로직 ===
+
     // 기본 로직
         // 1. 취침 시간은 일반적으로 전날과 다음날(=일기 작성 당일)에 걸쳐있음(주로 이틀, 최대 사흘까지)
         // 2. 취침시각과 일어난 시각이 전날에서 다음날에 걸쳐져 있는지, 다음날 당일에만 있는지 확인하기 위한 로직
@@ -37,6 +46,10 @@ export default function SleepFloatingBarChart({dates, data, chartTitle, chartSty
             // = [bedtime + SLEEP_DAY, waketime  + SLEEP_DAY * 2]
         // 4. 취침시각 - SLEEP_DAY/2 < 0, 취침시각 - 일어난 시각 =< 0인 경우 (취침시각 다음날 오전, 일어난 시각 다음날 오전 또는 오후)
             // = [bedtime + SLEEP_DAY, waketime  + SLEEP_DAY]
+
+    // ===============================================
+
+    // === 수면 시간 처리 ===
 
     const SLEEP_DAY = 1440; // 24시간
 

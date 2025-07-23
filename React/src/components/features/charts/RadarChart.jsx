@@ -19,7 +19,13 @@ ChartJS.register(
 );
 
 
-export default function RadarChart({previousData, data, chartStyleThis, chartStylePrevious, chartFontSize, gridColor}) {
+export default function RadarChart({previousData, rawData, chartStyleThis, chartStylePrevious, chartFontSize, gridColor}) {
+
+    // === raw data 처리 ===
+    // data가 NaN 값으로 들어오는 것 방지
+    const data = Array.isArray(rawData)
+        ? rawData.map(value => Number.isNaN(value) ? null : value)
+        : [];
 
     // === 1. 공통 라벨/총점 ===
     const LABELS = ['우울', '불안', '스트레스'];

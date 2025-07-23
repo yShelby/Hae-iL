@@ -24,7 +24,13 @@ ChartJS.register(
 );
 
 
-export default function LineChart({ dates, data, chartTitle, chartStyle, chartFontSize, gridColor }){
+export default function LineChart({ dates, rawData, chartTitle, chartStyle, chartFontSize, gridColor }){
+
+    // === raw data 처리 ===
+    // data가 NaN 값으로 들어오는 것 방지
+    const data = Array.isArray(rawData)
+        ? rawData.map(value => Number.isNaN(value) ? null : value)
+        : [];
 
     // === Animation ===
     // 전체 애니메이션 시간(ms)

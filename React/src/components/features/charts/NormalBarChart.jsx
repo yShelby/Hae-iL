@@ -17,7 +17,14 @@ ChartJS.register(
     Legend
 );
 
-export default function NormalBarChart({ dates, data, chartTitle, chartStyle, chartFontSize, gridColor }) {
+export default function NormalBarChart({ dates, rawData, chartTitle, chartStyle, chartFontSize, gridColor }) {
+
+    // === raw data 처리 ===
+    // data가 NaN 값으로 들어오는 것 방지
+    const data = Array.isArray(rawData)
+        ? rawData.map(value => Number.isNaN(value) ? null : value)
+        : [];
+
     const chartData = {
         labels: dates,
         datasets: [

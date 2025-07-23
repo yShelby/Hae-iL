@@ -1,0 +1,26 @@
+.legal-privacy, .legal-copyright{
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    overflow-y : scroll;
+    word-break: break-all;
+    overflow-x: hidden;
+
+    width: 80vw;
+    height: 80vh;
+
+    padding: 20px;
+    border: 1px solid #ccc;
+}
+
+.legal-privacy > h4, .legal-copyright > h4, .legal-privacy > h5, .legal-copyright > h5{
+    padding: 10px;
+}
+
+.legal-privacy > p, .legal-copyright > p {
+    font-size: 10px;
+    line-height: 1.8;
+    text-align: justify; /* 양쪽 정렬 */
+    word-spacing: 0.1em; /* 단어 간격 */
+    letter-spacing: 0.02em; /* 글자 간격 */
+}
+

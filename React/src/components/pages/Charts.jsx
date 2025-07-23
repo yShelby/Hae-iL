@@ -64,7 +64,7 @@ export default function Charts() {
                     {isWeekly ? (
                         <LineCharts
                             dates={weeklyLabels}
-                            data={moodDataForChart}
+                            rawData={moodDataForChart}
                             chartTitle="주간 기분 변화"
                             chartStyle={weeklyLineStyle}
                             chartFontSize={chartFontSize.weeklyLineStyle}
@@ -73,7 +73,7 @@ export default function Charts() {
                     ) : (
                         <LineCharts
                             dates={monthlyLabels}
-                            data={moodDataForChart}
+                            rawData={moodDataForChart}
                             chartTitle="월간 기분 변화"
                             chartStyle={monthlyLineStyle}
                             chartFontSize={chartFontSize.monthlyLineStyle}
@@ -87,7 +87,7 @@ export default function Charts() {
                         <h3>수면 차트</h3>
                         <FloatingBarChart
                             dates={weeklyLabels}
-                            data={sleepDataForChart}
+                            rawData={sleepDataForChart}
                             chartTitle={isWeekly ? "주간 수면 시간" : "월간 수면 시간"}
                             chartStyle={sleepBarStyle}
                             chartFontSize={chartFontSize.sleepBarStyle}
@@ -98,7 +98,7 @@ export default function Charts() {
                         <h3>운동 차트</h3>
                         <NormalBarChart
                             dates={weeklyLabels}
-                            data={exerciseDataForChart}
+                            rawData={exerciseDataForChart}
                             chartTitle={isWeekly ? "주간 운동 시간" : "월간 운동 시간"}
                             chartStyle={exerciseBarStyle}
                             chartFontSize={chartFontSize.exerciseBarStyle}
@@ -111,7 +111,7 @@ export default function Charts() {
                 <h3>자가진단 차트</h3>
                 <RadarChart
                     previousData={lastMonthData}
-                    data={thisMonthData}
+                    rawData={thisMonthData}
                     chartStyleThis={diagnosisRadarStyle}
                     chartStylePrevious={previousDiagnosisRadarStyle}
                     chartFontSize={chartFontSize.diagnosisRadarStyle}
