@@ -1,26 +1,69 @@
-.horizontal-container {
+/* DashboardPage.css */
+
+.dashboard-two-column-layout {
     display: flex;
-    gap: 20px;
-    margin-bottom: 20px;
+    width: 100%;
+    gap: 24px; /* 컬럼 사이의 간격 */
+    height: 100%;
 }
 
-.placeholder-box {
-    background-color: #ffffff;
-    border-radius: 12px;
-    padding: 20px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+.left-column {
+    flex: 11; /* 왼쪽 컬럼이 차지할 비율 (오른쪽의 2배) */
+    display: flex;
+    flex-direction: column;
+    gap: 24px; /* 왼쪽 컬럼 내부 위젯들의 간격 */
+    min-height: 0;
+}
+
+.right-column {
+    flex: 7; /* 오른쪽 컬럼이 차지할 비율 */
+    display: flex;
+    flex-direction: column;
+    gap: 24px; /* 오른쪽 컬럼 내부 위젯들의 간격 */
+    min-height: 0;
+}
+
+.component-wrapper {
+    background-color: white;
+    border-radius: 20px;
+    padding: 24px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    box-sizing: border-box;
     display: flex;
     flex-direction: column;
 }
 
-.wordcloud-container {
-    justify-content: flex-start;
-    align-items: stretch;
+/* 오늘의 질문 하단 영역을 위한 스타일 */
+.bottom-content-area {
+    display: flex;
+    gap: 24px;
+    flex-grow: 1;
+    min-height: 0;
 }
 
-.title {
-    font-size: 1.1rem;
-    font-weight: 600;
-    margin-bottom: 1rem;
-    color: #334155;
+/* 오늘의 일정(미션)을 감싸는 래퍼 스타일 */
+.mission-wrapper {
+    flex: 8; /* 왼쪽 서브 컬럼이 오른쪽보다 약간 더 넓게 */
+    display: flex;
+    flex-direction: column;
+}
+
+/* 포춘쿠키와 달력을 감싸는 오른쪽 서브 컬럼 스타일 */
+.cookie-calendar-column {
+    flex: 7;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+/* 워드클라우드 위젯이 남은 세로 공간을 모두 채우도록 설정 */
+.word-cloud-wrapper {
+    flex-grow: 1;
+}
+
+/* .cookie-calendar-column 내부에서, 마지막 자식인 '달력'의 wrapper에게
+   '포춘쿠키'가 차지하고 남은 모든 세로 공간을 채우도록(flex-grow: 1) 지시
+   이렇게 하면 달력의 크기가 할당된 공간에 맞춰 유연하게 조절되어 더 이상 잘리지 않는다. */
+.cookie-calendar-column .component-wrapper:last-child {
+    flex-grow: 1;
 }

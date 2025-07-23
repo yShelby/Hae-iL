@@ -23,7 +23,6 @@
     "@tiptap/starter-kit": "^2.24.1",
     "axios": "^1.10.0",
     "chart.js": "^4.5.0",
-    "d3-cloud": "^1.2.7",
     "d3-scale": "^4.0.2",
     "d3-scale-chromatic": "^3.1.0",
     "date-fns": "^4.1.0",
@@ -42,6 +41,8 @@
     "react-rating": "^2.0.5",
     "react-router-dom": "^7.6.3",
     "styled-components": "^6.1.19",
+    "wordcloud": "^1.2.3",
+    "wordcloud2": "^1.0.0",
     "zustand": "^5.0.6"
   },
   "devDependencies": {
