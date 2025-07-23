@@ -2,32 +2,42 @@
 
 /* 전체 위젯 컨테이너 스타일 */
 .daily-mission-container {
-    background-color: #ffffff;
-    border-radius: 20px;
-    width: 100%;
-    height: 100%;
-    padding: 12px;
-    box-sizing: border-box;
+    width: 275px;
+    height: 445px;
+    position: relative; /* 자식인 title의 위치 기준점 */
+    background-color: transparent;
+    padding: 0;
+}
+
+.daily-schedule-wrapper {
     display: flex;
-    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    width: 100%;
 }
 
 /* 위젯 제목 스타일 */
 .title {
-    font-size: 1.1rem;
-    font-weight: 600;
-    margin-top: 0;
-    margin-bottom: 20px;
-    color: #333;
-}
+    width: 90px;
+    height: 29px;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    background-color: rgba(57, 62, 117, 0.8);
 
-.loading-text,
-.login-prompt {
-    flex-grow: 1;
+    font-family: 'NPS-Bold', sans-serif;
+    font-size: 17px;
+    color: #fff;
+
     display: flex;
+    text-align: center;
     align-items: center;
     justify-content: center;
-    color: #9ca3af;
+    position: absolute;
+    /* 경계선에 걸치기 위해 음수 값으로 수정 */
+    top: -14.5px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1;
 }
 
 /* 미션 목록 ul 태그 스타일 */
@@ -37,29 +47,65 @@
     margin: 0;
     display: flex;
     flex-direction: column;
-    /*gap: 5px;*/
+    gap: 15px;
+}
+
+.mission-list-content {
+    width: 100%;
+    height: 100%;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.25);
+    padding: 45px 20px 20px 20px; /* 라벨이 겹치지 않도록 상단 패딩 확보 */
+    box-sizing: border-box;
+    overflow-y: auto;
+    display: flex;
+    justify-content: center;
 }
 
 .mission-item {
     display: flex;
-    align-items: center;
-    padding: 8px; /* 클릭 영역 확보 및 시각적 여유 공간 */
-    border-radius: 8px;
+    align-items: flex-start;
+    gap: 10px;
     cursor: pointer;
     transition: background-color 0.2s;
+    border-radius: 4px;
+    padding: 4px;
 }
 
 .mission-item:hover {
     background-color: #f9fafb;
 }
 
-/* 체크박스를 대체할 상태 아이콘 스타일 */
+/* 텍스트 스타일 */
+.mission-text {
+    font-family: 'NPS-Regular', sans-serif;
+    font-size: 15px;
+    color: #000;
+    transition: color 0.2s, text-decoration 0.2s;
+}
+
+/* 완료됐을 때 텍스트 스타일 */
+.mission-text.completed {
+    text-decoration: line-through;
+    color: #bfbfbf;
+}
+
+
+/* 모든 미션 완료 시 메시지 스타일 */
+.all-complete-message, .loading-text, .login-prompt {
+    text-align: center;
+    padding: 20px;
+    color: #666;
+    font-family: 'NPS-Regular', sans-serif;
+}
+
 .status-icon {
     width: 20px;
     height: 20px;
     border: 2px solid #d1d5db;
     border-radius: 50%;
-    margin-right: 12px;
+    margin-top: 2px;
     flex-shrink: 0;
     display: flex;
     align-items: center;
@@ -70,38 +116,7 @@
     color: white;
 }
 
-/* 완료됐을 때 아이콘 스타일 */
 .status-icon.completed {
     background-color: #3b82f6;
     border-color: #3b82f6;
-}
-
-/* 텍스트 스타일 */
-.mission-text {
-    color: #374151;
-    transition: color 0.2s, text-decoration 0.2s;
-}
-
-/* 완료됐을 때 텍스트 스타일 */
-.mission-text.completed {
-    text-decoration: line-through;
-    color: #9ca3af;
-}
-
-
-/* 모든 미션 완료 시 메시지 스타일 */
-.all-complete-message {
-    /*flex-grow: 1;*/
-    /*display: flex;*/
-    /*align-items: center;*/
-    /*justify-content: center;*/
-
-    text-align: center;
-    font-size: 1rem;
-    font-weight: 500;
-    color: #10b981;
-    background-color: #f0fdf4;
-    border-radius: 8px;
-    padding: 12px;
-    margin-bottom: 16px;
 }

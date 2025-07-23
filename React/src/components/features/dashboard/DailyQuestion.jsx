@@ -27,29 +27,30 @@ const DailyQuestion = () => {
             return <div className="status-text">오늘의 질문 : 로그인 후 질문에 답변해보세요.</div>;
         }
         return (
-            <div className="question-content-wrapper">
-                <p className="question-text" onClick={handleQuestionClick} title="클릭하여 일기 작성하기">
-                    오늘의 질문 : {question}
-                </p>
-                <button
-                    onClick={(e) => {
-                        e.stopPropagation(); // p 태그의 클릭 이벤트 전파 방지
-                        refreshQuestion(); // Context의 함수 호출
-                    }}
-                    className="btn-refresh"
-                    title="새로운 질문 보기"
-                    disabled={isLoading}
-                >
-                    <FaSyncAlt className={isLoading ? 'rotating' : ''} />
-                </button>
-            </div>
+            <p className="question-text" onClick={handleQuestionClick} title="클릭하여 일기 작성하기">
+                오늘의 질문 : {question}
+            </p>
         );
     };
 
     return (
-        <>
+        <div className="today-question-container">
             {renderContent()}
-        </>
+            <button
+                onClick={(e) => {
+                    e.stopPropagation();
+                    if (user) { // 클릭 로직은 여전히 로그인 상태에서만 동작
+                        refreshQuestion();
+                    }
+                }}
+                className="btn-refresh"
+                title={user ? "새로운 질문 보기" : "로그인 후 사용 가능"}
+                // 로그인하지 않았거나, 질문을 로딩 중일 때 버튼을 비활성화
+                disabled={!user || isLoading}
+            >
+                <FaSyncAlt className={isLoading ? 'rotating' : ''} />
+            </button>
+        </div>
     );
 };
 

@@ -1,51 +1,84 @@
 /* FortuneCookie.css */
 
 .fortune-cookie-container {
+    width: 250px;
+    height: 100px;
+    border-radius: 30px;
+    background-color: #ffffff;
+    box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.25);
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 16px;
+    padding: 16px;
+    box-sizing: border-box;
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out;
+    position: relative; /* 내부 요소 위치 기준 */
+    overflow: hidden; /* 애니메이션 요소가 밖으로 나가지 않도록 */
+}
+
+.fortune-cookie-container:hover {
+    transform: translateY(-2px);
+}
+
+.fortune-text {
+    font-family: 'NPS-Regular', sans-serif;
+    font-size: 15px;
+    color: #000;
+    text-align: center;
+    position: relative;
+    z-index: 2;
+}
+
+.fortune-loading-message {
+    font-size: 15px;
+    color: #000;
+    text-align: center;
+}
+
+
+.fortune-img-container {
+    position: absolute;
     width: 100%;
     height: 100%;
-    padding: 10px;
-    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-.cookie-image-container {
-    cursor: pointer;
-    transition: transform 0.2s ease;
+.bg-cookie-img {
+    position: absolute;
+    opacity: 0.3;
+    z-index: 1;
+    max-width: 100px;
+    height: auto;
+}
+
+.bg-cookie-img.is-cracked {
+    width: 200px;
+}
+
+/* --- 2. 로그인 후 클릭 가능한 쿠키 스타일 --- */
+.cookie-image-wrapper {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 150px;
-    height: 100px;
+    width: 100%;
+    height: 100%;
 }
 
-.cookie-image-container:hover:not(.disabled) {
+.cookie-image-wrapper:hover .cookie-img:not(.animating) {
     transform: scale(1.1); /* 마우스를 올리면 살짝 커지는 효과 */
 }
 
-/* .disabled 클래스는 이제 클릭 방지(커서 모양 변경) 역할만 수행 */
-.cookie-image-container.disabled {
-    cursor: not-allowed;
-}
-
-/* 흑백 필터 효과만을 위한 새로운 클래스를 생성 */
-.cookie-image-container.grayscale {
-    filter: grayscale(80%);
-}
-
-.cookie-img {
-    width: 80px; /* 쿠키 이미지 크기 조절 */
-    height: auto;
-    vertical-align: middle; /* 이미지 수직 정렬 */
-}
-
-/* 깨진 쿠키 이미지의 크기를 별도로 조정하기 위한 클래스 */
-.cracked-cookie-img {
-    width: 240px; /* 시각적으로 비슷해 보이도록 너비 조정 */
-    height: auto;
+.cookie-img, .cracked-cookie-img {
+    /* [수정] 로그인/비로그인 시 크기 일관성을 위해 최대 너비를 100px로 명시
+      - 컨테이너보다 이미지가 커지는 것을 방지하면서, 의도한 크기를 유지 가능
+       'object-fit: contain' 은 이미지의 비율을 유지하면서 컨테이너 안에
+      - 완전히 들어가도록 하여 이미지가 삐져나가는 현상을 방지 */
+    max-width: 100px;
+    max-height: 100%;
+    object-fit: contain;
     vertical-align: middle;
 }
 
@@ -78,15 +111,4 @@
         opacity: 0;
         transform: scale(2);
     }
-}
-
-.fortune-message {
-    font-size: 1.1rem;
-    font-weight: 700;
-    color: #666;
-    text-align: center;
-    min-height: 40px; /* 메시지 영역 높이를 고정하여 레이아웃 깨짐 방지 */
-    display: flex;
-    align-items: center;
-    justify-content: center;
 }
