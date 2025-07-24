@@ -24,9 +24,13 @@ import SleepWidget from "@features/health/SleepWidget.jsx";
 import ExerciseWidget from "@features/health/ExerciseWidget.jsx";
 import MealWidget from "@features/health/MealWidget.jsx";
 import {AnimatePresence} from "framer-motion";
-import Calendar from "@features/calendar/Calendar.jsx";
 import AnimationLayout from "@/layouts/AnimationLayout.jsx";
 import DiaryPage from "@pages/DairyPage.jsx";
+import CalendarPageLayout from "@/layouts/MonthlyLayout.jsx";
+import Calendar from "@features/calendar/Calendar.jsx";
+import MonthlyLayout from "@/layouts/MonthlyLayout.jsx";
+import SelfDiagnosis from "@features/selfDiagnosis/SelflDiagnosis.jsx";
+import MonthlyPage from "@pages/MonthlyPage.jsx";
 
 /**
  * ✨ [추가] 애니메이션과 라우팅을 실제로 처리하는 내부 컴포넌트
@@ -87,8 +91,11 @@ const AnimatedRoutes = () => {
                                 </>
                             }/>
                         </Route>
-                        {/* 캘린더 페이지 라우트 */}
-                        <Route path="calendar" element={<Calendar/>}/>
+                        {/* 한달너울 페이지 라우트 */}
+                        <Route path="monthly" element={<MonthlyLayout/>}>
+                            <Route index element={<MonthlyPage />} />
+
+                        </Route>
                     </Route>
                 </Route>
             </Routes>
