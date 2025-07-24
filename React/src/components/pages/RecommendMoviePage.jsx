@@ -3,76 +3,86 @@ import {useEffect, useState} from "react";
 import RecommendText from "@features/recommend/RecommendText.jsx";
 import { fetchRecommendedMovies} from "@api/recommendMovieApi.js";
 import axios from "axios";
+import {useCheckLogin} from "@/hooks/useCheckLogin.js";
+import {useAuth} from "@features/auth/AuthContext.jsx";
 
 function RecommendMoviePage(){
-
+    const { user } = useAuth();  // 또는 useCheckLogin 내부에서도 이걸 씀
     const [emotionResult, setEmotionResult] = useState([]);
     const [moviesByPage, setMoviesByPage] = useState({});
     const [currentEmotionIndex, setCurrentEmotionIndex] = useState(0);
     const [shuffledMoviesByEmotion, setShuffledMoviesByEmotion] = useState({});
 
     useEffect(() => {
-        const loadRecommendations = async () => {
-            try {
-                const data = await fetchRecommendedMovies();
+        const storedEmotionResult = localStorage.getItem("lastEmotionResult");
+        const storedMoviesByPage = localStorage.getItem("cachedMoviesByPage");
 
-                console.log("data.noChange:", data.noChange);
-
-                if (data.noChange) {
-                    // 감정 데이터 변경 없을 때 처리: 예를 들어 알림 보여주기
-                    console.log("감정 데이터 변경 없음 - 추천 업데이트 안함");
-                    // 로컬 캐시가 있으면 그걸 사용하거나 빈 리스트 처리
-                    const storedEmotionResult = localStorage.getItem("lastEmotionResult");
-                    const storedMoviesByPage = localStorage.getItem("cachedMoviesByPage");
-
-                    console.log("data.noChange:", data.noChange);
-                    console.log("storedEmotionResult", storedEmotionResult);
-                    console.log("storedMoviesByPage", storedMoviesByPage);
-
-
-                    if (storedEmotionResult && storedMoviesByPage) {
-                        setEmotionResult(JSON.parse(storedEmotionResult));
-                        setMoviesByPage(JSON.parse(storedMoviesByPage));
-                    } else {
-                        setEmotionResult([]);
-                        setMoviesByPage({});
-                    }
-                    return;
-                }
-
-                // noChange가 false인 경우 기존 로직 진행
-                const newEmotionResult = [
-                    "종합추천",
-                    data.moods?.[0]?.emotionType || "기타",
-                    data.moods?.[1]?.emotionType || "기타",
-                    data.moods?.[2]?.emotionType || "기타",
-                ];
-
-                setEmotionResult(newEmotionResult);
-
-                const moviesByPageData = {
-                    "종합추천": data.combinedResults,
-                    [data.moods?.[0]?.emotionType]: data.resultsByEmotion[data.moods[0]?.emotionType] || [],
-                    [data.moods?.[1]?.emotionType]: data.resultsByEmotion[data.moods[1]?.emotionType] || [],
-                    [data.moods?.[2]?.emotionType]: data.resultsByEmotion[data.moods[2]?.emotionType] || [],
-                };
-
-                setMoviesByPage(moviesByPageData);
-
-                localStorage.setItem("lastEmotionResult", JSON.stringify(newEmotionResult));
-                localStorage.setItem("cachedMoviesByPage", JSON.stringify(moviesByPageData));
-                localStorage.setItem("cacheTimestamp", Date.now().toString());
-
-                console.log("🔄 API 호출 후 캐시 갱신");
-
-            } catch (error) {
-                console.error("추천 영화 불러오기 실패:", error);
-            }
-        };
-        loadRecommendations();
+        if (storedEmotionResult && storedMoviesByPage) {
+            setEmotionResult(JSON.parse(storedEmotionResult));
+            setMoviesByPage(JSON.parse(storedMoviesByPage));
+        }
     }, []);
 
-
+    // useEffect(() => {
+    //     const loadRecommendations = async () => {
+    //         try {
+    //             const data = await fetchRecommendedMovies();
+    //
+    //             console.log("data.noChange:", data.noChange);
+    //
+    //             if (data.noChange) {
+    //                 // 감정 데이터 변경 없을 때 처리: 예를 들어 알림 보여주기
+    //                 console.log("감정 데이터 변경 없음 - 추천 업데이트 안함");
+    //                 // 로컬 캐시가 있으면 그걸 사용하거나 빈 리스트 처리
+    //                 const storedEmotionResult = localStorage.getItem("lastEmotionResult");
+    //                 const storedMoviesByPage = localStorage.getItem("cachedMoviesByPage");
+    //
+    //                 console.log("data.noChange:", data.noChange);
+    //                 console.log("storedEmotionResult", storedEmotionResult);
+    //                 console.log("storedMoviesByPage", storedMoviesByPage);
+    //
+    //
+    //                 if (storedEmotionResult && storedMoviesByPage) {
+    //                     setEmotionResult(JSON.parse(storedEmotionResult));
+    //                     setMoviesByPage(JSON.parse(storedMoviesByPage));
+    //                 } else {
+    //                     setEmotionResult([]);
+    //                     setMoviesByPage({});
+    //                 }
+    //                 return;
+    //             }
+    //
+    //             // noChange가 false인 경우 기존 로직 진행
+    //             const newEmotionResult = [
+    //                 "종합추천",
+    //                 data.moods?.[0]?.moodType || "기타",
+    //                 data.moods?.[1]?.moodType || "기타",
+    //                 data.moods?.[2]?.moodType || "기타",
+    //             ];
+    //
+    //             setEmotionResult(newEmotionResult);
+    //
+    //             const moviesByPageData = {
+    //                 "종합추천": data.combinedResults,
+    //                 [data.moods?.[0]?.moodType]: data.resultsByEmotion[data.moods[0]?.moodType] || [],
+    //                 [data.moods?.[1]?.moodType]: data.resultsByEmotion[data.moods[1]?.moodType] || [],
+    //                 [data.moods?.[2]?.moodType]: data.resultsByEmotion[data.moods[2]?.moodType] || [],
+    //             };
+    //
+    //             setMoviesByPage(moviesByPageData);
+    //
+    //             localStorage.setItem("lastEmotionResult", JSON.stringify(newEmotionResult));
+    //             localStorage.setItem("cachedMoviesByPage", JSON.stringify(moviesByPageData));
+    //             localStorage.setItem("cacheTimestamp", Date.now().toString());
+    //
+    //             console.log("🔄 API 호출 후 캐시 갱신");
+    //
+    //         } catch (error) {
+    //             console.error("추천 영화 불러오기 실패:", error);
+    //         }
+    //     };
+    //     loadRecommendations();
+    // }, []);
 
     // useEffect(() => {
     //     const loadRecommendations = async () => {
@@ -139,6 +149,17 @@ function RecommendMoviePage(){
         setShuffledMoviesByEmotion(newShuffled);
     }, [moviesByPage]);
 
+    if (!user){
+        return (
+            <div>
+                <div>로그인이 필요합니다.</div>
+                <button className="next-emotion-btn" >
+                    다음 감정 보기
+                </button>
+            </div>
+        )
+    }
+
     if (emotionResult.length === 0) {
         return <div>감정 분석 결과를 불러오는 중입니다...</div>;
     }
@@ -146,6 +167,25 @@ function RecommendMoviePage(){
     const currentEmotion = emotionResult[currentEmotionIndex] || "알 수 없음";
 
     const movies = shuffledMoviesByEmotion[currentEmotion] || [];
+
+    const handleDislike = (movieKey) => {
+        setShuffledMoviesByEmotion(prev => {
+            const newShuffled = { ...prev };
+            if (!newShuffled[currentEmotion]) return prev;
+            newShuffled[currentEmotion] = newShuffled[currentEmotion].filter(
+                movie => movie.id !== movieKey
+            );
+            // 2) 로컬스토리지에 저장된 moviesByPage도 업데이트
+            const storedMovies = JSON.parse(localStorage.getItem("cachedMoviesByPage") || "{}");
+            for (const key of Object.keys(storedMovies)) {
+                storedMovies[key] = storedMovies[key].filter(movie => movie.id !== movieKey);
+            }
+
+            localStorage.setItem("cachedMoviesByPage", JSON.stringify(storedMovies));
+
+            return newShuffled;
+        });
+    };
 
     const nextEmotion = () => {
         setCurrentEmotionIndex((prev) =>
@@ -156,7 +196,7 @@ function RecommendMoviePage(){
     return (
         <div>
             <RecommendText emotion={currentEmotion} />
-            <MovieList movies={movies} emotion={currentEmotion} />
+            <MovieList movies={movies} emotion={currentEmotion} onDisLike={handleDislike} />
             <button className="next-emotion-btn" onClick={nextEmotion}>
                 다음 감정 보기
             </button>

@@ -1,6 +1,7 @@
 package com.haeildiary.www.recommend.movie.movieservice;
 
 import com.haeildiary.www.recommend.movie.moviedto.MovieDto;
+import com.haeildiary.www.recommend.movie.movieresponse.KeywordResponse;
 import com.haeildiary.www.recommend.movie.movieresponse.MovieCreditsResponse;
 import com.haeildiary.www.recommend.movie.movieresponse.MovieTrailerResponse;
 import com.haeildiary.www.recommend.movie.movieresponse.TmdbMovieResponse;
@@ -9,6 +10,10 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.w3c.dom.ls.LSInput;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,23 +33,56 @@ public class TmdbApiClientService {
     }
 
     public List<MovieDto> searchMoviesByGenre(Integer genreCode) {
-        log.debug("🔍 TMDB 영화 검색 요청 - 장르코드: {}", genreCode);
+        List<String> bannedKeywords = List.of("softcore", "pink film", "adult");
 
+        // 비동기 스트림을 block()으로 동기 변환해서 리턴
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path("/discover/movie")
                         .queryParam("api_key", apiKey)
                         .queryParam("with_genres", genreCode)
+                        .queryParam("include_adult", "false")
                         .queryParam("language", "ko-KR")
                         .build())
                 .retrieve()
                 .bodyToMono(TmdbMovieResponse.class)
-                .map(response -> {
-                    List<MovieDto> results = response.getResults();
-                    log.debug("🎬 TMDB 검색 결과 영화 수: {}", results.size());
-                    return results;
-                })
-                .block(); // 필요 시 동기 호출 (Spring MVC에서 사용 시 block 필수)
+                .flatMapMany(response -> Flux.fromIterable(response.getResults()))
+                .filter(movie -> !movie.isAdult())
+                .flatMap(movie -> getKeywordsForMovieReactive(movie.getMovieKey())
+                        .map(keywords -> {
+                            boolean bannedFound = keywords.stream().anyMatch(bannedKeywords::contains);
+                            return new MovieWithKeywords(movie, bannedFound);
+                        }))
+                .filter(mwk -> !mwk.bannedFound)
+                .map(mwk -> mwk.movie)
+                .collectList()
+                .doOnNext(list -> log.debug("🎬 TMDB 검색 결과 영화 수: {}", list.size()))
+                .block(); // 여기서 동기 호출
+    }
+
+    // 키워드도 Mono로 반환하는 메서드
+    private Mono<List<String>> getKeywordsForMovieReactive(Integer movieId) {
+        return webClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/movie/" + movieId + "/keywords")
+                        .queryParam("api_key", apiKey)
+                        .build())
+                .retrieve()
+                .bodyToMono(KeywordResponse.class)
+                .map(response -> response.getKeywords().stream()
+                        .map(KeywordResponse.Keyword::getName)
+                        .collect(Collectors.toList()));
+    }
+
+    // 내부 클래스 - 필터용
+    private static class MovieWithKeywords {
+        final MovieDto movie;
+        final boolean bannedFound;
+
+        MovieWithKeywords(MovieDto movie, boolean bannedFound) {
+            this.movie = movie;
+            this.bannedFound = bannedFound;
+        }
     }
 
     public MovieDto getMovieCreditsWithDetails(String movieId) {

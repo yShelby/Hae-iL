@@ -2,7 +2,7 @@ import React, {useState} from "react";
 import './css/MovieList.css'
 import DisLikeModal from "@features/recommend/DisLikeModal.jsx";
 
-function MovieList({ movies, emotion }) {
+function MovieList({ movies, emotion, onDisLike }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [trailerUrl, setTrailerUrl] = useState("");
     const [selectedMovie, setSelectedMovie] = useState(null)
@@ -56,7 +56,7 @@ function MovieList({ movies, emotion }) {
                                 }}
                             ></button>
                             {openDislikeModalMovieId === movie.id && (
-                                <DisLikeModal movieKey={movie.id} onClose={() => setOpenDislikeModalMovieId(null)} />
+                                <DisLikeModal movieKey={movie.id} onClose={() => setOpenDislikeModalMovieId(null)} onDisLike={onDisLike} />
                             )}
                             <p className="movie-overview">{movie.overview || "줄거리 정보 없음"}</p>
                         </div>

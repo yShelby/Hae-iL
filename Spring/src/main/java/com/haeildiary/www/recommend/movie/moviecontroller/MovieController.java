@@ -9,9 +9,7 @@ import com.haeildiary.www.mood.entity.MoodDetail;
 import com.haeildiary.www.mood.repository.MoodDetailRepository;
 import com.haeildiary.www.recommend.movie.moviedto.MovieDto;
 import com.haeildiary.www.recommend.movie.movieresponse.MovieListResponse;
-import com.haeildiary.www.recommend.movie.movieservice.DisLikeMoviesService;
-import com.haeildiary.www.recommend.movie.movieservice.RecommendByInitialService;
-import com.haeildiary.www.recommend.movie.movieservice.RecommendByMoodService;
+import com.haeildiary.www.recommend.movie.movieservice.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -34,6 +32,9 @@ public class MovieController {
     private final MoodDetailRepository moodDetailRepository;
     private final UserRepository userRepository;
     private final RecommendByInitialService recommendByInitialService;
+    private final MoodCacheService moodCacheService;
+    private final RecommendationCacheService recommendationCacheService;
+
     /**
      * 오늘 작성한 일기 기반 감정을 조회하여 그 감정에 맞는 영화 추천
      * 인증된 사용자만 접근 가능
@@ -43,53 +44,57 @@ public class MovieController {
             @AuthenticationPrincipal CustomUser customUser) {
 
         if (customUser == null) {
-            log.warn("❌ 인증 안 된 사용자 요청");
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-        Optional<UserEntity> userOpt = userRepository.findById(customUser.getUserId());
-        if (userOpt.isEmpty()) {
-            log.warn("❌ 사용자 ID로 조회 실패 - userId: {}", customUser.getUserId());
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
-        UserEntity user = userOpt.get();
-        log.info("🔎 사용자 조회 성공 - userId: {}", user.getUserId());
+        UserEntity user = userRepository.findById(customUser.getUserId())
+                .orElse(null);
 
-        // 오늘 일기 조회
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        // 오늘 일기 감정 가져오기
+        List<MoodDetail> todayMoods = List.of();
         Optional<DiaryEntity> todayDiary = diaryRepository.findByUserUserIdAndDiaryDate(user.getUserId(), LocalDate.now());
-
-        boolean hasEmotion = false;
         if (todayDiary.isPresent()) {
-            log.info("📅 오늘 일기 발견 - diaryId: {}", todayDiary.get().getDiaryId());
-            List<MoodDetail> moodDetails = moodDetailRepository.findByDiaryDiaryId(todayDiary.get().getDiaryId());
-            log.info("🎭 오늘 일기 감정 개수: {}", moodDetails.size());
-            if (!moodDetails.isEmpty()) {
-                hasEmotion = true;
-                log.info("✅ 오늘 일기에 감정 데이터 있음");
-            } else {
-                log.info("⚠️ 오늘 일기 감정 데이터 없음");
-            }
-        } else {
-            log.info("⚠️ 오늘 일기 없음");
+            todayMoods = moodDetailRepository.findByDiaryDiaryId(todayDiary.get().getDiaryId());
         }
+
+        // 캐시된 감정 데이터 가져오기
+        List<MoodDetail> cachedMoods = moodCacheService.getCachedMoods(user.getUserId());
+
+        boolean containsNeutralOrEtc = todayMoods.stream()
+                .anyMatch(mood -> "중립/기타".equals(mood.getMoodType()));
 
         MovieListResponse response;
 
-        if (hasEmotion) {
-            response = recommendByMoodService.recommendByTodayDiaryWeighted(user);
-            log.info("📌 오늘 일기 기반 감정 추천 실행 - userId: {}", user.getUserId());
+        // 감정 데이터 비교 (간단히 equals 이용, 필요 시 더 정밀 비교)
+        if (recommendByMoodService.moodsAreSame(todayMoods, cachedMoods)) {
+            // 감정이 같으면 캐시된 추천 결과를 불러온다
+            response = recommendationCacheService.getCachedRecommendation(user.getUserId());
+            if (response == null) {
+                // 캐시가 없으면 새 추천 수행
+                if (!todayMoods.isEmpty() && !containsNeutralOrEtc) {
+                    response = recommendByMoodService.recommendByTodayDiaryWeighted(user);
+                } else {
+                    response = recommendByInitialService.recommendByInitialSurvey(user);
+                }
+                recommendationCacheService.updateCachedRecommendation(user.getUserId(), response);
+            }
         } else {
-            List<MovieDto> movies = recommendByInitialService.recommendByInitialSurvey(user);
-            response = new MovieListResponse(movies, Map.of(), List.of(), false);
-            log.info("📌 초기 설문 기반 추천 실행 - userId: {}", user.getUserId());
-        }
+            // 감정 다르면 새 추천 수행
+            if (!todayMoods.isEmpty() && !containsNeutralOrEtc) {
+                response = recommendByMoodService.recommendByTodayDiaryWeighted(user);
+            } else {
+                response = recommendByInitialService.recommendByInitialSurvey(user);
+            }
+            // 캐시에 감정 데이터 업데이트
+            moodCacheService.updateCachedMoods(user.getUserId(), todayMoods);
+            recommendationCacheService.updateCachedRecommendation(user.getUserId(), response);
 
-        log.info("moods: {}", response.getMoods());
-        log.info("combinedResults: {}", response.getCombinedResults());
-        log.info("resultsByEmotion: {}", response.getResultsByEmotion());
-
-        if (response.getCombinedResults().isEmpty() && response.getResultsByEmotion().isEmpty()) {
-            log.info("🔍 추천 결과 없음 - userId: {}", user.getUserId());
+            // 추천 결과 캐시도 업데이트 필요
+            /* 캐시된 추천 결과 저장 로직 추가 */
         }
 
         return ResponseEntity.ok(response);

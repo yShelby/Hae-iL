@@ -32,6 +32,7 @@ import {ConfirmModal} from "@shared/UI/ConfirmModal.jsx";
 import {useCheckLogin} from "@/hooks/useCheckLogin.js";
 import {useAuth} from "@features/auth/AuthContext.jsx";
 import {useOutletContext} from "react-router-dom";
+import {usePreloadRecommendation} from "@/hooks/usePreloadRecommed.js";
 
 // 🖼️ TipTap Image 확장을 block 요소로 커스터마이징
 const CustomBlockImage = TipTapImage.extend({
@@ -60,6 +61,8 @@ const DiaryWritePage = ({ selectedDate, isLoading }) => {
         editable: isEditing,
     });
 
+    const {preloadRecommendations} = usePreloadRecommendation();
+
     // 📄 제목/날씨 등 폼 상태 관리 훅
     const { diaryState, setField } = useDiaryForm(initialDiary);
 
@@ -71,6 +74,7 @@ const DiaryWritePage = ({ selectedDate, isLoading }) => {
             setSelectedDiaryId?.(updatedDiaryOrNull.diaryId);  // 감정 분석 트리거
             onDiaryUpdated?.();  // 부모에게 다시 일기 불러오라고 요청
             onEmotionUpdated?.(); // 감정 분석 결과 새로고침
+            await preloadRecommendations?.(); //
             setIsEditing(true);  // 저장 후에도 에디터 유지
         } else {
             setSelectedDiaryId?.(null);  // 삭제 시 감정 결과 초기화

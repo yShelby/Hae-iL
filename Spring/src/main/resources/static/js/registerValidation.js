@@ -103,6 +103,9 @@
         const isPasswordValid = validatePassword();
         const isPasswordMatch = checkPasswordMatch();
         const isPhoneValid = validatePhone(); // [추가] 전화번호 유효성 검사
+        // 추가 장르와 감정 유효성 검사를 위한 함수 호출
+        const isGenreCheckValid = validateCheckboxes("initialGenre", "좋아하는 영화 장르", 1, 3);
+        const isEmotionCheckValid = validateCheckboxes("initialEmotion", "최근 자주 느낀 감정", 1, 2);
 
         console.log("Validation results:", { isEmailValid, isNicknameValid, isPasswordValid, isPasswordMatch, isPhoneValid });
 
@@ -112,7 +115,9 @@
         }
 
         // 모든 검사를 통과해야 폼 제출 허용
-        if (isEmailValid && isNicknameValid && isPasswordValid && isPasswordMatch && isPhoneValid) {
+        if (isEmailValid && isNicknameValid && isPasswordValid && isPasswordMatch && isPhoneValid
+            && isGenreCheckValid.valid && isEmotionCheckValid.valid
+        ) {
             return true;
         } else {
              console.log("Some validations failed. Preventing default and returning false.");
@@ -124,6 +129,8 @@
             if (!isPasswordValid) clientErrors.push(passwordError.textContent);
             if (!isPasswordMatch) clientErrors.push(passwordConfirmError.textContent);
             if (!isPhoneValid) clientErrors.push(phoneError.textContent); // [추가] 전화번호 오류 메시지
+            if (!isGenreCheckValid.valid) clientErrors.push(isGenreCheckValid.message)
+            if (!isEmotionCheckValid.valid) clientErrors.push(isEmotionCheckValid.message)
 
             // 중복 메시지 제거 및 빈 메시지 필터링
             const uniqueClientErrors = [...new Set(clientErrors.filter(msg => msg && msg.trim() !== ''))];
@@ -158,6 +165,21 @@
             return true;
         }
     }
+
+            // [추가] 장르 및 감정 선택 유효성 검사
+    function validateCheckboxes(name, messageName, min, max){
+        const checkboxes = document.querySelectorAll(`input[name="${name}"]:checked`)
+        const checkedCount = checkboxes.length;
+
+        if(checkedCount < min){
+            return {valid : false, message : `${messageName}은(는) 최소 ${min}개 이상 선택해 주세요.`}
+        }
+        if(checkedCount > max){
+            return {valid : false, message : `${messageName}은(는) 최대 ${max}개 까지 선택해 주세요.`}
+        }
+        return {valid : true, message : ""}
+    }
+
 
     // DOMContentLoaded 이벤트에서 초기 유효성 검사 메시지 숨기기 및 서버 오류 감지
     document.addEventListener('DOMContentLoaded', () => {
