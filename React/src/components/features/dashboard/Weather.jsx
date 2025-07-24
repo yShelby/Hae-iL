@@ -41,39 +41,42 @@ const Weather = () => {
 
     const {data: weatherResponse, isLoading, isError} = useWeatherData(coords);
 
-    // if (isLoading) return <div className={"weather-loading"}>날씨 정보 로딩 중...</div>;
-    // if (isError) return <div className={"weather-error"}>날씨를 가져올 수 없어요.</div>;
-    //
-    // const weatherData = weatherResponse?.data;
+    if (isLoading) return <div className={"weather-loading"}>날씨 정보 로딩 중...</div>;
+    if (isError) return <div className={"weather-error"}>날씨를 가져올 수 없어요.</div>;
+
+    const weatherData = weatherResponse?.data;
 
     return (
-        <div className="weather-widget-container">
-            <div className="weather-container">
-                {isLoading && <div className="weather-message">날씨 정보 로딩 중...</div>}
-                {isError && <div className="weather-message">날씨를 가져올 수 없어요.</div>}
-                {weatherResponse?.data && (
-                    <>
-                        <div className="weather-location">
-                            {weatherResponse.data.city}
+        <div className={"weather-container"}>
+            {weatherData ? (
+                <>
+                    {/* 1. 도시 (시/구/동) */}
+                    <div className="weather-location">
+                        {weatherData.city}
+                    </div>
+
+                    <div className="weather-content">
+                        {/* 2. 날씨 아이콘 */}
+                        <img
+                            src={`https://openweathermap.org/img/wn/${weatherData.icon}@2x.png`}
+                            alt={weatherData.main}
+                            className="weather-icon"
+                        />
+                        <div className="weather-details">
+                            {/* 3. 날씨 내용 (main) */}
+                            <p className="weather-main-text">
+                                {WEATHER_IN_KOREAN[weatherData.main] || weatherData.main}
+                            </p>
+                            {/* 4. 현재 온도 */}
+                            <p className="weather-temp-current">
+                                {Math.round(weatherData.temp)}°C
+                            </p>
                         </div>
-                        <div className="weather-content">
-                            <img
-                                src={`https://openweathermap.org/img/wn/${weatherResponse.data.icon}@2x.png`}
-                                alt={weatherResponse.data.main}
-                                className="weather-icon"
-                            />
-                            <div className="weather-details">
-                                <p className="weather-main-text">
-                                    {WEATHER_IN_KOREAN[weatherResponse.data.main] || weatherResponse.data.main}
-                                </p>
-                                <p className="weather-temp-current">
-                                    {Math.round(weatherResponse.data.temp)}°
-                                </p>
-                            </div>
-                        </div>
-                    </>
-                )}
-            </div>
+                    </div>
+                </>
+            ) : (
+                <p>날씨 정보가 없습니다.</p>
+            )}
         </div>
     );
 };

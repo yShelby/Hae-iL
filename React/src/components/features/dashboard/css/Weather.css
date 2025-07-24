@@ -1,48 +1,28 @@
 /* Weather.css */
 
-.weather-widget-container {
-    width: 400px;
-    height: 153px;
-    border-radius: 30px;
-    box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.25);
-    padding: 15px 25px;
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    position: relative;
-    overflow: hidden; /* 배경 이미지가 둥근 모서리를 넘어가지 않도록 함 */
-    background: linear-gradient(135deg, #81a8cd, #5885b1); /* 임시 배경 */
-    background-size: cover;
-    /*background-position: center;*/
-    color: #fff;
-}
-
 .weather-container {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: space-between; /* 컨텐츠를 위아래로 분산 배치 */
+    justify-content: center;
     width: 100%;
     height: 100%;
     gap: 8px;
-    font-family: 'NPS-Regular', sans-serif;
+    font-family: 'Pretendard', sans-serif;
+    padding: 10px;
     box-sizing: border-box;
-    z-index: 1; /* 배경 위로 컨텐츠가 올라오도록 함 */
 }
 
 .weather-location {
-    font-size: 1.1rem;
-    font-weight: 500;
-    text-shadow: 1px -1px 2px rgba(0,0,0,0.5), 1px 1px 3px rgba(0,0,0,0.5);
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #374151;
 }
 
 .weather-content {
     display: flex;
     align-items: center;
-    justify-content: center;
     gap: 12px;
-    width: 100%;
 }
 
 .weather-icon {
@@ -54,27 +34,19 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    text-align: center;
 }
 
 .weather-main-text {
-    font-size: 11px;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #4B5563;
     margin: 0;
-    text-shadow: 1px -1px 2px rgba(0,0,0,0.5), 1px 1px 3px rgba(0,0,0,0.5);
 }
 
 .weather-temp-current {
-    font-family: 'NPS-Bold', sans-serif;
-    font-size: 35px;
-    font-weight: bold;
-    color: #fff;
+    font-size: 2.25rem;
+    font-weight: 700;
+    color: #1F2937;
     margin: 0;
     line-height: 1.1;
-    text-shadow: 1px -1px 2px rgba(0,0,0,0.5), 1px 1px 3px rgba(0,0,0,0.5);
-}
-
-.weather-message {
-    color: #fff;
-    font-size: 1rem;
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
 }

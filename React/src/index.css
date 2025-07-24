@@ -1,68 +1,27 @@
 /* index.css */
 
-/* 모든 폰트 정의 */
-@font-face {
-    font-family: 'NPS-Regular';
-    src: url('/fonts/NPS-Regular.woff') format('woff');
-    font-weight: normal;
-    font-style: normal;
-    font-display: swap;
-}
-@font-face {
-    font-family: 'NPS-Bold';
-    src: url('/fonts/NPS-Bold.woff') format('woff');
-    font-weight: bold;
-    font-style: normal;
-    font-display: swap;
-}
-@font-face {
-    font-family: 'Pretendard-Regular';
-    src: url('/fonts/Pretendard-Regular.woff') format('woff');
-    font-weight: normal;
-    font-style: normal;
-    font-display: swap;
-}
-@font-face {
-    font-family: 'Pretendard-Medium';
-    src: url('/fonts/Pretendard-Medium.woff') format('woff');
-    font-weight: 500;
-    font-style: normal;
-    font-display: swap;
-}
-@font-face {
-    font-family: 'Tmoney RoundWind';
-    src: url('/fonts/Tmoney-Regular.woff') format('woff');
-    font-weight: normal;
-    font-style: normal;
-    font-display: swap;
-}
-@font-face {
-    font-family: 'Tmoney RoundWind';
-    src: url('/fonts/Tmoney-ExtraBold.woff') format('woff');
-    font-weight: 800;
-    font-style: normal;
-    font-display: swap;
-}
-
-
 *, *::before, *::after {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
 }
 
-/* React 앱의 루트 설정 */
-#react-root {
-    width: 100%;
+/* html, body 높이 설정 추가
+   이유: 이 설정을 통해 앱 전체가 브라우저 화면 높이를 기준으로 동작하는 '기준점'이 된다
+        이것이 없으면 자식 컴포넌트에서 사용하는 height: 100%가 의도대로 작동하지 않아
+        내용에 따라 페이지 전체가 늘어나고 썸네일이 밀리는 현상이 발생 */
+html, body {
     height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: transparent;
-    font-family: 'NPS-Regular', sans-serif;
+    overflow-y: auto;
 }
 
-/* 버튼과 링크 기본 스타일 초기화 */
+body {
+    font-family: 'Noto Sans KR', sans-serif;
+    background-color: #fdfdfd;
+    color: #222;
+    line-height: 1.6;
+}
+
 a {
     color: inherit;
     text-decoration: none;
@@ -71,6 +30,4 @@ a {
 button {
     cursor: pointer;
     font-family: inherit;
-    border: none;
-    background-color: transparent;
 }

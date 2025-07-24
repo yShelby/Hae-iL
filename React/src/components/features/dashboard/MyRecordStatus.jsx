@@ -1,11 +1,12 @@
 import {useEffect, useState} from "react";
 import {getDashboardStats} from "@api/countApi.js";
+import StatCard from "@shared/UI/StatCard.jsx";
+import {FaBookMedical, FaImages, FaPenAlt} from "react-icons/fa";
 import "./css/MyRecordStatus.css";
 import {useNavigate} from "react-router-dom";
 import {useAuth} from "@shared/context/AuthContext.jsx";
 import {format} from "date-fns";
 import {useCheckLogin} from "@/hooks/useCheckLogin.js";
-import {IconNotebook, IconWritingSign, IconPhoto} from "@tabler/icons-react";
 
 const MyRecordStatus = () => {
     const [stats, setStats] = useState({
@@ -39,39 +40,33 @@ const MyRecordStatus = () => {
         fetchStats();
     }, [user, authLoading]);
 
-    // [수정] 명세서 디자인과 Tabler 아이콘을 적용한 새로운 JSX 구조
     return (
         <section className="record-status-widget-container">
             <div className="record-status-card-grid">
-                {/* 하루물결 카드 */}
-                <div className="record-status-card" onClick={() => handleProtectedNavigation(`/diary/date/${today}`)}>
-                    <div className="card-content">
-                        {/* [수정] 라이브러리 아이콘 적용 및 명세서 속성 전달 */}
-                        <IconNotebook size={42} color="#393E75" stroke={1.5} />
-                        <span className="card-label">하루물결</span>
-                    </div>
-                    <span className="card-value">{loading ? '...' : stats.totalDiaryCount}</span>
-                </div>
-
-                {/* 윤슬조각 카드 */}
-                <div className="record-status-card" onClick={() => handleProtectedNavigation('/journal')}>
-                    <div className="card-content">
-                        {/* [수정] 라이브러리 아이콘 적용 및 명세서 속성 전달 */}
-                        <IconWritingSign size={42} color="#393E75" stroke={1.5} />
-                        <span className="card-label">윤슬조각</span>
-                    </div>
-                    <span className="card-value">{loading ? '...' : stats.journalingCount}</span>
-                </div>
-
-                {/* 그림기억 카드 */}
-                <div className="record-status-card" onClick={() => handleProtectedNavigation('/gallery')}>
-                    <div className="card-content">
-                        {/* [수정] 라이브러리 아이콘 적용 및 명세서 속성 전달 */}
-                        <IconPhoto size={42} color="#393E75" stroke={1.5} />
-                        <span className="card-label">그림기억</span>
-                    </div>
-                    <span className="card-value">{loading ? '...' : stats.galleryImageCount}</span>
-                </div>
+                <StatCard
+                    icon={<FaBookMedical />}
+                    label={<>일기<br/>기록수</>}
+                    value={stats.totalDiaryCount}
+                    color="#e3f2fd"
+                    loading={loading}
+                    onClick={() => handleProtectedNavigation(`/diary/date/${today}`)}
+                />
+                <StatCard
+                    icon={<FaPenAlt />}
+                    label={<>저널링<br/>기록수</>}
+                    value={stats.journalingCount}
+                    color="#e8f5e9"
+                    loading={loading}
+                    onClick={() => handleProtectedNavigation('/journal')}
+                />
+                <StatCard
+                    icon={<FaImages />}
+                    label={<>갤러리<br/>사진수</>}
+                    value={stats.galleryImageCount}
+                    color="#f3e5f5"
+                    loading={loading}
+                    onClick={() => handleProtectedNavigation('/gallery')}
+                />
             </div>
         </section>
     );
