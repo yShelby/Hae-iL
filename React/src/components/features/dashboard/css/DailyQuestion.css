@@ -13,8 +13,8 @@
     position: relative; /* 새로고침 버튼의 위치 기준점 */
     cursor: pointer;
     transition: transform 0.2s ease-in-out;
-    padding: 0 60px 0 24px;
     box-sizing: border-box;
+    padding: 0 50px; /* 새로고침 버튼 영역을 확보하기 위해 좌우 패딩 추가 */
 }
 
 .today-question-container:hover {
@@ -26,11 +26,8 @@
     font-family: 'NPS-Regular', sans-serif;
     font-size: 17px;
     color: #fff;
-    transition: background-color 0.2s;
-}
-
-.question-text:hover {
-    background-color: #f9fafb;
+    text-align: center;
+    margin: 0;
 }
 
 /* 새로고침 버튼 */
@@ -65,8 +62,8 @@
 }
 
 /* 새로고침 아이콘 회전 애니메이션 */
-.rotating {
-    animation: spin 1s linear infinite;
+.spin {
+    animation: spin 0.5s linear infinite;
 }
 
 @keyframes spin {

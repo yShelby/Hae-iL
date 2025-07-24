@@ -1,14 +1,5 @@
 /* DailySchedule.css */
 
-/* 전체 위젯 컨테이너 스타일 */
-.daily-mission-container {
-    width: 275px;
-    height: 445px;
-    position: relative; /* 자식인 title의 위치 기준점 */
-    background-color: transparent;
-    padding: 0;
-}
-
 .daily-schedule-wrapper {
     display: flex;
     justify-content: center;
@@ -16,28 +7,54 @@
     width: 100%;
 }
 
-/* 위젯 제목 스타일 */
-.title {
+/* 전체 위젯 컨테이너 스타일 */
+.daily-mission-container {
+    width: 275px;
+    height: 445px;
+    background-color: transparent;
+    /* 나중에 그라데이션을 넣을 수 있도록 선만 보이게 설정 */
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.25);
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.mission-memo-paper {
+    width: 223px;
+    height: 369px;
+    background-color: transparent;
+    border-radius: 10px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 30px 15px 15px 15px;
+    box-sizing: border-box;
+}
+
+.mission-label {
     width: 90px;
     height: 29px;
-    border-top-left-radius: 15px;
-    border-top-right-radius: 15px;
     background-color: rgba(57, 62, 117, 0.8);
-
-    font-family: 'NPS-Bold', sans-serif;
-    font-size: 17px;
-    color: #fff;
-
-    display: flex;
-    text-align: center;
-    align-items: center;
-    justify-content: center;
+    border-top-left-radius: 30px;
+    border-top-right-radius: 30px;
     position: absolute;
-    /* 경계선에 걸치기 위해 음수 값으로 수정 */
-    top: -14.5px;
+    top: 0;
     left: 50%;
     transform: translateX(-50%);
     z-index: 1;
+}
+
+.mission-title {
+    font-family: 'NPS-Bold', sans-serif;
+    font-size: 17px;
+    color: #393E75;
+    margin: 0 0 15px 0;
+    padding: 0;
+    flex-shrink: 0;
 }
 
 /* 미션 목록 ul 태그 스타일 */
@@ -60,7 +77,8 @@
     box-sizing: border-box;
     overflow-y: auto;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    align-items: center;
 }
 
 .mission-item {
@@ -105,7 +123,6 @@
     height: 20px;
     border: 2px solid #d1d5db;
     border-radius: 50%;
-    margin-top: 2px;
     flex-shrink: 0;
     display: flex;
     align-items: center;

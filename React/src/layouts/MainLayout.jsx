@@ -4,8 +4,6 @@ import {AppToaster} from "@shared/UI/Toast.jsx";
 import './css/MainLayout.css';
 
 const MainLayout = () => {
-
-
     return (
         <div className="main-layout-container">  {/*  classname 변경 */}
             {/* 🔔 전역 알림 토스트 컴포넌트 */}

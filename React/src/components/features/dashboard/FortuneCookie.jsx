@@ -34,12 +34,12 @@ const FortuneCookie = () => {
     // '이미 열었는지' 여부만 UI에 반영하는 역할
     useEffect(() => {
         // 애니메이션이 진행 중일 때는 이 훅이 상태를 덮어쓰지 않도록 방지
-        // if (isShaking) return;
+        if(isAnimating) return;
 
         if (status) {
             setIsCracked(!status.canOpen);
         }
-    }, [status]);
+    }, [status], isAnimating);
 
     // [추가] 애니메이션이 끝났을 때 호출될 함수
     const handleAnimationEnd = () => {

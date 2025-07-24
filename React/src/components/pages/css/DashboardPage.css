@@ -32,14 +32,12 @@
     padding: 0;
 }
 
-/* 오늘의 질문 하단 영역을 위한 스타일 */
 .bottom-content-area {
     display: flex;
     gap: 30px;
     height: 445px;
 }
 
-/* 포춘쿠키와 달력을 감싸는 오른쪽 서브 컬럼 스타일 */
 .cookie-calendar-column {
     width: 250px;
     height: 445px;

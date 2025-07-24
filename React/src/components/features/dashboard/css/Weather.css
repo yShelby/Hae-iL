@@ -14,67 +14,92 @@
     overflow: hidden; /* 배경 이미지가 둥근 모서리를 넘어가지 않도록 함 */
     background: linear-gradient(135deg, #81a8cd, #5885b1); /* 임시 배경 */
     background-size: cover;
-    /*background-position: center;*/
+    /* background-position: center; */
+    /* background-image: url('/images/weather-bg.png'); */
     color: #fff;
 }
 
 .weather-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.weather-content-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
+}
+
+.weather-top-section,
+.weather-bottom-section {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: space-between; /* 컨텐츠를 위아래로 분산 배치 */
-    width: 100%;
-    height: 100%;
-    gap: 8px;
-    font-family: 'NPS-Regular', sans-serif;
-    box-sizing: border-box;
-    z-index: 1; /* 배경 위로 컨텐츠가 올라오도록 함 */
+    gap: 4px;
 }
 
-.weather-location {
-    font-size: 1.1rem;
-    font-weight: 500;
-    text-shadow: 1px -1px 2px rgba(0,0,0,0.5), 1px 1px 3px rgba(0,0,0,0.5);
-}
-
-.weather-content {
+.weather-info-row {
     display: flex;
+    flex-direction: row;
     align-items: center;
-    justify-content: center;
-    gap: 12px;
-    width: 100%;
+    gap: 8px;
+}
+
+.weather-info,
+.weather-temp,
+.weather-date,
+.weather-location-text {
+    margin: 0;
+    line-height: 1.2;
+    font-family: 'NPS-Regular', sans-serif;
+    text-shadow: -1px -1px 2px rgba(0, 0, 0, 0.5), 1px 1px 3px rgba(0, 0, 0, 0.5);
 }
 
 .weather-icon {
-    width: 100px;
-    height: 100px;
+    width: 40px;
+    height: 40px;
+    margin: -8px;
 }
 
-.weather-details {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-}
-
-.weather-main-text {
+.weather-info {
     font-size: 11px;
-    margin: 0;
-    text-shadow: 1px -1px 2px rgba(0,0,0,0.5), 1px 1px 3px rgba(0,0,0,0.5);
 }
 
-.weather-temp-current {
+.weather-temp {
     font-family: 'NPS-Bold', sans-serif;
     font-size: 35px;
-    font-weight: bold;
-    color: #fff;
-    margin: 0;
     line-height: 1.1;
-    text-shadow: 1px -1px 2px rgba(0,0,0,0.5), 1px 1px 3px rgba(0,0,0,0.5);
+}
+
+.weather-date {
+    font-size: 11px;
+}
+
+.weather-location {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+}
+
+/* 4행: 위치 아이콘 */
+.weather-location-icon {
+    color: #fff;
+}
+
+.weather-location-text {
+    font-size: 11px;
 }
 
 .weather-message {
     color: #fff;
     font-size: 1rem;
+    font-family: 'NPS-Regular', sans-serif;
     text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+    text-align: center;
+    width: 100%;
 }

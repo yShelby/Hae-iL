@@ -30,14 +30,14 @@
     font-display: swap;
 }
 @font-face {
-    font-family: 'Tmoney RoundWind';
+    font-family: 'Tmoney RoundWind-Regular';
     src: url('/fonts/Tmoney-Regular.woff') format('woff');
     font-weight: normal;
     font-style: normal;
     font-display: swap;
 }
 @font-face {
-    font-family: 'Tmoney RoundWind';
+    font-family: 'Tmoney RoundWind-ExtraBold';
     src: url('/fonts/Tmoney-ExtraBold.woff') format('woff');
     font-weight: 800;
     font-style: normal;

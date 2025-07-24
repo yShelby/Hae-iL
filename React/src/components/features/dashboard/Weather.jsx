@@ -1,6 +1,7 @@
 import {useEffect, useState} from "react";
 import {useWeatherData} from "@/hooks/useWeatherData.js";
 import "./css/Weather.css";
+import {FaMapMarkerAlt} from "react-icons/fa";
 
 // 영문 날씨 상태를 한글로 변환하기 위한 객체
 const WEATHER_IN_KOREAN = {
@@ -21,6 +22,25 @@ const WEATHER_IN_KOREAN = {
     Tornado: '토네이도'
 };
 
+// [추가] 'YYYY년 M월 D일 (요일)' 형식의 날짜 문자열을 생성하는 헬퍼 함수
+const getFormattedDate = () => {
+    const today = new Date();
+    const options = {year: 'numeric', month: 'long', day: 'numeric', weekday: 'short'};
+    // 요일에만 괄호를 추가하기 위해 문자열을 분리하고 재조합
+    // 1. 'YYYY년 MM월 DD일 요일' 형식의 문자열을 생성
+    const dateString = today.toLocaleDateString('ko-KR', options);
+
+    // 2. 마지막 공백의 위치를 찾는다. (날짜와 요일 구분점)
+    const lastSpaceIndex = dateString.lastIndexOf(' ');
+
+    // 3. 날짜 부분('YYYY년 MM월 DD일')과 요일 부분('요일')을 분리
+    const datePart = dateString.substring(0, lastSpaceIndex);
+    const weekdayPart = dateString.substring(lastSpaceIndex + 1);
+
+    // 4. 날짜 부분에서 '년'을 공백으로 바꾸고, 요일 부분에 괄호를 추가하여 최종 문자열을 반환
+    return `${datePart.replace('년', ' ')} (${weekdayPart})`;
+};
+
 const Weather = () => {
     const [coords, setCoords] = useState(null);
 
@@ -34,17 +54,15 @@ const Weather = () => {
             (e) => {
                 console.error("Geolocation error: ", e);
                 // ⚠️ 사용자 위치 정보 획득 실패 시, 기본 좌표 (서울) 설정
-                setCoords({ latitude: 37.5665, longitude: 126.9780 });
+                setCoords({latitude: 37.5665, longitude: 126.9780});
             }
         );
     }, []);
 
     const {data: weatherResponse, isLoading, isError} = useWeatherData(coords);
 
-    // if (isLoading) return <div className={"weather-loading"}>날씨 정보 로딩 중...</div>;
-    // if (isError) return <div className={"weather-error"}>날씨를 가져올 수 없어요.</div>;
-    //
-    // const weatherData = weatherResponse?.data;
+    // [추가] 날짜 표시를 위해 getFormattedDate 함수를 호출
+    const formattedDate = getFormattedDate();
 
     return (
         <div className="weather-widget-container">
@@ -52,26 +70,38 @@ const Weather = () => {
                 {isLoading && <div className="weather-message">날씨 정보 로딩 중...</div>}
                 {isError && <div className="weather-message">날씨를 가져올 수 없어요.</div>}
                 {weatherResponse?.data && (
-                    <>
-                        <div className="weather-location">
-                            {weatherResponse.data.city}
-                        </div>
-                        <div className="weather-content">
-                            <img
-                                src={`https://openweathermap.org/img/wn/${weatherResponse.data.icon}@2x.png`}
-                                alt={weatherResponse.data.main}
-                                className="weather-icon"
-                            />
-                            <div className="weather-details">
-                                <p className="weather-main-text">
+                    // [수정] 4줄 레이아웃을 위해 새로운 구조로 변경
+                    <div className="weather-content-container">
+                        <div className="weather-top-section">
+                            {/* 1행: 날씨 아이콘 및 정보 */}
+                            <div className="weather-info-row">
+                                <img
+                                    src={`https://openweathermap.org/img/wn/${weatherResponse.data.icon}@2x.png`}
+                                    alt={weatherResponse.data.main}
+                                    className="weather-icon"
+                                />
+                                <p className="weather-info">
                                     {WEATHER_IN_KOREAN[weatherResponse.data.main] || weatherResponse.data.main}
                                 </p>
-                                <p className="weather-temp-current">
-                                    {Math.round(weatherResponse.data.temp)}°
-                                </p>
+                            </div>
+
+                            {/* 2행: 온도 */}
+                            <p className="weather-temp">
+                                {Math.round(weatherResponse.data.temp)}°C
+                            </p>
+                        </div>
+
+                        <div className="weather-bottom-section">
+                            {/* 3행: 날짜 */}
+                            <p className="weather-date">{formattedDate}</p>
+
+                            {/* 4행: 위치 */}
+                            <div className="weather-location">
+                                <FaMapMarkerAlt size="11px" className="weather-location-icon"/>
+                                <span className="weather-location-text">{weatherResponse.data.city}</span>
                             </div>
                         </div>
-                    </>
+                    </div>
                 )}
             </div>
         </div>

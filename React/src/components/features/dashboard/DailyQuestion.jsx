@@ -21,10 +21,10 @@ const DailyQuestion = () => {
 
     const renderContent = () => {
         if (authLoading || (isLoading && !question)) {
-            return <div className="status-text">오늘의 질문 : 로딩 중...</div>;
+            return <p className="status-text">오늘의 질문 : 로딩 중...</p>;
         }
         if (!user) {
-            return <div className="status-text">오늘의 질문 : 로그인 후 질문에 답변해보세요.</div>;
+            return <p className="status-text">오늘의 질문 : 로그인 후 질문에 답변해보세요.</p>;
         }
         return (
             <p className="question-text" onClick={handleQuestionClick} title="클릭하여 일기 작성하기">
@@ -34,7 +34,7 @@ const DailyQuestion = () => {
     };
 
     return (
-        <div className="today-question-container">
+        <div className="today-question-container" onClick={handleQuestionClick}>
             {renderContent()}
             <button
                 onClick={(e) => {
@@ -48,7 +48,7 @@ const DailyQuestion = () => {
                 // 로그인하지 않았거나, 질문을 로딩 중일 때 버튼을 비활성화
                 disabled={!user || isLoading}
             >
-                <FaSyncAlt className={isLoading ? 'rotating' : ''} />
+                <FaSyncAlt className={isLoading ? 'spin' : ''} />
             </button>
         </div>
     );
