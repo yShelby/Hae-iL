@@ -26,16 +26,12 @@ public class RecommendByMoodService {
     private final DisLikeMoviesRepository disLikeMoviesRepository;
     private final TmdbApiClientService tmdbApiClientService;
     private final DiaryMoodService diaryMoodService;
-    private final RecommendByInitialService recommendByInitialService;
     private final MoodCacheService moodCacheService;
 
-    // 추천할 영화 총 개수 및 감정별 장르별 추천 개수 상수화
     private static final int TOTAL_RECOMMENDATION_COUNT = 10;
     private static final int PRIMARY_GENRE_RECOMMEND_COUNT = 5;
     private static final int SECONDARY_GENRE_RECOMMEND_COUNT = 3;
     private static final int TERTIARY_GENRE_RECOMMEND_COUNT = 2;
-
-    // ---------- Public API ----------
 
     /**
      * 오늘 일기 기반 감정 가중치에 따른 영화 추천 메서드
@@ -57,12 +53,6 @@ public class RecommendByMoodService {
             return new MovieListResponse(List.of(), Map.of(), List.of(),false);
         }
 
-        List<MoodDetail> cachedMoods = moodCacheService.getCachedMoods(user.getUserId());
-        if (moodsAreSame(currentMoods, cachedMoods)) {
-            log.info("감정 데이터가 변경되지 않아 추천 로직 중단");
-            return MovieListResponse.noChange();
-        }
-
         MovieListResponse response = runRecommendLogic(user, currentMoods);
 
         moodCacheService.updateCachedMoods(user.getUserId(), currentMoods);
@@ -72,9 +62,12 @@ public class RecommendByMoodService {
     /**
      * 두 감정 리스트가 동일한지 확인 (감정 타입과 비율까지 비교)
      */
-    private boolean moodsAreSame(List<MoodDetail> list1, List<MoodDetail> list2) {
+    public boolean moodsAreSame(List<MoodDetail> list1, List<MoodDetail> list2) {
         if (list1 == null || list2 == null) return false;
         if (list1.size() != list2.size()) return false;
+
+        log.info("감정리스트1 : {}", list1);
+        log.info("감정리스트2 : {}", list2);
 
         Map<String, Integer> map1 = list1.stream()
                 .collect(Collectors.toMap(MoodDetail::getMoodType, MoodDetail::getPercentage));
@@ -187,7 +180,7 @@ public class RecommendByMoodService {
             List<MovieDto> candidates = genreMovieCache.getOrDefault(genreCode, List.of());
             for (MovieDto movie : candidates) {
                 if (combinedResults.size() >= TOTAL_RECOMMENDATION_COUNT) break;
-                if (!dislikedMovieKeys.contains(movie.getMovieKey()) && usedMovieIds.add(movie.getMovieKey())) {
+                if (!dislikedMovieKeys.contains(movie.getMovieKey()) && !movie.isAdult() && usedMovieIds.add(movie.getMovieKey())) {
                     movie.setTrailerUrl(tmdbApiClientService.getMovieTrailer(String.valueOf(movie.getMovieKey())));
                     combinedResults.add(movie);
                     if (--quota <= 0) break;
@@ -237,7 +230,10 @@ public class RecommendByMoodService {
 
         Map<String, List<MovieDto>> resultsByEmotion = new LinkedHashMap<>();
 
-        Map<String, Integer> emotionRecommendationMap = calculateEmotionRecommendationCount(moodDetails);
+        Map<String, Integer> emotionRecommendationMap = new HashMap<>();
+        for (MoodDetail mood : moodDetails) {
+            emotionRecommendationMap.put(mood.getMoodType(), TOTAL_RECOMMENDATION_COUNT);
+        }
 
         for (MoodDetail mood : moodDetails) {
             String emotion = mood.getMoodType();
@@ -263,7 +259,7 @@ public class RecommendByMoodService {
                 List<MovieDto> candidates = genreMovieCache.getOrDefault(genreCode, List.of());
                 for (MovieDto movie : candidates) {
                     if (emotionResults.size() >= emotionMovieCount) break;
-                    if (!dislikedMovieKeys.contains(movie.getMovieKey()) && usedMovieIds.add(movie.getMovieKey())) {
+                    if (!dislikedMovieKeys.contains(movie.getMovieKey()) && !movie.isAdult() && usedMovieIds.add(movie.getMovieKey())) {
                         emotionResults.add(movie);
                         if (--quota <= 0) break;
                     }
@@ -275,23 +271,6 @@ public class RecommendByMoodService {
         }
 
         return resultsByEmotion;
-    }
-
-    /**
-     * 전체 추천 영화 개수를 감정 개수에 맞춰 균등 분배하고,
-     * 남은 개수는 앞쪽 감정에 1개씩 추가로 배분
-     */
-    private Map<String, Integer> calculateEmotionRecommendationCount(List<MoodDetail> moodDetails) {
-        int emotionCount = moodDetails.size();
-        int baseCount = TOTAL_RECOMMENDATION_COUNT / emotionCount;
-        int remainder = TOTAL_RECOMMENDATION_COUNT % emotionCount;
-
-        Map<String, Integer> emotionCountMap = new LinkedHashMap<>();
-        for (int i = 0; i < moodDetails.size(); i++) {
-            int count = baseCount + (i < remainder ? 1 : 0);
-            emotionCountMap.put(moodDetails.get(i).getMoodType(), count);
-        }
-        return emotionCountMap;
     }
 
     /**

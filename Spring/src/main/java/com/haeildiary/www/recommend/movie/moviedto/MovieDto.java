@@ -20,4 +20,5 @@ public class MovieDto {
     private String posterPath;
     private List<String> castNames;
     private String directorName;
+    private boolean adult;
 }

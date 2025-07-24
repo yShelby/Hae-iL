@@ -4,7 +4,7 @@ import com.haeildiary.www.diary.entity.DiaryEntity;
 import com.haeildiary.www.mood.dto.FlaskResponseDTO;
 import com.haeildiary.www.mood.dto.MoodDetailDTO;
 import com.haeildiary.www.mood.dto.MoodEntryDTO;
-import com.haeildiary.www.mood.dto.TagDto;
+import com.haeildiary.www.mood.dto.TagDTO;
 import com.haeildiary.www.mood.entity.MoodEntry;
 import com.haeildiary.www.mood.entity.Tag;
 import lombok.RequiredArgsConstructor;
@@ -47,8 +47,8 @@ public class AllService {
         moodDetailService.saveOrUpdateMoodDetails(detailDTOs, diaryEntity);
         log.debug("MoodDetail 저장 완료 : {} 개", detailDTOs.size());
         // 3) Tag 저장 또는 수정
-        List<TagDto> tagDTOList = flaskResult.getTags().stream()
-                .map(tagName -> new TagDto(null, tagName /* , 1 */)) // usedCount=1 기본 설정
+        List<TagDTO> tagDTOList = flaskResult.getTags().stream()
+                .map(tagName -> new TagDTO(null, tagName /* , 1 */)) // usedCount=1 기본 설정
                 .toList();
         // 만약 usedCount를 사용하게 되면 TagService에서 처리하도록 구현 예정
         List<Tag> saveTags = tagService.saveOrUpdateTags(tagDTOList, diaryEntity);

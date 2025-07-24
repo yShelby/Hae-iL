@@ -3,10 +3,12 @@ package com.haeildiary.www.recommend.movie.movieservice;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.haeildiary.www.auth.entity.UserEntity;
+import com.haeildiary.www.mood.dto.MoodDetailDTO;
 import com.haeildiary.www.recommend.movie.moviedto.MovieDto;
 import com.haeildiary.www.recommend.movie.movieentity.EmotionGenreMapEntity;
 import com.haeildiary.www.recommend.movie.movierepository.DisLikeMoviesRepository;
 import com.haeildiary.www.recommend.movie.movierepository.EmotionGenreMapRepository;
+import com.haeildiary.www.recommend.movie.movieresponse.MovieListResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -23,9 +25,63 @@ public class RecommendByInitialService {
     private final TmdbApiClientService tmdbApiClientService;
     private final EmotionGenreMapRepository emotionGenreMapRepository;
 
-    public List<MovieDto> recommendByInitialSurvey(UserEntity user) {
-        List<EmotionGenreMapEntity> genreWeights = generateGenreWeightsFromInitialSurvey(user);
-        return recommendByGenreWeights(genreWeights, user);
+    public MovieListResponse recommendByInitialSurvey(UserEntity user) {
+        Map<String, List<String>> initiaData = parseInitial(user);
+
+        List<String> initEmo = initiaData.get("emotions");
+        List<String> initGenres = initiaData.get("genres");
+
+        log.info("최종 감정확인 :{}", initEmo);
+        log.info("최종 장르확인 :{}", initGenres);
+
+        List<EmotionGenreMapEntity> genreWeights = generateGenreWeightsFromInitialSurvey(initEmo, initGenres);
+        List<MovieDto> combinedResults = recommendByGenreWeights(genreWeights, user)
+                .stream()
+                .limit(10)
+                .collect(Collectors.toList());
+
+        Map<String, List<MovieDto>> resultsByEmotions = new HashMap<>();
+
+        for (String emotion : initEmo) {
+            List<EmotionGenreMapEntity> weightsForEmotion = emotionGenreMapRepository.findByEmotionTypeOrdered(emotion).stream()
+                    .filter(e -> initGenres.contains(e.getGenreName()))
+                    .collect(Collectors.toList());
+
+            List<MovieDto> recommendedMovies = recommendByGenreWeights(weightsForEmotion, user)
+                    .stream()
+                    .limit(10)
+                    .collect(Collectors.toList());
+
+            resultsByEmotions.put(emotion, recommendedMovies);
+        }
+
+        fillMovieDetails(combinedResults);
+        resultsByEmotions.values().forEach(this::fillMovieDetails);
+
+        log.info("가중치 확인 :{}", genreWeights);
+        log.info("감정별 확인 :{}", resultsByEmotions);
+        log.info("종합 확인 :{}", combinedResults);
+
+        List<MoodDetailDTO> moodDetails = initEmo.stream()
+                .map(emoStr -> {
+                    MoodDetailDTO dto = new MoodDetailDTO();
+                    dto.setMoodType(emoStr);
+                    return dto;
+                }).collect(Collectors.toList());
+
+        return new MovieListResponse(combinedResults, resultsByEmotions, moodDetails, false);
+    }
+
+    private void fillMovieDetails(List<MovieDto> movies) {
+        movies.forEach(movie -> {
+            String movieKey = movie.getMovieKey().toString();
+            MovieDto detailed = tmdbApiClientService.getMovieCreditsWithDetails(movieKey);
+            movie.setCastNames(detailed.getCastNames());
+            movie.setDirectorName(detailed.getDirectorName());
+            if (movie.getTrailerUrl() == null || movie.getTrailerUrl().isEmpty()) {
+                movie.setTrailerUrl(tmdbApiClientService.getMovieTrailer(movieKey));
+            }
+        });
     }
 
     private List<MovieDto> recommendByGenreWeights(
@@ -33,12 +89,13 @@ public class RecommendByInitialService {
     ) {
         List<Integer> disliked = disLikeMoviesRepository.findByUser_UserId(user.getUserId())
                 .stream().map(e -> e.getMovieKey()).collect(Collectors.toList());
-
+        log.info("싫어요 목록 : {}", disliked);
         List<MovieDto> combined = new ArrayList<>();
         for (EmotionGenreMapEntity em : genreWeights) {
             List<MovieDto> movies = tmdbApiClientService.searchMoviesByGenre(em.getGenreCode());
             combined.addAll(movies.stream()
                     .filter(m -> !disliked.contains(m.getMovieKey()))
+                    .filter(m -> !m.isAdult())
                     .collect(Collectors.toList()));
         }
 
@@ -51,21 +108,25 @@ public class RecommendByInitialService {
         return new ArrayList<>(distinct.values());
     }
 
-    private List<EmotionGenreMapEntity> generateGenreWeightsFromInitialSurvey(UserEntity user) {
+    private Map<String, List<String>> parseInitial(UserEntity user) {
         ObjectMapper mapper = new ObjectMapper();
-        List<String> initEmo, initGenres;
+        Map<String, List<String>> initResult = new HashMap<>();
         try {
-            initEmo = mapper.readValue(user.getInitialEmotion(), new TypeReference<>() {});
-            initGenres = mapper.readValue(user.getInitialGenre(), new TypeReference<>() {});
+            List<String> initEmo = mapper.readValue(user.getInitialEmotion(), new TypeReference<List<String>>() {});
+            List<String> initGenres = mapper.readValue(user.getInitialGenre(), new TypeReference<List<String>>() {});
+            initResult.put("emotions", initEmo);
+            initResult.put("genres", initGenres);
         } catch (Exception e) {
             log.error("설문 JSON 파싱 실패", e);
-            return Collections.emptyList();
+            initResult.put("emotions", Collections.emptyList());
+            initResult.put("genres", Collections.emptyList());
         }
+        return initResult;
+    }
+
+    private List<EmotionGenreMapEntity> generateGenreWeightsFromInitialSurvey(List<String> initEmo, List<String> initGenres) {
 
         Map<Integer, EmotionGenreMapEntity> map = new HashMap<>();
-        if (initEmo == null || initEmo.isEmpty()) {
-            initEmo = Collections.emptyList();
-        } // 현재 설문이 없어 임시로 코드 추가, 설문 구현후 코드 제거
 
         for (String emo : initEmo) {
             emotionGenreMapRepository.findByEmotionTypeOrdered(emo).stream()

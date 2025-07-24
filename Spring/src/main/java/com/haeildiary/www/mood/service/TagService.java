@@ -1,7 +1,7 @@
 package com.haeildiary.www.mood.service;
 
 import com.haeildiary.www.diary.entity.DiaryEntity;
-import com.haeildiary.www.mood.dto.TagDto;
+import com.haeildiary.www.mood.dto.TagDTO;
 import com.haeildiary.www.mood.entity.Tag;
 import com.haeildiary.www.mood.repository.TagRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,13 +22,13 @@ public class TagService {
      * 여러 태그 저장 - 일기마다 별도 태그 엔티티 생성
      */
     @Transactional
-    public List<Tag> saveOrUpdateTags(List<TagDto> tagDTOList, DiaryEntity diaryEntity) {
+    public List<Tag> saveOrUpdateTags(List<TagDTO> tagDTOList, DiaryEntity diaryEntity) {
         // 기존 태그 삭제
         tagRepository.deleteByDiaryDiaryId(diaryEntity.getDiaryId());
 
         // 새 태그 저장
         List<Tag> savedTags = new ArrayList<>();
-        for (TagDto dto : tagDTOList) {
+        for (TagDTO dto : tagDTOList) {
             Tag tag = new Tag();
             tag.setTagName(dto.getTagName());
             tag.setDiary(diaryEntity);
