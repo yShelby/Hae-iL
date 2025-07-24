@@ -1,4 +1,4 @@
 package com.haeildiary.www.charts.dto;
 
-public class SleepWeeklyResponseDto {
+public record DiagnosisResultsDto() {
 }

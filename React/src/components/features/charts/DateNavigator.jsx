@@ -26,36 +26,41 @@ export default function DateNavigator({
 
     // ===============================================
 
-    // 날짜 리스트 생성 함수
+    // 차트용 날짜 리스트 생성 함수
     const generateDateList = useCallback((isWeekly, endDate) => {
         const chartLabels = [];
-        const formattedForFetch = [];
 
         for (let i = isWeekly === 'weekly' ? 7 : 30 ; i > 0; i--) {
             const date = addDays(endDate, -i + 1); // endDate 포함
             chartLabels.push(format(date, "M/d"));
-            formattedForFetch.push(format(date, "yyyy-MM-dd"));
         }
 
-        return {chartLabels, formattedForFetch};
+        return chartLabels;
     }, []);
 
     // 분기에 따른 label, fetch 도출
     const handleChangeLabelFetch = useCallback((endDate) => {
-        const formattedDates = generateDateList(isWeekly, endDate); // 날짜 생성
+        const chartDateLabels = generateDateList(isWeekly, endDate); // 날짜 생성
         const lastMonth = addMonths(endDate, -1); // diagnosis fetch 용 이전 달
         const currentMonth = addMonths(endDate, 0); // diagnosis fetch 용 현재 달
 
+        const fetchEndDate = addDays(endDate, 0);
+        const fetchWeeklyStartDate = addDays(endDate, -6); // 오늘 날짜를 포함한 지난 일주일 조회
+
         if (isWeekly === 'weekly'){ // 주간 그래프만 호출할 때
-            onChangeWeekly(formattedDates.chartLabels); // 주간 라벨
+            onChangeWeekly(chartDateLabels); // 주간 라벨
             onChangeMonthly([]); // 월간 라벨 없음
-            onChangeWeeklyForFetch(formattedDates.formattedForFetch); // 주간 DB 조회 리스트(날짜)
+            onChangeWeeklyForFetch([format(fetchWeeklyStartDate, "yyyy-MM-dd"), format(fetchEndDate, "yyyy-MM-dd")]); // 주간 DB 조회 리스트(날짜)
             onChangeMonthlyForFetch([]); //월간 DB 조회 없음
         }else{ // 월간 그래프, 주간 그래프 모두 호출할 때
-            onChangeWeekly(formattedDates.chartLabels.slice(-7)); // 주간 라벨
-            onChangeMonthly(formattedDates.chartLabels); // 월간 라벨 전송
-            onChangeWeeklyForFetch(formattedDates.formattedForFetch.slice(-7)); // 주간 DB 조회 리스트(날짜)
-            onChangeMonthlyForFetch(formattedDates.formattedForFetch); // 월간 DB 조회 리스트(날짜)
+
+            // === DB 조회용 Monthly list [StartDate, EndDate] ===
+            const fetchMonthlyStartDate = addDays(endDate, -29);// 오늘 날짜를 포함한 지난 한달 조회
+
+            onChangeWeekly(chartDateLabels.slice(-7)); // 주간 라벨
+            onChangeMonthly(chartDateLabels); // 월간 라벨 전송
+            onChangeWeeklyForFetch([format(fetchWeeklyStartDate, "yyyy-MM-dd"), format(fetchEndDate, "yyyy-MM-dd")]); // 주간 DB 조회 리스트(날짜)
+            onChangeMonthlyForFetch([format(fetchMonthlyStartDate, "yyyy-MM-dd"), format(fetchEndDate, "yyyy-MM-dd")]); // 월간 DB 조회 리스트(날짜)
         }
 
         onChangeTwoMonthsForFetch([format(lastMonth, "yyyy-MM"), format(currentMonth, "yyyy-MM")]); // diagnosis Fetch 전송용 리스트(달)

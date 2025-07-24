@@ -1,6 +1,7 @@
 package com.haeildiary.www.charts.dto;
 
-public class MoodScoresResponseDto {
-    private String Date;
-    private Integer MoodScore;
+import java.time.LocalDate;
+
+public record MoodScoresDto(LocalDate date, Integer moodScore) {
+
 }
