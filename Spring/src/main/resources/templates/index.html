@@ -71,7 +71,7 @@
     <!-- Main Content (우측) -->
     <main class="main-content">
         <!-- React가 마운트될 영역 -->
-        <div id="react-root" data-react-zone></div>
+        <div id="react-root"></div>
     </main>
 </div>
 
@@ -228,15 +228,14 @@
         });
 
         document.addEventListener('click', function(event) {
-            const inSidebar = sidebar.contains(event.target);
-            const inReactZone = event.target.closest('[data-react-zone]');
-
-            if(!inSidebar) {
+            const isClickInsideSidebar = sidebar.contains(event.target);
+            if(!isClickInsideSidebar) {
                 collapseSidebar();
             };
         });
 
         sidebar.addEventListener('click', function (event) {
+
             if (isCollapsed) {
                 expandSidebar();
             }
