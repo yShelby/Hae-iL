@@ -31,6 +31,7 @@
     border-radius: 8px;
     font-size: 15px;
     transition: border-color 0.2s;
+    box-sizing: border-box;
 }
 
 .form-group input:focus,
@@ -38,6 +39,68 @@
 .form-group select:focus {
     outline: none;
     border-color: #3498db;
+}
+
+/* DatePicker와 Label을 감싸는 컨테이너 */
+.datepicker-container {
+    position: relative;
+    width: 100%;
+}
+
+/* 버튼처럼 보이도록 스타일링된 Label */
+.custom-date-label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    background-color: #fff;
+    cursor: pointer;
+    text-align: left;
+
+    /* 다른 입력 필드와 디자인 통일 */
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 15px;
+    transition: border-color 0.2s;
+    box-sizing: border-box;
+}
+
+/* 마우스를 올렸을 때 테두리 색상 변경 */
+.custom-date-label:hover {
+    border-color: #3498db;
+}
+
+/* 달력 아이콘 스타일 */
+.custom-date-label .calendar-icon {
+    color: #888;
+}
+
+/* DatePicker가 생성하는 실제 input을 시각적으로 숨김 */
+.hidden-datepicker {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+}
+
+/* 달력(popper)이 다른 요소들 위에 나타나도록 z-index 설정 */
+.react-datepicker-popper {
+    z-index: 10;
+
+    /* left와 transform 속성을 이용해 강제로 중앙 정렬 */
+    /* !important를 사용하여 라이브러리의 인라인 스타일보다 우선순위를 높임 */
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+}
+
+/* 달력 상단의 작은 화살표(triangle)를 제거 */
+.react-datepicker__triangle {
+    display: none;
 }
 
 .form-group textarea {

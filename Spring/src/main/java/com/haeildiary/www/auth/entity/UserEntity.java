@@ -4,6 +4,7 @@ import com.haeildiary.www.auth.user.UserStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.io.Serializable; // Serializable 임포트 추가
@@ -48,7 +49,8 @@ public class UserEntity implements Serializable { // Serializable 구현 추가
     @Column(name = "profile_image", nullable = true)
     private String profileImage;
 
-    @Column(name = "theme_id", nullable = true)
+//    @ColumnDefault("'theme_1'")
+    @Column(name = "theme_id", nullable = true) // -> theme_name, nullable= false
     private Integer themeId;
 
     @Column(name = "last_login_at", nullable = true)
@@ -60,7 +62,7 @@ public class UserEntity implements Serializable { // Serializable 구현 추가
 
     // 이 필드는 "하루에 한 번만 쿠키를 열 수 있다"는 핵심 비즈니스 로직을 구현하기 위해
     // 반드시 필요한 데이터 사용자가 마지막으로 쿠키를 연 날짜를 저장하여 오늘 날짜와 비교하는 용도로 사용
-    @Column(name = "last_fortune_opened_date")
+    @Column(name = "last_opened_at")
     private LocalDate lastFortuneOpenedDate;
 
     public void updateLastFortuneOpenedDate(LocalDate date) {

@@ -1,5 +1,4 @@
 import {useCallback, useEffect, useState} from "react";
-import {useDiaryData} from "@/hooks/useDiaryData.js";
 import { fetchWeeklyTimelineAPI } from '@/api/timelineApi.js';
 import {formatDateToString, getEndOfWeek, getStartOfWeek} from "@shared/utils/dateUtils.js";
 

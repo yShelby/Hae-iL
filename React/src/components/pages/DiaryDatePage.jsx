@@ -18,7 +18,7 @@
 // ======================================================================
 
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom'; // 🔍 URL 파라미터 추출
+import {useOutletContext, useParams} from 'react-router-dom'; // 🔍 URL 파라미터 추출
 import DiaryWritePage from './DiaryWritePage';
 import {fetchDiaryByDateAPI} from "@api/diaryApi.js"; // 📝 일기 작성/수정 페이지
 
@@ -30,6 +30,8 @@ import {fetchDiaryByDateAPI} from "@api/diaryApi.js"; // 📝 일기 작성/수�
 const DiaryDatePage = () => {
     // 1️⃣ URL에서 날짜 파라미터(:date) 추출
     const { date } = useParams();
+
+    const layoutContext = useOutletContext(); // ✅ 부모(DiaryLayout)의 context를 받음
 
     // 📦 상태: 일기 데이터와 로딩 여부
     const [diary, setDiary] = useState(null);
@@ -77,6 +79,10 @@ const DiaryDatePage = () => {
             initialDiary={diary} // 📄 조회된 일기 데이터
             selectedDate={date} // 📅 현재 선택된 날짜
             // ⚠️ onActionSuccess는 MainLayout 내부에서만 전달됨
+            isLoading={loading}  // 이 컴포넌트의 로딩 상태
+            onDiaryUpdated={layoutContext?.onDiaryUpdated}
+            onEmotionUpdated={layoutContext?.onEmotionUpdated}
+            setSelectedDiaryId={layoutContext?.setSelectedDiaryId}
         />
     );
 };

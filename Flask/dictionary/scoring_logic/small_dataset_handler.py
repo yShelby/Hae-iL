@@ -1,9 +1,9 @@
 from collections import Counter
 
-from scoring_logic.polarity_calculator import _polarity_calculator
-from scoring_logic.percentage_calculator import _percentage_calculator
+from .polarity_calculator import _polarity_calculator
+from .percentage_calculator import _percentage_calculator
 
-def _small_dataset_handler(results_emotion : list[dict], p_threshold_sa : int, p_threshold_sb : int, last_threshold : int, top_label : int) -> tuple[list[dict], list[dict], list[dict]]:
+def _small_dataset_handler(results_mood : list[dict], p_threshold_sa : int, p_threshold_sb : int, last_threshold : int, top_label : int) -> tuple[list[dict], list[dict], list[dict]]:
     """
     
     소량 데이터셋 처리: 마지막 문장의 감정만 추출 
@@ -11,10 +11,10 @@ def _small_dataset_handler(results_emotion : list[dict], p_threshold_sa : int, p
     
     """
     # 마지막 sentence index 추출
-    last_sen_idx = max(item["sentence_index"] for item in results_emotion)
+    last_sen_idx = max(item["sentence_index"] for item in results_mood)
     
     # 마지막 문장의 감정어만 필터링 (list[dict])
-    last_sen = [item for item in results_emotion if item["sentence_index"] == last_sen_idx]
+    last_sen = [item for item in results_mood if item["sentence_index"] == last_sen_idx]
 
     # 마지막 문장의 word index 추출
     last_word_idx = max(item["word_index"] for item in last_sen)  

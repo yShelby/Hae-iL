@@ -3,7 +3,7 @@ import {getJournals} from "@api/journalApi.js";
 import "./css/JournalList.css";
 import {JournalItem} from "@features/journal/JournalItem.jsx";
 
-export const JournalList = ({category, onItemSelect, user, selectedJournalId, key : refreshKey}) => {
+export const JournalList = ({category, onItemSelect, user, selectedJournalId, refreshKey}) => {
     const [journals, setJournals] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);

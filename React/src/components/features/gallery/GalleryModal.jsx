@@ -26,41 +26,6 @@ export const GalleryModal = () => {
     const navigate = useNavigate(); // 📍 일기 페이지 이동용
     const { isGalleryOpen, closeGallery } = useGallery(); // 📂 갤러리 모달 상태 제어
     const checkLogin = useCheckLogin(); // 훅 사용
-    // 기존 코드
-    // const [img, setImages] = useState([]); // 🖼️ 현재 표시되는 이미지들
-    // const [originalImages, setOriginalImages] = useState([]); // 🧾 초기 이미지 백업
-    // const toastShownRef = useRef(false); // 기존 토스트 중복 방지
-    // 🎬 갤러리 모달 열릴 때 실행되는 효과
-    // useEffect(() => {
-    //     if (isGalleryOpen) {
-    //         if (!checkLogin()) {
-    //             // 로그인 안 되어있으면 모달 닫기
-    //             closeGallery();
-    //             return;
-    //         }
-    //         toastShownRef.current = false; // 로그인 시 초기화
-    //
-    //         // ✅ 2️⃣ 로그인 상태면 이미지 로딩 시작
-    //         fetchGalleryImagesAPI()
-    //             .then(response => {
-    //                 // console.log("✅ 갤러리 API 응답:", response.data);
-    //                 // 🧾 S3 URL 포맷 적용
-    //                 const dataWithUrls = response.data.map(img => ({
-    //                     ...img,
-    //                     url: img.fileKey
-    //                         ? `https://${BUCKET_NAME}.s3.${REGION}.amazonaws.com/${img.fileKey}`
-    //                         : img.url || '',
-    //                 }));
-    //                 setImages(dataWithUrls); // ✅ 화면에 보여줄 이미지
-    //                 setOriginalImages(dataWithUrls); // 💾 "원래대로" 버튼용
-    //             })
-    //             .catch(error => {
-    //                 console.error('갤러리 로딩 실패', error);
-    //                 showToast.error('갤러리를 불러오는 중 오류가 발생했습니다.');
-    //             });
-    //     }
-    // }, [isGalleryOpen, checkLogin, closeGallery]); // 🚨 반드시 로그인 상태 변경 감지
-
 
     // 변경이유 : 갤러리 모달이 열릴때마다 이미지를 새로 불러와 서버에서 계속 쿼리가 실행되고 있어서 변경
     // useQuery 훅을 사용하여 갤러리 이미지를 가져오고 상태 관리

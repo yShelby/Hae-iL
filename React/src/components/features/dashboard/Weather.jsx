@@ -1,5 +1,25 @@
 import {useEffect, useState} from "react";
 import {useWeatherData} from "@/hooks/useWeatherData.js";
+import "./css/Weather.css";
+
+// 영문 날씨 상태를 한글로 변환하기 위한 객체
+const WEATHER_IN_KOREAN = {
+    Clear: '맑음',
+    Clouds: '구름 많음',
+    Rain: '비',
+    Snow: '눈',
+    Drizzle: '이슬비',
+    Thunderstorm: '천둥번개',
+    Mist: '안개',
+    Smoke: '연기',
+    Haze: '실안개',
+    Dust: '먼지',
+    Fog: '짙은 안개',
+    Sand: '황사',
+    Ash: '화산재',
+    Squall: '돌풍',
+    Tornado: '토네이도'
+};
 
 const Weather = () => {
     const [coords, setCoords] = useState(null);
@@ -28,26 +48,37 @@ const Weather = () => {
 
     return (
         <div className={"weather-container"}>
-            <h3>오늘의 날씨</h3>
             {weatherData ? (
-                <div className="weather-content">
-                    <img
-                        src={`https://openweathermap.org/img/wn/${weatherData.icon}@2x.png`}
-                        alt={weatherData.description}
-                        className="weather-icon"
-                    />
-                    <p className="weather-temp">
-                        {weatherData?.temp != null
-                            // Number()로 확실히 숫자 변환 후 toFixed(1)로 소수점 첫째 자리까지 포맷팅
-                            ? Number(weatherData.temp).toFixed(1) + '°C'
-                            : '온도 정보 없음'}
-                    </p>
-                    <p className="weather-desc">{weatherData.description}</p>
-                </div>
+                <>
+                    {/* 1. 도시 (시/구/동) */}
+                    <div className="weather-location">
+                        {weatherData.city}
+                    </div>
+
+                    <div className="weather-content">
+                        {/* 2. 날씨 아이콘 */}
+                        <img
+                            src={`https://openweathermap.org/img/wn/${weatherData.icon}@2x.png`}
+                            alt={weatherData.main}
+                            className="weather-icon"
+                        />
+                        <div className="weather-details">
+                            {/* 3. 날씨 내용 (main) */}
+                            <p className="weather-main-text">
+                                {WEATHER_IN_KOREAN[weatherData.main] || weatherData.main}
+                            </p>
+                            {/* 4. 현재 온도 */}
+                            <p className="weather-temp-current">
+                                {Math.round(weatherData.temp)}°C
+                            </p>
+                        </div>
+                    </div>
+                </>
             ) : (
                 <p>날씨 정보가 없습니다.</p>
             )}
-        < /div>
+        </div>
     );
 };
+
 export default Weather;

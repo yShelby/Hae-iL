@@ -11,10 +11,10 @@
 //   4️⃣ 성공 시 토스트 띄우고, 콜백으로 새 일기 상태 전달
 //   5️⃣ handleDelete 호출 시 삭제 API 요청 → 콜백에 null 전달 후 홈으로 이동
 
-import { useState, useCallback } from 'react';
-import {useNavigate, useOutletContext} from 'react-router-dom';
+import {useState, useCallback} from 'react';
 import {showToast} from "@shared/UI/Toast.jsx";
 import {deleteDiaryAPI, saveDiaryAPI, updateDiaryAPI} from "@api/diaryApi.js";
+import useDiaryDraftStore from "@/stores/useDiaryDraftStore.js";
 
 export const useDiaryMutations = ({
                                       initialDiary,               // ✏️ 기존 일기 데이터 (있으면 수정, 없으면 신규 생성)
@@ -24,16 +24,17 @@ export const useDiaryMutations = ({
                                       diaryState,                 // ✍️ 제목 등 기타 상태
                                       editor,                     // 🖋️ TipTap 에디터 인스턴스
                                       user,                       // 🙋 로그인 유저 정보
+                                      onDataChange,               // 🔄 타임라인 갱신 콜백 (일기 저장 후)
                                   }) => {
-    const navigate = useNavigate();
-
     // ⏳ 저장 중 여부 상태
     const [isSaving, setIsSaving] = useState(false);
 
     // ❗ 삭제 확인 모달 상태
     const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 
-    const { onDataChange } = useOutletContext();
+    // [추가] 스토어에서 임시 데이터를 삭제하는 함수를 가져온다.
+    const { clearDraft } = useDiaryDraftStore();
+    
     // 💾 일기 저장 or 수정 핸들러
     const handleSave = useCallback(async () => {
         // 🚨 저장 조건 검사: 에디터/로그인 여부/중복 저장 방지
@@ -64,24 +65,27 @@ export const useDiaryMutations = ({
 
             // 🔄 수정 모드인 경우: update API 호출
             if (initialDiary?.diaryId) {
-                const { data: updatedDiary } = await updateDiaryAPI(initialDiary.diaryId, dto);
-                showToast.success('일기가 성공적으로 수정되었습니다.', { id: toastId });
+                const {data: updatedDiary} = await updateDiaryAPI(initialDiary.diaryId, dto);
+                showToast.success('일기가 성공적으로 수정되었습니다.', {id: toastId});
 
                 if (onActionSuccess) {
                     onActionSuccess(updatedDiary); // 🔁 수정 결과 반영
                 }
             } else {
                 // 🆕 신규 저장인 경우: save API 호출
-                const { data: newDiary } = await saveDiaryAPI(dto);
-                showToast.success('일기가 성공적으로 저장되었습니다.', { id: toastId });
-                onDataChange?.(); // 타임라인 갱신 콜백 호출
-                if (onActionSuccess) {
-                    onActionSuccess(newDiary); // 🔁 새 일기 결과 반영
-                }
+                const {data: newDiary} = await saveDiaryAPI(dto);
+                showToast.success('일기가 성공적으로 저장되었습니다.', {id: toastId});
+                // onDataChange?.(); // 타임라인 갱신 콜백 호출
+                // if (onActionSuccess) {
+                //     onActionSuccess(newDiary); // 🔁 새 일기 결과 반영
+                // }
+                // [추가] 새 일기 저장에 성공하면, 해당 날짜의 임시 데이터를 삭제
+                clearDraft(selectedDate);
+                onActionSuccess?.(newDiary);
             }
         } catch (error) {
             console.error(error);
-            showToast.error(error.response?.data?.message || '저장에 실패했습니다.', { id: toastId });
+            showToast.error(error.response?.data?.message || '저장에 실패했습니다.', {id: toastId});
         } finally {
             setIsSaving(false); // ✅ 저장 종료
         }
@@ -105,17 +109,16 @@ export const useDiaryMutations = ({
 
         try {
             await deleteDiaryAPI(initialDiary.diaryId); // 📡 삭제 API 호출
-            showToast.success('일기가 삭제되었습니다.', { id: toastId });
+            showToast.success('일기가 삭제되었습니다.', {id: toastId});
 
             if (onActionSuccess) {
                 onActionSuccess(null); // ⛔ 삭제되었으므로 null 전달
             }
 
-            navigate('/'); // 🏠 홈으로 이동
         } catch (error) {
-            showToast.error(error.response?.data?.message || '삭제에 실패했습니다.', { id: toastId });
+            showToast.error(error.response?.data?.message || '삭제에 실패했습니다.', {id: toastId});
         }
-    }, [initialDiary, onActionSuccess, navigate]);
+    }, [initialDiary, onActionSuccess]);
 
     // 🟨 삭제 확인 모달 열기
     const confirmDelete = () => setIsConfirmOpen(true);
