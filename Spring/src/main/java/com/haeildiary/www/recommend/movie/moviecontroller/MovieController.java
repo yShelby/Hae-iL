@@ -100,6 +100,45 @@ public class MovieController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/refresh")
+    public ResponseEntity<MovieListResponse> refreshRecommendation(
+            @AuthenticationPrincipal CustomUser customUser) {
+
+        if (customUser == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        UserEntity user = userRepository.findById(customUser.getUserId())
+                .orElse(null);
+
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        // 오늘 일기 감정 가져오기
+        List<MoodDetail> todayMoods = List.of();
+        Optional<DiaryEntity> todayDiary = diaryRepository.findByUserUserIdAndDiaryDate(user.getUserId(), LocalDate.now());
+        if (todayDiary.isPresent()) {
+            todayMoods = moodDetailRepository.findByDiaryDiaryId(todayDiary.get().getDiaryId());
+        }
+
+        boolean containsNeutralOrEtc = todayMoods.stream()
+                .anyMatch(mood -> "중립/기타".equals(mood.getMoodType()));
+
+        MovieListResponse response;
+
+            if (!todayMoods.isEmpty() && !containsNeutralOrEtc) {
+                response = recommendByMoodService.recommendByTodayDiaryWeighted(user);
+            } else {
+                response = recommendByInitialService.recommendByInitialSurvey(user);
+            }
+            // 캐시에 감정 데이터 업데이트
+            moodCacheService.updateCachedMoods(user.getUserId(), todayMoods);
+            recommendationCacheService.updateCachedRecommendation(user.getUserId(), response);
+
+        return ResponseEntity.ok(response);
+    }
+
     /**
      * 사용자가 특정 영화를 '싫어요'로 저장 요청
      * 인증된 사용자만 접근 가능

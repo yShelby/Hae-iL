@@ -100,7 +100,7 @@ const DiaryWritePage = () => {
 
     // 삭제 성공 시에도 onDiaryUpdated, onEmotionUpdated를 호출하여 부모 컴포넌트의 상태를 즉시 동기화
     // [수정] onActionSuccess 콜백에 clearDraft 로직을 추가하여 저장/수정/삭제 성공 시 임시 데이터를 삭제
-    const onActionSuccess = (updatedDiaryOrNull) => {
+    const onActionSuccess = async (updatedDiaryOrNull) => {
         clearDraft(selectedDate); // [추가] 성공 시 해당 날짜의 임시저장 데이터 삭제
         onDiaryUpdated?.(); // 캘린더 등 목록 UI 갱신을 위해 호출
         onEmotionUpdated?.(); // 감정 분석 UI 갱신을 위해 호출
