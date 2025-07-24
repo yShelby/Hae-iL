@@ -1,11 +1,12 @@
 import "./css/JournalForm.css";
-import {forwardRef, useEffect, useState} from "react";
+import {forwardRef, useCallback, useEffect, useState} from "react";
 import {Button} from "@shared/UI/Button.jsx";
 import {FaCalendarAlt, FaRegStar, FaStar} from "react-icons/fa";
 import Rating from "react-rating";
 import {showToast} from "@shared/UI/Toast.jsx";
 import DatePicker, {registerLocale} from "react-datepicker";
 import ko from "date-fns/locale/ko";
+import useJournalDraftStore from "@/stores/useJournalDraftStore.js";
 
 // 1. 기존 'ko' 로케일 객체를 복사
 // 2. options.weekStartsOn 값을 1로 명시하여 '월요일' 시작을 강제(0: 일요일, 1: 월요일)
@@ -49,45 +50,64 @@ const CustomDateButton = forwardRef(({value, onClick}, ref) => (
 // displayName 추가 (디버깅 시 유용)
 CustomDateButton.displayName = 'CustomDateButton';
 
-export const JournalForm = ({onSubmit, onCancel, initialData, isSubmitting}) => {
-    // Form은 자신의 UI 상태(formData)를 직접 관리합니다.
+export const JournalForm = (
+    {onSubmit, onCancel, initialData, isSubmitting, draftKey}) => { // 의존성 추가
+    // [추가] 저널 임시 저장 스토어 연동
+    const { drafts, setDraft } = useJournalDraftStore();
+    const draft = drafts[draftKey]; // 현재 저널의 임시 데이터
+
+    // Form은 자신의 UI 상태(formData)를 직접 관리
     const [formData, setFormData] = useState(getInitialFormData());
 
     // 부모로부터 받은 initialData가 변경될 때마다 Form의 상태를 동기화
     useEffect(() => {
         if (initialData) {
+            // [추가] 수정 모드: API 데이터 또는 임시 데이터를 병합하여 사용(임시 데이터 우선)
+            const source = draft || initialData;
             setFormData({
-                title: initialData.title || '',
-                content: initialData.content || '',
-                category: initialData.category || 'MOVIE',
-                rating: initialData.rating || 0,  // 수정 모드일 땐 초기 rating 반영
-                journalDate: initialData.journalDate ? new Date(initialData.journalDate).toISOString().split('T')[0] : getInitialFormData().journalDate,
+                title: source.title || '',
+                content: source.content || '',
+                category: source.category || 'MOVIE',
+                rating: source.rating ?? 2.5, // 0도 유효한 값이므로 ?? 사용
+                journalDate: source.journalDate ? new Date(source.journalDate)
+                    .toISOString().split('T')[0] : getTodayString(),
             });
         }
         // 작성 모드라면 초기값으로 폼 리셋
         else {
-            setFormData(getInitialFormData());
+            // 새 작성 모드: 임시 데이터가 있으면 사용, 없으면 초기값
+            setFormData(draft || getInitialFormData());
         }
-    }, [initialData]);
+    }, [initialData, draft, draftKey]); // 의존성 추가
+
+    // [추가] 폼 데이터 변경 시 임시 저장하는 로직
+    const updateFormAndDraft = useCallback((newFormData) => {
+        setFormData(newFormData);
+        setDraft(draftKey, newFormData);
+    }, [draftKey, setDraft]);
 
     // 폼 입력 변경 시 상태 업데이트
     const handleChange = (e) => {
         const {name, value} = e.target;
-        setFormData(prev => ({...prev, [name]: value}));
+        // setFormData(prev => ({...prev, [name]: value}));
+        updateFormAndDraft({ ...formData, [name]: value });
     };
 
     // 별점 선택 변경 시 상태 업데이트
     const handleRatingChange = (rate) => {
-        setFormData(prev => ({...prev, rating: rate}));
+        // setFormData(prev => ({...prev, rating: rate}));
+        updateFormAndDraft({ ...formData, rating: rate });
     };
 
     const handleDateChange = (date) => {
         // date가 null이거나 undefined가 아닌, 유효한 Date 객체일 때만 실행
         if (date) {
-            setFormData(prev => ({
-                ...prev,
-                journalDate: date.toISOString().split('T')[0]
-            }));
+            // setFormData(prev => ({
+            //     ...prev,
+            //     journalDate: date.toISOString().split('T')[0]
+            // }));
+            updateFormAndDraft({ ...formData,
+                journalDate: date.toISOString().split('T')[0] });
         }
         // 만약 날짜가 지워져서 null이 들어온 경우, 아무 작업도 하지 않아 이전 값을 유지하거나
         // 혹은 기본값으로 설정 가능. 여기서는 이전 값을 유지하도록 한다

@@ -41,7 +41,7 @@ const FortuneCookie = () => {
                     <img src={cookieImgUrl} alt="포춘쿠키" className="cookie-img"/>
                 </div>
                 <div className="fortune-message">
-                    로그인하고 오늘의 운세를 확인하세요!
+                    로그인하고 확인해보세요!
                 </div>
             </div>
         );
@@ -61,14 +61,14 @@ const FortuneCookie = () => {
                 }, 2000); // 2초 후 깨진 이미지로 변경
             },
             onError: () => {
-                // API 요청이 실패했을 경우에도 애니메이션은 멈춰야 합니다.
+                // API 요청이 실패했을 경우에도 애니메이션은 멈춰야 한다.
                 setIsShaking(false);
             }
         });
     };
 
     // 최종적으로 보여줄 메시지를 결정
-    const displayMessage = fortuneMessage || status?.message || "쿠키를 눌러 오늘의 운세를 확인하세요!";
+    const displayMessage = fortuneMessage || status?.message || "클릭하여 확인해보세요!";
 
     return (
         <div className="fortune-cookie-container">
@@ -90,7 +90,7 @@ const FortuneCookie = () => {
             <div className="fortune-message">
                 {isStatusLoading && user ? "운세를 불러오는 중..." :
                     // isCracked가 true일 때만(즉, 2초 후) 최종 메시지를 보여줍니다.
-                    isCracked ? displayMessage : "쿠키를 눌러 오늘의 운세를 확인하세요!"}
+                    isCracked ? displayMessage : "클릭하여 확인해보세요!"}
             </div>
         </div>
     );

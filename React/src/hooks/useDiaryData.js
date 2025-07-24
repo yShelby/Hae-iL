@@ -51,10 +51,6 @@ export const useDiaryData = () => {
         fetchDiaryForDate(selectedDate);
     }, [selectedDate, fetchDiaryForDate]);
 
-    // ✨ 일기 저장/삭제 후 콜백
-    const handleActionSuccess = useCallback((newDiary) => {
-        setDiaryForDate(newDiary);
-    },     []);
 
     return {
         user,
@@ -64,7 +60,6 @@ export const useDiaryData = () => {
         isLoading,
         handleDateClick,
         fetchDiaryForDate,
-        handleDiaryUpdated,
-        handleActionSuccess,
+        handleDiaryUpdated
     };
 };

@@ -1,15 +1,10 @@
+/* MyRecordStatus.css */
+
 .record-status-widget-container {
     padding: 24px;
     background-color: #ffffff;
     border-radius: 20px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-}
-
-.record-status-title {
-    font-size: 1.25rem; /* 20px */
-    font-weight: 600;
-    margin: 0 0 20px 0;
-    color: #333;
 }
 
 .record-status-card-grid {

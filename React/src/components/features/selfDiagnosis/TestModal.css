@@ -1,0 +1,65 @@
+/* TestModal.css */
+.modal-background {
+    position: fixed; left: 0; top: 0; width: 100vw; height: 100vh;
+    background: rgba(0,0,0,0.35);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 1000;
+}
+.modal-box {
+    min-width: 320px; max-width: 90vw;
+    background: linear-gradient(135deg, #fff 70%, #cfd9df 100%);
+    border-radius: 1.2rem;
+    box-shadow: 0 6px 18px #0004;
+    padding: 2rem 1.2rem;
+    position: relative;
+    animation: modalFadeIn 0.2s;
+}
+.close-btn {
+    position: absolute; top: 12px; right: 20px;
+    border: none; background: none; font-size: 2rem; cursor: pointer;
+    color: #666;
+}
+.question-box p { margin-bottom: 1rem; font-size: 1.1rem; }
+.options label {
+    display: block;
+    padding: 0.35em 0.6em;
+    border-radius: 16px;
+    margin-bottom: 0.6em;
+    cursor: pointer;
+    transition: background .15s;
+    background: rgba(180,200,255,0.11);
+}
+.options input[type="radio"]:checked + span {
+    font-weight: bold; color: #1a53ff;
+}
+.modal-nav {
+    margin-top: 1rem; display: flex; gap: 0.6em; justify-content: flex-end;
+}
+.submit-btn {
+    width: 100%;
+    margin-top: 2em;
+    background: #1a53ff;
+    color: #fff; border: none; padding: 0.6em; border-radius: 12px;
+    font-size: 1.15em; cursor: pointer; opacity: 0.93;
+    transition: opacity .2s;
+}
+.submit-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+@keyframes modalFadeIn {
+    from { opacity: 0; transform: scale(0.97);}
+    to { opacity: 1; transform: scale(1);}
+}
+
+.option-label {
+    display: block;
+    padding: 0.4em 0.6em;
+    border-radius: 0.6rem;
+    margin-bottom: 0.6em;
+    cursor: pointer;
+    user-select: none;
+    background-color: rgba(180, 200, 255, 0.15);
+}
+
+.option-label input[type="radio"]:checked + span {
+    font-weight: 700;
+    color: #1a53ff;
+}
