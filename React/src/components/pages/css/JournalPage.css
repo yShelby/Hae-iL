@@ -1,9 +1,17 @@
+.journal-page-wrapper {
+    height: 100%;
+    width: 100%;
+    /* 부모(main-content-area)의 높이를 완전히 채우도록 설정 */
+}
+
 .journal-page-container.two-column {
     display: flex;
     gap: 32px;
-    height: calc(100vh - 100px); /* 앱의 헤더 높이를 고려하여 조정 */
+    /*height: calc(100vh - 100px); !* 앱의 헤더 높이를 고려하여 조정 *!*/
     padding: 20px;
     box-sizing: border-box;
+    width: 100%;
+    height: 100%;
 }
 
 .left-panel {

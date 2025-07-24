@@ -80,12 +80,12 @@
       const cleaned = phone.replace(/\D/g, '');
 
       // 2. 01012345678 → +821012345678
-      if (cleaned.startsWith('010') && cleaned.length === 11) {
+      if (cleaned.startsWith('010') && (cleaned.length === 10 || cleaned.length === 11)) {
           return '+82' + cleaned.substring(1);
       }
 
-      // 3. 821012345678 → +82101234567
-      if (cleaned.startsWith('82') && (cleaned.length === 11 || cleaned.length === 12)) {
+      // 3. 821012345678 → +821012345678
+      if (cleaned.startsWith('82') && (cleaned.length === 10 || cleaned.length === 11)) {
           return '+' + cleaned;
       }
 
@@ -157,7 +157,7 @@
             return false;
         }
         // 포맷팅 후의 길이를 고려하여 10~11자리 숫자인지 확인
-        else if (cleaned.length < 10 || cleaned.length > 12) {
+        else if (cleaned.length < 10 || cleaned.length >= 12) {
             phoneError.textContent = '유효한 전화번호 형식이 아닙니다. (10~11자리 숫자)';
             return false;
         } else {

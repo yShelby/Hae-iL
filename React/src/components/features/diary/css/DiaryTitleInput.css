@@ -6,8 +6,8 @@
 
 .input-group .title-input {
     width: 100%;
-    padding: 12px;
-    font-size: 1.75rem;
+    padding: 12px 0; /* [수정] 좌우 패딩 제거, 부모에서 제어 */
+    font-size: 1.5rem; /* [수정] 폰트 크기 감소 */
     font-weight: bold;
     border: none;
     border-bottom: 2px solid #e9ecef;

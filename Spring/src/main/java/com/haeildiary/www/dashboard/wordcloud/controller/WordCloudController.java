@@ -24,8 +24,8 @@ public class WordCloudController {
 
         // CustomUser 객체에서 실제 사용자 ID 추출
         if (customUser == null) {
-            // 사용자가 인증되지 않은 경우, 401 Unauthorized 에러를 반환합니다.
-            // (보통 Spring Security 필터 체인에서 먼저 처리되지만, 방어 코드로 남겨둡니다.)
+            // 사용자가 인증되지 않은 경우, 401 Unauthorized 에러를 반환
+            // (보통 Spring Security 필터 체인에서 먼저 처리되지만, 방어 코드로 남겨둔다.)
             return ResponseEntity.status(401).build();
         }
 

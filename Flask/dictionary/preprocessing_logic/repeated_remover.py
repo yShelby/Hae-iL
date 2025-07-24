@@ -1,6 +1,6 @@
 import re
 
-from rules.emojis import face_emojis
+from ..rules.emojis import face_emojis
 
 def _repeated_remover(sen_index : int, sentence : str, min_repeats: int, rules : list[dict]) -> tuple[list[dict],list[dict],str]:
     """

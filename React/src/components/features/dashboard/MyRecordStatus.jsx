@@ -1,12 +1,12 @@
 import {useEffect, useState} from "react";
-import {getDashboardStats} from "@api/dashboardApi.js";
+import {getDashboardStats} from "@api/countApi.js";
 import StatCard from "@shared/UI/StatCard.jsx";
 import {FaBookMedical, FaImages, FaPenAlt} from "react-icons/fa";
 import "./css/MyRecordStatus.css";
 import {useNavigate} from "react-router-dom";
-import {useAuth} from "@features/auth/AuthContext.jsx";
-import {showToast} from "@shared/UI/Toast.jsx";
+import {useAuth} from "@shared/context/AuthContext.jsx";
 import {format} from "date-fns";
+import {useCheckLogin} from "@/hooks/useCheckLogin.js";
 
 const MyRecordStatus = () => {
     const [stats, setStats] = useState({
@@ -20,14 +20,12 @@ const MyRecordStatus = () => {
     const navigate = useNavigate();
 
     const {user, loading: authLoading} = useAuth();
+    const checkLogin = useCheckLogin();
 
     const today = format(new Date(), "yyyy-MM-dd");
 
     const handleProtectedNavigation = (path) => {
-        if (!user) {
-            showToast.error("로그인 후 기록을 확인하세요.");
-            return;
-        }
+        if (!checkLogin()) return;
         navigate(path);
     }
 
@@ -44,7 +42,6 @@ const MyRecordStatus = () => {
 
     return (
         <section className="record-status-widget-container">
-            <h2 className="record-status-title">나의 기록 현황</h2>
             <div className="record-status-card-grid">
                 <StatCard
                     icon={<FaBookMedical />}

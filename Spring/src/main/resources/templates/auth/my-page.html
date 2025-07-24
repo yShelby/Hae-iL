@@ -23,9 +23,10 @@
                  alt="프로필 이미지"
                  class="profile-image">
             <!-- 프로필 이미지가 없을 경우 기본 이미지 표시 -->
+            <!-- sample2.png 이미지 경로 img -> images로 수정 -->
             <img id="currentProfileImageDefault"
                  th:unless="${user.profileImage != null and user.profileImage != ''}"
-                 th:src="@{/img/user_sample2.png}"
+                 th:src="@{/images/user_sample2.png}"
                  alt="기본 프로필 이미지"
                  class="profile-image">
 

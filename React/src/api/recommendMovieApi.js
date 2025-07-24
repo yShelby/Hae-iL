@@ -8,6 +8,13 @@ export const fetchRecommendedMovies = async () => {
     return response.data;
 };
 
+export const refreshRecommedation = async () => {
+    const response = await axios.get("/api/recommend/movies/refresh", {
+        withCredentials: true,
+    });
+    return response.data;
+};
+
 export const dislikeMovie = async (movieKey) => {
 
         const response = await axios.post(`/api/recommend/movies/dislike?movieKey=${movieKey}`, null,{
