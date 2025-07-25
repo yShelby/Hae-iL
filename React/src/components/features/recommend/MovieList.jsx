@@ -2,7 +2,7 @@ import React, {useState} from "react";
 import './css/MovieList.css'
 import DisLikeModal from "@features/recommend/DisLikeModal.jsx";
 
-function MovieList({ movies, emotion, onDisLike }) {
+function MovieList({ movies, emotion, onDisLike}) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [trailerUrl, setTrailerUrl] = useState("");
     const [selectedMovie, setSelectedMovie] = useState(null)

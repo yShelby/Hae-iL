@@ -104,7 +104,7 @@ const DiaryWritePage = () => {
         clearDraft(selectedDate); // [추가] 성공 시 해당 날짜의 임시저장 데이터 삭제
         onDiaryUpdated?.(); // 캘린더 등 목록 UI 갱신을 위해 호출
         onEmotionUpdated?.(); // 감정 분석 UI 갱신을 위해 호출
-        await preloadRecommendations?.(); //
+        await preloadRecommendations?.(false); //
         onDataChange?.(); // 선택된 날짜의 데이터 변경을 부모 컴포넌트에 알림
         if (updatedDiaryOrNull) { // 저장 또는 수정 성공 시
             setSelectedDiaryId?.(updatedDiaryOrNull.diaryId);

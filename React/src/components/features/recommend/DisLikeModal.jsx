@@ -1,8 +1,7 @@
 import './css/MovieList.css'
-import {dislikeMovie, fetchDislikedMovies} from "@api/recommendMovieApi.js";
-import {useState} from "react";
+import {dislikeMovie} from "@api/recommendMovieApi.js";
 
-function DisLikeModal({ onClose, movieKey, onDisLike }) {
+function DisLikeModal({ onClose, movieKey, onDisLike}) {
 
     const handleDisLike = async () =>{
         console.log("movieKey : ", movieKey)

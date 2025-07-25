@@ -8,7 +8,7 @@ export const fetchRecommendedMovies = async () => {
     return response.data;
 };
 
-export const refreshRecommedation = async () => {
+export const refreshRecommendation = async () => {
     const response = await axios.get("/api/recommend/movies/refresh", {
         withCredentials: true,
     });

@@ -1,8 +1,9 @@
 import MovieList from "@features/recommend/MovieList.jsx";
 import {useEffect, useState} from "react";
 import RecommendText from "@features/recommend/RecommendText.jsx";
-import {refreshRecommedation} from "@api/recommendMovieApi.js";
+import {refreshRecommendation} from "@api/recommendMovieApi.js";
 import {useAuth} from "@shared/context/AuthContext.jsx";
+import {usePreloadRecommendation} from "@/hooks/usePreloadRecommed.js";
 
 function RecommendMoviePage(){
     const { user } = useAuth();  // 또는 useCheckLogin 내부에서도 이걸 씀
@@ -21,39 +22,15 @@ function RecommendMoviePage(){
         }
     }, []);
 
-    useEffect(() => {
-        const loadRecommendations = async () => {
+    const {preloadRecommendations} = usePreloadRecommendation();
+
+    const loadRecommendations = async () => {
             try {
-                const storedEmotionResult = localStorage.getItem("lastEmotionResult");
-                const storedMoviesByPage = localStorage.getItem("cachedMoviesByPage");
+                const data = await preloadRecommendations(true);
 
-                const data = await refreshRecommedation();
+                setEmotionResult(data.newEmotionResult);
 
-                console.log("data.noChange:", data.noChange);
-                console.log("storedEmotionResult", storedEmotionResult);
-                console.log("storedMoviesByPage", storedMoviesByPage);
-
-                const newEmotionResult = [
-                    "종합추천",
-                    data.moods?.[0]?.moodType || "기타",
-                    data.moods?.[1]?.moodType || "기타",
-                    data.moods?.[2]?.moodType || "기타",
-                ];
-
-                setEmotionResult(newEmotionResult);
-
-                const moviesByPageData = {
-                    "종합추천": data.combinedResults,
-                    [data.moods?.[0]?.moodType]: data.resultsByEmotion[data.moods[0]?.moodType] || [],
-                    [data.moods?.[1]?.moodType]: data.resultsByEmotion[data.moods[1]?.moodType] || [],
-                    [data.moods?.[2]?.moodType]: data.resultsByEmotion[data.moods[2]?.moodType] || [],
-                };
-
-                setMoviesByPage(moviesByPageData);
-
-                localStorage.setItem("lastEmotionResult", JSON.stringify(newEmotionResult));
-                localStorage.setItem("cachedMoviesByPage", JSON.stringify(moviesByPageData));
-                localStorage.setItem("cacheTimestamp", Date.now().toString());
+                setMoviesByPage(data.moviesByPageData);
 
                 console.log("🔄 API 호출 후 캐시 갱신");
 
@@ -61,8 +38,6 @@ function RecommendMoviePage(){
                 console.error("추천 영화 불러오기 실패:", error);
             }
         };
-        loadRecommendations();
-    }, []);
 
     useEffect(() => {
         if (Object.keys(moviesByPage).length === 0) return;
@@ -104,11 +79,17 @@ function RecommendMoviePage(){
 
     const handleDislike = (movieKey) => {
         setShuffledMoviesByEmotion(prev => {
+
             const newShuffled = { ...prev };
+
             if (!newShuffled[currentEmotion]) return prev;
-            newShuffled[currentEmotion] = newShuffled[currentEmotion].filter(
+
+            const updateList = newShuffled[currentEmotion].filter(
                 movie => movie.id !== movieKey
             );
+
+            newShuffled[currentEmotion] = updateList;
+
             // 2) 로컬스토리지에 저장된 moviesByPage도 업데이트
             const storedMovies = JSON.parse(localStorage.getItem("cachedMoviesByPage") || "{}");
             for (const key of Object.keys(storedMovies)) {
@@ -116,6 +97,10 @@ function RecommendMoviePage(){
             }
 
             localStorage.setItem("cachedMoviesByPage", JSON.stringify(storedMovies));
+
+            if(updateList.length < 6){
+            loadRecommendations().catch(console.error);
+            }
 
             return newShuffled;
         });
