@@ -2,7 +2,7 @@ import React, {useState} from "react";
 import './css/MovieList.css'
 import DisLikeModal from "@features/recommend/DisLikeModal.jsx";
 
-function MovieList({ movies, emotion, onDisLike}) {
+function MovieList({ movies, onDisLike}) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [trailerUrl, setTrailerUrl] = useState("");
     const [selectedMovie, setSelectedMovie] = useState(null)
@@ -15,7 +15,6 @@ function MovieList({ movies, emotion, onDisLike}) {
 
     return (
         <div>
-            <h3 className="emotion-title">🎭 감정: {emotion}</h3>
             <div className="movie-list">
                 {movies.slice(0, 6).map((movie) => (
                     <div

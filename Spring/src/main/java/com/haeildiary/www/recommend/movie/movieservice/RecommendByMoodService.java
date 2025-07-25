@@ -66,7 +66,9 @@ public class RecommendByMoodService {
         if (list1 == null || list2 == null) return false;
         if (list1.size() != list2.size()) return false;
 
-        log.info("감정리스트1 : {}", list1);
+        log.info("감정리스트1 : {}", list1.stream()
+                .map(m -> m.getMoodType() + ":" + m.getPercentage())
+                .collect(Collectors.toList()));
         log.info("감정리스트2 : {}", list2);
 
         Map<String, Integer> map1 = list1.stream()
@@ -87,26 +89,48 @@ public class RecommendByMoodService {
      * - 감정별 추천 결과 생성
      */
     private MovieListResponse runRecommendLogic(UserEntity user, List<MoodDetail> moodDetails) {
+        log.info("===== runRecommendLogic 시작 =====");
+        log.info("사용자 ID: {}", user.getUserId());
+        log.info("입력 감정 데이터: {}", moodDetails.stream()
+                .map(m -> m.getMoodType() + ":" + m.getPercentage())
+                .collect(Collectors.toList()));
 
         Map<Integer, Double> genreScores = calculateGenreScores(moodDetails);
+        log.info("장르별 점수: {}", genreScores);
 
         List<Integer> sortedGenres = sortGenresByScoreDesc(genreScores);
+        log.info("점수 내림차순 정렬된 장르 리스트: {}", sortedGenres);
 
         Map<Integer, List<MovieDto>> genreMovieCache = cacheMoviesByGenres(sortedGenres);
+        log.info("장르별 영화 캐시 조회 완료");
 
         List<Integer> dislikedMovieKeys = fetchDislikedMovieKeys(user);
+        log.info("사용자가 싫어하는 영화 키 리스트: {}", dislikedMovieKeys);
 
         List<MovieDto> combinedResults = recommendTopMovies(sortedGenres, genreMovieCache, dislikedMovieKeys);
+        log.info("추천된 영화 리스트 개수: {}", combinedResults.size());
 
         fillMovieDetails(combinedResults);
+        log.info("추천 영화 상세 정보 채우기 완료");
 
-        Map<String, List<MovieDto>> emotionBasedResults = buildEmotionBasedRecommendations(moodDetails, dislikedMovieKeys, genreMovieCache);
+        Map<String, List<MovieDto>> resultsByEmotion = buildEmotionBasedRecommendations(moodDetails, dislikedMovieKeys, genreMovieCache);
+        log.info("감정별 추천 결과 생성 완료, 감정별 추천 개수: {}", resultsByEmotion.entrySet().stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().size())));
 
         List<MoodDetailDTO> moodDetailDTOs = moodDetails.stream()
                 .map(MoodDetailDTO::fromEntity)
                 .toList();
 
-        return new MovieListResponse(combinedResults, emotionBasedResults, moodDetailDTOs, false);
+        log.info("감정별 추천 결과 생성 완료, 감정별 목록: {}", resultsByEmotion);
+
+        // 감정별 추천 결과 로그 출력
+        resultsByEmotion.forEach((emotion, movies) -> {
+            log.info("감정: {}, 영화 수: {}", emotion, movies.size());
+            movies.forEach(movie -> log.info(" - 영화 제목: {}", movie.getTitle()));
+        });
+
+        log.info("===== runRecommendLogic 종료 =====");
+        return new MovieListResponse(combinedResults, resultsByEmotion, moodDetailDTOs, false);
     }
 
     /**

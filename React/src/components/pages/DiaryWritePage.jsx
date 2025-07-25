@@ -31,7 +31,6 @@ import DiaryEditor from "@features/diary/DiaryEditor.jsx";
 import {ConfirmModal} from "@shared/UI/ConfirmModal.jsx";
 import {useCheckLogin} from "@/hooks/useCheckLogin.js";
 import {useOutletContext} from "react-router-dom";
-import {usePreloadRecommendation} from "@/hooks/usePreloadRecommed.js";
 import {useAuth} from "@shared/context/AuthContext.jsx";
 import {useQuestion} from "@shared/context/QuestionContext.jsx";
 import QuestionDisplay from "@features/diary/QuestionDisplay.jsx";
@@ -89,8 +88,6 @@ const DiaryWritePage = () => {
         editable: isEditing,
     });
 
-    const {preloadRecommendations} = usePreloadRecommendation();
-
     // 📄 제목/날씨 등 폼 상태 관리 훅
     // [수정] setDiaryState 제거
     const {diaryState, setField, resetForm} = useDiaryForm(initialDiary);
@@ -100,11 +97,10 @@ const DiaryWritePage = () => {
 
     // 삭제 성공 시에도 onDiaryUpdated, onEmotionUpdated를 호출하여 부모 컴포넌트의 상태를 즉시 동기화
     // [수정] onActionSuccess 콜백에 clearDraft 로직을 추가하여 저장/수정/삭제 성공 시 임시 데이터를 삭제
-    const onActionSuccess = async (updatedDiaryOrNull) => {
+    const onActionSuccess = (updatedDiaryOrNull) => {
         clearDraft(selectedDate); // [추가] 성공 시 해당 날짜의 임시저장 데이터 삭제
         onDiaryUpdated?.(); // 캘린더 등 목록 UI 갱신을 위해 호출
         onEmotionUpdated?.(); // 감정 분석 UI 갱신을 위해 호출
-        await preloadRecommendations?.(false); //
         onDataChange?.(); // 선택된 날짜의 데이터 변경을 부모 컴포넌트에 알림
         if (updatedDiaryOrNull) { // 저장 또는 수정 성공 시
             setSelectedDiaryId?.(updatedDiaryOrNull.diaryId);

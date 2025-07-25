@@ -1,9 +1,10 @@
 import MovieList from "@features/recommend/MovieList.jsx";
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import RecommendText from "@features/recommend/RecommendText.jsx";
-import {refreshRecommendation} from "@api/recommendMovieApi.js";
 import {useAuth} from "@shared/context/AuthContext.jsx";
 import {usePreloadRecommendation} from "@/hooks/usePreloadRecommed.js";
+import {LoadingModal} from "@shared/UI/LoadingModal.jsx";
+import '../shared/UI/css/LoadingModal.css'
 
 function RecommendMoviePage(){
     const { user } = useAuth();  // 또는 useCheckLogin 내부에서도 이걸 씀
@@ -11,18 +12,62 @@ function RecommendMoviePage(){
     const [moviesByPage, setMoviesByPage] = useState({});
     const [currentEmotionIndex, setCurrentEmotionIndex] = useState(0);
     const [shuffledMoviesByEmotion, setShuffledMoviesByEmotion] = useState({});
-
-    useEffect(() => {
-        const storedEmotionResult = localStorage.getItem("lastEmotionResult");
-        const storedMoviesByPage = localStorage.getItem("cachedMoviesByPage");
-
-        if (storedEmotionResult && storedMoviesByPage) {
-            setEmotionResult(JSON.parse(storedEmotionResult));
-            setMoviesByPage(JSON.parse(storedMoviesByPage));
-        }
-    }, []);
+    const [preLoading, setPreLoading] = useState(false); // 추천 콘텐츠 로딩 상태
 
     const {preloadRecommendations} = usePreloadRecommendation();
+
+    useEffect(() => {
+        const initializeData = async () => {
+            setPreLoading(true); // 로딩 시작
+
+            try {
+                const data = await preloadRecommendations(false);  // await 필수
+
+                if (data) {
+                    setEmotionResult(data.newEmotionResult);
+                    setMoviesByPage(data.moviesByPageData);
+                } else {
+                    // fallback: 로컬스토리지에서 읽기
+                    const storedEmotionResult = localStorage.getItem("lastEmotionResult");
+                    const storedMoviesByPage = localStorage.getItem("cachedMoviesByPage");
+                    if (storedEmotionResult && storedMoviesByPage) {
+                        setEmotionResult(JSON.parse(storedEmotionResult));
+                        setMoviesByPage(JSON.parse(storedMoviesByPage));
+                    }
+                }
+            } catch (err) {
+                console.error("초기 추천 데이터 불러오기 실패", err);
+            } finally {
+                setPreLoading(false); // 로딩 종료
+            }
+        };
+
+        initializeData();
+
+    }, []);
+    useEffect(() => {
+        console.log("preLoading changed:", preLoading);
+    }, [preLoading]);
+
+    // const initializeData = () => {
+    //     const storedEmotionResult = localStorage.getItem("lastEmotionResult");
+    //     const storedMoviesByPage = localStorage.getItem("cachedMoviesByPage");
+    //
+    //     setPreLoading(true); // 로딩 상태 시작
+    //     console.log("1",preLoading)
+    //     try {
+    //         preloadRecommendations?.(false).catch(console.error);
+    //         if (storedEmotionResult && storedMoviesByPage) {
+    //             setEmotionResult(JSON.parse(storedEmotionResult));
+    //             setMoviesByPage(JSON.parse(storedMoviesByPage));
+    //         }
+    //     } catch (err){
+    //         console.error("초기 추천 데이터 불러오기 실패", err)
+    //     }
+    //     console.log("2",preLoading)
+    //     setPreLoading(false);
+    //     console.log("3",preLoading)
+    // }
 
     const loadRecommendations = async () => {
             try {
@@ -69,15 +114,12 @@ function RecommendMoviePage(){
         )
     }
 
-    if (emotionResult.length === 0) {
-        return <div>감정 분석 결과를 불러오는 중입니다...</div>;
-    }
 
     const currentEmotion = emotionResult[currentEmotionIndex] || "알 수 없음";
 
     const movies = shuffledMoviesByEmotion[currentEmotion] || [];
 
-    const handleDislike = (movieKey) => {
+    const handleDislike = async (movieKey) => {
         setShuffledMoviesByEmotion(prev => {
 
             const newShuffled = { ...prev };
@@ -95,16 +137,29 @@ function RecommendMoviePage(){
             for (const key of Object.keys(storedMovies)) {
                 storedMovies[key] = storedMovies[key].filter(movie => movie.id !== movieKey);
             }
-
             localStorage.setItem("cachedMoviesByPage", JSON.stringify(storedMovies));
-
-            if(updateList.length < 6){
-            loadRecommendations().catch(console.error);
-            }
 
             return newShuffled;
         });
+
+        const updatedList = shuffledMoviesByEmotion[currentEmotion]?.filter(
+            movie => movie.id !== movieKey
+        );
+
+        if(updatedList && updatedList.length < 6){
+            setPreLoading(true);
+            try {
+                await loadRecommendations().catch(console.error);
+            } catch (e) {
+            console.error(e)
+            } finally {
+                setPreLoading(false)
+            }
+        }
+        setPreLoading(false);
     };
+
+
 
     const nextEmotion = () => {
         setCurrentEmotionIndex((prev) =>
@@ -112,13 +167,29 @@ function RecommendMoviePage(){
         );
     };
 
+    if (emotionResult.length === 0) {
+        return (
+            <div>
+                {preLoading && (<LoadingModal />
+                )}
+                <button className="next-emotion-btn">
+                    다음 감정 보기
+                </button>
+
+            </div>
+        )
+    }
+
     return (
-        <div>
+        <div className={"movie-page"}>
+            {preLoading && (<LoadingModal />
+            )}
             <RecommendText emotion={currentEmotion} />
             <MovieList movies={movies} emotion={currentEmotion} onDisLike={handleDislike} />
             <button className="next-emotion-btn" onClick={nextEmotion}>
                 다음 감정 보기
             </button>
+
         </div>
     )
 }

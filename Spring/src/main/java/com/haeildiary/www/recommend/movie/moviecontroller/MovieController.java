@@ -60,6 +60,7 @@ public class MovieController {
         if (todayDiary.isPresent()) {
             todayMoods = moodDetailRepository.findByDiaryDiaryId(todayDiary.get().getDiaryId());
         }
+        log.info("todayMoods : {}", todayMoods);
 
         // 캐시된 감정 데이터 가져오기
         List<MoodDetail> cachedMoods = moodCacheService.getCachedMoods(user.getUserId());
