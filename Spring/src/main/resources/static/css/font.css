@@ -1,0 +1,29 @@
+@font-face {
+    font-family: 'NPSfont';
+    src: url('/fonts/NPS-Regular.woff') format('woff');
+}
+
+@font-face {
+    font-family: 'NPSfont-Bold';
+    src: url('/fonts/NPS-Bold.woff') format('woff');
+}
+
+@font-face {
+    font-family: 'Pretendard';
+    src: url('/fonts/Pretendard-Regular.woff') format('woff');
+}
+
+@font-face {
+    font-family: 'Pretendard-Medium';
+    src: url('/fonts/Pretendard-Medium.woff') format('woff');
+}
+
+@font-face {
+    font-family: 'Tmoney RoundWind';
+    src: url('/fonts/Tmoney-Regular.woff') format('woff');
+}
+
+@font-face {
+    font-family: 'TmoneyRoundWindExtraBold';
+    src: url('/fonts/Tmoney-ExtraBold.woff') format('woff');
+}

@@ -1,17 +1,17 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap');
 
 :root {
-  --sidebar-bg: #2c3e50;
-  --sidebar-text: #393E75;
-  --main-bg: rgb(255 255 255 / 0.35);
-  --primary-color: #393E75;
-  --primary-hover: #2980b9;
+  /* --sidebar-bg: #2c3e50; */
+  /* --sidebar-text: #393E75; */
+  /* --primary-color: #393E75; */
+  /* --primary-hover: #2980b9; */
+  /* --theme-1-color: linear-gradient(45deg, #98ADDA, #FCD2D3);
+  /* --shadow-main: -1px -1px 0 #fff, 1px 1px 0 #fff, 2px 2px 2px rgb(0 0 0 /0.15); */
+  /* --shadow-only: 3px 3px 5px rgb(0 0 0 /0.15); */
+  /* --shadow-a: -1px -1px 0 #fff, 1px 1px 0 #fff; */
   --light-text: #bdc3c7;
   --error-color: #e74c3c;
-  --theme-1-color: linear-gradient(45deg, #98ADDA, #FCD2D3);
-  --shadow-main: -1px -1px 0 #fff, 1px 1px 0 #fff, 2px 2px 2px rgb(0 0 0 /0.15);
-  --shadow-only: 3px 3px 5px rgb(0 0 0 /0.15);
-  --shadow-a: -1px -1px 0 #fff, 1px 1px 0 #fff;
+  --main-bg: rgb(255 255 255 / 0.35);
 }
 
 * {
@@ -21,7 +21,7 @@
 body {
   font-family: 'Noto Sans KR', sans-serif;
   margin: 0;
-  background-image: var(--theme-1-color);
+  background-image: var(--theme1-gradient);
 }
 
 .container-fluid {
@@ -74,7 +74,7 @@ body {
   border: 1px solid #34495e;
   border-radius: 6px;
   background-color: #34495e;
-  color: var(--sidebar-text);
+  color: white;
   font-size: 15px;
 }
 
@@ -183,36 +183,39 @@ body {
 #react-root {
   position: relative;
   width: 75%; height: 90% !important;
-  border-radius: 30px;
+  border-radius: var(--border-radius-main);
   padding: 0;
   background-color: var(--main-bg);
   box-shadow: var(--shadow-only);
-  z-index: -1;
+  z-index: 10;
+  isolation: isolate;
   overflow: hidden;
   transition: width 0.4s ease;
+  pointer-events: auto;
 }
 #react-root::before {
   content: '';
   position: absolute; top: 0; left: 0; bottom: 0; right: 0;
-  border-radius: 30px;
+  border-radius: var(--border-radius-main);
   padding: 5px 3px;
-  background: var(--theme-1-color); /* border 그라디언트 */
+  background: var(--border-gradient); /* border 그라디언트 */
   -webkit-mask:
           linear-gradient(#fff 0 0) content-box,
           linear-gradient(#fff 0 0);
   -webkit-mask-composite: destination-out;
   mask-composite: exclude;
   pointer-events: none;
-  z-index: 1;
+  /* z-index: 0;*/
 }
 #react-root::after {
   content: '';
   position: absolute; top: 0; left: 0; bottom: 0; right: 0;
-  border-radius: 30px;
+  border-radius: var(--border-radius-main);
   opacity: 0.35;
   box-shadow: -2px -2px 0 #fff, 2px 2px 0 #fff;
   mix-blend-mode: hard-light;
   z-index: 0;
+  pointer-events: none;
 }
 
 #react-root.menu-collapse {
@@ -283,7 +286,7 @@ body {
   display: block;
   width: 100%;
   padding: 15px 20px;
-  color: var(--primary-color);
+  color: var(--sidebar-text);
   text-decoration: none;
   text-align: left; /* 텍스트 왼쪽 정렬 */
   border-radius: 8px;

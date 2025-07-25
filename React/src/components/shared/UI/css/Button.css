@@ -1,27 +1,27 @@
-.btn {
-    padding: 8px 16px;
-    border-radius: 8px;
-    border: 1px solid #e0e0e0;
-    background-color: #ffffff;
-    color: #333333;
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s ease-in-out;
-}
+/*.btn {*/
+/*    padding: 8px 16px;*/
+/*    border-radius: 8px;*/
+/*    border: 1px solid #e0e0e0;*/
+/*    background-color: #ffffff;*/
+/*    color: #333333;*/
+/*    font-size: 14px;*/
+/*    font-weight: 500;*/
+/*    cursor: pointer;*/
+/*    transition: all 0.2s ease-in-out;*/
+/*}*/
 
-/* 비활성 상태 버튼에 마우스를 올렸을 때 */
-.btn:hover {
-    background-color: #f5f5f5;
-}
+/*!* 비활성 상태 버튼에 마우스를 올렸을 때 *!*/
+/*.btn:hover {*/
+/*    background-color: #f5f5f5;*/
+/*}*/
 
 /* 활성 상태 버튼 스타일 (.active 클래스 추가 시 적용) */
-.btn.active {
-    background-color: #3498db;
-    color: #ffffff;
-}
+/*.btn.active {*/
+/*    background-color: #3498db;*/
+/*    color: #ffffff;*/
+/*}*/
 
 /* 활성 상태 버튼에 마우스를 올렸을 때 */
-.btn.active:hover {
-    background-color: #2980b9;
-}
+/*.btn.active:hover {*/
+/*    background-color: #2980b9;*/
+/*}*/

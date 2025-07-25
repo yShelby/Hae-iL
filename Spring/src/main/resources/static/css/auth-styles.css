@@ -1,11 +1,12 @@
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap');
+/* @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap'); */
+@import './font.css';
 
 :root {
-    --primary-color: #3498db;
-    --primary-hover-color: #2980b9;
+    /* --primary-color: #3498db; */
+    /* --primary-hover-color: #2980b9; */
     --secondary-color: #f1f1f1;
     --secondary-hover-color: #e1e1e1;
-    --dark-color: #2c3e50;
+    /* --dark-color: #2c3e50; */
     --light-color: #ffffff;
     --background-color: #f4f7f6;
     --error-color: #e74c3c;
@@ -15,7 +16,7 @@
 }
 
 body {
-    font-family: 'Noto Sans KR', sans-serif;
+    font-family: 'NPSfont-Bold', sans-serif;
     background-color: var(--background-color);
     color: var(--text-color);
     margin: 0;
@@ -39,7 +40,7 @@ body {
 }
 
 h2 {
-    color: var(--dark-color);
+    color: var(--primary-color);
     margin-top: 0;
     margin-bottom: 10px;
     font-weight: 700;
@@ -58,7 +59,7 @@ label {
     font-weight: 500;
     margin-bottom: 8px;
     font-size: 14px;
-    color: var(--dark-color);
+    color: var(--primary-color);
 }
 
 input[type="email"],
@@ -110,7 +111,7 @@ button:disabled {
 
 .button-secondary {
     background-color: var(--secondary-color);
-    color: var(--dark-color);
+    color: var(--primary-color);
 }
 .button-secondary:hover {
     background-color: var(--secondary-hover-color);
@@ -129,7 +130,7 @@ button:disabled {
 }
 
 .links a:hover {
-    color: var(--dark-color);
+    color: var(--primary-color);
 }
 
 /* Unified message styles */
@@ -198,7 +199,7 @@ button:disabled {
 
 .modal-content h3 {
     margin-top: 0;
-    color: var(--dark-color);
+    color: var(--primary-color);
 }
 
 .modal-content p {

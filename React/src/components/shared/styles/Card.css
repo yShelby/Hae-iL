@@ -1,0 +1,30 @@
+.card {
+    background: white;
+    border-radius: var(--border-radius-main);
+    box-shadow: var(--shadow-only);
+    padding: 1.5rem 2rem;
+    color: var(--primary-color);
+    max-width: 320px;
+    margin: 1rem auto;
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.card:hover {
+    box-shadow: var(--shadow-main);
+    cursor: pointer;
+    transform: translateY(-4px);
+}
+
+.card-title {
+    margin: 0 0 0.75rem 0;
+    font-weight: 700;
+    font-size: 1.4rem;
+    color: var(--primary-color);
+}
+
+.card-content {
+    margin: 0;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: var(--sidebar-text);
+}

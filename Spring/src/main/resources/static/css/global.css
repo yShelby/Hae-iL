@@ -1,0 +1,109 @@
+@import './font.css';
+
+:root {
+    /* 테마1 */
+    --theme1-gradient: linear-gradient(45deg, #98ADDA, #FCD2D3);
+    --theme1-main-color: #393E75;
+    --theme1-side-text: #FFF;
+
+    /* 테마2 */
+    --theme2-gradient: linear-gradient(45deg, #BCECFF, #C2BBFF);
+    --theme2-main-color: #393E75;
+    --theme2-side-text: #FFF;
+
+    /* 테마3 */
+    --theme3-gradient: linear-gradient(45deg, #97F7F5, #FBF7B8);
+    --theme3-main-color: #0D6579;
+    --theme3-side-text: #16929C;
+
+    /* 공통 색상 변수 (초기값은 theme1 기준) */
+    --primary-color: #393E75;
+    --sidebar-text: #fff;
+    --border-gradient: linear-gradient(45deg, #98ADDA, #FCD2D3);
+    --primary-hover: #2980b9;
+
+    /* 그림자 */
+    --shadow-main: -1px -1px 0 #fff, 1px 1px 0 #fff, 2px 2px 2px rgba(0, 0, 0, 0.15);
+    --shadow-only: 3px 3px 5px rgba(0, 0, 0, 0.15);
+
+    /* 기타 */
+    --border-radius-main: 30px;
+    --font-family-base: 'NPSfont', sans-serif;
+}
+
+/* 박스 크기 테두리까지 포함 */
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    font-family: var(--font-family-base);
+    background: transparent;
+    color: var(--primary-color);
+}
+
+/* 리액트 내부 요소만 꾸미기 */
+#react-root {
+    font-family: var(--font-family-base);
+}
+
+/* 링크 스타일 */
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+a:hover {
+    color: var(--primary-hover);
+}
+
+/* 버튼 초기화 + 기본 스타일 */
+button {
+    font-family: inherit;
+    border: none;
+    background: none;
+    cursor: pointer;
+}
+
+/* 이미지 반응형 처리 */
+img {
+    max-width: 100%;
+    display: block;
+}
+
+/* 입력 요소 초기화 */
+input, textarea, select {
+    font-family: inherit;
+    font-size: 1rem;
+    outline: none;
+    border: 1px solid #ccc;
+    border-radius: var(--border-radius-main);
+    padding: 0.5rem;
+}
+
+/* 테마 전환을 위한 클래스 */
+.theme1 {
+    --primary-color: var(--theme1-main-color);
+    --primary-color-rgb: 57, 62, 117;
+    --sidebar-text: var(--theme1-side-text);
+    --border-gradient: var(--theme1-gradient);
+    background-image: var(--theme1-gradient);
+}
+
+.theme2 {
+    --primary-color: var(--theme2-main-color);
+    --primary-color-rgb: 57, 62, 117;
+    --sidebar-text: var(--theme2-side-text);
+    --border-gradient: var(--theme2-gradient);
+    background-image: var(--theme2-gradient);
+}
+
+.theme3 {
+    --primary-color: var(--theme3-main-color);
+    --primary-color-rgb: 13, 101, 121;
+    --sidebar-text: var(--theme3-side-text);
+    --border-gradient: var(--theme3-gradient);
+    background-image: var(--theme3-gradient);
+}

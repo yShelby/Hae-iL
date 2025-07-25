@@ -1,0 +1,25 @@
+.input {
+    width: 160px;
+    height: 25px;
+    border-radius: 10px;
+    border: 1px solid transparent;
+    background-color: white;
+    font-family: var(--font-family-base);
+    font-size: 14px;
+    padding: 0 0.5rem;
+    color: rgba(var(--primary-color-rgb), 0.6);
+
+    /* 그림자 */
+    box-shadow: 2px 1px 1px rgba(0, 0, 0, 0.25);
+
+    /* 테마 색상으로 보더 그라데이션 */
+    background-image: linear-gradient(white, white), var(--border-gradient);
+    background-origin: border-box;
+    background-clip: padding-box, border-box;
+}
+
+/* focus 효과 */
+.input:focus {
+    outline: none;
+    box-shadow: 2px 1px 3px rgba(0, 0, 0, 0.3);
+}

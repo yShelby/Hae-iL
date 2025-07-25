@@ -1,0 +1,86 @@
+/* 기본 버튼 스타일 */
+/* ---사용예시 입니다!---
+<Button variant="button1">버튼 1</Button>
+<Button variant="button2">Btn2</Button>
+<Button variant="button3">테마별 버튼</Button>
+
+아이콘 사용시
+import { IconHome2 } from '@tabler/icons-react';
+<Button variant="button4" icon={IconHome2} />
+*/
+.button {
+    font-family: var(--font-family-base);
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow-main);
+}
+/* 공통 아이콘 스타일 */
+.button-icon {
+    width: 30px;
+    height: 30px;
+}
+
+/* 버튼 1 : 테마 배경색 + 흰글씨 - 오늘의 질문, 일기 타임라인 년,월 등등 */
+.button1 {
+    width: 555px;
+    height: 60px;
+    background-color: var(--primary-color);
+    color: #FFF;
+    border-radius: 30px;
+    font-family: 'NPSfont', sans-serif;
+    font-size: 17px;
+    font-weight: 400;
+    font-weight: 400;
+    box-shadow: 2px 1px 1px rgba(0, 0, 0, 0.25);
+
+    /* 텍스트 중앙 정렬 */
+    line-height: 1;
+    padding-top: 10px;
+}
+/* 버튼 2 : 테마 그라디언트 배경색 + 테마메인 컬러 글씨 - 저장/삭제/수정 버튼 등*/
+.button2 {
+    width: 45px;
+    height: 25px;
+    background: var(--border-gradient);
+    border-radius: 10px;
+    font-family: 'Tmoney RoundWind', sans-serif;
+    font-size: 12px;
+    color: var(--primary-color);
+    box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.25);
+}
+
+/* 버튼 3 : 흰색 배경 + 테마 메인 컬러 글씨 - 자가진단, 계정관리 */
+.button3 {
+    width: 230px;
+    height: 60px;
+    background-color: #FFF;
+    border-radius: 30px;
+    font-family: 'NPSfont', sans-serif;
+    font-size: 16px;
+    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+    color: var(--primary-color);
+
+    /* 텍스트 중앙 정렬 */
+    line-height: 1;
+    padding-top: 10px;
+}
+
+/* 버튼 4 : 테마 그라디언트 배경 + 아이콘 - 자가진단, 계정관리 */
+.button4 {
+    width: 70px;
+    height: 70px;
+    border-radius: 30px;
+    background-image: var(--border-gradient);
+    color: #FFF;
+    padding: 0;
+}
+
+.button4 .button-icon {
+    width: 30px;
+    height: 30px;
+    color: #FFF;
+}

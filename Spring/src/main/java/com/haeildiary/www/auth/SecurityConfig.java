@@ -86,7 +86,7 @@ public class SecurityConfig {
                         "/api/dashboard", "/api/dashboard/**", "/calendar", "/calendar/**" // dashboard, calendar 접근 권한 추가
                 ).permitAll() // 인증 불필요 경로
                 // 경로 image -> images로 수정
-                .requestMatchers("/css/**","/js/**","/images/**").permitAll() // 정적 리소스 허용
+                .requestMatchers("/fonts/**", "/css/**","/js/**","/images/**").permitAll() // 정적 리소스 허용
                 .anyRequest().authenticated() // 나머지 모든 요청은 반드시 인증 필요
         );
 
