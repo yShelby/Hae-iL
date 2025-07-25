@@ -40,7 +40,7 @@ public class RecommendByInitialService {
                 .limit(10)
                 .collect(Collectors.toList());
 
-        Map<String, List<MovieDto>> resultsByEmotions = new HashMap<>();
+        Map<String, List<MovieDto>> resultsByEmotion = new HashMap<>();
 
         for (String emotion : initEmo) {
             List<EmotionGenreMapEntity> weightsForEmotion = emotionGenreMapRepository.findByEmotionTypeOrdered(emotion).stream()
@@ -52,14 +52,14 @@ public class RecommendByInitialService {
                     .limit(10)
                     .collect(Collectors.toList());
 
-            resultsByEmotions.put(emotion, recommendedMovies);
+            resultsByEmotion.put(emotion, recommendedMovies);
         }
 
         fillMovieDetails(combinedResults);
-        resultsByEmotions.values().forEach(this::fillMovieDetails);
+        resultsByEmotion.values().forEach(this::fillMovieDetails);
 
         log.info("가중치 확인 :{}", genreWeights);
-        log.info("감정별 확인 :{}", resultsByEmotions);
+        log.info("감정별 확인 :{}", resultsByEmotion);
         log.info("종합 확인 :{}", combinedResults);
 
         List<MoodDetailDTO> moodDetails = initEmo.stream()
@@ -69,7 +69,7 @@ public class RecommendByInitialService {
                     return dto;
                 }).collect(Collectors.toList());
 
-        return new MovieListResponse(combinedResults, resultsByEmotions, moodDetails, false);
+        return new MovieListResponse(combinedResults, resultsByEmotion, moodDetails, false);
     }
 
     private void fillMovieDetails(List<MovieDto> movies) {

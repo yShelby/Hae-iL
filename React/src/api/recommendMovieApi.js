@@ -8,7 +8,7 @@ export const fetchRecommendedMovies = async () => {
     return response.data;
 };
 
-export const refreshRecommedation = async () => {
+export const refreshRecommendation = async () => {
     const response = await axios.get("/api/recommend/movies/refresh", {
         withCredentials: true,
     });
@@ -22,35 +22,3 @@ export const dislikeMovie = async (movieKey) => {
         });
         return response.data;
 }
-
-// export const dislikeMovie = async (movieKey) => {
-//     try {
-//         const response = await axios.post("/api/recommend/movies/dislike", null,{
-//             params: { movieKey },
-//             withCredentials: true,
-//         });
-//         console.log("movieKey : ", movieKey)
-//         alert(response.data);
-//     } catch (error) {
-//         alert(error.response?.data || "에러발생");
-//     }
-// }
-
-export const fetchDislikedMovies = async () => {
-        const response = await axios.get("/api/recommend/movies/dislike", {
-            withCredentials: true,
-        });
-        return response.data;
-};
-
-// export const fetchDislikedMovies = async () => {
-//     try {
-//         const response = await axios.get("/api/recommend/movies/dislike", {
-//             withCredentials: true,
-//         });
-//         return response.data;
-//     } catch (error) {
-//         alert(error.response?.data || "조회 중 에러");
-//         return [];
-//     }
-// };

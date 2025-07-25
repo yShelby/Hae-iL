@@ -1,33 +1,35 @@
-import { fetchRecommendedMovies } from '@/api/recommendMovieApi';
+import {fetchRecommendedMovies, refreshRecommendation} from '@/api/recommendMovieApi';
 
 export const usePreloadRecommendation = () => {
-    const preloadRecommendations = async () => {
+    const preloadRecommendations = async (refresh = false) => {
         try {
-            const response = await fetchRecommendedMovies();
+            const response = refresh ? await refreshRecommendation() : await fetchRecommendedMovies();
 
-            const newEmotionResult = [
-                "종합추천",
-                response.moods?.[0]?.moodType || "기타",
-                response.moods?.[1]?.moodType || "기타",
-                response.moods?.[2]?.moodType || "기타",
-            ];
+            const moodType = (response.moods || []).map(m => m.moodType).filter(Boolean);
+            const newEmotionResult = ['종합추천', ...moodType];
 
-            const moviesByPageData = {
-                "종합추천": response.combinedResults,
-                [response.moods?.[0]?.moodType]: response.resultsByEmotion[response.moods[0]?.moodType] || [],
-                [response.moods?.[1]?.moodType]: response.resultsByEmotion[response.moods[1]?.moodType] || [],
-                [response.moods?.[2]?.moodType]: response.resultsByEmotion[response.moods[2]?.moodType] || [],
-            };
+            const moviesByPageData = { 종합추천: response.combinedResults };
+            const resultByEmotion = response.resultsByEmotion || {};
 
-            localStorage.setItem("lastEmotionResult", JSON.stringify(newEmotionResult));
-            localStorage.setItem("cachedMoviesByPage", JSON.stringify(moviesByPageData));
-            localStorage.setItem("cacheTimestamp", Date.now().toString());
+            moodType.forEach(mood => {
+                moviesByPageData[mood] = Array.isArray(resultByEmotion[mood]) ? resultByEmotion[mood] : [];
+            });
 
-            console.log("✅ 일기 저장 후 추천 캐시 업데이트 완료");
+            localStorage.setItem('lastEmotionResult', JSON.stringify(newEmotionResult));
+            localStorage.setItem('cachedMoviesByPage', JSON.stringify(moviesByPageData));
+            localStorage.setItem('cacheTimestamp', Date.now().toString());
+
+            console.log("moviesByPageData : ", moviesByPageData)
+            console.log("newEmotionResult : ", newEmotionResult)
+            console.log('✅ 추천 캐시 저장 완료');
+            console.log("📦 백엔드 응답 전체: ", response);
+            console.log("📦 감정별 추천: ", response.resultsByEmotion);
+
+            return { newEmotionResult, moviesByPageData };
         } catch (error) {
-            console.error("🎬 추천 캐싱 실패:", error);
+            console.error('❌ 추천 캐시 실패:', error);
+            return null;
         }
-    };
-
+    }
     return { preloadRecommendations };
 };
