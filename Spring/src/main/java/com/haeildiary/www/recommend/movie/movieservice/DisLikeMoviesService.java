@@ -45,7 +45,7 @@ public class DisLikeMoviesService {
     }
 
     // 매일 오전 10시에 실행
-    @Scheduled(cron = "0 0 10 * * *")
+    @Scheduled(cron = "0 0 0 * * *")
     public void cleanOldDislikes() {
         LocalDateTime threshold = LocalDateTime.now().minusMonths(1);
         disLikeMoviesRepository.deleteOldDislikes(threshold);

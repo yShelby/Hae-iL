@@ -66,7 +66,8 @@ function RecommendText({emotion}){
 
     return(
         <div>
-            {textChoice(emotion)}
+            <p className={"today-movie"}>오늘의 추천 영화</p>
+            <p className={"recommend-text"}>"{textChoice(emotion)}"</p>
         </div>
     )
 }
