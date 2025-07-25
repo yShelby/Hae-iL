@@ -13,11 +13,5 @@ public interface ChartsRepository {
 
 
 
-    @Query("""
-            """)
-    List<DiagnosisResultsDto> findDiagnosisResultsBetween(
-            @Param("userId") Long userId,
-            @Param("start") LocalDate start,
-            @Param("end") LocalDate end
-    );
+
 }

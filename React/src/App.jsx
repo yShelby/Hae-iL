@@ -23,7 +23,6 @@ import {QuestionProvider} from "@shared/context/QuestionContext.jsx";
 import SleepWidget from "@features/health/SleepWidget.jsx";
 import ExerciseWidget from "@features/health/ExerciseWidget.jsx";
 import MealWidget from "@features/health/MealWidget.jsx";
-import {useVirtualScroll} from "@/hooks/useVirtualScroll.js";
 import {AnimatePresence} from "framer-motion";
 import AnimationLayout from "@/layouts/AnimationLayout.jsx";
 import DiaryPage from "@pages/DairyPage.jsx";

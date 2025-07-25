@@ -1,4 +1,4 @@
-// 📄 파일 경로: com.heaildairy.www.diary.entity.DiaryEntity.java
+// 📄 파일 경로: com.haeildairy.www.diary.entity.DiaryEntity.java
 // 📌 역할:
 //   - 📚 JPA를 통해 diary 테이블과 매핑되는 일기 엔티티
 //   - 👤 UserEntity와 다대일 관계 설정 (각 일기는 하나의 사용자에 속함)

@@ -83,8 +83,8 @@ export default function SleepFloatingBarChart({dates, rawData, chartTitle, chart
     const starts = normalizedData.map(([bed]) => bed);
     const ends   = normalizedData.map(([_, wake]) => wake);
     const padding = 180;
-    const yMin = Math.max(0, Math.min(...starts) - padding);
-    const yMax = Math.min(SLEEP_DAY * 3, Math.max(...ends) + padding);
+    const yMin = starts.length > 0 ? Math.max(0, Math.min(...starts) - padding) : 0;
+    const yMax = ends.length > 0 ? Math.min(SLEEP_DAY * 3, Math.max(...ends) + padding) : 0;
 
     // =======================================================
     // === for chart ===
@@ -131,7 +131,8 @@ export default function SleepFloatingBarChart({dates, rawData, chartTitle, chart
                 max: yMax,
                 beginAtZero: false,
                 ticks: {
-                    stepSize: 60,
+                    stepSize: 60, // 60분
+                    maxTicksLimit: 24, // 하루 24시간
                     callback: (value) => formatHM(value),
                 },
                 grid: {

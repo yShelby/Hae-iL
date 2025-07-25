@@ -79,12 +79,12 @@ export default function Charts() {
                 twoMonths : twoMonthsForFetch
             });
 
-            // 👉 여기서 setState로 차트 데이터 반영
-            setMoodDataForChart(response.moodScores);
-            setSleepDataForChart(response.sleepTime);
-            setExerciseDataForChart(response.exerciseDuration);
-            setLastMonthData(response.lastDiagnosisResults);
-            setThisMonthData(response.currentDiagnosisResults);
+            // 👉 여기서 setState로 차트 데이터 반영 (from backend)
+            // setMoodDataForChart(response.moodScores);
+            // setSleepDataForChart(response.sleepTime);
+            // setExerciseDataForChart(response.exerciseDuration);
+            // setLastMonthData(response.lastDiagnosisResults);
+            // setThisMonthData(response.currentDiagnosisResults);
 
         } catch (e) {
             console.error("차트 데이터 로딩 실패:", e);
