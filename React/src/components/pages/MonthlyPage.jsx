@@ -6,7 +6,7 @@ import React from "react";
 function MonthlyPage() {
 
     return (
-        <div>
+        <div className="monthly-page" style={{display:"flex", justifyContent:"flex-start"}}>
             <Calendar />
             <SelfDiagnosis />
         </div>
