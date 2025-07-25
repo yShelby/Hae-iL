@@ -31,6 +31,7 @@ import Calendar from "@features/calendar/Calendar.jsx";
 import MonthlyLayout from "@/layouts/MonthlyLayout.jsx";
 import SelfDiagnosis from "@features/selfDiagnosis/SelflDiagnosis.jsx";
 import MonthlyPage from "@pages/MonthlyPage.jsx";
+import RecommendLayout from "@/layouts/RecommendLayout.jsx";
 import Charts from "@pages/Charts.jsx";
 import LegalCopyright from "@pages/LegalCopyright.jsx";
 import LegalPrivacyPolicy from "@pages/LegalPrivacyPolicy.jsx";
@@ -99,6 +100,7 @@ const AnimatedRoutes = () => {
                             <Route index element={<MonthlyPage />} />
 
                         </Route>
+                        <Route path={"movie"} element={<RecommendLayout />}/>
                     </Route>
                     {/* 캘린더 페이지 라우트 */}
                     <Route path="calendar" element={<Calendar />} />

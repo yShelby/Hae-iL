@@ -51,6 +51,36 @@
                onkeyup="validateNickname()" onblur="validateNickname()">
         <span id="nicknameError" class="error"></span>
 
+        <!-- 장르 선호도 -->
+        <label>좋아하는 영화 장르</label><br>
+        <label><input type="checkbox" name="initialGenre" id="initialGenre-action" value="액션"> 액션</label><br>
+        <label><input type="checkbox" name="initialGenre" id="initialGenre-adventure" value="모험"> 모험</label><br>
+        <label><input type="checkbox" name="initialGenre" id="initialGenre-comedy" value="코미디"> 코미디</label><br>
+        <label><input type="checkbox" name="initialGenre" id="initialGenre-animation" value="애니메이션"> 애니메이션</label><br>
+        <label><input type="checkbox" name="initialGenre" id="initialGenre-crime" value="범죄"> 범죄</label><br>
+        <label><input type="checkbox" name="initialGenre" id="initialGenre-documentary" value="다큐멘터리"> 다큐멘터리</label><br>
+        <label><input type="checkbox" name="initialGenre" id="initialGenre-drama" value="드라마"> 드라마</label><br>
+        <label><input type="checkbox" name="initialGenre" id="initialGenre-family" value="가족"> 가족</label><br>
+        <label><input type="checkbox" name="initialGenre" id="initialGenre-fantasy" value="판타지"> 판타지</label><br>
+        <label><input type="checkbox" name="initialGenre" id="initialGenre-history" value="역사"> 역사</label><br>
+        <label><input type="checkbox" name="initialGenre" id="initialGenre-horror" value="공포"> 공포</label><br>
+        <label><input type="checkbox" name="initialGenre" id="initialGenre-music" value="음악"> 음악</label><br>
+        <label><input type="checkbox" name="initialGenre" id="initialGenre-mystery" value="미스터리"> 미스터리</label><br>
+        <label><input type="checkbox" name="initialGenre" id="initialGenre-romance" value="로맨스"> 로맨스</label><br>
+        <label><input type="checkbox" name="initialGenre" id="initialGenre-SF" value="SF"> SF</label><br>
+        <label><input type="checkbox" name="initialGenre" id="initialGenre-thriller" value="스릴러"> 스릴러</label><br>
+        <label><input type="checkbox" name="initialGenre" id="initialGenre-war" value="전쟁"> 전쟁</label><br>
+        <label><input type="checkbox" name="initialGenre" id="initialGenre-western" value="서부"> 서부</label><br>
+
+        <!-- 최근 자주 느낀 감정 -->
+        <label>최근 자주 느낀 감정</label>
+        <label><input type="checkbox" name="initialEmotion" id="initialEmotion-happy" value="기쁨/행복"> 기쁨/행복</label><br>
+        <label><input type="checkbox" name="initialEmotion" id="initialEmotion-peace" value="평온/만족"> 평온/만족</label><br>
+        <label><input type="checkbox" name="initialEmotion" id="initialEmotion-angry" value="분노/짜증"> 분노/짜증</label><br>
+        <label><input type="checkbox" name="initialEmotion" id="initialEmotion-sad" value="슬픔/우울"> 슬픔/우울</label><br>
+        <label><input type="checkbox" name="initialEmotion" id="initialEmotion-bored" value="지루/심심"> 지루/심심</label><br>
+        <label><input type="checkbox" name="initialEmotion" id="initialEmotion-anxious" value="불안/걱정"> 불안/걱정</label><br>
+
         <!-- 프로필 이미지 -->
         <label for="profileImageFile">프로필 이미지 (선택)</label>
         <input type="file" id="profileImageFile" name="profileImageFile" accept="image/*" onchange="handleProfileImageChange(event)">

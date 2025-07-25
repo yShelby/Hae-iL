@@ -82,7 +82,7 @@ public class SecurityConfig {
 //               .requestMatchers("/**").permitAll() // 항상 허용
                 .requestMatchers("/", "/login/jwt","/need-login", "/register", "/register/newUser",
                         "/reissue", "/find-email", "/find-email/verify", "/find-password", "/find-password/send", "/find-password/login",
-                        "/api/s3/profile-presigned-url", "/diary", "/diary/**",
+                        "/api/s3/profile-presigned-url", "/diary", "/diary/**", "/movie",
                         "/api/dashboard", "/api/dashboard/**", "/calendar", "/calendar/**" // dashboard, calendar 접근 권한 추가
                 ).permitAll() // 인증 불필요 경로
                 // 경로 image -> images로 수정

@@ -1,0 +1,284 @@
+/* --------------------- 공통 및 레이아웃 --------------------- */
+
+/* 전체 영화 리스트 영역 */
+.movie-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.movie-card {
+    flex: 1 1 calc(33.333% - 16px); /* 한 줄에 3개 배치 */
+    box-sizing: border-box;
+    cursor: pointer;
+    display: flex;
+    margin-bottom: 16px;
+    background: #f9f9f9;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    transition: transform 0.2s ease;
+}
+.movie-card:hover {
+    transform: scale(1.03);
+}
+
+/* 영화 포스터 */
+.movie-poster {
+    width: 120px;
+    height: 180px;
+    object-fit: cover;
+    border-right: 1px solid #ddd;
+}
+
+/* 영화 정보 그리드 */
+.movie-info {
+    display: grid;
+    grid-template-areas:
+        "title title title ... plus"
+        "rect ... ... ... ..."
+        "overview overview overview overview overview"
+        "overview overview overview overview overview"
+        "overview overview overview overview overview";
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: auto auto auto auto auto;
+    padding: 12px;
+    flex-grow: 1;
+}
+
+/* 제목, 평점, + 버튼 */
+.movie-title {
+    grid-area: title;
+    margin: 0 0 8px 0;
+    font-size: 1.25rem;
+    color: #222;
+}
+
+.movie-vote {
+    grid-area: rect;
+    font-size: 0.9rem;
+    color: #888;
+    display: flex;
+    align-items: center;
+}
+
+.movie-plus {
+    grid-area: plus;
+    position: relative;
+    font-size: 1.5rem;
+    color: #000;
+    width: 40px;
+    height: 40px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+}
+.movie-plus::before {
+    content: "...";
+    font-weight: bold;
+    font-size: 1.4rem;
+    color: #ff4d4f;
+}
+
+/* 영화 개요 */
+.movie-overview {
+    grid-area: overview;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    overflow: hidden;
+    font-size: 0.9rem;
+    line-height: 1.3;
+    max-height: calc(1.3em * 3);
+    word-break: break-word;
+}
+
+/* 감정 제목 */
+.emotion-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 20px 0 12px 0;
+    color: #444;
+    text-align: center;
+}
+
+/* --------------------- 모달 관련 --------------------- */
+
+/* 모달 배경 */
+.modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+/* 모달 콘텐츠 */
+.modal-content {
+    position: relative;
+    background: white;
+    border-radius: 8px;
+    max-width: 720px;
+    width: 90%;
+    padding: 20px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+/* 닫기 버튼 */
+.close-btn {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: #ff4d4f;
+    border: none;
+    color: white;
+    font-weight: 700;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+.close-btn:hover {
+    background: #d9363e;
+}
+
+/* 다음 감정 버튼 */
+.next-emotion-btn {
+    display: block;
+    margin: 30px auto 60px auto;
+    padding: 12px 24px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    background-color: #1890ff;
+    color: white;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(24,144,255,0.4);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+.next-emotion-btn:hover {
+    background-color: #40a9ff;
+    box-shadow: 0 6px 12px rgba(64,169,255,0.6);
+}
+
+/* --------------------- 개별 모달 스타일 --------------------- */
+
+/* 싫어요 모달 */
+.dislike-modal {
+    position: absolute; /* movie-plus 버튼 기준 위치 지정 */
+    top: 45px; /* 버튼 바로 아래 */
+    left: 50%;
+    transform: translateX(-50%);
+    min-width: 120px;
+    padding: 8px 12px;
+    background-color: white;
+    border: 1px solid #ddd;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+    border-radius: 4px;
+    z-index: 100;
+    font-size: 0.9rem;
+    color: #333;
+    white-space: nowrap;
+    user-select: none;
+}
+
+/* 싫어요 모달 버튼 스타일 */
+.dislike-modal button {
+    margin-right: 10px;
+    padding: 8px 16px;
+    border: none;
+    background-color: #e74c3c;
+    color: white;
+    font-weight: bold;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+.dislike-modal button:hover {
+    background-color: #c0392b;
+}
+
+/* 싫어요 목록 리스트 */
+.disliked-movie-list {
+    margin-top: 15px;
+    padding-left: 20px;
+    max-height: 250px;
+    overflow-y: auto;
+    border-top: 1px solid #ddd;
+}
+.disliked-movie-list li {
+    padding: 6px 0;
+    border-bottom: 1px solid #eee;
+    font-size: 0.95rem;
+    color: #333;
+}
+
+/* --------------------- 대체 개요 영역 --------------------- */
+.overview-fallback {
+    width: 100%;
+    height: 400px;
+    padding: 20px;
+    background-color: #000;
+    color: #fff;
+    overflow-y: auto;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    display: grid;
+    grid-template-areas:
+        "title title title ... director"
+        "cast cast cast cast cast"
+        "overview overview overview overview overview"
+        "overview overview overview overview overview"
+        "overview overview overview overview overview";
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: auto auto auto auto auto;
+}
+
+.overview-fallback h2 {
+    margin-top: 0;
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+    color: #ffcc00;
+}
+
+.overview-fallback p {
+    font-size: 1rem;
+    line-height: 1.6;
+    white-space: pre-wrap;
+}
+
+.modal-title {
+    grid-area: title;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #ffcc00;
+}
+
+.modal-director {
+    grid-area: director;
+    font-size: 1rem;
+    color: #ccc;
+}
+
+.modal-cast {
+    grid-area: cast;
+    font-size: 0.9rem;
+    color: #aaa;
+}
+
+.modal-overview {
+    grid-area: overview;
+    font-size: 0.9rem;
+    color: #ddd;
+    line-height: 1.5;
+}
