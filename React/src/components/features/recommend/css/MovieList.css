@@ -282,3 +282,11 @@
     color: #ddd;
     line-height: 1.5;
 }
+
+.recommend-tab {
+    position: absolute;
+    x: 720px;
+    y: 30px;
+    color: #5C5C8A;
+    padding: 10px 13px 10px 10px;
+}

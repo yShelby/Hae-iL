@@ -5,6 +5,7 @@ import {useAuth} from "@shared/context/AuthContext.jsx";
 import {usePreloadRecommendation} from "@/hooks/usePreloadRecommed.js";
 import {LoadingModal} from "@shared/UI/LoadingModal.jsx";
 import '../shared/UI/css/LoadingModal.css'
+import {RecommendTab} from "@features/recommend/RecommendTab.jsx";
 
 function RecommendMoviePage(){
     const { user } = useAuth();  // 또는 useCheckLogin 내부에서도 이걸 씀
@@ -181,6 +182,7 @@ function RecommendMoviePage(){
         <div className={"movie-page"}>
             {preLoading && (<LoadingModal />
             )}
+            <RecommendTab />
             <RecommendText emotion={currentEmotion} />
             <MovieList movies={movies} emotion={currentEmotion} onDisLike={handleDislike} />
             <button className="next-emotion-btn" onClick={nextEmotion}>
