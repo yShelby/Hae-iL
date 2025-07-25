@@ -43,10 +43,10 @@ const DailyQuestion = () => {
                         refreshQuestion();
                     }
                 }}
-                className="btn-refresh"
+                className={`btn-refresh ${isLoading ? 'is-loading' : ''}`}
                 title={user ? "새로운 질문 보기" : "로그인 후 사용 가능"}
-                // 로그인하지 않았거나, 질문을 로딩 중일 때 버튼을 비활성화
-                disabled={!user || isLoading}
+                // [수정] disabled 속성은 로그인 여부에만 의존하도록 변경
+                disabled={!user}
             >
                 <FaSyncAlt className={isLoading ? 'spin' : ''} />
             </button>

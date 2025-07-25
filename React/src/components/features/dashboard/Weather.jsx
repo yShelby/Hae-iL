@@ -75,11 +75,13 @@ const Weather = () => {
                         <div className="weather-top-section">
                             {/* 1행: 날씨 아이콘 및 정보 */}
                             <div className="weather-info-row">
-                                <img
-                                    src={`https://openweathermap.org/img/wn/${weatherResponse.data.icon}@2x.png`}
-                                    alt={weatherResponse.data.main}
-                                    className="weather-icon"
-                                />
+                                <div className="weather-icon-container">
+                                    <img
+                                        src={`https://openweathermap.org/img/wn/${weatherResponse.data.icon}@2x.png`}
+                                        alt={weatherResponse.data.main}
+                                        className="weather-icon"
+                                    />
+                                </div>
                                 <p className="weather-info">
                                     {WEATHER_IN_KOREAN[weatherResponse.data.main] || weatherResponse.data.main}
                                 </p>
