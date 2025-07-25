@@ -14,7 +14,7 @@ def diary_text():
             return jsonify({"error": "텍스트가 없습니다."}), 400
         
         response_json = MoodDiaryService.diary(text)
-        
+
         print(f"response_json : {jsonify(response_json)}")
         
         return jsonify(response_json)

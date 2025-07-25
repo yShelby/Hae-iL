@@ -55,13 +55,16 @@
             <ul>
                 <li>
                     <!-- [추가] 버튼 클릭 시 전역 함수 window.triggerReactNavigation를 호출. 이동할 경로를 인자로 전달 -->
-                    <button th:onclick="|window.triggerReactNavigation('/')|">하루물결</button>
+                    <button th:onclick="|window.triggerReactNavigation('/')|">해일모음</button>
                 </li>
                 <li>
-                    <button th:onclick="|window.triggerReactNavigation('/diary')|">한달너울</button>
+                    <button th:onclick="|window.triggerReactNavigation('/diary')|">하루물결</button>
                 </li>
                 <li>
-                    <button th:onclick="|window.triggerReactNavigation('/calendar')|">해파랑길</button>
+                    <button th:onclick="|window.triggerReactNavigation('/calendar')|">한달너울</button>
+                </li>
+                <li>
+                    <button th:onclick="|window.triggerReactNavigation('/movie')|">해파랑길</button>
                 </li>
                 <li>
                     <button th:onclick="|window.triggerReactNavigation('/journal')|">윤슬조각</button>
