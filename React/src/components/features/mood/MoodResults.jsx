@@ -132,6 +132,9 @@ export default function MoodResult({ result }) {
                 right: chartStyle.canvasPadding,
             }
         },
+        plugins: {
+            legend:false,
+        },
         responsive: chartStyle.canvasResponsive,
         maintainAspectRatio: chartStyle.canvasMaintainAspectRatio,
         onClick: (event, elements) => {
@@ -161,22 +164,9 @@ export default function MoodResult({ result }) {
             <div className="mood-details">
                 <div className="doughnut-chart" style={{ position: 'relative' }}>
                     <Doughnut data={chartData} options={chartOptions} plugins={[centerPercentagePlugin]} />
-
-                    {/* 도넛 중앙에 퍼센트 텍스트 놓기 */}
-                    <div
-                        style={{
-                            position: 'absolute',
-                            top: '50%',
-                            left: '50%',
-                            transform: 'translate(-50%,-50%)',
-                            pointerEvents: 'none' // 차트 클릭/터치 이벤트 방해하지 않도록
-                        }}
-                    >
-                        <span style={{font: chartStyle.perFont, color: getNameAndColorForMood(selectedMood.label).color}}>
-                        {displayPercent}
-                        </span>
-                    </div>
-
+                </div>
+                <div className="percentage-box" style={{font: chartStyle.perFont, color: getNameAndColorForMood(selectedMood.label).color}}>
+                {displayPercent}
                 </div>
 
                 {selectedMood.moodType && ( /* moodType이 존재할 때만 렌더링 */
@@ -201,7 +191,7 @@ const chartStyle = {
     chartHoverBorderWidth: 3,
 
     //percentage number
-    perFont : "bold 32px sans-serif",
+    perFont : "bold 45px sans-serif",
 
     //canvas
     canvasResponsive: true,// 상위 component에 크기를 맞춤(비율x)
@@ -298,11 +288,11 @@ const scoreToComment = (mood_score) => {
     } else if (mood_score >= -15 && mood_score <= 15) {
         return "평온하지만 조금 흐린 바다 같은  기분이시군요 그런 날도 있죠 🌫️"
     } else if (mood_score >= -49 && mood_score <= -16) {
-        return "조금 힘든 하루였나 봐요  때로는 파도가 거칠어도 괜찮아요 곧 잠잠해질 테니까 ️🌊"
+        return "조금 힘든 하루였나 봐요 때로는 파도가 거칠어도 괜찮아요 곧 잠잠해질 테니까 ️🌊"
     } else if (mood_score >= -79 && mood_score <= -50) {
         return "마음이 많이 무겁네요 폭풍 후의 바다처럼... 이런 날도 지나갈 거예요 🚶‍♀️"
     } else {
-        return "많이 힘드셨겠어요 가장 깊은 바다 밑에서도  언젠가는 다시 수면으로  떠오르게 되어 있어요 ⚓"
+        return "많이 힘드셨겠어요 가장 깊은 바다 밑에서도 언젠가는 다시 수면으로 떠오르게 되어 있어요 ⚓"
     }
 }
 

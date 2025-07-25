@@ -32,6 +32,10 @@ import MonthlyLayout from "@/layouts/MonthlyLayout.jsx";
 import SelfDiagnosis from "@features/selfDiagnosis/SelflDiagnosis.jsx";
 import MonthlyPage from "@pages/MonthlyPage.jsx";
 import RecommendLayout from "@/layouts/RecommendLayout.jsx";
+import Charts from "@pages/Charts.jsx";
+import LegalCopyright from "@pages/LegalCopyright.jsx";
+import LegalPrivacyPolicy from "@pages/LegalPrivacyPolicy.jsx";
+
 /**
  * ✨ [추가] 애니메이션과 라우팅을 실제로 처리하는 내부 컴포넌트
  * 📌 이유: useLocation, useVirtualScroll 같은 훅들은 Router 컨텍스트 하위에서 호출 필요
@@ -40,7 +44,6 @@ import RecommendLayout from "@/layouts/RecommendLayout.jsx";
 const AnimatedRoutes = () => {
     const location = useLocation();
     const navigate = useNavigate();
-
 
     // [추가] React의 navigate 함수를 전역에 할당
     // useEffect를 사용하여 컴포넌트가 렌더링될 때 안정적으로 할당되도록 한다.
@@ -99,6 +102,10 @@ const AnimatedRoutes = () => {
                         </Route>
                         <Route path={"movie"} element={<RecommendLayout />}/>
                     </Route>
+                    {/* 캘린더 페이지 라우트 */}
+                    <Route path="calendar" element={<Calendar />} />
+                    {/* 차트 페이지 라우트 */}
+                    <Route path="charts" element={<Charts/>}/>
                 </Route>
             </Routes>
         </AnimatePresence>

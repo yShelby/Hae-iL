@@ -1,0 +1,17 @@
+.charts-page{
+    width: 100%;
+    /*background: lightgray;*/
+    display: flex;
+}
+
+.sleep-exercise-chart{
+    width: 60vh;
+    display: flex;
+}
+
+.w-m-button{
+    display: flex;
+    flex-direction: row-reverse;
+    padding-right: 20px;
+}
+

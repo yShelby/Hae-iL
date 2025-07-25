@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Entity
 @Getter
@@ -26,10 +26,22 @@ public class DepressionSelfDiagnosis {
     private UserEntity user;
 
     @Column(nullable = false)
-    private Integer result;
+    private Boolean available = false;
+
+    @Column(name = "total_score", nullable = false)
+    private Integer totalScore;
+
+    @Column(nullable = false)
+    private Integer percentage;
+
+    @Column(nullable = false)
+    private String result;
+
+    @Column(name = "next_available_date", nullable = false)
+    private LocalDate nextAvailableDate;
 
     @CreationTimestamp
     @Column(name = "assessment_date", nullable = false, updatable = false)
-    private LocalDateTime assessmentDate;
+    private LocalDate assessmentDate;
 
 }
