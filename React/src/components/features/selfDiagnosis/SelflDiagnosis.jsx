@@ -18,7 +18,7 @@ function SelfDiagnosis() {
 
     // 로그인 여부 체크
     // 로그인 상태 기반으로 쿼리 실행
-    const { data: statusData, isLoading, isError } = useSelfDiagnosisStatus(year, month, date, !!user);
+    const { data: statusData, isLoading, isError } = useSelfDiagnosisStatus(year, month, !!user);
 
     const handleOpen = (type) => {
         // 비로그인 사용자 접근 차단

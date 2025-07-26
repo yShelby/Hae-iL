@@ -9,8 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.time.LocalDate;
 
 @Slf4j
 @RestController
@@ -32,9 +31,37 @@ public class SelfDiagnosisController {
 
         log.info("자가진단 상태 조회:{}-{}", year, month);
 
-        return selfDiagnosisService.getDiagnosisStatus(userId, year, month);
+        SelfDiagnosisDto.AllStatusResponse result = selfDiagnosisService.getDiagnosisStatus(userId, year, month);
+
+        log.info("서버에서 보내는 응답 데이터: {}", result);
+
+        return result;
 
     }
+
+//    @GetMapping("/status/test")  // 새로운 테스트 엔드포인트
+//    public SelfDiagnosisDto.AllStatusResponse getStatusTest() {
+//        log.info("테스트 엔드포인트 진입!");
+//
+//        // 더미 데이터 바로 리턴
+//        SelfDiagnosisDto.AllStatusResponse dummyResponse = SelfDiagnosisDto.AllStatusResponse.builder()
+//                .depression(SelfDiagnosisDto.StatusResponse.builder()
+//                        .available(true)
+//                        .build())
+//                .anxiety(SelfDiagnosisDto.StatusResponse.builder()
+//                        .available(false)
+//                        .percentage(80)
+//                        .result("경도 불안")
+//                        .nextAvailableDate(LocalDate.of(2025, 8, 25))
+//                        .build())
+//                .stress(SelfDiagnosisDto.StatusResponse.builder()
+//                        .available(true)
+//                        .build())
+//                .build();
+//
+//        log.info("테스트 더미 응답: {}", dummyResponse);
+//        return dummyResponse;
+//    }
 
     // 자가진단 결과 제출
     @PostMapping("/{type}")

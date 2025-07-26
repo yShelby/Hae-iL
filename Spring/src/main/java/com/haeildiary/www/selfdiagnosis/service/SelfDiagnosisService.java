@@ -14,6 +14,7 @@ import com.haeildiary.www.selfdiagnosis.util.DiagnosisResultUtil;
 import com.haeildiary.www.selfdiagnosis.util.StatusUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -184,12 +185,72 @@ public class SelfDiagnosisService {
 
     }
 
-// 매일 오전 0시에 실행
+//    // 매일 오전 0시에 실행
 //    @Scheduled(cron = "0 0 0 * * *")
-//    public void checkIsAvaiableTest() {
-//        LocalDateTime threshold = LocalDateTime.now().minusMonths(1);
-//        disLikeMoviesRepository.deleteOldDislikes(threshold);
-//        log.info("한 달 지난 싫어요 영화 데이터를 삭제했습니다.");
+//    public void checkIsAvailableTest() {
+//        LocalDate today = LocalDate.now();
+//        log.info("자가진단 available 상태 체크 시작 - 날짜: {}", today);
+//
+//        // 불안 검사 업데이트
+//        updateAnxietyAvailability(today);
+//
+//        // 우울 검사 업데이트
+//        updateDepressionAvailability(today);
+//
+//        // 스트레스 검사 업데이트
+//        updateStressAvailability(today);
+//
+//        log.info("자가진단 available 상태 체크 완료");
 //    }
+//
+//    @Transactional
+//    private void updateAnxietyAvailability(LocalDate today) {
+//        // nextAvailableDate가 오늘이거나 지난 데이터들을 찾아서 available = true로 변경
+//        List<AnxietySelfDiagnosis> expiredTests = anxietyRepository.findByNextAvailableDateLessThanEqualAndAvailableFalse(today);
+//
+//        for (AnxietySelfDiagnosis test : expiredTests) {
+//            test.setAvailable(true);
+//            log.info("불안 검사 available 업데이트 - userId: {}, nextAvailableDate: {}",
+//                    test.getUser().getId(), test.getNextAvailableDate());
+//        }
+//
+//        if (!expiredTests.isEmpty()) {
+//            anxietyRepository.saveAll(expiredTests);
+//            log.info("불안 검사 {} 건 업데이트 완료", expiredTests.size());
+//        }
+//    }
+//
+//    @Transactional
+//    private void updateDepressionAvailability(LocalDate today) {
+//        // nextAvailableDate가 오늘이거나 지난 데이터들을 찾아서 available = true로 변경
+//        List<DepressionSelfDiagnosis> expiredTests = depressionRepository.findByNextAvailableDateLessThanEqualAndAvailableFalse(today);
+//
+//        for (DepressionSelfDiagnosis test : expiredTests) {
+//            test.setAvailable(true);
+//            log.info("우울 검사 available 업데이트 - userId: {}, nextAvailableDate: {}",
+//                    test.getUser().getId(), test.getNextAvailableDate());
+//        }
+//
+//        if (!expiredTests.isEmpty()) {
+//            depressionRepository.saveAll(expiredTests);
+//            log.info("우울 검사 {} 건 업데이트 완료", expiredTests.size());
+//        }
+//    }
+//
+//    @Transactional
+//    private void updateStressAvailability(LocalDate today) {
+//        // nextAvailableDate가 오늘이거나 지난 데이터들을 찾아서 available = true로 변경
+//        List<StressSelfDiagnosis> expiredTests = stressRepository.findByNextAvailableDateLessThanEqualAndAvailableFalse(today);
+//
+//        for (StressSelfDiagnosis test : expiredTests) {
+//            test.setAvailable(true);
+//            log.info("스트레스 검사 available 업데이트 - userId: {}, nextAvailableDate: {}",
+//                    test.getUser().getId(), test.getNextAvailableDate());
+//        }
+//
+//        if (!expiredTests.isEmpty()) {
+//            stressRepository.saveAll(expiredTests);
+//            log.info("스트레스 검사 {} 건 업데이트 완료", expiredTests.size());
+//        }
 
 }

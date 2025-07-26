@@ -1,11 +1,13 @@
 import apiClient from './apiClient';
 
 // current date, userId
-export async function fetchSelfDiagnosisStatus( year, month, date) {
+export async function fetchSelfDiagnosisStatus(year, month) {
     try {
+        console.log('요청 보내는 중:', year, month);
         const response = await apiClient.get(`/api/self-diagnosis/status`,{
-            params:  { year, month, date }
+            params:  { year, month }
         });
+        console.log(response.data);
         return response.data;
     } catch (error) {
         console.error('Error fetching selfDiagnosisApi entries', error);

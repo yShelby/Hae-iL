@@ -2,7 +2,7 @@ import {useState, useRef, useEffect} from "react";
 import "./TestModal.css";
 import {useAuth} from "@shared/context/AuthContext.jsx";
 import {useCheckLogin} from "@/hooks/useCheckLogin.js";
-import {submitDiagnosis} from "@api/selfDiagnosisApi.jsx";
+import {submitDiagnosis} from "@api/selfDiagnosisApi.js";
 
 
 function TestModal({ test, onClose }) {
