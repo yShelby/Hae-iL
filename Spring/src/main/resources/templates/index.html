@@ -4,80 +4,191 @@
     <meta charset="UTF-8">
     <title>:: 해일 :: 해석하는 감정 일기</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" th:href="@{/css/index.css}">
-    <link rel="stylesheet" th:href="@{/css/global.css}">
+    <link rel="stylesheet" th:href="@{/css/reset.css}">
     <link rel="stylesheet" th:href="@{/css/index-DLuEpQWV.css}">
+    <link rel="stylesheet" th:href="@{/css/global.css}">
+    <link rel="stylesheet" th:href="@{/css/index.css}">
 </head>
 <body>
-<div class="container-fluid">
-    <aside class="sidebar">
-        <h1 class="logo">Haeil - 해일</h1>
+<div id="app">
+    <header class="header">
+        <aside class="sidebar">
 
-        <!-- 로그인 상태가 아닐 때 -->
-        <div th:unless="${session.user != null}">
-            <form id="loginForm" class="login-form">
-                <input type="email" id="email" name="email" placeholder="이메일" required>
-                <input type="password" id="password" name="password" placeholder="비밀번호" required>
-                <div id="loginError" class="error-message"></div>
-                <button type="submit">로그인</button>
-            </form>
-            <div class="sidebar-links">
-                <a th:href="@{/find-email}">이메일 찾기</a>
-                <a th:href="@{/find-password}">비밀번호 찾기</a>
+            <!-- 로그인 상태 : 사용자 정보 -->
+            <div th:if="${session.user != null}" class="user-info-box">
+                <a class="profile-box" th:href="@{/my-page}" style="text-decoration: none; color: inherit;">
+                    <!-- 프로필 이미지 표시 -->
+                    <div class="profile-image">
+                        <img th:if="${session.user.profileImage != null and session.user.profileImage != ''}"
+                             th:src="@{'https://haeil-gallery-images-garamink.s3.ap-northeast-2.amazonaws.com/' + ${session.user.profileImage}}"
+                             alt="프로필 이미지"
+                             class="user-image"
+                             >
+                        <!-- 프로필 이미지가 없을 경우 기본 이미지 또는 아이콘 표시 (선택 사항) -->
+                        <img th:unless="${session.user.profileImage != null and session.user.profileImage != ''}"
+                             th:src="@{/images/default-profile.png}"
+                             alt="기본 프로필 이미지"
+                             class="user-image default-image">
+                    </div>
+                    <!-- 프로필 정보 -->
+                    <div class="user-info">
+                        <span class="user-nickname" th:text="${session.user.nickname}"> User Nickname</span>
+                        <span class="user-email" th:text="${session.user.email}">User email</span>
+                    </div>
+                </a>
+    <!--            <button onclick="location.href='/my-page'">마이 페이지</button>-->
             </div>
-            <button class="register-btn" onclick="location.href='/register'">회원가입</button>
-        </div>
 
-        <!-- 로그인 상태일 때 -->
-        <div th:if="${session.user != null}" class="user-info">
-            <a th:href="@{/my-page}" style="text-decoration: none; color: inherit;">
-                <!-- 프로필 이미지 표시 -->
-                <img th:if="${session.user.profileImage != null and session.user.profileImage != ''}"
-                     th:src="@{'https://haeil-gallery-images-garamink.s3.ap-northeast-2.amazonaws.com/' + ${session.user.profileImage}}"
-                     alt="프로필 이미지"
-                     class="profile-image">
-                <!-- 프로필 이미지가 없을 경우 기본 이미지 또는 아이콘 표시 (선택 사항) -->
-                <!-- img -< images 경로 수정 -->
-                <img th:unless="${session.user.profileImage != null and session.user.profileImage != ''}"
-                     th:src="@{/images/user_sample2.png}"
-                     alt="기본 프로필 이미지"
-                     class="default-image profile-image">
+            <!-- 비로그인 상태 -->
+            <div class="login-box" th:unless="${session.user != null}">
+                <div class="login-main">
+                    <form id="loginForm" class="login-form">
+                        <input type="email" id="email" name="email" placeholder="이메일" required>
+                        <input type="password" id="password" name="password" placeholder="비밀번호" required>
+                        <div class="sidebar-links">
+                            <a th:href="@{/find-email}">이메일 찾기</a>
+                            <a th:href="@{/find-password}">비밀번호 찾기</a>
+                        </div>
+                        <div id="loginError" class="error-message"></div>
+                        <button type="submit" class="login-btn">로그인</button>
+                    <button class="register-btn" onclick="location.href='/register'">회원가입</button>
+                    </form>
+                </div>
+            </div>
 
-                <p>안녕하세요, <strong th:text="${session.user.nickname}">사용자</strong>님!</p>
-            </a>
-            <button onclick="location.href='/my-page'">마이 페이지</button>
-            <button class="logout-btn" onclick="logout()">로그아웃</button>
-        </div>
+            <nav class="gnb">
+                <ul>
+                <!-- 메뉴 클릭 시 전역 함수 window.triggerReactNavigation를 호출. 이동할 경로를 인자로 전달 -->
+                    <li><a class="menu selected" th:onclick="|window.triggerReactNavigation('/')|">
+                        <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"
+                              fill="none"  stroke="currentColor"  stroke-width="1.5"  stroke-linecap="round"  stroke-linejoin="round"
+                              class="icon icon-tabler icons-tabler-outline icon-tabler-layout-dashboard">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                            <path d="M5 4h4a1 1 0 0 1 1 1v6a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1v-6a1 1 0 0 1 1 -1" />
+                            <path d="M5 16h4a1 1 0 0 1 1 1v2a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1v-2a1 1 0 0 1 1 -1" />
+                            <path d="M15 12h4a1 1 0 0 1 1 1v6a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1v-6a1 1 0 0 1 1 -1" />
+                            <path d="M15 4h4a1 1 0 0 1 1 1v2a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1v-2a1 1 0 0 1 1 -1" />
+                        </svg>
+                        <span class="nps18px-container">해일모음</span></a></li>
+                    <li><a class="menu" th:onclick="|window.triggerReactNavigation('/diary')|">
+                        <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"
+                              fill="none"  stroke="currentColor"  stroke-width="1.5"  stroke-linecap="round"  stroke-linejoin="round"
+                              class="icon icon-tabler icons-tabler-outline icon-tabler-notebook"><path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                            <path d="M6 4h11a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-11a1 1 0 0 1 -1 -1v-14a1 1 0 0 1 1 -1m3 0v18" />
+                            <path d="M13 8l2 0" />
+                            <path d="M13 12l2 0" />
+                        </svg>
+                        <span class="menu nps18px-container">하루물결</span></a></li>
+                    <li><a class="menu" th:onclick="|window.triggerReactNavigation('/monthly')|">
+                        <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"
+                              fill="none"  stroke="currentColor"  stroke-width="1.5"  stroke-linecap="round"  stroke-linejoin="round"
+                              class="icon icon-tabler icons-tabler-outline icon-tabler-calendar-smile">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                            <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12zm12 -4v4m-8 -4v4m-4 4h16m-9.995 3h.01m3.99 0h.01" />
+                            <path d="M10.005 17a3.5 3.5 0 0 0 4 0" />
+                        </svg>
+                        <span class="menu nps18px-container">한달너울</span></a></li>
+                    <li><a class="menu" th:onclick="|window.triggerReactNavigation('/movie')|">
+                        <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"
+                              fill="none"  stroke="currentColor"  stroke-width="1.5"  stroke-linecap="round"
+                              stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-circles-relation">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                            <path d="M9.183 6.117a6 6 0 1 0 4.511 3.986" />
+                            <path d="M14.813 17.883a6 6 0 1 0 -4.496 -3.954" />
+                        </svg>
+                        <span class="menu nps18px-container">해파랑길</span></a></li>
+                    <li><a class="menu" th:onclick="|window.triggerReactNavigation('/journal')|">
+                        <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"
+                              fill="none"  stroke="currentColor"  stroke-width="1.5"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-writing-sign">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                            <path d="M3 19c3.333 -2 5 -4 5 -6c0 -3 -1 -3 -2 -3s-2.032 1.085 -2 3c.034 2.048 1.658 2.877 2.5 4c1.5 2 2.5 2.5 3.5 1c.667 -1 1.167 -1.833 1.5 -2.5c1 2.333 2.333 3.5 4 3.5h2.5" />
+                            <path d="M20 17v-12c0 -1.121 -.879 -2 -2 -2s-2 .879 -2 2v12l2 2l2 -2z" />
+                            <path d="M16 7h4" />
+                        </svg>
+                        <span class="menu nps18px-container">윤슬조각</span></a></li>
+                    <li><a class="menu" th:onclick="|window.triggerReactNavigation('/chart')|">
+                        <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"
+                              fill="none"  stroke="currentColor"  stroke-width="1.5"  stroke-linecap="round"  stroke-linejoin="round"
+                              class="icon icon-tabler icons-tabler-outline icon-tabler-chart-pie"><path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                            <path d="M10 3.2a9 9 0 1 0 10.8 10.8a1 1 0 0 0 -1 -1h-6.8a2 2 0 0 1 -2 -2v-7a.9 .9 0 0 0 -1 -.8" />
+                            <path d="M15 3.5a9 9 0 0 1 5.5 5.5h-4.5a1 1 0 0 1 -1 -1v-4.5" />
+                        </svg>
+                        <span class="menu nps18px-container">바닷자락</span></a></li>
+                    <li><a class="menu" th:onclick="|window.triggerReactNavigation('/setting')|">
+                        <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"
+                              fill="none"  stroke="currentColor"  stroke-width="1.5"  stroke-linecap="round"  stroke-linejoin="round"
+                              class="icon icon-tabler icons-tabler-outline icon-tabler-settings"><path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                            <path d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z" />
+                            <path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" />
+                        </svg>
+                        <span class="menu nps18px-container">환경설정</span></a></li>
+                </ul>
+            </nav>
 
-        <!-- [추가] 새로운 내비게이션 메뉴바 -->
-        <nav class="main-nav">
-            <ul>
-                <li>
-                    <!-- [추가] 버튼 클릭 시 전역 함수 window.triggerReactNavigation를 호출. 이동할 경로를 인자로 전달 -->
-                    <button th:onclick="|window.triggerReactNavigation('/')|">해일모음</button>
-                </li>
-                <li>
-                    <button th:onclick="|window.triggerReactNavigation('/diary')|">하루물결</button>
-                </li>
-                <li>
-                    <button th:onclick="|window.triggerReactNavigation('/monthly')|">한달너울</button>
-                </li>
-                <li>
-                    <button th:onclick="|window.triggerReactNavigation('/movie')|">해파랑길</button>
-                </li>
-                <li>
-                    <button th:onclick="|window.triggerReactNavigation('/journal')|">윤슬조각</button>
-                </li>
-            </ul>
-        </nav>
-    </aside>
+            <!-- 로그인 상태 : 로그아웃 버튼 -->
+            <div th:if="${session.user != null}" class="logout-box">
+                <button class="logout-btn" onclick="logout()">
+                    <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"
+                          fill="none"  stroke="currentColor"  stroke-width="1.5"  stroke-linecap="round"  stroke-linejoin="round"
+                          class="icon icon-tabler icons-tabler-outline icon-tabler-logout"><path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                        <path d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2" />
+                        <path d="M9 12h12l-3 -3" />
+                        <path d="M18 15l3 -3" />
+                    </svg>
+                    <span class="nps18px-container">로그아웃</span></button>
+            </div>
+
+            <h1 class="logo"><a href="#"><span class="screen-out">Haeil 해일</span></a></h1>
+        </aside>
+    </header>
 
     <!-- Main Content (우측) -->
-    <main class="main-content">
+    <main>
         <!-- React가 마운트될 영역 -->
         <div id="react-root" data-react-zone></div>
     </main>
 </div>
+
+<!-- 화면 너비에 따른 UI 비율 전환 -->
+<script>
+    const header = document.querySelector('header');
+    const main = document.querySelector('main');
+    const contentsBox = document.getElementById('react-root');
+
+    function resizeDiv() {
+      // 현재 브라우저 너비
+      const w = window.innerWidth;
+
+      // 예: 500px 이하일 땐 작게, 500px 초과일 땐 크게, 위치도 달리 설정
+      if (w <= 1440) {
+        header.style.width = "250px";
+        main.style.width = "100%";
+        contentsBox.style.width = '85%';
+      } else {
+        header.style.width = "18%";
+        main.style.width = "82%";
+        contentsBox.style.width = '88%';
+      }
+    }
+
+    // 첫 로드 시 한 번 호출
+    resizeDiv();
+
+    // 리사이즈 이벤트 감지 시 실행
+    window.addEventListener('resize', resizeDiv);
+</script>
+
+<!-- gnb menu 선택 효과 -->
+<script>
+    const menuLinks = document.querySelectorAll('.gnb a.menu');
+
+    menuLinks.forEach(link => {
+        link.addEventListener('click', function(event) {
+            menuLinks.forEach(l => l.classList.remove('selected'));
+            this.classList.add('selected');
+        });
+    });
+</script>
 
 <!--
     이전 로그아웃 방식(POST 요청으로 Spring Security 로그아웃 트리거)에서 사용되던 폼.
@@ -265,7 +376,7 @@
 </script>
 
 <!-- React 앱 번들 스크립트 -->
-<script type="module" src="/js/index-BJHeZd5K.js"></script>
+<script type="module" src="/js/index-CmZKLMUr.js"></script>
 </body>
 </html>
 <!--자자 다들 힘냅시다! 화이팅!!! -->

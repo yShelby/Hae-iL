@@ -4,7 +4,7 @@
 import {
     IconNotebook, // 대시보드 카운트 일기(하루물결)
     IconWritingSign, // 대시보드 카운트 저널 기록 수(윤슬조각)
-    IconPhoto, // 대시보드 카운트 사진(그림기억)
+    IconPhoto, // 대시보드 카운트 사진(그림 기억)
 
     IconSquare, // 대시보드 to-do, 추천콘텐츠 싫어요 영화
     IconSquareCheck, // 대시보드 완료된 to-do, 추천콘텐츠 싫어요 영화(체크박스)
