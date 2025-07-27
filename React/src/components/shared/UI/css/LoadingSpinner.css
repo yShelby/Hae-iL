@@ -1,0 +1,14 @@
+.loader {
+    border: 8px solid #f3f3f3;        /* 라이트 그레이 테두리 */
+    border-top: 8px solid #3498db;    /* 파란색 윗부분 */
+    border-radius: 50%;               /* 원형 */
+    width: 60px;
+    height: 60px;
+    animation: spin 1s linear infinite; /* 1초 간격 무한 회전 */
+    margin: 0 auto;                   /* 가로 중앙 정렬 */
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}

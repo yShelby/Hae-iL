@@ -1,6 +1,7 @@
 package com.haeildiary.www.selfdiagnosis.entity;
 
 import com.haeildiary.www.auth.entity.UserEntity;
+import com.haeildiary.www.selfdiagnosis.common.CommonStatusAccessor;
 import jakarta.persistence.Entity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -15,7 +16,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Builder
 @Table(name = "depression_self_diagnosis")
-public class DepressionSelfDiagnosis {
+public class DepressionSelfDiagnosis implements CommonStatusAccessor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "depression_id")
@@ -26,6 +27,7 @@ public class DepressionSelfDiagnosis {
     private UserEntity user;
 
     @Column(nullable = false)
+    @Builder.Default
     private Boolean available = false;
 
     @Column(name = "total_score", nullable = false)
@@ -43,5 +45,26 @@ public class DepressionSelfDiagnosis {
     @CreationTimestamp
     @Column(name = "assessment_date", nullable = false, updatable = false)
     private LocalDate assessmentDate;
+
+    // === CommonStatusAccessor 메서드 구현 ===
+    @Override
+    public Boolean getAvailable() {
+        return available;
+    }
+
+    @Override
+    public Integer getPercentage() {
+        return percentage;
+    }
+
+    @Override
+    public String getResult() {
+        return result;
+    }
+
+    @Override
+    public LocalDate getNextAvailableDate() {
+        return nextAvailableDate;
+    }
 
 }
