@@ -9,7 +9,6 @@ import {
 import {showToast} from "@shared/UI/Toast.jsx";
 import {useCheckLogin} from "@/hooks/useCheckLogin.js";
 import './css/widget.css';
-import useDiaryDraftStore from "@/stores/useDiaryDraftStore.js";
 
 export default function ExerciseWidget({date, onDataChange}) {
     const checkLogin = useCheckLogin();
@@ -22,65 +21,27 @@ export default function ExerciseWidget({date, onDataChange}) {
         intensity: '',
     });
 
-    // [추가] 임시저장 스토어의 함수들을 가져온다
-    const {getDraft, setDraft} = useDiaryDraftStore();
-    // [추가] 컴포넌트 첫 로딩 시 불필요한 임시저장을 막기 위한 플래그
-    const isInitialized = useRef(false);
-
-    // [수정] 날짜 바뀔 때 데이터 로드
+    // 날짜 바뀔 때 데이터 로드
     useEffect(() => {
         if (!date) return;
         setLoading(true);
-        isInitialized.current = false; // 추가
-
-        // [추가] 'exercise' 키로 저장된 임시 데이터를 가져온다.
-        const draft = getDraft(date)?.exercise;
 
         fetchExerciseByDate(date)
             .then((res) => {
                 setData(res || null);
-                // if (res) {
-                //     setForm({
-                //         exerciseType: res.exerciseType || '',
-                //         duration: res.duration || '',
-                //         intensity: res.intensity || '',
-                //     });
-                if (draft) {
-                    setForm(draft);
-                    setEditing(true);
-                } else if (res) {
+                if (res) {
                     setForm({
                         exerciseType: res.exerciseType || '',
                         duration: res.duration || '',
                         intensity: res.intensity || ''
                     });
-                    setEditing(false);
                 } else {
                     setForm({exerciseType: '', duration: '', intensity: ''});
-                    setEditing(true); // 추가
                 }
             })
             .catch(console.error)
-            .finally(() => {
-                setLoading(false);
-                setTimeout(() => { // 추가
-                    isInitialized.current = true;
-                }, 100);
-            });
+            .finally(() => setLoading(false) );
     }, [date]);
-
-    // [추가] 사용자가 폼을 수정할 때마다 자동으로 임시저장
-    useEffect(() => {
-        if (isInitialized.current && editing) {
-            // ✅ 'exercise' 키로 데이터를 저장하여 다른 데이터와 분리
-            setDraft(date, {exercise: form});
-        }
-    }, [form, editing, date, setDraft]);
-
-    // [추가] 현재 위젯의 임시저장 데이터만 삭제하는 함수
-    const clearCurrentDraft = () => {
-        setDraft(date, {exercise: null});
-    };
 
     // 폼 input 변경 핸들러
     const handleChange = (e) => {
@@ -88,7 +49,7 @@ export default function ExerciseWidget({date, onDataChange}) {
         setForm((prev) => ({...prev, [name]: value}));
     };
 
-    // [수정] 저장 버튼 클릭 시 임시 데이터를 삭제
+    // 저장 버튼 클릭
     const handleSave = async () => {
         if (!checkLogin()) return;
 
@@ -97,25 +58,20 @@ export default function ExerciseWidget({date, onDataChange}) {
 
         setLoading(true);
         try {
-            // let res;
-            // if (data && data.exerciseId) {
-            //     // 수정 API 호출
-            //     res = await updateExercise(data.exerciseId, { exerciseDate: date, ...form, duration: Number(form.duration), intensity: form.intensity });
-            // } else {
-            //     // 새로 생성 API 호출
-            //     res = await addOrUpdateExercise({ exerciseDate: date, ...form, duration: Number(form.duration), intensity: form.intensity, });
-            // }
-            // [수정]
-            const payload = {exerciseDate: date, ...form, duration: Number(form.duration)};
-            const res = data?.exerciseId ? await updateExercise(data.exerciseId, payload) : await addOrUpdateExercise(payload);
+            let res;
+            if (data && data.exerciseId) {
+                // 수정 API 호출
+                res = await updateExercise(data.exerciseId, { exerciseDate: date, ...form, duration: Number(form.duration), intensity: form.intensity });
+            } else {
+                // 새로 생성 API 호출
+                res = await addOrUpdateExercise({ exerciseDate: date, ...form, duration: Number(form.duration), intensity: form.intensity, });
+            }
             setData(res);
             setEditing(false);
-            clearCurrentDraft(); // [수정] 저장 성공 시 임시저장 삭제
             showToast.success('운동 기록이 저장되었습니다!');
-            // if (typeof onDataChange === 'function') {
-            //     onDataChange();  // 변경 알림
-            // }
-            onDataChange?.(); // 간소화
+            if (typeof onDataChange === 'function') {
+                onDataChange();  // 변경 알림
+            }
         } catch (err) {
             console.error(err);
             showToast.error('저장 중 오류가 발생했습니다.');
@@ -124,7 +80,7 @@ export default function ExerciseWidget({date, onDataChange}) {
         }
     };
 
-    // [수정] 삭제 성공 시 임시 데이터를 삭제
+    // 삭제하기
     const handleDelete = async () => {
         if (!checkLogin()) return;
         if (!data?.exerciseId) return;
@@ -134,9 +90,7 @@ export default function ExerciseWidget({date, onDataChange}) {
         try {
             await deleteExercise(data.exerciseId);
             setData(null);
-            setForm({exerciseType: '', duration: '', intensity: ''}); // [추가]
             setEditing(true);
-            clearCurrentDraft(); // [추가] 삭제 성공 시 임시저장 삭제
             showToast.success('운동 기록이 삭제되었습니다!');
             onDataChange?.(); // 타임라인 데이터 다시 불러오기
         } catch (err) {
@@ -146,21 +100,6 @@ export default function ExerciseWidget({date, onDataChange}) {
             setLoading(false);
         }
     }
-
-    // [추가] 취소 버튼 클릭 시 임시 데이터를 삭제하고 초기화
-    const handleCancel = () => {
-        clearCurrentDraft(); // ✅ 취소 시 임시저장 삭제
-        if (data) {
-            setForm({
-                exerciseType: data.exerciseType || '',
-                duration: data.duration || '',
-                intensity: data.intensity || ''
-            });
-            setEditing(false);
-        } else {
-            setForm({exerciseType: '', duration: '', intensity: ''});
-        }
-    };
 
     return (
         <div className="widget exercise-widget">
@@ -178,9 +117,7 @@ export default function ExerciseWidget({date, onDataChange}) {
                 </div>
             )}
 
-            {/*{!loading && (editing || !data) && (*/}
-            {/* [수정] 렌더링 조건을 editing으로 단순화하여, 데이터가 없어도 입력 폼이 보이도록 수정 */}
-            {!loading && editing && (
+            {!loading && (editing || !data) && (
                 <div>
                     <input
                         name="exerciseType"
@@ -206,15 +143,13 @@ export default function ExerciseWidget({date, onDataChange}) {
                         </select>
                     </label>
                     <button onClick={handleSave}>저장</button>
-                    {/*<button onClick={() => {*/}
-                    {/*    if (!checkLogin()) return;*/}
-                    {/*    setEditing(false);*/}
-                    {/*    if (!data) {*/}
-                    {/*        setForm({ exerciseType: '', duration: '', intensity: '' });*/}
-                    {/*    }*/}
-                    {/*}}>취소</button>*/}
-                    {/* [수정] 취소 버튼의 onClick 이벤트를 handleCancel 함수로 교체 */}
-                    <button onClick={handleCancel} disabled={loading}>취소</button>
+                    <button onClick={() => {
+                        if (!checkLogin()) return;
+                        setEditing(false);
+                        if (!data) {
+                            setForm({ exerciseType: '', duration: '', intensity: '' });
+                        }
+                    }}>취소</button>
                 </div>
             )}
         </div>
