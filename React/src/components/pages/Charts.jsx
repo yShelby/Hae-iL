@@ -11,7 +11,8 @@ import NormalBarChart from "@features/charts/NormalBarChart.jsx";
 import RadarChart from "@features/charts/RadarChart.jsx";
 import DateNavigator from "@features/charts/DateNavigator.jsx";
 import { Button } from "@shared/UI/Button.jsx";
-import {useEffect, useState} from "react";
+import {useCallback, useEffect, useState} from "react";
+import { format } from "date-fns";
 
 //=== Library Chart.js ===
 import { CategoryScale, Chart, LinearScale } from "chart.js";
@@ -24,22 +25,16 @@ export default function Charts() {
     const checkLogin = useCheckLogin(); // 로그인 확인
 
     // =========================================
-    // === 날짜 호출 (DateNavigator.jsx) ===
-
-    // === 라벨용 날짜 받기 ===
-    const [weeklyLabels, setWeeklyLabels] = useState([]); // 주간 라벨
-    const [monthlyLabels, setMonthlyLabels] = useState([]); // 월간 라벨
-
-    // === DB 조회용 날짜 받기 ===
-    const [weeklyForFetch, setWeeklyForFetch] = useState([]); // 주간 DB 호출
-    const [monthlyForFetch, setMonthlyForFetch] = useState([]); // 월간 DB 호출
-    const [twoMonthsForFetch, setTwoMonthsForFetch] = useState([]); // 지난달, 이번달 DB 호출 (검사 전용)
-
-    // === 토글 버튼 ===
+    // === 날짜 및 모드 관리 ===
+    const [endDate, setEndDate] = useState(new Date());
     const [mode, setMode] = useState("weekly");
     const isWeekly = mode === "weekly";
 
     const toggleMode = () => setMode(isWeekly ? "monthly" : "weekly");
+
+    // === 라벨용 날짜 받기 ===
+    const [weeklyLabels, setWeeklyLabels] = useState([]); // 주간 라벨
+    const [monthlyLabels, setMonthlyLabels] = useState([]); // 월간 라벨
 
     // =========================================
     // === 호출 데이터 ===
@@ -49,66 +44,55 @@ export default function Charts() {
     const [lastMonthData, setLastMonthData] = useState([]);
     const [thisMonthData, setThisMonthData] = useState([]);
 
-    // === 날짜 리스트 기반 데이터 요청 ===
-    // moodDataForChart, sleepDataForChart, exerciseDataForChart, lastMonthData, thisMonthData
-    const fetchData = async () => {
-        // 1. 예외 상황 처리
-        if (!checkLogin()) return; // 로그인이 되어있지 않을 경우
+    // === 백엔드에서 데이터 가져오기 ===
+    const fetchData = useCallback(async () => {
+        if (!checkLogin()) return;
 
-        const isDateInfoMissing = // 날짜 라벨이 제대로 호출되지 않은 경우
-            weeklyForFetch.length !== 7 ||
-            (!isWeekly && monthlyForFetch.length !== 30) ||
-            twoMonthsForFetch.length !== 2;
-
-        if (isDateInfoMissing){
-            console.warn("날짜 정보가 올바르지 않아 데이터 요청이 금지되었습니다.",{
-                weekly: weeklyForFetch.length,
-                monthly: monthlyForFetch.length,
-                twoMonths: twoMonthsForFetch.length,
-            });
-            return;
-            }
-
-        // 2. 조회 요청
         try {
             const response = await fetchChartData({
-                userId: user?.id,
-                mode: isWeekly ? "weekly" : "monthly", // 명확성을 위해 작성
-                weeklyDates : weeklyForFetch,
-                monthlyDates : isWeekly ? undefined : monthlyForFetch,
-                twoMonths : twoMonthsForFetch
+                mode: mode,
+                endDate: format(endDate, "yyyy-MM-dd"),
             });
 
-            // 👉 여기서 setState로 차트 데이터 반영 (from backend)
-            // setMoodDataForChart(response.moodScores);
-            // setSleepDataForChart(response.sleepTime);
-            // setExerciseDataForChart(response.exerciseDuration);
-            // setLastMonthData(response.lastDiagnosisResults);
-            // setThisMonthData(response.currentDiagnosisResults);
+            // 데이터 설정
+            setMoodDataForChart(response.data?.moodScores || []);
+            setSleepDataForChart(response.data?.sleepTime || []);
+            setExerciseDataForChart(response.data?.exerciseDuration || []);
+            setLastMonthData(response.data?.lastMonthResults || []);
+            setThisMonthData(response.data?.thisMonthResults || []);
 
         } catch (e) {
             console.error("차트 데이터 로딩 실패:", e);
         }
-    }
+    }, [checkLogin, mode, endDate]);
 
-    useEffect(()=>{
-        (async () => {
-            await fetchData();
-        })();
-    }, [isWeekly, weeklyForFetch, monthlyForFetch, twoMonthsForFetch]);
+    useEffect(() => { // mode나 endDate가 바뀔 때마다 fetchData 함수 재실행
+        fetchData().catch(console.error);
+    }, [fetchData]);
 
-    // === 더미 데이터 ===
-    // // 감정 점수 데이터 (dummy) - 주간 / 월간 길이에 맞춰 slice 처리
-    // const moodDataForChart = isWeekly
-    //     ? dummyData.weeklyScores
-    //     : dummyData.monthlyScores;
-    //
-    // // 수면 및 운동 데이터도 날짜 배열 길이 맞추기
-    // const sleepDataForChart = dummyData.sleepData;
-    // const exerciseDataForChart = dummyData.exerciseData;
-    //
-    // // 자가진단 데이터
-    // const { lastMonthData, thisMonthData } = dummyData;
+    // === 더미 데이터 (실제 데이터 로딩 전까지 사용) ===
+    // 감정 점수 데이터 (dummy) - 주간 / 월간 길이에 맞춰 slice 처리
+    const displayMoodData = moodDataForChart.length > 0
+        ? moodDataForChart
+        : (isWeekly ? dummyData.weeklyScores : dummyData.monthlyScores);
+
+    // 수면 및 운동 데이터도 날짜 배열 길이 맞추기
+    const displaySleepData = sleepDataForChart.length > 0
+        ? sleepDataForChart
+        : dummyData.sleepData;
+
+    const displayExerciseData = exerciseDataForChart.length > 0
+        ? exerciseDataForChart
+        : dummyData.exerciseData;
+
+    // 자가진단 데이터
+    const displayLastMonthData = lastMonthData.length > 0
+        ? lastMonthData
+        : dummyData.lastMonthData;
+
+    const displayThisMonthData = thisMonthData.length > 0
+        ? thisMonthData
+        : dummyData.thisMonthData;
 
     // =========================================
     // === 차트 기본 스타일 ===
@@ -121,12 +105,12 @@ export default function Charts() {
 
                 {/* 이전, 다음 날짜 호출하는 화살표 (< / >) */}
                 <DateNavigator
-                    isWeekly={mode}
+                    endDate={endDate}
+                    setEndDate={setEndDate}
+                    mode={mode}
                     onChangeWeekly={setWeeklyLabels}
                     onChangeMonthly={setMonthlyLabels}
-                    onChangeWeeklyForFetch={setWeeklyForFetch}
-                    onChangeMonthlyForFetch={setMonthlyForFetch}
-                    onChangeTwoMonthsForFetch={setTwoMonthsForFetch}/>
+                />
 
                 {/* 차트 부분 */}
                 <div className={"weekly-monthly-chart"}>
@@ -266,24 +250,41 @@ const chartFontSize = {
     diagnosisRadarStyle: 16
 };
 
+//======= 보조 함수 =======
+
+function timeStringToMinutes(timeStr) {
+    const [hourStr, minuteStr] = timeStr.split(':');
+    const hours = parseInt(hourStr, 10);
+    const minutes = parseInt(minuteStr, 10);
+    return hours * 60 + minutes;
+}
+
+// sleepDataInMinutes 함수: bedtime, waketime 문자열 배열을 분 단위 배열로 변환
+function sleepDataInMinutes(rawArray) {
+    return rawArray.map(({ bedtime, waketime }) => [
+        timeStringToMinutes(bedtime),
+        timeStringToMinutes(waketime)
+    ]);
+}
+
 //======= 더미 데이터 =======
 
-//랜덤 데이터
-// const random = Array.from({ length: 30 }, () => Math.floor(Math.random() * 201) - 100);
-//
-// const dummyData = {
-//     monthlyScores: random,
-//     weeklyScores: random.slice(-7),
-//     sleepData: sleepDataInMinutes([
-//         { bedtime: "01:00", waketime: "08:30" },
-//         { bedtime: "21:30", waketime: "07:50" },
-//         { bedtime: "01:15", waketime: "09:00" },
-//         { bedtime: "23:00", waketime: "08:00" },
-//         { bedtime: "01:45", waketime: "09:15" },
-//         { bedtime: "17:50", waketime: "23:30" },
-//         { bedtime: "01:20", waketime: "08:10" }
-//     ]),
-//     exerciseData: Array.from({ length: 7 }, () => Math.floor(Math.random() * 201)),
-//     lastMonthData: [15, 12, 18],
-//     thisMonthData: [9, 7, 26]
-// };
+// 랜덤 데이터
+const random = Array.from({ length: 30 }, () => Math.floor(Math.random() * 201) - 100);
+
+const dummyData = {
+    monthlyScores: random,
+    weeklyScores: random.slice(-7),
+    sleepData: sleepDataInMinutes([
+        { bedtime: "01:00", waketime: "08:30" },
+        { bedtime: "21:30", waketime: "07:50" },
+        { bedtime: "01:15", waketime: "09:00" },
+        { bedtime: "23:00", waketime: "08:00" },
+        { bedtime: "01:45", waketime: "09:15" },
+        { bedtime: "17:50", waketime: "23:30" },
+        { bedtime: "01:20", waketime: "08:10" }
+    ]),
+    exerciseData: Array.from({ length: 7 }, () => Math.floor(Math.random() * 201)),
+    lastMonthData: [15, 12, 18],
+    thisMonthData: [9, 7, 26]
+};
