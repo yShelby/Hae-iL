@@ -13,21 +13,6 @@
 import { useState, useEffect, useCallback } from 'react';
 
 /**
- * [추가] 초기 상태를 생성하는 헬퍼 함수
- * @param {object|null} initialData - 서버에서 받은 원본 일기 또는 임시저장 데이터
- * @returns {object} - 모든 필드가 포함된 초기 폼 상태 객체
- */
-const getInitialState = (initialData) => ({
-    title: initialData?.title || '',
-    weather: initialData?.weather || '맑음',
-    // [추가] 운동, 식사, 수면 데이터 필드를 초기 상태에 포함
-    // DiaryWritePage에서 이 필드들을 사용하지 않더라도, 다른 위젯과의 데이터 구조 일관성을 위해 추가
-    exercise: initialData?.exercise || '',
-    meal: initialData?.meal || '',
-    sleep: initialData?.sleep || '',
-});
-
-/**
  * 🎯 useDiaryForm 훅: 일기 폼 상태 관리
  * @param {object|null} initialDiary - 초기 일기 데이터(수정 시 주입됨)
  * @returns {object} { diaryState, setField }
@@ -59,11 +44,9 @@ export const useDiaryForm = (initialDiary) => {
 
     // [추가] 폼 상태를 초기값으로 리셋하는 함수. '닫기' 버튼 클릭 시 사용된다.
     const resetForm = useCallback(() => {
-        // setDiaryState({ title: '', weather: '맑음' });
-        // [수정] 단순히 빈 값으로 만드는 것이 아니라, initialDiary를 기반으로 리셋
-        setDiaryState(getInitialState(initialDiary));
-    }, [initialDiary]); // 의존성 추가
+        setDiaryState({ title: '', weather: '맑음' });
+    }, []);
 
     // 4️⃣ 외부에 상태와 필드 변경 함수를 반환
-    return { diaryState, setField, resetForm }; // setDiaryState 제거
+    return { diaryState, setField, resetForm, setDiaryState };
 };
