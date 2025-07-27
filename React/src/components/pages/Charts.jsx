@@ -13,6 +13,11 @@ import DateNavigator from "@features/charts/DateNavigator.jsx";
 import { Button } from "@shared/UI/Button.jsx";
 import {useCallback, useEffect, useState} from "react";
 import { format } from "date-fns";
+import {
+    extractDiagnosisResults,
+    extractExerciseDuration, extractMoodScores,
+    extractSleepTime
+} from "@features/charts/util/chartDataListProcessor.js";
 
 //=== Library Chart.js ===
 import { CategoryScale, Chart, LinearScale } from "chart.js";
@@ -46,7 +51,7 @@ export default function Charts() {
 
     // === 백엔드에서 데이터 가져오기 ===
     const fetchData = useCallback(async () => {
-        if (!checkLogin()) return;
+        // if (!checkLogin()) return;
 
         try {
             const response = await fetchChartData({
@@ -55,44 +60,44 @@ export default function Charts() {
             });
 
             // 데이터 설정
-            setMoodDataForChart(response.data?.moodScores || []);
-            setSleepDataForChart(response.data?.sleepTime || []);
-            setExerciseDataForChart(response.data?.exerciseDuration || []);
-            setLastMonthData(response.data?.lastMonthResults || []);
-            setThisMonthData(response.data?.thisMonthResults || []);
+            setMoodDataForChart(extractMoodScores(response.data?.moodScores));
+            setSleepDataForChart(extractSleepTime(response.data?.sleepTime));
+            setExerciseDataForChart(extractExerciseDuration(response.data?.exerciseDuration));
+            setLastMonthData(extractDiagnosisResults(response.data?.lastMonthResults));
+            setThisMonthData(extractDiagnosisResults(response.data?.thisMonthResults));
 
         } catch (e) {
             console.error("차트 데이터 로딩 실패:", e);
         }
-    }, [checkLogin, mode, endDate]);
+    }, [mode, endDate]); // checkLogin 제거!
 
     useEffect(() => { // mode나 endDate가 바뀔 때마다 fetchData 함수 재실행
         fetchData().catch(console.error);
     }, [fetchData]);
 
-    // === 더미 데이터 (실제 데이터 로딩 전까지 사용) ===
-    // 감정 점수 데이터 (dummy) - 주간 / 월간 길이에 맞춰 slice 처리
-    const displayMoodData = moodDataForChart.length > 0
-        ? moodDataForChart
-        : (isWeekly ? dummyData.weeklyScores : dummyData.monthlyScores);
-
-    // 수면 및 운동 데이터도 날짜 배열 길이 맞추기
-    const displaySleepData = sleepDataForChart.length > 0
-        ? sleepDataForChart
-        : dummyData.sleepData;
-
-    const displayExerciseData = exerciseDataForChart.length > 0
-        ? exerciseDataForChart
-        : dummyData.exerciseData;
-
-    // 자가진단 데이터
-    const displayLastMonthData = lastMonthData.length > 0
-        ? lastMonthData
-        : dummyData.lastMonthData;
-
-    const displayThisMonthData = thisMonthData.length > 0
-        ? thisMonthData
-        : dummyData.thisMonthData;
+    // // === 더미 데이터 (실제 데이터 로딩 전까지 사용) ===
+    // // 감정 점수 데이터 (dummy) - 주간 / 월간 길이에 맞춰 slice 처리
+    // const displayMoodData = moodDataForChart.length > 0
+    //     ? moodDataForChart
+    //     : (isWeekly ? dummyData.weeklyScores : dummyData.monthlyScores);
+    //
+    // // 수면 및 운동 데이터도 날짜 배열 길이 맞추기
+    // const displaySleepData = sleepDataForChart.length > 0
+    //     ? sleepDataForChart
+    //     : dummyData.sleepData;
+    //
+    // const displayExerciseData = exerciseDataForChart.length > 0
+    //     ? exerciseDataForChart
+    //     : dummyData.exerciseData;
+    //
+    // // 자가진단 데이터
+    // const displayLastMonthData = lastMonthData.length > 0
+    //     ? lastMonthData
+    //     : dummyData.lastMonthData;
+    //
+    // const displayThisMonthData = thisMonthData.length > 0
+    //     ? thisMonthData
+    //     : dummyData.thisMonthData;
 
     // =========================================
     // === 차트 기본 스타일 ===
@@ -101,26 +106,26 @@ export default function Charts() {
 
     return (
         <div className={"charts-page"}>
-            <div className={"temporary"}> {/* grid 배치 후 삭제할 div */}
-
-                {/* 이전, 다음 날짜 호출하는 화살표 (< / >) */}
-                <DateNavigator
-                    endDate={endDate}
-                    setEndDate={setEndDate}
-                    mode={mode}
-                    onChangeWeekly={setWeeklyLabels}
-                    onChangeMonthly={setMonthlyLabels}
-                />
-
-                {/* 차트 부분 */}
-                <div className={"weekly-monthly-chart"}>
-
-                    <h3>주간/월간 감정 트래킹 차트</h3>
-                    <div className={"w-m-button"}>
-                        <Button onClick={toggleMode}>{isWeekly ? "주간" : "월간"}</Button>
-                    </div>
+            {/* 차트 부분 */}
+            <div className={"upper-chart"}>
+            <div className={"title-button"}>
+            <h3>주간/월간 감정 트래킹 차트</h3>
+                <div className={"button-only"}>
+                    {/* 이전, 다음 날짜 호출하는 화살표 (< / >) */}
+                    <DateNavigator
+                        endDate={endDate}
+                        setEndDate={setEndDate}
+                        mode={mode}
+                        onChangeWeekly={setWeeklyLabels}
+                        onChangeMonthly={setMonthlyLabels}
+                    />
+                    <Button onClick={toggleMode}>{isWeekly ? "주간" : "월간"}</Button>
+                </div>
+            </div>
+                <div className={"mood-score-line-chart"}>
                     {isWeekly ? (
                         <LineCharts
+                            key={mode + JSON.stringify(moodDataForChart)}  // mode 바뀌거나 데이터 바뀌면 새 컴포넌트 마운트
                             dates={weeklyLabels}
                             rawData={moodDataForChart}
                             chartTitle="주간 기분 변화"
@@ -130,6 +135,7 @@ export default function Charts() {
                         />
                     ) : (
                         <LineCharts
+                            key={mode + JSON.stringify(moodDataForChart)}  // mode 바뀌거나 데이터 바뀌면 새 컴포넌트 마운트
                             dates={monthlyLabels}
                             rawData={moodDataForChart}
                             chartTitle="월간 기분 변화"
@@ -139,14 +145,16 @@ export default function Charts() {
                         />
                     )}
                 </div>
+            </div>
 
+            <div className={"lower-chart"}>
                 <div className={"sleep-exercise-chart"}>
                     <div className={"sleep-chart"}>
-                        <h3>수면 차트</h3>
+                        <h4>주간 수면 시간</h4>
                         <FloatingBarChart
                             dates={weeklyLabels}
                             rawData={sleepDataForChart}
-                            chartTitle={isWeekly ? "주간 수면 시간" : "월간 수면 시간"}
+                            chartTitle={"주간 수면 시간"}
                             chartStyle={sleepBarStyle}
                             chartFontSize={chartFontSize.sleepBarStyle}
                             gridColor={gridColor}
@@ -154,29 +162,31 @@ export default function Charts() {
                     </div>
 
                     <div className={"exercise-chart"}>
-                        <h3>운동 차트</h3>
+                        <h4>주간 운동 시간</h4>
                         <NormalBarChart
                             dates={weeklyLabels}
                             rawData={exerciseDataForChart}
-                            chartTitle={isWeekly ? "주간 운동 시간" : "월간 운동 시간"}
+                            chartTitle={"주간 운동 시간"}
                             chartStyle={exerciseBarStyle}
                             chartFontSize={chartFontSize.exerciseBarStyle}
                             gridColor={gridColor}
                         />
                     </div>
                 </div>
+
+                <div className={"diagnosis-chart"}>
+                    <h3>자가진단 결과</h3>
+                    <RadarChart
+                        previousData={lastMonthData}
+                        rawData={thisMonthData}
+                        chartStyleThis={diagnosisRadarStyle}
+                        chartStylePrevious={previousDiagnosisRadarStyle}
+                        chartFontSize={chartFontSize.diagnosisRadarStyle}
+                        gridColor={gridColor}
+                    />
+                </div>
             </div>
-            <div className={"diagnosis-chart"}>
-                <h3>자가진단 차트</h3>
-                <RadarChart
-                    previousData={lastMonthData}
-                    rawData={thisMonthData}
-                    chartStyleThis={diagnosisRadarStyle}
-                    chartStylePrevious={previousDiagnosisRadarStyle}
-                    chartFontSize={chartFontSize.diagnosisRadarStyle}
-                    gridColor={gridColor}
-                />
-            </div>
+
         </div>
     );
 }
@@ -270,21 +280,21 @@ function sleepDataInMinutes(rawArray) {
 //======= 더미 데이터 =======
 
 // 랜덤 데이터
-const random = Array.from({ length: 30 }, () => Math.floor(Math.random() * 201) - 100);
-
-const dummyData = {
-    monthlyScores: random,
-    weeklyScores: random.slice(-7),
-    sleepData: sleepDataInMinutes([
-        { bedtime: "01:00", waketime: "08:30" },
-        { bedtime: "21:30", waketime: "07:50" },
-        { bedtime: "01:15", waketime: "09:00" },
-        { bedtime: "23:00", waketime: "08:00" },
-        { bedtime: "01:45", waketime: "09:15" },
-        { bedtime: "17:50", waketime: "23:30" },
-        { bedtime: "01:20", waketime: "08:10" }
-    ]),
-    exerciseData: Array.from({ length: 7 }, () => Math.floor(Math.random() * 201)),
-    lastMonthData: [15, 12, 18],
-    thisMonthData: [9, 7, 26]
-};
+// const random = Array.from({ length: 30 }, () => Math.floor(Math.random() * 201) - 100);
+//
+// const dummyData = {
+//     monthlyScores: random,
+//     weeklyScores: random.slice(-7),
+//     sleepData: sleepDataInMinutes([
+//         { bedtime: "01:00", waketime: "08:30" },
+//         { bedtime: "21:30", waketime: "07:50" },
+//         { bedtime: "01:15", waketime: "09:00" },
+//         { bedtime: "23:00", waketime: "08:00" },
+//         { bedtime: "01:45", waketime: "09:15" },
+//         { bedtime: "17:50", waketime: "23:30" },
+//         { bedtime: "01:20", waketime: "08:10" }
+//     ]),
+//     exerciseData: Array.from({ length: 7 }, () => Math.floor(Math.random() * 201)),
+//     lastMonthData: [15, 12, 18],
+//     thisMonthData: [9, 7, 26]
+// };

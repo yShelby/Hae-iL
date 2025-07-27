@@ -1,17 +1,111 @@
 .charts-page{
-    width: 100%;
-    /*background: lightgray;*/
+    position: absolute;     /* 좌표 기반 위치 지정 */
+    top: 100px;             /* y: 100 */
+    left: 0;              /* x: 0 */
+    width: 1150px;
+    height: 820px;
+    padding: 55px 100px;    /* 상하 55, 좌우 100 */
     display: flex;
+    flex-direction: column; /* 내부 요소들을 수직 정렬 */
+    gap: 50px;              /* 컴포넌트 간 간격 */
+    box-sizing: border-box; /* padding 포함한 width/height로 계산 */
+
+}
+
+.title-button{
+    display: flex;
+    justify-content: space-between;  /* 제목 왼쪽, 버튼 오른쪽 */
+    align-items: center;             /* 세로 가운데 정렬 */
+    padding: 0 5px 10px 5px;
+}
+
+.button-only{
+    display: flex;
+}
+
+.upper-chart{
+    position: absolute;        /* 부모 기준 위치 지정 */
+    top: 55px;                 /* y */
+    left: 100px;               /* x */
+    width: 950px;
+    height: 270px;
+    border-radius: 30px;
+    background-color: rgba(255, 255, 255, 0.8);  /* #FFF 80% */
+    box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.25); /* x 1 y 1 blur 4 #000 25% */
+    padding: 18px 30px 30px 30px;             /* 내부 여백은 예시, 필요시 조정 */
+    box-sizing: border-box;
+}
+
+.mood-score-line-chart{
+    position: absolute;        /* 부모 기준 위치 지정 */
+    width: 880px;
+    height: 190px;
+}
+
+.lower-chart{
+    position: absolute;
+    left: 100px;         /* x 위치 */
+    top: 375px;          /* y 위치 */
+    width: 950px;
+    height: 390px;
+    display: flex;
+    gap: 25px;           /* 좌우 컴포넌트 간 간격 */
 }
 
 .sleep-exercise-chart{
-    width: 60vh;
+    position: absolute;
+    width: 480px;
+    height: 390px;
     display: flex;
+    flex-direction: column;
+    gap: 20px; /* 내부 컴포넌트 간 간격 */
 }
 
-.w-m-button{
-    display: flex;
-    flex-direction: row-reverse;
-    padding-right: 20px;
+.sleep-chart{
+    position: absolute;
+    width: 480px;
+    height: 185px;
+    border-radius: 30px;
+    background-color: rgba(255, 255, 255, 0.8);  /* #FFF 80% */
+    box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.25);
+    padding: 10px 30px 30px 30px;             /* 내부 여백은 예시, 필요시 조정 */
+    box-sizing: border-box;
 }
 
+.exercise-chart{
+    position: absolute;
+    top: 205px;
+    width: 480px;
+    height: 185px;
+    border-radius: 30px;
+    background-color: rgba(255, 255, 255, 0.8);  /* #FFF 80% */
+    box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.25);
+    padding: 10px 30px 30px 30px;             /* 내부 여백은 예시, 필요시 조정 */
+    box-sizing: border-box;
+}
+
+.diagnosis-chart{
+    position: absolute;
+    left: 510px;
+    width: 440px;
+    height: 390px;
+    border-radius: 30px;
+    background-color: rgba(255, 255, 255, 0.8); /* #FFF 80% */
+    box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.25); /* x 1 y 1 blur 4 #000 25% */
+    padding: 18px 30px 30px 30px;             /* 내부 여백은 예시, 필요시 조정 */
+    box-sizing: border-box;
+}
+
+h3, h4{
+    font-family: 'NPS', sans-serif;  /* 폰트 패밀리 */
+    font-weight: 400;                /* regular */
+    color: #393E75;                  /* 색상 */
+}
+
+h3{
+    font-size: 24px;                 /* 크기 */
+}
+
+h4 {
+    font-size: 18px;                 /* 크기 */
+}
