@@ -19,7 +19,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -33,7 +36,9 @@ public class SelfDiagnosisService {
     private final StressRepository stressRepository;
     private final StatusUtil statusUtil;
 
+    // =======================================================
     // Response to GetMapping :  검사 결과 조회
+    // =======================================================
     public SelfDiagnosisDto.AllStatusResponse getDiagnosisStatus(Integer userId, Integer year, Integer month) {
 
         // 사용자 검색
@@ -65,7 +70,9 @@ public class SelfDiagnosisService {
     }
 
 
+    // =======================================================
     // Response to PostMapping : 검사 점수 저장
+    // =======================================================
     @Transactional
     public SelfDiagnosisDto.StatusResponse saveDiagnosisResult(Integer userId, String type, Integer totalScore){
 
@@ -74,7 +81,24 @@ public class SelfDiagnosisService {
                 .orElseThrow(() -> new NoSuchElementException("사용자를 찾을 수 없습니다. userId: " + userId));
 
         switch (type) {
+            // =======================================================
+            // === 불안 검사 ===
             case "anxiety" :
+
+                // === 1. 이전 검사들 중 available = true인 것만 false로 변경 ===
+                // : 검사가 가능한 것 이외에는 available이 모두 false로 출력되어야 하기 때문
+                List<AnxietySelfDiagnosis> AnxietyAvailableToUpdate = anxietyRepository
+                        .findByUserUserIdAndAvailableTrue(userId); // available = true 조건
+
+                if (!AnxietyAvailableToUpdate.isEmpty()) {
+                    for (AnxietySelfDiagnosis test : AnxietyAvailableToUpdate) {
+                        test.setAvailable(false);
+                    }
+                    anxietyRepository.saveAll(AnxietyAvailableToUpdate);
+                    log.info("기존 불안 검사의 available = true {}건을 false로 변경", AnxietyAvailableToUpdate.size());
+                }
+
+                // === 2. 새 검사 저장 ===
                 // 불안 검사 총점
                 Integer anxietyMax = 27;
                 // total score를 percentage로 변환
@@ -109,7 +133,22 @@ public class SelfDiagnosisService {
                         .nextAvailableDate(nextAnxietyTestDate)
                         .build();
 
+            // =======================================================
+            // === 우울 검사 ===
             case "depression" :
+                // === 1. 이전 검사들 중 available = true인 것만 false로 변경 ===
+                List<DepressionSelfDiagnosis> depressionAvailableToUpdate = depressionRepository
+                        .findByUserUserIdAndAvailableTrue(userId); // available = true 조건
+
+                if (!depressionAvailableToUpdate.isEmpty()) {
+                    for (DepressionSelfDiagnosis test : depressionAvailableToUpdate) {
+                        test.setAvailable(false);
+                    }
+                    depressionRepository.saveAll(depressionAvailableToUpdate);
+                    log.info("기존 우울 검사의 available = true {}건을 false로 변경", depressionAvailableToUpdate.size());
+                }
+
+                // === 2. 새 검사 저장 ===
                 // 우울 검사 총점
                 Integer depressionMax = 21;
                 // total score를 percentage로 변환
@@ -145,7 +184,23 @@ public class SelfDiagnosisService {
                         .nextAvailableDate(nextDepressionTestDate)
                         .build();
 
+            // =======================================================
+            // === 스트레스 검사 ===
             case "stress" :
+
+                // === 1. 이전 검사들 중 available = true인 것만 false로 변경 ===
+                List<StressSelfDiagnosis> StressAvailableToUpdate = stressRepository
+                        .findByUserUserIdAndAvailableTrue(userId); // available = true 조건
+
+                if (!StressAvailableToUpdate.isEmpty()) {
+                    for (StressSelfDiagnosis test : StressAvailableToUpdate) {
+                        test.setAvailable(false);
+                    }
+                    stressRepository.saveAll(StressAvailableToUpdate);
+                    log.info("기존 스트레스 검사의 available = true {}건을 false로 변경", StressAvailableToUpdate.size());
+                }
+
+                // === 2. 새 검사 저장 ===
                 // 스트레스 검사 총점
                 Integer stressMax = 40;
                 // total score를 percentage로 변환
@@ -185,72 +240,125 @@ public class SelfDiagnosisService {
 
     }
 
-//    // 매일 오전 0시에 실행
-//    @Scheduled(cron = "0 0 0 * * *")
-//    public void checkIsAvailableTest() {
-//        LocalDate today = LocalDate.now();
-//        log.info("자가진단 available 상태 체크 시작 - 날짜: {}", today);
-//
-//        // 불안 검사 업데이트
-//        updateAnxietyAvailability(today);
-//
-//        // 우울 검사 업데이트
-//        updateDepressionAvailability(today);
-//
-//        // 스트레스 검사 업데이트
-//        updateStressAvailability(today);
-//
-//        log.info("자가진단 available 상태 체크 완료");
-//    }
-//
-//    @Transactional
-//    private void updateAnxietyAvailability(LocalDate today) {
-//        // nextAvailableDate가 오늘이거나 지난 데이터들을 찾아서 available = true로 변경
-//        List<AnxietySelfDiagnosis> expiredTests = anxietyRepository.findByNextAvailableDateLessThanEqualAndAvailableFalse(today);
-//
-//        for (AnxietySelfDiagnosis test : expiredTests) {
-//            test.setAvailable(true);
-//            log.info("불안 검사 available 업데이트 - userId: {}, nextAvailableDate: {}",
-//                    test.getUser().getId(), test.getNextAvailableDate());
-//        }
-//
-//        if (!expiredTests.isEmpty()) {
-//            anxietyRepository.saveAll(expiredTests);
-//            log.info("불안 검사 {} 건 업데이트 완료", expiredTests.size());
-//        }
-//    }
-//
-//    @Transactional
-//    private void updateDepressionAvailability(LocalDate today) {
-//        // nextAvailableDate가 오늘이거나 지난 데이터들을 찾아서 available = true로 변경
-//        List<DepressionSelfDiagnosis> expiredTests = depressionRepository.findByNextAvailableDateLessThanEqualAndAvailableFalse(today);
-//
-//        for (DepressionSelfDiagnosis test : expiredTests) {
-//            test.setAvailable(true);
-//            log.info("우울 검사 available 업데이트 - userId: {}, nextAvailableDate: {}",
-//                    test.getUser().getId(), test.getNextAvailableDate());
-//        }
-//
-//        if (!expiredTests.isEmpty()) {
-//            depressionRepository.saveAll(expiredTests);
-//            log.info("우울 검사 {} 건 업데이트 완료", expiredTests.size());
-//        }
-//    }
-//
-//    @Transactional
-//    private void updateStressAvailability(LocalDate today) {
-//        // nextAvailableDate가 오늘이거나 지난 데이터들을 찾아서 available = true로 변경
-//        List<StressSelfDiagnosis> expiredTests = stressRepository.findByNextAvailableDateLessThanEqualAndAvailableFalse(today);
-//
-//        for (StressSelfDiagnosis test : expiredTests) {
-//            test.setAvailable(true);
-//            log.info("스트레스 검사 available 업데이트 - userId: {}, nextAvailableDate: {}",
-//                    test.getUser().getId(), test.getNextAvailableDate());
-//        }
-//
-//        if (!expiredTests.isEmpty()) {
-//            stressRepository.saveAll(expiredTests);
-//            log.info("스트레스 검사 {} 건 업데이트 완료", expiredTests.size());
-//        }
+
+    // =======================================================
+    // 스케줄러: 매일 자정 available 상태 업데이트
+    // =======================================================
+
+    @Scheduled(cron = "0 0 0 * * *")
+    public void checkIsAvailableTest() {
+        LocalDate today = LocalDate.now();
+        log.info("자가진단 available 상태 체크 시작 - 날짜: {}", today);
+
+        // 불안 검사 업데이트
+        updateAnxietyAvailability(today);
+
+        // 우울 검사 업데이트
+        updateDepressionAvailability(today);
+
+        // 스트레스 검사 업데이트
+        updateStressAvailability(today);
+
+        log.info("자가진단 available 상태 체크 완료");
+    }
+
+    // === 불안 검사 업데이트 함수 ===
+    @Transactional
+    private void updateAnxietyAvailability(LocalDate today) {
+        List<Integer> userIds = anxietyRepository.findAllUserIds();
+        List<AnxietySelfDiagnosis> testsToUpdate = new ArrayList<>();
+
+        for (Integer userId : userIds) {
+            // 각 사용자의 최신 검사 1건 조회
+            Optional<AnxietySelfDiagnosis> latestTest = anxietyRepository
+                    .findTopByUserUserIdOrderByAssessmentDateDesc(userId);
+
+            if (latestTest.isPresent()) {
+                AnxietySelfDiagnosis test = latestTest.get();
+                boolean shouldBeAvailable = !test.getNextAvailableDate().isAfter(today);
+
+                // 만약 이전 상태(false)와 지금 상태(true)가 다른 경우 : 검사 대기 기간 종료 (true로 변경)
+                if (!test.getAvailable() && shouldBeAvailable) {
+                    test.setAvailable(true);
+                    testsToUpdate.add(test);
+                    log.info("불안 검사 available 업데이트 - userId: {}, false → true, nextAvailableDate: {}, assessmentDate: {}",
+                            userId, test.getNextAvailableDate(), test.getAssessmentDate());
+                }
+            }
+        }
+
+        if (!testsToUpdate.isEmpty()) {
+            anxietyRepository.saveAll(testsToUpdate);
+            log.info("불안 검사 {} 건 업데이트 완료", testsToUpdate.size());
+        } else {
+            log.info("불안 검사 업데이트할 데이터 없음");
+        }
+    }
+
+    // === 우울 검사 업데이트 함수 ===
+    @Transactional
+    private void updateDepressionAvailability(LocalDate today) {
+        List<Integer> userIds = depressionRepository.findAllUserIds();
+        List<DepressionSelfDiagnosis> testsToUpdate = new ArrayList<>();
+
+        for (Integer userId : userIds) {
+            // 각 사용자의 최신 검사 1건 조회
+            Optional<DepressionSelfDiagnosis> latestTest = depressionRepository
+                    .findTopByUserUserIdOrderByAssessmentDateDesc(userId);
+
+            if (latestTest.isPresent()) {
+                DepressionSelfDiagnosis test = latestTest.get();
+                boolean shouldBeAvailable = !test.getNextAvailableDate().isAfter(today);
+
+                // 만약 이전 상태(false)와 지금 상태(true)가 다른 경우 : 검사 대기 기간 종료 (true로 변경)
+                if (!test.getAvailable() && shouldBeAvailable) {
+                    test.setAvailable(true);
+                    testsToUpdate.add(test);
+                    log.info("우울 검사 available 업데이트 - userId: {}, false → true, nextAvailableDate: {}, assessmentDate: {}",
+                            userId, test.getNextAvailableDate(), test.getAssessmentDate());
+                }
+            }
+        }
+
+        if (!testsToUpdate.isEmpty()) {
+            depressionRepository.saveAll(testsToUpdate);
+            log.info("우울 검사 {} 건 업데이트 완료", testsToUpdate.size());
+        } else {
+            log.info("우울 검사 업데이트할 데이터 없음");
+        }
+    }
+
+    // === 스트레스 검사 업데이트 함수 ===
+    @Transactional
+    private void updateStressAvailability(LocalDate today) {
+        List<Integer> userIds = stressRepository.findAllUserIds();
+        List<StressSelfDiagnosis> testsToUpdate = new ArrayList<>();
+
+        for (Integer userId : userIds) {
+            // 각 사용자의 최신 검사 1건 조회
+            Optional<StressSelfDiagnosis> latestTest = stressRepository
+                    .findTopByUserUserIdOrderByAssessmentDateDesc(userId);
+
+            if (latestTest.isPresent()) {
+                StressSelfDiagnosis test = latestTest.get();
+                boolean shouldBeAvailable = !test.getNextAvailableDate().isAfter(today);
+
+                // 만약 이전 상태(false)와 지금 상태(true)가 다른 경우 : 검사 대기 기간 종료 (true로 변경)
+                if (!test.getAvailable() && shouldBeAvailable) {
+                    test.setAvailable(true);
+                    testsToUpdate.add(test);
+                    log.info("스트레스 검사 available 업데이트 - userId: {}, false → true, nextAvailableDate: {}, assessmentDate: {}",
+                            userId, test.getNextAvailableDate(), test.getAssessmentDate());
+                }
+            }
+        }
+
+        if (!testsToUpdate.isEmpty()) {
+            stressRepository.saveAll(testsToUpdate);
+            log.info("스트레스 검사 {} 건 업데이트 완료", testsToUpdate.size());
+        } else {
+            log.info("스트레스 검사 업데이트할 데이터 없음");
+        }
+    }
 
 }
