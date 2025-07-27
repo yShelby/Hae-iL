@@ -29,32 +29,32 @@ const apiClient = axios.create({
     withCredentials: true,
 });
 
-// mock adapter 인스턴스 생성 (두번째 인자를 { onNoMatch : 'passthrough' }로 설정하면 실제 요청은 계속됨)
-// 서버 없이 rest api 값 송출 확인하기 위한 axios 라이브러리
-// const mock = new AxiosMockAdapter(apiClient, { delayResponse: 500 }); // 딜레이 500ms
-const mock = new AxiosMockAdapter(apiClient, { onNoMatch : 'passthrough' });
-
-// '/api/self-diagnosis/${type}' 요청에 대해 mock 응답 정의
-mock.onPost(`/api/self-diagnosis/$/\w+$/`).reply(config => {
-    console.log('Mock API 호출 : ', config.data); // 요청 데이터 확인 가능
-    const requestData = JSON.parse(config.data); // 필요시 요청 데이터 파싱
-
-    // 임의의 mock 응답 데이터
-    const mockResponseResult = {
-        available : false,
-        result : requestData.totalScore,
-        level : "분석 결과 라벨",
-        next_available_date : "2025-08-22",
-    };
-
-    return [200, mockResponseResult];
-})
-
-mock.onGet(`/api/self-diagnosis/status`).reply(200, {
-    depression: { available: true, percentage: 15,result:null, next_available_date: null },
-    anxiety: { available: false, percentage: 80, result:'경도 불안', next_available_date: '2025-08-25' },
-    stress: { available: true, percentage: 55, result:null, next_available_date: null },
-});
+// // mock adapter 인스턴스 생성 (두번째 인자를 { onNoMatch : 'passthrough' }로 설정하면 실제 요청은 계속됨)
+// // 서버 없이 rest api 값 송출 확인하기 위한 axios 라이브러리
+// // const mock = new AxiosMockAdapter(apiClient, { delayResponse: 500 }); // 딜레이 500ms
+// const mock = new AxiosMockAdapter(apiClient, { onNoMatch : 'passthrough' });
+//
+// // '/api/self-diagnosis/${type}' 요청에 대해 mock 응답 정의
+// mock.onPost(`/api/self-diagnosis/$/\w+$/`).reply(config => {
+//     console.log('Mock API 호출 : ', config.data); // 요청 데이터 확인 가능
+//     const requestData = JSON.parse(config.data); // 필요시 요청 데이터 파싱
+//
+//     // 임의의 mock 응답 데이터
+//     const mockResponseResult = {
+//         available : false,
+//         result : requestData.totalScore,
+//         level : "분석 결과 라벨",
+//         next_available_date : "2025-08-22",
+//     };
+//
+//     return [200, mockResponseResult];
+// })
+//
+// mock.onGet(`/api/self-diagnosis/status`).reply(200, {
+//     depression: { available: true, percentage: 15,result:null, next_available_date: null },
+//     anxiety: { available: false, percentage: 80, result:'경도 불안', next_available_date: '2025-08-25' },
+//     stress: { available: true, percentage: 55, result:null, next_available_date: null },
+// });
 
 
 // 🎯 응답 인터셉터: 401 Unauthorized 에러 처리

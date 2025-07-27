@@ -10,6 +10,7 @@ function MonthlyPage() {
             <Calendar />
             <SelfDiagnosis />
         </div>
+
     );
 }
 
