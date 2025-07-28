@@ -1,6 +1,5 @@
-/**
- * 백엔드에서 온 객체 배열을 차트용 배열로 변환하는 함수들
- */
+
+// 백엔드 객체 배열을 리스트로 변환하는 함수
 
 // 감정 점수: [{assessmentDate, score}] → [score1, score2, ...]
 export function extractMoodScores(moodData) {

@@ -1,13 +1,13 @@
+
 .charts-page{
-    position: absolute;     /* 좌표 기반 위치 지정 */
-    top: 100px;             /* y: 100 */
-    left: 0;              /* x: 0 */
-    width: 1150px;
-    height: 820px;
-    padding: 55px 100px;    /* 상하 55, 좌우 100 */
+    width: 100%;
+    height: 100%;
     display: flex;
-    flex-direction: column; /* 내부 요소들을 수직 정렬 */
-    gap: 50px;              /* 컴포넌트 간 간격 */
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 55px 100px;
+    gap: 25px;              /* 컴포넌트 간 간격 */
     box-sizing: border-box; /* padding 포함한 width/height로 계산 */
 
 }
@@ -23,48 +23,50 @@
     display: flex;
 }
 
+.upper-chart-box{
+    width: 100%;
+    height: 36%;
+}
+
+.lower-chart-box{
+    width: 100%;
+    height: 60%;
+}
+
 .upper-chart{
-    position: absolute;        /* 부모 기준 위치 지정 */
-    top: 55px;                 /* y */
-    left: 100px;               /* x */
-    width: 950px;
-    height: 270px;
+    width: 100%;
+    height: 100%;
     border-radius: 30px;
     background-color: rgba(255, 255, 255, 0.8);  /* #FFF 80% */
     box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.25); /* x 1 y 1 blur 4 #000 25% */
-    padding: 18px 30px 30px 30px;             /* 내부 여백은 예시, 필요시 조정 */
+    padding: 18px 30px;             /* 내부 여백은 예시, 필요시 조정 */
     box-sizing: border-box;
 }
 
 .mood-score-line-chart{
-    position: absolute;        /* 부모 기준 위치 지정 */
-    width: 880px;
-    height: 190px;
+    width: 100%;
+    height: 80%;
 }
 
 .lower-chart{
-    position: absolute;
-    left: 100px;         /* x 위치 */
-    top: 375px;          /* y 위치 */
-    width: 950px;
-    height: 390px;
+    width: 100%;
+    height: 100%;
     display: flex;
+    justify-content: space-between;
     gap: 25px;           /* 좌우 컴포넌트 간 간격 */
 }
 
-.sleep-exercise-chart{
-    position: absolute;
-    width: 480px;
-    height: 390px;
+.sleep-exercise-chart-box{
+    width: 50%;
+    height: 100%;
     display: flex;
     flex-direction: column;
     gap: 20px; /* 내부 컴포넌트 간 간격 */
 }
 
 .sleep-chart{
-    position: absolute;
-    width: 480px;
-    height: 185px;
+    width: 100%;
+    height: 47.5%;
     border-radius: 30px;
     background-color: rgba(255, 255, 255, 0.8);  /* #FFF 80% */
     box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.25);
@@ -73,10 +75,8 @@
 }
 
 .exercise-chart{
-    position: absolute;
-    top: 205px;
-    width: 480px;
-    height: 185px;
+    width: 100%;
+    height: 47%;
     border-radius: 30px;
     background-color: rgba(255, 255, 255, 0.8);  /* #FFF 80% */
     box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.25);
@@ -84,15 +84,18 @@
     box-sizing: border-box;
 }
 
+.diagnosis-chart-box{
+    width: 45%;
+    height: 100%;
+}
+
 .diagnosis-chart{
-    position: absolute;
-    left: 510px;
-    width: 440px;
-    height: 390px;
+    width: 100%;
+    height: 100%;
     border-radius: 30px;
     background-color: rgba(255, 255, 255, 0.8); /* #FFF 80% */
     box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.25); /* x 1 y 1 blur 4 #000 25% */
-    padding: 18px 30px 30px 30px;             /* 내부 여백은 예시, 필요시 조정 */
+    padding: 18px 30px;             /* 내부 여백은 예시, 필요시 조정 */
     box-sizing: border-box;
 }
 

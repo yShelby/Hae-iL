@@ -51,7 +51,7 @@ export default function Charts() {
 
     // === 백엔드에서 데이터 가져오기 ===
     const fetchData = useCallback(async () => {
-        // if (!checkLogin()) return;
+        if (!checkLogin()) return;
 
         try {
             const response = await fetchChartData({
@@ -69,7 +69,7 @@ export default function Charts() {
         } catch (e) {
             console.error("차트 데이터 로딩 실패:", e);
         }
-    }, [mode, endDate]); // checkLogin 제거!
+    }, [mode, endDate]);
 
     useEffect(() => { // mode나 endDate가 바뀔 때마다 fetchData 함수 재실행
         fetchData().catch(console.error);
@@ -106,87 +106,91 @@ export default function Charts() {
 
     return (
         <div className={"charts-page"}>
-            {/* 차트 부분 */}
-            <div className={"upper-chart"}>
-            <div className={"title-button"}>
-            <h3>주간/월간 감정 트래킹 차트</h3>
-                <div className={"button-only"}>
-                    {/* 이전, 다음 날짜 호출하는 화살표 (< / >) */}
-                    <DateNavigator
-                        endDate={endDate}
-                        setEndDate={setEndDate}
-                        mode={mode}
-                        onChangeWeekly={setWeeklyLabels}
-                        onChangeMonthly={setMonthlyLabels}
-                    />
-                    <Button onClick={toggleMode}>{isWeekly ? "주간" : "월간"}</Button>
-                </div>
-            </div>
-                <div className={"mood-score-line-chart"}>
-                    {isWeekly ? (
-                        <LineCharts
-                            key={mode + JSON.stringify(moodDataForChart)}  // mode 바뀌거나 데이터 바뀌면 새 컴포넌트 마운트
-                            dates={weeklyLabels}
-                            rawData={moodDataForChart}
-                            chartTitle="주간 기분 변화"
-                            chartStyle={weeklyLineStyle}
-                            chartFontSize={chartFontSize.weeklyLineStyle}
-                            gridColor={gridColor}
-                        />
-                    ) : (
-                        <LineCharts
-                            key={mode + JSON.stringify(moodDataForChart)}  // mode 바뀌거나 데이터 바뀌면 새 컴포넌트 마운트
-                            dates={monthlyLabels}
-                            rawData={moodDataForChart}
-                            chartTitle="월간 기분 변화"
-                            chartStyle={monthlyLineStyle}
-                            chartFontSize={chartFontSize.monthlyLineStyle}
-                            gridColor={gridColor}
-                        />
-                    )}
-                </div>
-            </div>
-
-            <div className={"lower-chart"}>
-                <div className={"sleep-exercise-chart"}>
-                    <div className={"sleep-chart"}>
-                        <h4>주간 수면 시간</h4>
-                        <FloatingBarChart
-                            dates={weeklyLabels}
-                            rawData={sleepDataForChart}
-                            chartTitle={"주간 수면 시간"}
-                            chartStyle={sleepBarStyle}
-                            chartFontSize={chartFontSize.sleepBarStyle}
-                            gridColor={gridColor}
-                        />
+            <div className={"upper-chart-box"}>
+                {/* 차트 부분 */}
+                <div className={"upper-chart"}>
+                    <div className={"title-button"}>
+                    <h3>주간/월간 감정 트래킹 차트</h3>
+                        <div className={"button-only"}>
+                            {/* 이전, 다음 날짜 호출하는 화살표 (< / >) */}
+                            <DateNavigator
+                                endDate={endDate}
+                                setEndDate={setEndDate}
+                                mode={mode}
+                                onChangeWeekly={setWeeklyLabels}
+                                onChangeMonthly={setMonthlyLabels}
+                            />
+                            <Button onClick={toggleMode}>{isWeekly ? "주간" : "월간"}</Button>
+                        </div>
                     </div>
-
-                    <div className={"exercise-chart"}>
-                        <h4>주간 운동 시간</h4>
-                        <NormalBarChart
-                            dates={weeklyLabels}
-                            rawData={exerciseDataForChart}
-                            chartTitle={"주간 운동 시간"}
-                            chartStyle={exerciseBarStyle}
-                            chartFontSize={chartFontSize.exerciseBarStyle}
-                            gridColor={gridColor}
-                        />
+                    <div className={"mood-score-line-chart"}>
+                        {isWeekly ? (
+                            <LineCharts
+                                key={mode + JSON.stringify(moodDataForChart)}  // mode 바뀌거나 데이터 바뀌면 새 컴포넌트 마운트
+                                dates={weeklyLabels}
+                                rawData={moodDataForChart}
+                                chartTitle="주간 기분 변화"
+                                chartStyle={weeklyLineStyle}
+                                chartFontSize={chartFontSize.weeklyLineStyle}
+                                gridColor={gridColor}
+                            />
+                        ) : (
+                            <LineCharts
+                                key={mode + JSON.stringify(moodDataForChart)}  // mode 바뀌거나 데이터 바뀌면 새 컴포넌트 마운트
+                                dates={monthlyLabels}
+                                rawData={moodDataForChart}
+                                chartTitle="월간 기분 변화"
+                                chartStyle={monthlyLineStyle}
+                                chartFontSize={chartFontSize.monthlyLineStyle}
+                                gridColor={gridColor}
+                            />
+                        )}
                     </div>
                 </div>
-
-                <div className={"diagnosis-chart"}>
-                    <h3>자가진단 결과</h3>
-                    <RadarChart
-                        previousData={lastMonthData}
-                        rawData={thisMonthData}
-                        chartStyleThis={diagnosisRadarStyle}
-                        chartStylePrevious={previousDiagnosisRadarStyle}
-                        chartFontSize={chartFontSize.diagnosisRadarStyle}
-                        gridColor={gridColor}
-                    />
-                </div>
             </div>
 
+            <div className={"lower-chart-box"}>
+                <div className={"lower-chart"}>
+                    <div className={"sleep-exercise-chart-box"}>
+                        <div className={"sleep-chart"}>
+                            <h4>주간 수면 시간</h4>
+                            <FloatingBarChart
+                                dates={weeklyLabels}
+                                rawData={sleepDataForChart}
+                                chartTitle={"주간 수면 시간"}
+                                chartStyle={sleepBarStyle}
+                                chartFontSize={chartFontSize.sleepBarStyle}
+                                gridColor={gridColor}
+                            />
+                        </div>
+
+                        <div className={"exercise-chart"}>
+                            <h4>주간 운동 시간</h4>
+                            <NormalBarChart
+                                dates={weeklyLabels}
+                                rawData={exerciseDataForChart}
+                                chartTitle={"주간 운동 시간"}
+                                chartStyle={exerciseBarStyle}
+                                chartFontSize={chartFontSize.exerciseBarStyle}
+                                gridColor={gridColor}
+                            />
+                        </div>
+                    </div>
+                    <div className={"diagnosis-chart-box"}>
+                        <div className={"diagnosis-chart"}>
+                            <h3>자가진단 결과</h3>
+                            <RadarChart
+                                previousData={lastMonthData}
+                                rawData={thisMonthData}
+                                chartStyleThis={diagnosisRadarStyle}
+                                chartStylePrevious={previousDiagnosisRadarStyle}
+                                chartFontSize={chartFontSize.diagnosisRadarStyle}
+                                gridColor={gridColor}
+                            />
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     );
 }
@@ -262,20 +266,20 @@ const chartFontSize = {
 
 //======= 보조 함수 =======
 
-function timeStringToMinutes(timeStr) {
-    const [hourStr, minuteStr] = timeStr.split(':');
-    const hours = parseInt(hourStr, 10);
-    const minutes = parseInt(minuteStr, 10);
-    return hours * 60 + minutes;
-}
-
-// sleepDataInMinutes 함수: bedtime, waketime 문자열 배열을 분 단위 배열로 변환
-function sleepDataInMinutes(rawArray) {
-    return rawArray.map(({ bedtime, waketime }) => [
-        timeStringToMinutes(bedtime),
-        timeStringToMinutes(waketime)
-    ]);
-}
+// function timeStringToMinutes(timeStr) {
+//     const [hourStr, minuteStr] = timeStr.split(':');
+//     const hours = parseInt(hourStr, 10);
+//     const minutes = parseInt(minuteStr, 10);
+//     return hours * 60 + minutes;
+// }
+//
+// // sleepDataInMinutes 함수: bedtime, waketime 문자열 배열을 분 단위 배열로 변환
+// function sleepDataInMinutes(rawArray) {
+//     return rawArray.map(({ bedtime, waketime }) => [
+//         timeStringToMinutes(bedtime),
+//         timeStringToMinutes(waketime)
+//     ]);
+// }
 
 //======= 더미 데이터 =======
 
