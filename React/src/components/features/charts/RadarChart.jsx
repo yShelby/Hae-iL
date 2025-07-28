@@ -1,13 +1,5 @@
-import { Radar } from 'react-chartjs-2';
-import {
-    Chart as ChartJS,
-    RadialLinearScale,
-    PointElement,
-    LineElement,
-    Filler,
-    Tooltip,
-    Legend
-} from 'chart.js';
+import {Radar} from 'react-chartjs-2';
+import {Chart as ChartJS, Filler, Legend, LineElement, PointElement, RadialLinearScale, Tooltip} from 'chart.js';
 
 ChartJS.register(
     RadialLinearScale,
@@ -31,25 +23,18 @@ export default function RadarChart({previousData, rawData, chartStyleThis, chart
     const LABELS = ['불안', '우울', '스트레스'];
     const MAX_SCORES = [27, 21, 40];
 
-    // === 2. 100점 환산 함수 ===
-    function normalize(raw, max) {
-        return raw.map((v, i) => (v / max[i]) * 100);
-    }
-    const lastMonthNormalized = normalize(previousData, MAX_SCORES);
-    const thisMonthNormalized = normalize(data, MAX_SCORES);
-
-    // === 3. for chart ===
+    // === 2. for chart ===
     const chartData = {
         labels: LABELS,
         datasets: [
             {
                 label : "이번 달",
-                data: thisMonthNormalized,
+                data: data,
                 ...chartStyleThis
             },
             {
                 label : "지난 달",
-                data: lastMonthNormalized,
+                data: previousData,
                 ...chartStylePrevious
             }
         ]
