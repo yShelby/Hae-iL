@@ -179,7 +179,7 @@ function RecommendMoviePage(){
                 <RecommendText emotion={currentEmotion} />
                 <MovieList movies={movies} emotion={currentEmotion} onDisLike={handleDislike} />
                 <button className="nextEmotionBtn" onClick={nextEmotion}>
-                    다음 감정 보기
+                    다음 추천 보기
                 </button>
             </div>
         </div>

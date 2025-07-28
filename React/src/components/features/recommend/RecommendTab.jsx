@@ -3,12 +3,19 @@ import { IconDeviceTvOld } from '@tabler/icons-react';
 import { IconBook } from '@tabler/icons-react';
 import { IconMusic } from '@tabler/icons-react';
 import './css/MovieList.css'
+import {useCallback, useState} from "react";
 
 export function RecommendTab(){
 
+    const [tabIndex, setTabIndex] = useState(0);
+
+    const onActive = useCallback((clickedIndex) => {
+        setTabIndex(clickedIndex);
+    }, []);
+
     return(
         <div className={"recommendTab"}>
-            <button className={"tabButton"}>
+            <button className={"tabButton"} onClick={(e) => { e.preventDefault(); onActive(0); }}>
                 <IconMovie color="#FB79A2" />
             </button>
             <button>
