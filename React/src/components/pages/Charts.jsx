@@ -11,7 +11,13 @@ import NormalBarChart from "@features/charts/NormalBarChart.jsx";
 import RadarChart from "@features/charts/RadarChart.jsx";
 import DateNavigator from "@features/charts/DateNavigator.jsx";
 import { Button } from "@shared/UI/Button.jsx";
-import {useEffect, useState} from "react";
+import {useCallback, useEffect, useState} from "react";
+import { format } from "date-fns";
+import {
+    extractDiagnosisResults,
+    extractExerciseDuration, extractMoodScores,
+    extractSleepTime
+} from "@features/charts/util/chartDataListProcessor.js";
 
 //=== Library Chart.js ===
 import { CategoryScale, Chart, LinearScale } from "chart.js";
@@ -24,22 +30,16 @@ export default function Charts() {
     const checkLogin = useCheckLogin(); // 로그인 확인
 
     // =========================================
-    // === 날짜 호출 (DateNavigator.jsx) ===
-
-    // === 라벨용 날짜 받기 ===
-    const [weeklyLabels, setWeeklyLabels] = useState([]); // 주간 라벨
-    const [monthlyLabels, setMonthlyLabels] = useState([]); // 월간 라벨
-
-    // === DB 조회용 날짜 받기 ===
-    const [weeklyForFetch, setWeeklyForFetch] = useState([]); // 주간 DB 호출
-    const [monthlyForFetch, setMonthlyForFetch] = useState([]); // 월간 DB 호출
-    const [twoMonthsForFetch, setTwoMonthsForFetch] = useState([]); // 지난달, 이번달 DB 호출 (검사 전용)
-
-    // === 토글 버튼 ===
+    // === 날짜 및 모드 관리 ===
+    const [endDate, setEndDate] = useState(new Date());
     const [mode, setMode] = useState("weekly");
     const isWeekly = mode === "weekly";
 
     const toggleMode = () => setMode(isWeekly ? "monthly" : "weekly");
+
+    // === 라벨용 날짜 받기 ===
+    const [weeklyLabels, setWeeklyLabels] = useState([]); // 주간 라벨
+    const [monthlyLabels, setMonthlyLabels] = useState([]); // 월간 라벨
 
     // =========================================
     // === 호출 데이터 ===
@@ -49,66 +49,55 @@ export default function Charts() {
     const [lastMonthData, setLastMonthData] = useState([]);
     const [thisMonthData, setThisMonthData] = useState([]);
 
-    // === 날짜 리스트 기반 데이터 요청 ===
-    // moodDataForChart, sleepDataForChart, exerciseDataForChart, lastMonthData, thisMonthData
-    const fetchData = async () => {
-        // 1. 예외 상황 처리
-        if (!checkLogin()) return; // 로그인이 되어있지 않을 경우
+    // === 백엔드에서 데이터 가져오기 ===
+    const fetchData = useCallback(async () => {
+        if (!checkLogin()) return;
 
-        const isDateInfoMissing = // 날짜 라벨이 제대로 호출되지 않은 경우
-            weeklyForFetch.length !== 7 ||
-            (!isWeekly && monthlyForFetch.length !== 30) ||
-            twoMonthsForFetch.length !== 2;
-
-        if (isDateInfoMissing){
-            console.warn("날짜 정보가 올바르지 않아 데이터 요청이 금지되었습니다.",{
-                weekly: weeklyForFetch.length,
-                monthly: monthlyForFetch.length,
-                twoMonths: twoMonthsForFetch.length,
-            });
-            return;
-            }
-
-        // 2. 조회 요청
         try {
             const response = await fetchChartData({
-                userId: user?.id,
-                mode: isWeekly ? "weekly" : "monthly", // 명확성을 위해 작성
-                weeklyDates : weeklyForFetch,
-                monthlyDates : isWeekly ? undefined : monthlyForFetch,
-                twoMonths : twoMonthsForFetch
+                mode: mode,
+                endDate: format(endDate, "yyyy-MM-dd"),
             });
 
-            // 👉 여기서 setState로 차트 데이터 반영 (from backend)
-            // setMoodDataForChart(response.moodScores);
-            // setSleepDataForChart(response.sleepTime);
-            // setExerciseDataForChart(response.exerciseDuration);
-            // setLastMonthData(response.lastDiagnosisResults);
-            // setThisMonthData(response.currentDiagnosisResults);
+            // 데이터 설정
+            setMoodDataForChart(extractMoodScores(response.data?.moodScores));
+            setSleepDataForChart(extractSleepTime(response.data?.sleepTime));
+            setExerciseDataForChart(extractExerciseDuration(response.data?.exerciseDuration));
+            setLastMonthData(extractDiagnosisResults(response.data?.lastMonthResults));
+            setThisMonthData(extractDiagnosisResults(response.data?.thisMonthResults));
 
         } catch (e) {
             console.error("차트 데이터 로딩 실패:", e);
         }
-    }
+    }, [mode, endDate]);
 
-    useEffect(()=>{
-        (async () => {
-            await fetchData();
-        })();
-    }, [isWeekly, weeklyForFetch, monthlyForFetch, twoMonthsForFetch]);
+    useEffect(() => { // mode나 endDate가 바뀔 때마다 fetchData 함수 재실행
+        fetchData().catch(console.error);
+    }, [fetchData]);
 
-    // === 더미 데이터 ===
+    // // === 더미 데이터 (실제 데이터 로딩 전까지 사용) ===
     // // 감정 점수 데이터 (dummy) - 주간 / 월간 길이에 맞춰 slice 처리
-    // const moodDataForChart = isWeekly
-    //     ? dummyData.weeklyScores
-    //     : dummyData.monthlyScores;
+    // const displayMoodData = moodDataForChart.length > 0
+    //     ? moodDataForChart
+    //     : (isWeekly ? dummyData.weeklyScores : dummyData.monthlyScores);
     //
     // // 수면 및 운동 데이터도 날짜 배열 길이 맞추기
-    // const sleepDataForChart = dummyData.sleepData;
-    // const exerciseDataForChart = dummyData.exerciseData;
+    // const displaySleepData = sleepDataForChart.length > 0
+    //     ? sleepDataForChart
+    //     : dummyData.sleepData;
+    //
+    // const displayExerciseData = exerciseDataForChart.length > 0
+    //     ? exerciseDataForChart
+    //     : dummyData.exerciseData;
     //
     // // 자가진단 데이터
-    // const { lastMonthData, thisMonthData } = dummyData;
+    // const displayLastMonthData = lastMonthData.length > 0
+    //     ? lastMonthData
+    //     : dummyData.lastMonthData;
+    //
+    // const displayThisMonthData = thisMonthData.length > 0
+    //     ? thisMonthData
+    //     : dummyData.thisMonthData;
 
     // =========================================
     // === 차트 기본 스타일 ===
@@ -117,81 +106,90 @@ export default function Charts() {
 
     return (
         <div className={"charts-page"}>
-            <div className={"temporary"}> {/* grid 배치 후 삭제할 div */}
-
-                {/* 이전, 다음 날짜 호출하는 화살표 (< / >) */}
-                <DateNavigator
-                    isWeekly={mode}
-                    onChangeWeekly={setWeeklyLabels}
-                    onChangeMonthly={setMonthlyLabels}
-                    onChangeWeeklyForFetch={setWeeklyForFetch}
-                    onChangeMonthlyForFetch={setMonthlyForFetch}
-                    onChangeTwoMonthsForFetch={setTwoMonthsForFetch}/>
-
+            <div className={"upper-chart-box"}>
                 {/* 차트 부분 */}
-                <div className={"weekly-monthly-chart"}>
-
+                <div className={"upper-chart"}>
+                    <div className={"title-button"}>
                     <h3>주간/월간 감정 트래킹 차트</h3>
-                    <div className={"w-m-button"}>
-                        <Button onClick={toggleMode}>{isWeekly ? "주간" : "월간"}</Button>
+                        <div className={"button-only"}>
+                            {/* 이전, 다음 날짜 호출하는 화살표 (< / >) */}
+                            <DateNavigator
+                                endDate={endDate}
+                                setEndDate={setEndDate}
+                                mode={mode}
+                                onChangeWeekly={setWeeklyLabels}
+                                onChangeMonthly={setMonthlyLabels}
+                            />
+                            <Button onClick={toggleMode}>{isWeekly ? "주간" : "월간"}</Button>
+                        </div>
                     </div>
-                    {isWeekly ? (
-                        <LineCharts
-                            dates={weeklyLabels}
-                            rawData={moodDataForChart}
-                            chartTitle="주간 기분 변화"
-                            chartStyle={weeklyLineStyle}
-                            chartFontSize={chartFontSize.weeklyLineStyle}
-                            gridColor={gridColor}
-                        />
-                    ) : (
-                        <LineCharts
-                            dates={monthlyLabels}
-                            rawData={moodDataForChart}
-                            chartTitle="월간 기분 변화"
-                            chartStyle={monthlyLineStyle}
-                            chartFontSize={chartFontSize.monthlyLineStyle}
-                            gridColor={gridColor}
-                        />
-                    )}
-                </div>
-
-                <div className={"sleep-exercise-chart"}>
-                    <div className={"sleep-chart"}>
-                        <h3>수면 차트</h3>
-                        <FloatingBarChart
-                            dates={weeklyLabels}
-                            rawData={sleepDataForChart}
-                            chartTitle={isWeekly ? "주간 수면 시간" : "월간 수면 시간"}
-                            chartStyle={sleepBarStyle}
-                            chartFontSize={chartFontSize.sleepBarStyle}
-                            gridColor={gridColor}
-                        />
-                    </div>
-
-                    <div className={"exercise-chart"}>
-                        <h3>운동 차트</h3>
-                        <NormalBarChart
-                            dates={weeklyLabels}
-                            rawData={exerciseDataForChart}
-                            chartTitle={isWeekly ? "주간 운동 시간" : "월간 운동 시간"}
-                            chartStyle={exerciseBarStyle}
-                            chartFontSize={chartFontSize.exerciseBarStyle}
-                            gridColor={gridColor}
-                        />
+                    <div className={"mood-score-line-chart"}>
+                        {isWeekly ? (
+                            <LineCharts
+                                key={mode + JSON.stringify(moodDataForChart)}  // mode 바뀌거나 데이터 바뀌면 새 컴포넌트 마운트
+                                dates={weeklyLabels}
+                                rawData={moodDataForChart}
+                                chartTitle="주간 기분 변화"
+                                chartStyle={weeklyLineStyle}
+                                chartFontSize={chartFontSize.weeklyLineStyle}
+                                gridColor={gridColor}
+                            />
+                        ) : (
+                            <LineCharts
+                                key={mode + JSON.stringify(moodDataForChart)}  // mode 바뀌거나 데이터 바뀌면 새 컴포넌트 마운트
+                                dates={monthlyLabels}
+                                rawData={moodDataForChart}
+                                chartTitle="월간 기분 변화"
+                                chartStyle={monthlyLineStyle}
+                                chartFontSize={chartFontSize.monthlyLineStyle}
+                                gridColor={gridColor}
+                            />
+                        )}
                     </div>
                 </div>
             </div>
-            <div className={"diagnosis-chart"}>
-                <h3>자가진단 차트</h3>
-                <RadarChart
-                    previousData={lastMonthData}
-                    rawData={thisMonthData}
-                    chartStyleThis={diagnosisRadarStyle}
-                    chartStylePrevious={previousDiagnosisRadarStyle}
-                    chartFontSize={chartFontSize.diagnosisRadarStyle}
-                    gridColor={gridColor}
-                />
+
+            <div className={"lower-chart-box"}>
+                <div className={"lower-chart"}>
+                    <div className={"sleep-exercise-chart-box"}>
+                        <div className={"sleep-chart"}>
+                            <h4>주간 수면 시간</h4>
+                            <FloatingBarChart
+                                dates={weeklyLabels}
+                                rawData={sleepDataForChart}
+                                chartTitle={"주간 수면 시간"}
+                                chartStyle={sleepBarStyle}
+                                chartFontSize={chartFontSize.sleepBarStyle}
+                                gridColor={gridColor}
+                            />
+                        </div>
+
+                        <div className={"exercise-chart"}>
+                            <h4>주간 운동 시간</h4>
+                            <NormalBarChart
+                                dates={weeklyLabels}
+                                rawData={exerciseDataForChart}
+                                chartTitle={"주간 운동 시간"}
+                                chartStyle={exerciseBarStyle}
+                                chartFontSize={chartFontSize.exerciseBarStyle}
+                                gridColor={gridColor}
+                            />
+                        </div>
+                    </div>
+                    <div className={"diagnosis-chart-box"}>
+                        <div className={"diagnosis-chart"}>
+                            <h3>자가진단 결과</h3>
+                            <RadarChart
+                                previousData={lastMonthData}
+                                rawData={thisMonthData}
+                                chartStyleThis={diagnosisRadarStyle}
+                                chartStylePrevious={previousDiagnosisRadarStyle}
+                                chartFontSize={chartFontSize.diagnosisRadarStyle}
+                                gridColor={gridColor}
+                            />
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     );
@@ -266,9 +264,26 @@ const chartFontSize = {
     diagnosisRadarStyle: 16
 };
 
+//======= 보조 함수 =======
+
+// function timeStringToMinutes(timeStr) {
+//     const [hourStr, minuteStr] = timeStr.split(':');
+//     const hours = parseInt(hourStr, 10);
+//     const minutes = parseInt(minuteStr, 10);
+//     return hours * 60 + minutes;
+// }
+//
+// // sleepDataInMinutes 함수: bedtime, waketime 문자열 배열을 분 단위 배열로 변환
+// function sleepDataInMinutes(rawArray) {
+//     return rawArray.map(({ bedtime, waketime }) => [
+//         timeStringToMinutes(bedtime),
+//         timeStringToMinutes(waketime)
+//     ]);
+// }
+
 //======= 더미 데이터 =======
 
-//랜덤 데이터
+// 랜덤 데이터
 // const random = Array.from({ length: 30 }, () => Math.floor(Math.random() * 201) - 100);
 //
 // const dummyData = {

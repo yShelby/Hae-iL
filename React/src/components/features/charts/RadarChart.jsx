@@ -28,7 +28,7 @@ export default function RadarChart({previousData, rawData, chartStyleThis, chart
         : [];
 
     // === 1. 공통 라벨/총점 ===
-    const LABELS = ['우울', '불안', '스트레스'];
+    const LABELS = ['불안', '우울', '스트레스'];
     const MAX_SCORES = [27, 21, 40];
 
     // === 2. 100점 환산 함수 ===
@@ -57,9 +57,11 @@ export default function RadarChart({previousData, rawData, chartStyleThis, chart
 
     const options = {
         responsive: true,
+        maintainAspectRatio: false,
         plugins: {
             legend: {
                 display: true,
+                position: 'bottom',
                 reverse: true,
                 labels: {
                     usePointStyle: true,       // 포인트 스타일 사용
@@ -100,7 +102,7 @@ export default function RadarChart({previousData, rawData, chartStyleThis, chart
     };
 
     return (
-        <div style={{maxWidth: 480, margin: "0 auto"}}>
+        <div style={{height: "95%", margin: "0 auto"}}>
             <Radar data={chartData} options={options}/>
         </div>
     );
