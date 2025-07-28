@@ -49,7 +49,7 @@ const wavePathsArray = [
 const CalendarGridContainer = styled.div`
     width: ${({ width }) => width || "420px"};
     margin: 0 auto;
-    background: #f0f0f0;9
+    background: #f0f0f0;
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.08);
     padding: 20px;

@@ -49,7 +49,6 @@ public class UserEntity implements Serializable { // Serializable 구현 추가
     @Column(name = "profile_image", nullable = true)
     private String profileImage;
 
-//    @ColumnDefault("'theme_1'")
     @Column(name = "theme_name", nullable = false)
     private String themeName = "theme_1";
 

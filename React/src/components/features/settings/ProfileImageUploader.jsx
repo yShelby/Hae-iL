@@ -124,7 +124,7 @@ function ProfileImageUploader() {
 
     return (
         <section className="profile-image-uploader" style={{ marginBottom: '2rem' }}>
-            <h3>프로필 이미지 수정</h3>
+            {/*<h3>프로필 이미지 수정</h3>*/}
             <div style={{ display: 'flex', alignItems: 'center' }}>
                 {imageUrl ? (
                     <img

@@ -466,4 +466,15 @@ public class UserService {
             throw new RuntimeException("설문 정보 저장 실패", e);
         }
     }
+
+    // 테마 변경
+    @Transactional
+    public void updateThemeName(Integer userId, String themeName) {
+        UserEntity user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+
+            user.setThemeName(themeName);
+            userRepository.save(user);
+    }
+
 }

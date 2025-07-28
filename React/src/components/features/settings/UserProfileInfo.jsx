@@ -8,7 +8,7 @@ function UserProfileInfo({ user }) {
 
     return (
         <section className="user-profile-info" style={{ marginBottom: '2rem' }}>
-            <h3>내 정보</h3>
+            {/*<h3>내 정보</h3>*/}
             <div style={{ display: 'flex', alignItems: 'center' }}>
                 <div>
                     <p><strong>닉네임:</strong> {user.nickname}</p>

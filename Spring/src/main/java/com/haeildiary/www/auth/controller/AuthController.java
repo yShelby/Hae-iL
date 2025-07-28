@@ -47,10 +47,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import static com.haeildiary.www.auth.config.JsonUtils.parseJsonToList;
 
@@ -445,6 +442,43 @@ public class AuthController {
             return ResponseEntity.ok(response);
         } catch (Exception e) {
                 log.error("설문 정보 업데이트 실패", e);
+                response.put("success", false);
+                response.put("message", "서버 오류가 발생했습니다.");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+
+    // 테마 변경
+    @PutMapping("/api/user/theme")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> updateThemeName(
+            @RequestBody Map<String, String> request,
+            @AuthenticationPrincipal CustomUser customUser) {
+
+        Map<String, Object> response = new HashMap<>();
+
+        if (customUser == null) {
+                response.put("success", false);
+                response.put("message", "로그인이 필요합니다.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+        }
+
+        try {
+            String themeName = request.get("themeName");
+
+            // 유효성 검증: theme_1, theme_2, theme_3 중 하나인지 체크
+            if (!Set.of("theme_1", "theme_2", "theme_3").contains(themeName)) {
+                    response.put("success", false);
+                    response.put("message", "잘못된 테마 이름입니다.");
+                return ResponseEntity.badRequest().body(response);
+            }
+
+            userService.updateThemeName(customUser.getUserId(), themeName);
+
+                response.put("success", true);
+                response.put("message", "테마가 성공적으로 업데이트 되었습니다.");
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
                 response.put("success", false);
                 response.put("message", "서버 오류가 발생했습니다.");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
