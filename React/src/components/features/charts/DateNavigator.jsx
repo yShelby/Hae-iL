@@ -64,7 +64,7 @@ export default function DateNavigator({
     const canGoForward = () => {
         const nextStart = startOfDay(new Date(endDate));
         const today = startOfDay(new Date());
-        return isBefore(nextStart, today) || isEqual(nextStart, today);
+        return isBefore(nextStart, today);
     };
 
     return (
