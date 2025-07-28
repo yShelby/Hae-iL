@@ -201,7 +201,9 @@ const DiaryWritePage = () => {
                 <div className="placeholder-wrapper">
                     <p className="placeholder-text">오늘의 감정을 기록해보세요!</p>
                     <Button variant="button2"
-                            onClick={handleStartWriting}>
+                            onClick={handleStartWriting}
+                            style={{width:'130px', fontSize:'16px'}}
+                    >
                         작성하기
                     </Button>
                 </div>
@@ -221,12 +223,16 @@ const DiaryWritePage = () => {
                     </div>
                     <div className="button-group">
                         <Button variant="button2"
+                                style={{width: '60px', height: '30px'}}
                                 onClick={() => {
                                     setDiaryMode('edit');
                                     editor?.setEditable(true);}}>
                             수정
                         </Button>
-                        <Button variant="button2" onClick={confirmDelete}>삭제</Button>
+                        <Button variant="button2" onClick={confirmDelete}
+                                style={{width: '60px', height: '30px'}}>
+                            삭제
+                        </Button>
                     </div>
                 </div>
             )}
@@ -256,14 +262,16 @@ const DiaryWritePage = () => {
                             onClick={handleSave}
                             // className="save-button"
                             disabled={isSaving}
+                            style={{width: '60px', height: '30px'}}
                         >
-                            {isSaving ? '저장 중...' : (initialDiary?.diaryId ? '수정' : '저장')}
+                            {isSaving ? '저장 중...' : (initialDiary?.diaryId ? '저장' : '저장')}
                         </Button>
                         <Button
                             variant="button2"
                             onClick={handleCancelWriting}
                             // className="cancel-button"
                             disabled={isSaving}
+                            style={{width: '60px', height: '30px'}}
                         >
                             닫기
                         </Button>

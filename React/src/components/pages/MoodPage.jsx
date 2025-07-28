@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from "react";
 import MoodResult from "@features/mood/MoodResults.jsx";
 import {fetchMoodByDiaryId} from "@api/moodApi.js";
+import '../features/mood/css/MoodResult.css'
 
 function MoodPage({ selectedDiaryId, refreshKey  }) {
     const [loading, setLoading] = useState(false);
@@ -41,10 +42,21 @@ function MoodPage({ selectedDiaryId, refreshKey  }) {
     // );
 
     return (
-        <div style={{ padding: 20 }}>
+        <div className="mood-results">
             {loading && <p>분석 결과 불러오는 중...</p>}
             {error && <p style={{ color: "red" }}>{error}</p>}
-            {!loading && !error && !moodResult && <p>일기를 작성해주세요.</p>}
+            {!loading && !error && !moodResult &&
+                <div className={"mood-wrapper"}>
+                    <p>일기를 작성해주세요.</p>
+                </div>
+            }
+            {!loading && !error && !moodResult &&
+                <div className="mood-tags-container">
+                    <div className={"tags-box"}>
+                        <p>일기 작성 후 태그를 확인해보세요!</p>
+                    </div>
+                </div>
+            }
             {moodResult && <MoodResult result={moodResult} />}
         </div>
     );

@@ -8,6 +8,8 @@ import {
 } from '@/api/mealApi.js';
 import {useCheckLogin} from "@/hooks/useCheckLogin.js";
 import {showToast} from "@shared/UI/Toast.jsx";
+import Input from "@shared/styles/Input.jsx";
+import Button from "@shared/styles/Button.jsx";
 
 export default function MealWidget({date, onDataChange}) {
     const checkLogin = useCheckLogin();
@@ -36,6 +38,7 @@ export default function MealWidget({date, onDataChange}) {
                         dinner: res.dinner || '',
                         snack: res.snack || '',
                     });
+                    setEditing(false);
                 } else {
                     setForm({breakfast: '', lunch: '', dinner: '', snack: ''});
                     setEditing(true);
@@ -104,58 +107,65 @@ export default function MealWidget({date, onDataChange}) {
 
     return (
         <div className="widget meal-widget">
-            <h4>🍽️ 식사 ({date})</h4>
+            <h4>식사 기록</h4>
 
             {loading && <p>로딩 중...</p>}
 
             {!loading && !editing && data && (
                 <>
-                    {data.breakfast && <p>아침: {data.breakfast}</p>}
-                    {data.lunch && <p>점심: {data.lunch}</p>}
-                    {data.dinner && <p>저녁: {data.dinner}</p>}
-                    {data.snack && <p>간식: {data.snack}</p>}
-                    <button onClick={() => setEditing(true)}>수정하기</button>
-                    <button onClick={handleDelete}>삭제하기</button>
+                    <div className={"meal-details"}>
+                        {data.breakfast && <p>아침: {data.breakfast}</p>}
+                        {data.lunch && <p>점심: {data.lunch}</p>}
+                        {data.dinner && <p>저녁: {data.dinner}</p>}
+                        {data.snack && <p>간식: {data.snack}</p>}
+                    </div>
+                    <div style={{ display :'flex', justifyContent: 'center'}}>
+                        <Button variant={"button2"} onClick={() => setEditing(true)}>수정</Button>
+                        <Button variant={"button2"} onClick={handleDelete}>삭제</Button>
+                    </div>
                 </>
             )}
 
             {!loading && (editing || !data) && (
                 <div>
-                    <input
+                    <Input
                         name="breakfast"
                         type="text"
                         placeholder="아침"
                         value={form.breakfast}
                         onChange={handleChange}
                     />
-                    <input
+                    <Input
                         name="lunch"
                         type="text"
                         placeholder="점심"
                         value={form.lunch}
                         onChange={handleChange}
                     />
-                    <input
+                    <Input
                         name="dinner"
                         type="text"
                         placeholder="저녁"
                         value={form.dinner}
                         onChange={handleChange}
                     />
-                    <input
+                    <Input
                         name="snack"
                         type="text"
                         placeholder="간식"
                         value={form.snack}
                         onChange={handleChange}
                     />
-                    <button onClick={handleSave}>저장</button>
-                    <button onClick={() => {
-                        if (!checkLogin()) return;
-                        setEditing(false);
-                        if (!data) setForm({breakfast: '', lunch: '', dinner: '', snack: ''});
-                    }}>취소
-                    </button>
+                    <div style={{ display :'flex', justifyContent: 'center'}}>
+                        <Button variant={"button2"} onClick={handleSave}>저장</Button>
+                        <Button variant={"button2"} onClick={() => {
+                            if (!checkLogin()) return;
+                            setEditing(false);
+                            if (!data) setForm({breakfast: '', lunch: '', dinner: '', snack: ''});
+                        }}>취소
+                        </Button>
+                    </div>
+
                 </div>
             )}
         </div>

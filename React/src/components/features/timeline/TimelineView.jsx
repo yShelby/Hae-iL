@@ -1,4 +1,4 @@
-import React, {forwardRef, useMemo} from 'react';
+import React, {forwardRef, useMemo, useRef} from 'react';
 import {formatDateToString, addDays, getStartOfWeek, getEndOfWeek} from '@shared/utils/dateUtils.js';
 import DatePicker, {registerLocale} from 'react-datepicker';
 import ko from 'date-fns/locale/ko'; // 🇰🇷 한글 로케일
@@ -6,12 +6,15 @@ import 'react-datepicker/dist/react-datepicker.css';
 import '../timeline/css/TimelineView.css'
 import {useCheckLogin} from "@/hooks/useCheckLogin.js";
 import {useNavigate} from "react-router-dom";
+import {Icons} from "@shared/constants/icons.js";
+import Button from "@shared/styles/Button.jsx";
 
 registerLocale('ko', ko); // 로케일 등록
 
 export default function TimelineView({ data = [], selectedDate, onSelectDate, isLoggedIn }) {
     const checkLogin = useCheckLogin();
-    const navigate = useNavigate(); // [추가]
+    const navigate = useNavigate();
+    const datepickerRef = useRef(null)
 
     // selectedDate가 없으면 오늘 날짜로 초기화
     const baseDate = selectedDate ? new Date(selectedDate) : new Date();
@@ -76,22 +79,15 @@ export default function TimelineView({ data = [], selectedDate, onSelectDate, is
         navigate(`/diary/date/${dateString}`, { state: { animationType: 'none' } });
     };
 
-    // 버튼을 input 역할로 대체한 커스텀 컴포넌트
-    const CalendarButton = forwardRef(({ value, onClick }, ref) => (
-        <button type="button" onClick={onClick} ref={ref} aria-label="달력 열기">
-            📆
-        </button>
-    ));
 
     return (
-        <div className="timeline-wrapper">
+        <div className={"timeline-wrapper"}>
             {/* 상단 컨트롤: 주 이동 + 달력 토글 */}
             <div className="timeline-controls">
-                <button onClick={handlePrevWeek} aria-label="이전 주" >◀</button>
-                <span className="week-range">
+                <Button variant={"button1"} className="week-range clickable"
+                      onClick={() => datepickerRef.current?.setOpen(true)}>
                     {baseDate.getFullYear()}년 {baseDate.getMonth() + 1}월
-                </span>
-                <button onClick={handleNextWeek} aria-label="다음 주">▶</button>
+                </Button>
                 <div className="calendar-wrapper">
                     <DatePicker
                         selected={baseDate}
@@ -100,13 +96,18 @@ export default function TimelineView({ data = [], selectedDate, onSelectDate, is
                         maxDate={new Date()}
                         withPortal
                         showPopperArrow={false}
-                        customInput={<CalendarButton />}
+                        // customInput={<CalendarButton />}
+                        ref={datepickerRef}
+                        customInput={<></>}
                     />
                 </div>
             </div>
 
             {/* 주간 타임라인 카드 */}
             <div className="timeline-cards">
+                <button onClick={handlePrevWeek} className="week-nav-button" aria-label="이전 주" >
+                    <Icons.IconChevronLeft size={35} color="var(--primary-color)" />
+                </button>
                 {daysToShow.map(date => {
                     const isActive = date === formatDateToString(baseDate);
                     const items = grouped[date] || [];
@@ -122,16 +123,27 @@ export default function TimelineView({ data = [], selectedDate, onSelectDate, is
                             className={`timeline-card ${isActive ? 'active' : ''}`}
                             onClick={() => handleDateClick(date)}
                         >
-                            <h4>{new Date(date).getDate()}</h4>
+                            <h4
+                                style={{
+                                    color:
+                                        new Date(date).getDay() === 0 ? '#F2B5F1' : // 일요일
+                                            new Date(date).getDay() === 6 ? '#A2B8D0' : 'var(--primary-color)'// 토요일 or 평일
+                                }}
+                            >
+                                {new Date(date).getDate()}
+                            </h4>
                             <div className="card-icons">
-                                {isLoggedIn && hasDiary && <span title="일기">📝</span>}
-                                {isLoggedIn && hasSleep && <span title="수면">💤</span>}
-                                {isLoggedIn && hasExercise && <span title="운동">🏋️</span>}
-                                {isLoggedIn && hasMeal && <span title="식사">🍽️</span>}
+                                {isLoggedIn && hasDiary && <span className="diary" title="일기" />}
+                                {isLoggedIn && hasSleep && <span className="sleep" title="수면" />}
+                                {isLoggedIn && hasExercise && <span className="exercise" title="운동" />}
+                                {isLoggedIn && hasMeal && <span className="meal" title="식사" />}
                             </div>
                         </div>
                     );
                 })}
+                <button onClick={handleNextWeek} className="week-nav-button" aria-label="이전 주" >
+                    <Icons.IconChevronRight size={35} color="var(--primary-color)" />
+                </button>
             </div>
         </div>
     );
