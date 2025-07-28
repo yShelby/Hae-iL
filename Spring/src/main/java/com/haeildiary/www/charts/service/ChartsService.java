@@ -168,32 +168,32 @@ public class ChartsService {
         }
 
 
-    // =======================================================
+        // =======================================================
         // 3. 운동한 시간 데이터 조회
-    private List<AllChartDataResponseDto.ExerciseDuration> getExerciseDuration(Integer userId, LocalDate startDate, LocalDate endDate) {
-        log.info("운동 시간 데이터 조회 - userId: {}, 기간: {} ~ {}", userId, startDate, endDate);
+        private List<AllChartDataResponseDto.ExerciseDuration> getExerciseDuration(Integer userId, LocalDate startDate, LocalDate endDate) {
+            log.info("운동 시간 데이터 조회 - userId: {}, 기간: {} ~ {}", userId, startDate, endDate);
 
-        List<Object[]> rawData = exerciseLogRepository.findExerciseDurationForChart(userId, startDate, endDate);
-        Map<LocalDate, Integer> exerciseDataMap = new HashMap<>();
+            List<Object[]> rawData = exerciseLogRepository.findExerciseDurationForChart(userId, startDate, endDate);
+            Map<LocalDate, Integer> exerciseDataMap = new HashMap<>();
 
-        for (Object[] row : rawData) {
-            LocalDate exerciseDate = (LocalDate) row[0];
-            Long totalDuration = (Long) row[1];
-            Integer duration = totalDuration != null ? totalDuration.intValue() : null;
-            exerciseDataMap.put(exerciseDate, duration);
+            for (Object[] row : rawData) {
+                LocalDate exerciseDate = (LocalDate) row[0];
+                Long totalDuration = (Long) row[1];
+                Integer duration = totalDuration != null ? totalDuration.intValue() : null;
+                exerciseDataMap.put(exerciseDate, duration);
+            }
+
+            // Util 함수에서 날짜 리스트 순환
+            List<AllChartDataResponseDto.ExerciseDuration> exerciseDurations = ChangeDateUtil.fillDateRangeWithValue(
+                    startDate,
+                    endDate,
+                    exerciseDataMap,
+                    (date, duration) -> new AllChartDataResponseDto.ExerciseDuration(date, duration != null ? duration : 0)
+            );
+
+            log.info("운동 시간 데이터 조회 완료 - {} 건", exerciseDurations.size());
+            return exerciseDurations;
         }
-
-        // Util 함수에서 날짜 리스트 순환
-        List<AllChartDataResponseDto.ExerciseDuration> exerciseDurations = ChangeDateUtil.fillDateRangeWithValue(
-                startDate,
-                endDate,
-                exerciseDataMap,
-                (date, duration) -> new AllChartDataResponseDto.ExerciseDuration(date, duration != null ? duration : 0)
-        );
-
-        log.info("운동 시간 데이터 조회 완료 - {} 건", exerciseDurations.size());
-        return exerciseDurations;
-    }
 
         // =======================================================
         // 4. 지난 달 불안, 우울, 스트레스 자가진단 조회
