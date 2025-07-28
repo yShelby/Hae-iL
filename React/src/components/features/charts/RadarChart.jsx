@@ -92,6 +92,7 @@ export default function RadarChart({previousData, rawData, chartStyleThis, chart
                 },
                 ticks: {
                     stepSize: 20,
+                    backdropColor: 'transparent',
                     callback: (v) => `${v}`,
                 },
                 pointLabels: {
