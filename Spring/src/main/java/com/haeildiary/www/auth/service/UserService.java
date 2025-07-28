@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime; // <-- 이 줄 추가
+import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
@@ -446,5 +447,23 @@ public class UserService {
         refreshTokenRepository.flush();
 
         log.info("User {} (ID: {}) has been set to INACTIVE status and refresh token deleted.", user.getEmail(), userId);
+    }
+
+    // initialSurvery 수정
+    @Transactional
+    public void updateInitialSurvey(Integer userId, List<String> genres, List<String> emotions) {
+        UserEntity user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            String genreJson = objectMapper.writeValueAsString(genres);
+            String emotionJson = objectMapper.writeValueAsString(emotions);
+                user.setInitialGenre(genreJson);
+                user.setInitialEmotion(emotionJson);
+            userRepository.save(user);
+        } catch (Exception e) {
+            throw new RuntimeException("설문 정보 저장 실패", e);
+        }
     }
 }

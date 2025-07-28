@@ -48,6 +48,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -396,6 +397,7 @@ public class AuthController {
         }
     }
 
+    // 환경설정 페이지 (뷰)
     @GetMapping("/api/user/me")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> getCurrentUser(@AuthenticationPrincipal CustomUser customUser) {
@@ -418,5 +420,35 @@ public class AuthController {
         return ResponseEntity.ok(data);
     }
 
+    // initialSurvey 수정
+    @PutMapping("/api/user/initial-survey")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> updateInitialSurvey(
+            @RequestBody Map<String, List<String>> request,
+            @AuthenticationPrincipal CustomUser customUser) {
+
+        Map<String, Object> response = new HashMap<>();
+
+        if (customUser == null) {
+            response.put("success", false);
+            response.put("message", "로그인이 필요합니다.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+        }
+
+        try {
+            List<String> initialGenre = request.get("initialGenre");
+            List<String> initialEmotion = request.get("initialEmotion");
+
+            userService.updateInitialSurvey(customUser.getUserId(), initialGenre, initialEmotion);
+                response.put("success", true);
+                response.put("message", "설문 정보가 업데이트되었습니다.");
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+                log.error("설문 정보 업데이트 실패", e);
+                response.put("success", false);
+                response.put("message", "서버 오류가 발생했습니다.");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
 
 }
