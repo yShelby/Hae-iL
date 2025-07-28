@@ -81,24 +81,24 @@ public class UserService {
 
         UserEntity savedUser = userRepository.save(newUser); // DB 저장
 
-        String tempProfileImagePath = requestDto.getProfileImage();
-        if (tempProfileImagePath != null && !tempProfileImagePath.isEmpty()) {
-            String fileExtension = "";
-            int dotIndex = tempProfileImagePath.lastIndexOf('.');
-            if (dotIndex > 0 && dotIndex < tempProfileImagePath.length() - 1) {
-                fileExtension = tempProfileImagePath.substring(dotIndex);
-            }
-            String permanentProfileImagePath = "profile_images/" + savedUser.getUserId() + "/profile" + fileExtension;
-
-            boolean moved = s3Service.moveS3Object(tempProfileImagePath, permanentProfileImagePath);
-
-            if (moved) {
-                savedUser.setProfileImage(permanentProfileImagePath);
-                userRepository.save(savedUser);
-            } else {
-                log.error("Failed to move profile image from {} to {}", tempProfileImagePath, permanentProfileImagePath);
-            }
-        }
+//        String tempProfileImagePath = requestDto.getProfileImage();
+//        if (tempProfileImagePath != null && !tempProfileImagePath.isEmpty()) {
+//            String fileExtension = "";
+//            int dotIndex = tempProfileImagePath.lastIndexOf('.');
+//            if (dotIndex > 0 && dotIndex < tempProfileImagePath.length() - 1) {
+//                fileExtension = tempProfileImagePath.substring(dotIndex);
+//            }
+//            String permanentProfileImagePath = "profile_images/" + savedUser.getUserId() + "/profile" + fileExtension;
+//
+//            boolean moved = s3Service.moveS3Object(tempProfileImagePath, permanentProfileImagePath);
+//
+//            if (moved) {
+//                savedUser.setProfileImage(permanentProfileImagePath);
+//                userRepository.save(savedUser);
+//            } else {
+//                log.error("Failed to move profile image from {} to {}", tempProfileImagePath, permanentProfileImagePath);
+//            }
+//        }
     }
 
     // 전화번호 정규화 메서드

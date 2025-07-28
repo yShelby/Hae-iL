@@ -35,7 +35,7 @@ public class RegisterRequestDto {
     @Size(min = 2, max = 15, message = "닉네임은 2자 이상, 15자 이하여야 합니다.")
     private String nickname;
 
-    private String profileImage;
+//    private String profileImage;
 
     //    @ValidEmotionSelection
     private List<String> initialEmotion;

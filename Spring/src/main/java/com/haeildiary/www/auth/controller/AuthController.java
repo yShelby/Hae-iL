@@ -393,4 +393,21 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(result);
         }
     }
+
+    @GetMapping("/api/user/me")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> getCurrentUser(@AuthenticationPrincipal CustomUser customUser) {
+        if (customUser == null) {
+            // 인증 안 된 경우 401 반환
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        UserEntity user = userService.getUserByEmail(customUser.getUsername());
+        Map<String, Object> data = new HashMap<>();
+        data.put("userId", user.getUserId());
+        data.put("email", user.getEmail());
+        data.put("nickname", user.getNickname());
+        data.put("profileImage", user.getProfileImage());
+        return ResponseEntity.ok(data);
+    }
 }

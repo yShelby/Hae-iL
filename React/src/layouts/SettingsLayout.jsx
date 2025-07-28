@@ -1,13 +1,13 @@
 import React from 'react';
 import {Outlet} from "react-router-dom";
 
-const MonthlyLayout = () => {
+const SettingsLayout = () => {
 
     return (
-        <div className="monthly-container">
+        <div className="settings-container">
             <Outlet />
         </div>
     );
 };
 
-export default MonthlyLayout;
+export default SettingsLayout;
