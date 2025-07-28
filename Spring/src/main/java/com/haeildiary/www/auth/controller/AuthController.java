@@ -51,6 +51,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import static com.haeildiary.www.auth.config.JsonUtils.parseJsonToList;
+
 @Slf4j
 @Controller
 @RequiredArgsConstructor
@@ -403,11 +405,18 @@ public class AuthController {
         }
 
         UserEntity user = userService.getUserByEmail(customUser.getUsername());
+
         Map<String, Object> data = new HashMap<>();
-        data.put("userId", user.getUserId());
-        data.put("email", user.getEmail());
-        data.put("nickname", user.getNickname());
-        data.put("profileImage", user.getProfileImage());
+            data.put("userId", user.getUserId());
+            data.put("email", user.getEmail());
+            data.put("name", user.getName());
+            data.put("nickname", user.getNickname());
+            data.put("profileImage", user.getProfileImage());
+            data.put("initialGenre", parseJsonToList(user.getInitialGenre()));
+            data.put("initialEmotion", parseJsonToList(user.getInitialEmotion()));
+
         return ResponseEntity.ok(data);
     }
+
+
 }

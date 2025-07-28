@@ -17,11 +17,9 @@ import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -79,7 +77,7 @@ public class UserService {
             throw new RuntimeException("JSON 직렬화 실패", e);
         }
 
-        UserEntity savedUser = userRepository.save(newUser); // DB 저장
+        userRepository.save(newUser); // DB 저장
 
 //        String tempProfileImagePath = requestDto.getProfileImage();
 //        if (tempProfileImagePath != null && !tempProfileImagePath.isEmpty()) {
@@ -151,29 +149,32 @@ public class UserService {
                                     HttpSession session, HttpServletResponse response) {
 
         UserEntity user = getUserByEmail(email);
-        session.setAttribute("user", user);
 
-        user.setLastLoginAt(LocalDateTime.now());
-        userRepository.save(user);
+            session.setAttribute("user", user);
+
+            user.setLastLoginAt(LocalDateTime.now());
+            userRepository.save(user);
 
         String accessToken = jwtProvider.createAccessToken(authentication);
         String refreshToken = jwtProvider.createRefreshToken(authentication);
 
-        saveOrUpdateRefreshToken(user, refreshToken);
+            saveOrUpdateRefreshToken(user, refreshToken);
 
         Cookie accessCookie = new Cookie("jwt", accessToken);
-        accessCookie.setHttpOnly(true);
-        accessCookie.setSecure(true);
-        accessCookie.setMaxAge(60 * 5); // 5분
-        accessCookie.setPath("/");
-        response.addCookie(accessCookie);
+            accessCookie.setHttpOnly(true);
+            accessCookie.setSecure(true);
+            accessCookie.setMaxAge(60 * 5); // 5분
+            accessCookie.setPath("/");
+            response.addCookie(accessCookie);
 
         Cookie refreshCookie = new Cookie("refreshToken", refreshToken);
-        refreshCookie.setHttpOnly(true);
-        refreshCookie.setSecure(true);
-        refreshCookie.setMaxAge(60 * 60 * 24 * 7); // 7일
-        refreshCookie.setPath("/");
-        response.addCookie(refreshCookie);
+            refreshCookie.setHttpOnly(true);
+            refreshCookie.setSecure(true);
+            refreshCookie.setMaxAge(60 * 60 * 24 * 7); // 7일
+            refreshCookie.setPath("/");
+            response.addCookie(refreshCookie);
+
+
     }
 
     // 4️⃣ Access Token 재발급: Refresh Token 검증 → DB 확인 → 새 토큰 발급 및 DB 갱신
@@ -397,7 +398,7 @@ public class UserService {
         sessionUser.setCreatedAt(updatedUser.getCreatedAt());
         sessionUser.setStatus(updatedUser.getStatus());
         sessionUser.setEncryptedPhoneNumber(updatedUser.getEncryptedPhoneNumber());
-        sessionUser.setThemeId(updatedUser.getThemeId());
+        sessionUser.setThemeName(updatedUser.getThemeName());
 
         session.setAttribute("user", sessionUser);
         log.info("Session user updated: {}", session.getAttribute("user"));
@@ -426,7 +427,7 @@ public class UserService {
         sessionUser.setCreatedAt(updatedUser.getCreatedAt());
         sessionUser.setStatus(updatedUser.getStatus());
         sessionUser.setEncryptedPhoneNumber(updatedUser.getEncryptedPhoneNumber());
-        sessionUser.setThemeId(updatedUser.getThemeId());
+        sessionUser.setThemeName(updatedUser.getThemeName());
 
         session.setAttribute("user", sessionUser);
         log.info("Session user updated: {}", session.getAttribute("user"));

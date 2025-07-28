@@ -50,8 +50,8 @@ public class UserEntity implements Serializable { // Serializable 구현 추가
     private String profileImage;
 
 //    @ColumnDefault("'theme_1'")
-    @Column(name = "theme_id", nullable = true) // -> theme_name, nullable= false
-    private Integer themeId;
+    @Column(name = "theme_name", nullable = false)
+    private String themeName = "theme_1";
 
     @Column(name = "last_login_at", nullable = true)
     private LocalDateTime lastLoginAt;
@@ -81,8 +81,9 @@ public class UserEntity implements Serializable { // Serializable 구현 추가
 //    }
 
     // 이 필드는 초기 감정 상태와 장르 상태를 JSON 형태로 저장하기 위해 추가
-    @Column(name="initial_emotion", nullable = true,columnDefinition = "json")
+    @Column(name = "initial_emotion", nullable = true, columnDefinition = "json")
     private String initialEmotion; // 초기 감정 상태를 JSON 형태로 저장
-    @Column(name="inital_genre", nullable = true,columnDefinition = "json")
+
+    @Column(name = "inital_genre", nullable = true, columnDefinition = "json")
     private String initialGenre; // 초기 장르 상태를 JSON 형태로 저장
 }

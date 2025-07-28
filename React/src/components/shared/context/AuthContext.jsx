@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import  parseJsonToList  from '../utils/parseJsonToList.js';
 
 /**
  * 🔐 AuthContext.js
@@ -46,6 +47,9 @@ export const AuthProvider = ({ children }) => {
                 email: initialUser.email,
                 nickname: initialUser.nickname,
                 profileImage: initialUser.profileImage,
+                initialGenre: initialUser.initialGenre || [],
+                initialEmotion: initialUser.initialEmotion || [],
+                themeName: initialUser.themeName,
             });
         } else {
             // ❗ 모든 필드가 null이면 로그인 안 된 상태로 간주
@@ -70,6 +74,13 @@ export const AuthProvider = ({ children }) => {
                             email: data.email,
                             nickname: data.nickname,
                             profileImage: data.profileImage,
+                            initialGenre: Array.isArray(data.initialGenre)
+                                ? data.initialGenre
+                                : parseJsonToList(data.initialGenre),
+                            initialEmotion: Array.isArray(data.initialEmotion)
+                                ? data.initialEmotion
+                                : parseJsonToList(data.initialEmotion),
+                            themeName: data.themeName,
                         });
                     } else {
                         setUser(null);
