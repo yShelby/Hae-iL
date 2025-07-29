@@ -37,6 +37,7 @@ export default function MoodResult({ result }) {
                 moodType: getNameAndColorForMood(maxItem.mood_type).moodType,
                 percentage: maxItem.percentage
             });
+            console.log("디테일 : ",details)
         }
     }, [details]);
 
@@ -154,28 +155,28 @@ export default function MoodResult({ result }) {
 
     return (
         <div className={"mood-results"}>
-
-            {/* 감정 점수 */}
-            <div className={`mood-score${scoreTagFade ? ' fade-in' : ''}`}>
-                <p>{scoreToComment(mood_score)}</p> {/* 점수를 코멘트로 변경 출력 */}
-            </div>
-
-            {/* 세부 감정 그래프 */}
-            <div className="mood-details">
-                <div className="doughnut-chart" style={{ position: 'relative' }}>
-                    <Doughnut data={chartData} options={chartOptions} plugins={[centerPercentagePlugin]} />
-                </div>
-                <div className="percentage-box" style={{font: chartStyle.perFont, color: getNameAndColorForMood(selectedMood.label).color}}>
-                {displayPercent}
+            <div className={"mood-wrapper"}>
+                {/* 감정 점수 */}
+                <div className={`mood-score${scoreTagFade ? ' fade-in' : ''}`}>
+                    <p>{scoreToComment(mood_score)}</p> {/* 점수를 코멘트로 변경 출력 */}
                 </div>
 
-                {selectedMood.moodType && ( /* moodType이 존재할 때만 렌더링 */
-                    <div className={`selected-mood-info${moodTypeFade ? ' fade-in' : ''}`}>
-                        <p>{selectedMood.moodType}</p>
+                {/* 세부 감정 그래프 */}
+                <div className="mood-details">
+                    <div className="doughnut-chart" style={{ position: 'relative' }}>
+                        <Doughnut data={chartData} options={chartOptions} plugins={[centerPercentagePlugin]} />
                     </div>
-                )}
-            </div>
+                    <div className="percentage-box" style={{font: chartStyle.perFont, color: getNameAndColorForMood(selectedMood.label).color}}>
+                    {displayPercent}
+                    </div>
 
+                    {selectedMood.moodType && ( /* moodType이 존재할 때만 렌더링 */
+                        <div className={`selected-mood-info${moodTypeFade ? ' fade-in' : ''}`}>
+                            <p>{selectedMood.moodType}</p>
+                        </div>
+                    )}
+                </div>
+            </div>
             <MoodTags tags={tags} scoreTagFade={scoreTagFade} />
         </div>
     );
@@ -191,7 +192,7 @@ const chartStyle = {
     chartHoverBorderWidth: 3,
 
     //percentage number
-    perFont : "bold 45px sans-serif",
+    perFont : "bold 30px 'NPSfont'",
 
     //canvas
     canvasResponsive: true,// 상위 component에 크기를 맞춤(비율x)
@@ -272,7 +273,7 @@ const centerPercentagePlugin = {
         // 퍼센트 숫자 (큰 글씨, 중앙)
         ctx.font = chartStyle.perFont;
         ctx.fillStyle = percentageColor;
-        ctx.fillText(`${percentage}`, width / 2, height / 2 + 5);
+        ctx.fillText(`${percentage}`, width / 2, height / 2 - 5);
         ctx.restore();
     }
 };

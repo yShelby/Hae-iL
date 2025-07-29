@@ -1,7 +1,7 @@
 /* 에디터 전체를 감싸는 컨테이너 */
 .editor-container {
     border: 1px solid #dcdcdc;
-    border-radius: 8px;
+    border-radius: 30px;
     overflow: hidden; /* 둥근 모서리 밖으로 내용이 나가지 않도록 함 */
     flex-direction: column;
     flex-grow: 1; /* 추가 - diary-content-wrapper 내에서 남은 공간을 모두 차지하도록 설정 */
@@ -21,10 +21,15 @@
     /*overflow-y: auto; !* 내용이 많아지면 스크롤 생성 *!*/
     font-size: 1rem;
     line-height: 1.6;
+    background-color: rgba(255, 255, 255, 0.5);
+    text-align: left !important;
+    outline: none !important;
 }
 
-.tiptap-editor-content:focus {
+.tiptap-editor:focus,
+.ProseMirror:focus {
     outline: none;
+    box-shadow: none;
 }
 
 /* 에디터 내부 이미지 스타일 */

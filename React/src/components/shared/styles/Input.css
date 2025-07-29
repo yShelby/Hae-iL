@@ -6,7 +6,6 @@
     background-color: white;
     font-family: var(--font-family-base);
     font-size: 14px;
-    padding: 0 0.5rem;
     color: rgba(var(--primary-color-rgb), 0.6);
 
     /* 그림자 */
@@ -16,6 +15,10 @@
     background-image: linear-gradient(white, white), var(--border-gradient);
     background-origin: border-box;
     background-clip: padding-box, border-box;
+
+    /* 텍스트 중앙 정렬 */
+    line-height: 1;
+    padding-top: 10px;
 }
 
 /* focus 효과 */

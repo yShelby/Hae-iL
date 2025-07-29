@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import  parseJsonToList  from '../utils/parseJsonToList.js';
 
 /**
  * 🔐 AuthContext.js
@@ -46,17 +47,63 @@ export const AuthProvider = ({ children }) => {
                 email: initialUser.email,
                 nickname: initialUser.nickname,
                 profileImage: initialUser.profileImage,
+                initialGenre: initialUser.initialGenre || [],
+                initialEmotion: initialUser.initialEmotion || [],
+                themeName: initialUser.themeName,
             });
-        }else {
+        } else {
             // ❗ 모든 필드가 null이면 로그인 안 된 상태로 간주
             setUser(null);
         }
-        // 로딩 완료 표시
-        setLoading(false);
+
+        // 최신 사용자 정보 fetch 함수
+        const fetchUser = async () => {
+            try {
+                const res = await fetch('/api/user/me', {
+                    method: 'GET',
+                    credentials: 'include', // 중요 : 쿠키 포함
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data && data.userId) {
+                        setUser({
+                            id: data.userId,
+                            email: data.email,
+                            nickname: data.nickname,
+                            profileImage: data.profileImage,
+                            initialGenre: Array.isArray(data.initialGenre)
+                                ? data.initialGenre
+                                : parseJsonToList(data.initialGenre),
+                            initialEmotion: Array.isArray(data.initialEmotion)
+                                ? data.initialEmotion
+                                : parseJsonToList(data.initialEmotion),
+                            themeName: data.themeName,
+                        });
+                    } else {
+                        setUser(null);
+                    }
+                } else if (res.status === 401) {
+                    // 인증 만료 혹은 비로그인 상태
+                    setUser(null);
+                }
+            } catch (error) {
+                console.error('User fetch error : ', error);
+                setUser(null);
+            } finally {
+                // 로딩 완료 표시
+                setLoading(false);
+            }
+        };
+
+        fetchUser();
     }, []);
 
+
     // 3️⃣ Context로 전달할 값 설정 (user, loading)
-    const value = { user, loading };
+    const value = { user, loading, setUser };
 
     // 4️⃣ AuthContext.Provider로 하위 컴포넌트에 상태 공유
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

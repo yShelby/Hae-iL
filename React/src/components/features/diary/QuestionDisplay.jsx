@@ -2,6 +2,7 @@ import React from 'react';
 import { FaSyncAlt } from 'react-icons/fa';
 import './css/QuestionDisplay.css';
 import {useQuestion} from "@shared/context/QuestionContext.jsx";
+import Button from "@shared/styles/Button.jsx";
 
 const QuestionDisplay = ({ question }) => {
 
@@ -20,16 +21,17 @@ const QuestionDisplay = ({ question }) => {
 
     return (
         <div className="question-display-container">
-            <span className="question-label">오늘의 질문</span>
-            <p className="question-text-in-diary">{question}</p>
-            <button
-                onClick={handleRefresh}
-                className="btn-refresh-in-diary"
-                title="다른 질문 보기"
-                disabled={isLoading}
-            >
-                <FaSyncAlt className={isLoading ? 'rotating' : ''} />
-            </button>
+            <Button variant="button1" className="custom">
+                <span className="question-text-in-diary">{question}</span>
+                <button
+                    onClick={handleRefresh}
+                    className="btn-refresh-in-diary"
+                    title="다른 질문 보기"
+                    disabled={isLoading}
+                >
+                    <FaSyncAlt className={isLoading ? 'rotating' : ''} />
+                </button>
+            </Button>
         </div>
     );
 };

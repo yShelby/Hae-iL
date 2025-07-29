@@ -1,19 +1,33 @@
 .widget {
-    background-color: #ffffff;
-    border: 1px solid #dee2e6;
-    border-radius: 8px;
-    padding: 16px;
-    margin-bottom: 16px;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    background-color: rgba(255, 255, 255, 0.85);
+    border-radius: 30px;
+    padding: 10px 20px;
     font-size: 14px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+    box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.25);
 }
-
+.widget,
+.widget * {
+    font-family: 'Pretendard', sans-serif !important;
+}
+.exercise-widget {
+    height: 180px;
+}
+.sleep-widget {
+    height: 180px;
+}
+.meal-widget {
+    height: 226px;
+}
 .widget h4 {
     margin-top: 0;
     font-size: 16px;
     font-weight: 600;
-    color: #343a40;
-    margin-bottom: 12px;
+    color: var(--primary-color);
+    margin-bottom: 5px;
 }
 
 .widget input[type="text"],
@@ -22,13 +36,32 @@
 .widget select {
     width: 100%;
     padding: 6px 8px;
-    font-size: 14px;
-    border: 1px solid #ced4da;
-    border-radius: 4px;
     margin-bottom: 8px;
     box-sizing: border-box;
-    background-color: #fff;
-    color: #212529;
+}
+
+.widget select {
+    border-radius: 10px;
+    border: 1px solid transparent;
+    background-color: white;
+    font-size: 14px;
+    color: rgba(var(--primary-color-rgb), 0.6);
+
+    /* 그림자 */
+    box-shadow: 2px 1px 1px rgba(0, 0, 0, 0.25);
+
+    /* 테마 색상으로 보더 그라데이션 */
+    background-image: linear-gradient(white, white), var(--border-gradient);
+    background-origin: border-box;
+    background-clip: padding-box, border-box;
+
+    padding: 4px 10px;
+    line-height: 1.5;
+    height: 24px;
+}
+.widget select option {
+    font-size: 14px;
+    line-height: 1.5;
 }
 
 .widget input:focus,
@@ -38,19 +71,8 @@
     box-shadow: 0 0 0 1px rgba(0, 123, 255, 0.25);
 }
 
-.widget label {
-    display: block;
-    margin-bottom: 4px;
-    color: #495057;
-    font-weight: 500;
-}
 
 .widget button {
-    background-color: #f1f3f5;
-    color: #343a40;
-    border: 1px solid #ced4da;
-    border-radius: 4px;
-    padding: 6px 12px;
     font-size: 14px;
     cursor: pointer;
     margin-right: 6px;
@@ -79,4 +101,22 @@
 
 .widget p {
     margin: 4px 0;
+    font-size: 14px;
+}
+
+.inline-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.inline-label span {
+    white-space: nowrap;
+}
+
+.exercise-details, .sleep-details, .meal-details {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 10px 0;
 }

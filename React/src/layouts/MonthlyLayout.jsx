@@ -1,14 +1,13 @@
 import React from 'react';
-// import "./css/CalendarLayout.css";
 import {Outlet} from "react-router-dom";
 
-const CalendarPageLayout = () => {
+const MonthlyLayout = () => {
 
     return (
-        <div className="calendarPage-container">
+        <div className="monthly-container">
             <Outlet />
         </div>
     );
 };
 
-export default CalendarPageLayout;
+export default MonthlyLayout;

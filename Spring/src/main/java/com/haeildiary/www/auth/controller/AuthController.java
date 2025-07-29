@@ -47,9 +47,9 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+
+import static com.haeildiary.www.auth.config.JsonUtils.parseJsonToList;
 
 @Slf4j
 @Controller
@@ -283,7 +283,7 @@ public class AuthController {
         return "auth/my-page.html";
     }
 
-    // 1️⃣4️⃣ 마이페이지 - 비밀번호 변경 처리
+    // 1️⃣4️⃣ 환경설정 - 비밀번호 재설정 요청처리
     @PostMapping("/my-page/change-password")
     @ResponseBody
     public Map<String, Object> changePassword(@RequestBody ChangePWRequestDto dto,
@@ -393,4 +393,96 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(result);
         }
     }
+
+    // 환경설정 페이지 (뷰)
+    @GetMapping("/api/user/me")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> getCurrentUser(@AuthenticationPrincipal CustomUser customUser) {
+        if (customUser == null) {
+            // 인증 안 된 경우 401 반환
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        UserEntity user = userService.getUserByEmail(customUser.getUsername());
+
+        Map<String, Object> data = new HashMap<>();
+            data.put("userId", user.getUserId());
+            data.put("email", user.getEmail());
+            data.put("name", user.getName());
+            data.put("nickname", user.getNickname());
+            data.put("profileImage", user.getProfileImage());
+            data.put("initialGenre", parseJsonToList(user.getInitialGenre()));
+            data.put("initialEmotion", parseJsonToList(user.getInitialEmotion()));
+
+        return ResponseEntity.ok(data);
+    }
+
+    // initialSurvey 수정
+    @PutMapping("/api/user/initial-survey")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> updateInitialSurvey(
+            @RequestBody Map<String, List<String>> request,
+            @AuthenticationPrincipal CustomUser customUser) {
+
+        Map<String, Object> response = new HashMap<>();
+
+        if (customUser == null) {
+            response.put("success", false);
+            response.put("message", "로그인이 필요합니다.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+        }
+
+        try {
+            List<String> initialGenre = request.get("initialGenre");
+            List<String> initialEmotion = request.get("initialEmotion");
+
+            userService.updateInitialSurvey(customUser.getUserId(), initialGenre, initialEmotion);
+                response.put("success", true);
+                response.put("message", "설문 정보가 업데이트되었습니다.");
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+                log.error("설문 정보 업데이트 실패", e);
+                response.put("success", false);
+                response.put("message", "서버 오류가 발생했습니다.");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+
+    // 테마 변경
+    @PutMapping("/api/user/theme")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> updateThemeName(
+            @RequestBody Map<String, String> request,
+            @AuthenticationPrincipal CustomUser customUser) {
+
+        Map<String, Object> response = new HashMap<>();
+
+        if (customUser == null) {
+                response.put("success", false);
+                response.put("message", "로그인이 필요합니다.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+        }
+
+        try {
+            String themeName = request.get("themeName");
+
+            // 유효성 검증: theme_1, theme_2, theme_3 중 하나인지 체크
+            if (!Set.of("theme_1", "theme_2", "theme_3").contains(themeName)) {
+                    response.put("success", false);
+                    response.put("message", "잘못된 테마 이름입니다.");
+                return ResponseEntity.badRequest().body(response);
+            }
+
+            userService.updateThemeName(customUser.getUserId(), themeName);
+
+                response.put("success", true);
+                response.put("message", "테마가 성공적으로 업데이트 되었습니다.");
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+                response.put("success", false);
+                response.put("message", "서버 오류가 발생했습니다.");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+
 }

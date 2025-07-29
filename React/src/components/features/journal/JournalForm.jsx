@@ -1,12 +1,13 @@
 import "./css/JournalForm.css";
 import {forwardRef, useCallback, useEffect, useState} from "react";
-import {Button} from "@shared/UI/Button.jsx";
 import {FaCalendarAlt, FaRegStar, FaStar} from "react-icons/fa";
 import Rating from "react-rating";
 import {showToast} from "@shared/UI/Toast.jsx";
 import DatePicker, {registerLocale} from "react-datepicker";
 import ko from "date-fns/locale/ko";
 import useJournalDraftStore from "@/stores/useJournalDraftStore.js";
+import Button from "@shared/styles/Button.jsx";
+import Input from "@shared/styles/Input.jsx";
 
 // 1. 기존 'ko' 로케일 객체를 복사
 // 2. options.weekStartsOn 값을 1로 명시하여 '월요일' 시작을 강제(0: 일요일, 1: 월요일)
@@ -58,6 +59,7 @@ export const JournalForm = (
 
     // Form은 자신의 UI 상태(formData)를 직접 관리
     const [formData, setFormData] = useState(getInitialFormData());
+    const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState(false);
 
     // 부모로부터 받은 initialData가 변경될 때마다 Form의 상태를 동기화
     useEffect(() => {
@@ -113,6 +115,12 @@ export const JournalForm = (
         // 혹은 기본값으로 설정 가능. 여기서는 이전 값을 유지하도록 한다
     };
 
+    // 커스텀 드롭다운에서 카테고리 선택 시
+    const handleCategorySelect = (categoryKey) => {
+        updateFormAndDraft({ ...formData, category: categoryKey });
+        setIsCategoryDropdownOpen(false); // 선택 후 드롭다운 닫기
+    };
+
     // 제출 시 유효성 검사 및 onSubmit 호출
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -122,41 +130,68 @@ export const JournalForm = (
         }
         onSubmit(formData);
     };
+    const selectedCategoryName = CATEGORIES.find(cat => cat.key === formData.category)?.name || '선택하세요';
 
     return (
         <form className="journal-form" onSubmit={handleSubmit}>
             {/* 제목 입력 필드 */}
             <div className="form-group">
-                <label htmlFor="title">제목</label>
-                <input type="text" id="title" name="title" value={formData.title} onChange={handleChange} required/>
+                <label htmlFor="title"></label>
+                <Input type="text" id="title" name="title" placeholder={"제목"} value={formData.title} onChange={handleChange} required/>
             </div>
 
-            {/* 카테고리 선택 필드 */}
-            <div className="form-group">
-                <label htmlFor="category">카테고리</label>
-                <select id="category" name="category" value={formData.category} onChange={handleChange}>
-                    {CATEGORIES.map(cat => <option key={cat.key} value={cat.key}>{cat.name}</option>)}
-                </select>
-            </div>
+            <div className={"categoryArating"}>
+                {/* 카테고리 선택 필드 */}
+                {/*<div className="form-group">*/}
+                {/*    <label htmlFor="category" className={"categoryLabel"}>카테고리</label>*/}
+                {/*    <select id="category" name="category" placeholder={"카테고리"} value={formData.category} className={"categorySelecter"} onChange={handleChange}>*/}
+                {/*        {CATEGORIES.map(cat => <option key={cat.key} value={cat.key}>{cat.name}</option>)}*/}
+                {/*    </select>*/}
+                {/*</div>*/}
+                <div className="form-group category-select-wrapper">
+                    <label htmlFor="category" className={"categoryLabel"}>카테고리</label>
+                    <div
+                        className={`custom-select-display ${isCategoryDropdownOpen ? 'open' : ''}`}
+                        onClick={() => setIsCategoryDropdownOpen(!isCategoryDropdownOpen)}
+                    >
+                        {selectedCategoryName}
+                        <span className="dropdown-arrow">▼</span> {/* 화살표 아이콘 */}
+                    </div>
 
-            {/* 별점 선택 컴포넌트 */}
-            <div className="form-group">
-                <label>별점</label>
-                <div className="rating-group">
-                    <Rating
-                        key={initialData ? initialData.id : 'new'} // initialData 변경 시 컴포넌트 리셋
-                        fractions={2} // 0.5 단위 평가 가능
-                        initialRating={formData.rating}
-                        onChange={handleRatingChange}
-                        emptySymbol={<FaRegStar size={24} color={"e0e0e0"}/>}
-                        fullSymbol={<FaStar size={24} color={"f1c40f"}/>}
-                    />
+                    {isCategoryDropdownOpen && (
+                        <ul className="custom-select-options">
+                            {CATEGORIES.map(cat => (
+                                <li
+                                    key={cat.key}
+                                    className={`custom-select-option-item ${formData.category === cat.key ? 'active' : ''}`}
+                                    onClick={() => handleCategorySelect(cat.key)}
+                                >
+                                    {cat.name}
+                                </li>
+                            ))}
+                        </ul>
+                    )}
+                </div>
+
+                {/* 별점 선택 컴포넌트 */}
+                <div className="form-group rating-plus">
+                    <label className={"ratingLabel"}>별점</label>
+                    <div className="rating-group">
+                        <Rating
+                            key={initialData ? initialData.id : 'new'} // initialData 변경 시 컴포넌트 리셋
+                            fractions={2} // 0.5 단위 평가 가능
+                            initialRating={formData.rating}
+                            onChange={handleRatingChange}
+                            emptySymbol={<FaRegStar size={24} color={"e0e0e0"}/>}
+                            fullSymbol={<FaStar size={24} color={"f1c40f"}/>}
+                        />
+                    </div>
                 </div>
             </div>
 
             {/* 날짜 입력 필드 */}
             <div className="form-group">
-                <label>날짜</label>
+                <label></label>
                 <div className="datepicker-container">
                     {/* 사용자에게 보여지는 버튼 역할 수행 */}
                     <label htmlFor="journalDatePicker" className="custom-date-label">
@@ -194,17 +229,17 @@ export const JournalForm = (
 
             {/* 내용 입력 textarea */}
             <div className="form-group content-group">
-                <label htmlFor="content">내용</label>
-                <textarea id="content" name="content" value={formData.content}
+                <label htmlFor="content"></label>
+                <textarea id="content" name="content" placeholder={"내용을 입력하세요..."} value={formData.content}
                           onChange={handleChange} required/>
             </div>
 
             {/* 폼 동작 버튼 */}
             <div className="form-actions">
-                <Button type="button" onClick={onCancel} disabled={isSubmitting}>닫기</Button>
-                <Button type="submit" active disabled={isSubmitting}>
+                <Button variant="button2" type="submit" active disabled={isSubmitting}>
                     {isSubmitting ? '저장 중...' : '저장'}
                 </Button>
+                <Button variant="button2" type="button" onClick={onCancel} disabled={isSubmitting}>닫기</Button>
             </div>
         </form>
     );

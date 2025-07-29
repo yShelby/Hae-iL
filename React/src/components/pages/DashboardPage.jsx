@@ -26,7 +26,7 @@ const DashboardPage = () => {
     // [수정] user?.id와 refreshKey 의존성 분리
     // 1. 초기 데이터 로딩을 위한 useEffect
     useEffect(() => {
-        if (!user || !user.id) {
+        if (!user?.id) {
             setIsLoading(false);
             setWordData([]);
             return;
