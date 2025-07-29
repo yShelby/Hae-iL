@@ -21,6 +21,7 @@ import {
 
 //=== Library Chart.js ===
 import { CategoryScale, Chart, LinearScale } from "chart.js";
+import {useTheme} from "@shared/styles/ThemeProvider.jsx";
 Chart.register(LinearScale, CategoryScale);
 
 // ===================================================
@@ -75,7 +76,7 @@ export default function Charts() {
         fetchData().catch(console.error);
     }, [fetchData]);
 
-    // // === 더미 데이터 (실제 데이터 로딩 전까지 사용) ===
+    // === 더미 데이터 (실제 데이터 로딩 전까지 사용) ===
     // // 감정 점수 데이터 (dummy) - 주간 / 월간 길이에 맞춰 slice 처리
     // const displayMoodData = moodDataForChart.length > 0
     //     ? moodDataForChart
@@ -104,6 +105,9 @@ export default function Charts() {
     Chart.defaults.font.family = defaultChartStyle.fontFamily;
     Chart.defaults.font.weight = defaultChartStyle.fontWeight;
 
+    // === 테마 키 ===
+    const { themeKey } = useTheme();
+
     return (
         <div className={"charts-page"}>
             <div className={"upper-chart-box"}>
@@ -130,7 +134,7 @@ export default function Charts() {
                                 dates={weeklyLabels}
                                 rawData={moodDataForChart}
                                 chartTitle="주간 기분 변화"
-                                chartStyle={weeklyLineStyle}
+                                chartStyle={moodLineStyle[themeKey]}
                                 chartFontSize={chartFontSize.weeklyLineStyle}
                                 gridColor={gridColor}
                             />
@@ -140,7 +144,7 @@ export default function Charts() {
                                 dates={monthlyLabels}
                                 rawData={moodDataForChart}
                                 chartTitle="월간 기분 변화"
-                                chartStyle={monthlyLineStyle}
+                                chartStyle={moodLineStyle[themeKey]}
                                 chartFontSize={chartFontSize.monthlyLineStyle}
                                 gridColor={gridColor}
                             />
@@ -158,7 +162,7 @@ export default function Charts() {
                                 dates={weeklyLabels}
                                 rawData={sleepDataForChart}
                                 chartTitle={"주간 수면 시간"}
-                                chartStyle={sleepBarStyle}
+                                chartStyle={sleepBarStyle[themeKey]}
                                 chartFontSize={chartFontSize.sleepBarStyle}
                                 gridColor={gridColor}
                             />
@@ -170,7 +174,7 @@ export default function Charts() {
                                 dates={weeklyLabels}
                                 rawData={exerciseDataForChart}
                                 chartTitle={"주간 운동 시간"}
-                                chartStyle={exerciseBarStyle}
+                                chartStyle={exerciseBarStyle[themeKey]}
                                 chartFontSize={chartFontSize.exerciseBarStyle}
                                 gridColor={gridColor}
                             />
@@ -182,8 +186,8 @@ export default function Charts() {
                             <RadarChart
                                 previousData={lastMonthData}
                                 rawData={thisMonthData}
-                                chartStyleThis={diagnosisRadarStyle}
-                                chartStylePrevious={previousDiagnosisRadarStyle}
+                                chartStyleThis={diagnosisRadarStyle[themeKey]}
+                                chartStylePrevious={previousDiagnosisRadarStyle[themeKey]}
                                 chartFontSize={chartFontSize.diagnosisRadarStyle}
                                 gridColor={gridColor}
                             />
@@ -205,54 +209,131 @@ const gridColor = {
     color: "rgba(0, 0, 0, 0.06)"
 };
 
-const weeklyLineStyle = {
-    borderColor: "rgba(75,192,192,1)",
-    backgroundColor: "rgba(75,192,192,0.1)",
-    fill: "start",
-    tension: 0.4,
-    pointRadius: 3
-};
-
-const monthlyLineStyle = {
-    borderColor: "rgba(75,192,192,1)",
-    backgroundColor: "rgba(75,192,192,0.1)",
-    fill: "start",
-    tension: 0.4,
-    pointRadius: 3
+const moodLineStyle = {
+    theme1 : {
+        borderColor: "rgba(75,119,255,1)",
+        backgroundColor: "rgba(75,119,255,0.1)",
+        fill: "start",
+        tension: 0.4,
+        pointRadius: 3
+    },
+    theme2 : {
+        borderColor: "rgba(75,192,192,1)",
+        backgroundColor: "rgba(75,192,192,0.1)",
+        fill: "start",
+        tension: 0.4,
+        pointRadius: 3
+    },
+    theme3 : {
+        borderColor: "rgba(75,192,192,1)",
+        backgroundColor: "rgba(75,192,192,0.1)",
+        fill: "start",
+        tension: 0.4,
+        pointRadius: 3
+    },
 };
 
 const sleepBarStyle = {
-    backgroundColor: "rgba(54, 162, 235, 0.5)",
-    borderColor: "rgba(54, 162, 235, 1)",
-    borderWidth: 2,
-    borderSkipped: false,
-    borderRadius: 7
+    theme1:{
+        backgroundColor: "rgba(198,192,156, 0.5)",
+        borderColor: "rgb(255,182,81)",
+        borderWidth: 2,
+        borderSkipped: false,
+        borderRadius: 7
+    },
+    theme2:{
+        backgroundColor: "rgba(54, 162, 235, 0.5)",
+        borderColor: "rgba(54, 162, 235, 1)",
+        borderWidth: 2,
+        borderSkipped: false,
+        borderRadius: 7
+    },
+    theme3:{
+        backgroundColor: "rgba(54, 162, 235, 0.5)",
+        borderColor: "rgba(54, 162, 235, 1)",
+        borderWidth: 2,
+        borderSkipped: false,
+        borderRadius: 7
+    }
+
 };
 
 const exerciseBarStyle = {
-    backgroundColor: "rgba(255, 206, 86, 0.5)",
-    borderColor: "rgba(255, 206, 86, 1)",
-    borderWidth: 2,
-    borderRadius: 10
+    theme1:{
+        backgroundColor: "rgba(255,201,139, 0.5)",
+        borderColor: "rgba(255,201,139, 1)",
+        borderWidth: 2,
+        borderRadius: 10
+    },
+    theme2:{
+        backgroundColor: "rgba(255, 206, 86, 0.5)",
+        borderColor: "rgba(255, 206, 86, 1)",
+        borderWidth: 2,
+        borderRadius: 10
+    },
+    theme3:{
+        backgroundColor: "rgba(255, 206, 86, 0.5)",
+        borderColor: "rgba(255, 206, 86, 1)",
+        borderWidth: 2,
+        borderRadius: 10
+    }
 };
 
 const diagnosisRadarStyle = {
-    backgroundColor: "rgba(255,99,132,0.15)",
-    borderColor: "rgba(255,99,132,1)",
-    pointBackgroundColor: "rgba(255,99,132,1)",
-    pointBorderColor: "rgba(255,99,132,1)",
-    pointRadius: 2,
-    borderWidth: 2
+    theme1:{
+        backgroundColor: "rgba(231,151,150,0.15)",
+        borderColor: "rgba(231,151,150,1)",
+        pointBackgroundColor: "rgba(231,151,150,1)",
+        pointBorderColor: "rgba(231,151,150,1)",
+        pointRadius: 2,
+        borderWidth: 2
+    },
+    theme2:{
+        backgroundColor: "rgba(255,99,132,0.15)",
+        borderColor: "rgba(255,99,132,1)",
+        pointBackgroundColor: "rgba(255,99,132,1)",
+        pointBorderColor: "rgba(255,99,132,1)",
+        pointRadius: 2,
+        borderWidth: 2
+    },
+    theme3:{
+        backgroundColor: "rgba(255,99,132,0.15)",
+        borderColor: "rgba(255,99,132,1)",
+        pointBackgroundColor: "rgba(255,99,132,1)",
+        pointBorderColor: "rgba(255,99,132,1)",
+        pointRadius: 2,
+        borderWidth: 2
+    }
 };
 
 const previousDiagnosisRadarStyle = {
-    backgroundColor: "rgba(54,162,235,0.2)",
-    borderColor: "rgba(54,162,235,1)",
-    pointBackgroundColor: "rgba(54,162,235,1)",
-    pointBorderColor: "rgba(54,162,235,1)",
-    pointRadius: 2,
-    borderWidth: 2,
-    borderDash: [3, 3]
+    theme1:{
+        backgroundColor: "rgba(244,207,199,0.2)",
+        borderColor: "rgba(244,207,199,1)",
+        pointBackgroundColor: "rgba(244,207,199,1)",
+        pointBorderColor: "rgba(244,207,199,1)",
+        pointRadius: 2,
+        borderWidth: 2,
+        borderDash: [3, 3]
+    },
+    theme2:{
+        backgroundColor: "rgba(54,162,235,0.2)",
+        borderColor: "rgba(54,162,235,1)",
+        pointBackgroundColor: "rgba(54,162,235,1)",
+        pointBorderColor: "rgba(54,162,235,1)",
+        pointRadius: 2,
+        borderWidth: 2,
+        borderDash: [3, 3]
+    },
+    theme3:{
+        backgroundColor: "rgba(54,162,235,0.2)",
+        borderColor: "rgba(54,162,235,1)",
+        pointBackgroundColor: "rgba(54,162,235,1)",
+        pointBorderColor: "rgba(54,162,235,1)",
+        pointRadius: 2,
+        borderWidth: 2,
+        borderDash: [3, 3]
+    }
 };
 
 const chartFontSize = {

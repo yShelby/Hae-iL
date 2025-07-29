@@ -68,7 +68,7 @@ export default function DateNavigator({
     };
 
     return (
-        <div>
+        <div className="before-after-button">
             <Button onClick={onPrev}>&lt;</Button>
             <Button onClick={onNext} disabled={!canGoForward()}>&gt;</Button>
         </div>
