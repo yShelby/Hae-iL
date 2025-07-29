@@ -24,58 +24,6 @@ export default function SleepFloatingBarChart({dates, rawData, chartTitle, chart
         ? rawData.map(value => Number.isNaN(value) ? null : value)
         : [];
 
-    // ===============================================
-
-    // === 시간 계산 로직 ===
-
-    // 기본 로직
-        // 1. 취침 시간은 일반적으로 전날과 다음날(=일기 작성 당일)에 걸쳐있음(주로 이틀, 최대 사흘까지)
-        // 2. 취침시각과 일어난 시각이 전날에서 다음날에 걸쳐져 있는지, 다음날 당일에만 있는지 확인하기 위한 로직
-            // 2-1. 취침시각 - 일어난 시각 > 0 : 취침시각은 전날, 일어난 시각은 다음날
-            // 2-2. 취침시각 - 일어난 시각 =< 0 : 취침시각은 다음날, 일어난 시각도 다음날
-        // 3. 취침시각이 오전(AM)인지 오후(PM)인지 판별하기 위해 SLEEP_DAY/2 사용
-            // 3-1. 취침시각 - SLEEP_DAY/2 >= 0 : 취침시각은 오후
-            // 3-2. 취침시각 - SLEEP_DAY/2 < 0 : 취침시각은 오전
-
-    // [bedtime, waketime] 로직
-        // 1. 취침시각 - SLEEP_DAY/2 >= 0 이며 취침시각 - 일어난 시각 > 0인 경우 (취침시각 전날 오후, 일어난 시각 다음날 오전)
-            // = [bedtime, waketime + SLEEP_DAY]
-        // 2. 취침시각 - SLEEP_DAY/2 >= 0 이며 취침시각 - 일어난 시각 =< 0인 경우 (취침시각 전날 오후, 일어난 시각 전날 오후)
-            // = [bedtime, waketime]
-        // 3. 취침시각 - SLEEP_DAY/2 < 0이며, 취침시각 - 일어난 시각 > 0인 경우 (취침시각 다음날 오전, 일어난 시각 다다음날 오전)
-            // = [bedtime + SLEEP_DAY, waketime  + SLEEP_DAY * 2]
-        // 4. 취침시각 - SLEEP_DAY/2 < 0, 취침시각 - 일어난 시각 =< 0인 경우 (취침시각 다음날 오전, 일어난 시각 다음날 오전 또는 오후)
-            // = [bedtime + SLEEP_DAY, waketime  + SLEEP_DAY]
-
-    // ===============================================
-
-    // === 수면 시간 처리 === < 백엔드로 가야 함
-    //
-    // const SLEEP_DAY = 1440; // 24시간
-    //
-    // // [bedtime, waketime] -> [normBed, normWake] 변환
-    // function normalizeSleepTime(bed, wake) {
-    //
-    //     // [bedtime, waketime] return 하기
-    //
-    //     if (bed >= SLEEP_DAY/2 && wake < bed) {
-    //         // 취침시각 전날 오후, 일어난 시각 다음날 오전 (ex. 21:00~08:00)
-    //         wake += SLEEP_DAY;
-    //     } else if (bed < SLEEP_DAY/2 && wake < bed) {
-    //         // 취침시각 다음날 오전, 일어난 시각 다다음날 오전 (ex. 03:00~01:15)
-    //         bed += SLEEP_DAY;
-    //         wake += SLEEP_DAY * 2;
-    //     } else if (bed <= SLEEP_DAY/2 && wake >= bed) {
-    //     // 취침시각 다음날 오전, 일어난 시각 다음날 오전 또는 오후 (ex. 00:30~08:30)
-    //     bed += SLEEP_DAY;
-    //     wake += SLEEP_DAY;
-    //     }
-    //     // 취침시각 전날 오후, 일어난 시각 전날 오후 (ex. 21:00~23:30)는 변화 없으므로 그냥 return
-    //
-    //     return [bed, wake];
-    //
-    // }
-
     const SLEEP_DAY = 1440; // 24시간
 
     // 백엔드에서 이미 정규화된 데이터가 옴: [[normBed, normWake], ...]
