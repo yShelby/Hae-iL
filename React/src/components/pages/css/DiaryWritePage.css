@@ -73,7 +73,6 @@
     display: flex;
     justify-content: flex-end;
     gap: 1rem;
-    margin-bottom: 1rem;
     margin-right: 1rem;
     flex-shrink: 0; /* 높이 고정 */
 }
@@ -133,7 +132,7 @@
     /*gap: 20px;*/
     /*margin-bottom: 1rem;*/
     flex-wrap: wrap;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
 }
 
 .diary-readonly-content {
@@ -146,6 +145,7 @@
 }
 
 .diary-view-wrapper {
+    height: 80%;
     padding: 1.5rem;
     background: #fff;
     border-radius: 30px;

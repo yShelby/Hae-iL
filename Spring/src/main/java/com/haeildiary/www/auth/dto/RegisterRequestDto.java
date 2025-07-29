@@ -1,5 +1,7 @@
 package com.haeildiary.www.auth.dto;
 
+import com.haeildiary.www.auth.validation.ValidEmotionSelection;
+import com.haeildiary.www.auth.validation.ValidGenreSelection;
 import lombok.Data;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -35,11 +37,9 @@ public class RegisterRequestDto {
     @Size(min = 2, max = 15, message = "닉네임은 2자 이상, 15자 이하여야 합니다.")
     private String nickname;
 
-    private String profileImage;
-
-    //    @ValidEmotionSelection
+//    @ValidEmotionSelection
     private List<String> initialEmotion;
 
-    //    @ValidGenreSelection
+//    @ValidGenreSelection
     private List<String> initialGenre;
 }

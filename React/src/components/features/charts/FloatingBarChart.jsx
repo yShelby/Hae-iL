@@ -49,42 +49,44 @@ export default function SleepFloatingBarChart({dates, rawData, chartTitle, chart
 
     // ===============================================
 
-    // === 수면 시간 처리 ===
+    // === 수면 시간 처리 === < 백엔드로 가야 함
+    //
+    // const SLEEP_DAY = 1440; // 24시간
+    //
+    // // [bedtime, waketime] -> [normBed, normWake] 변환
+    // function normalizeSleepTime(bed, wake) {
+    //
+    //     // [bedtime, waketime] return 하기
+    //
+    //     if (bed >= SLEEP_DAY/2 && wake < bed) {
+    //         // 취침시각 전날 오후, 일어난 시각 다음날 오전 (ex. 21:00~08:00)
+    //         wake += SLEEP_DAY;
+    //     } else if (bed < SLEEP_DAY/2 && wake < bed) {
+    //         // 취침시각 다음날 오전, 일어난 시각 다다음날 오전 (ex. 03:00~01:15)
+    //         bed += SLEEP_DAY;
+    //         wake += SLEEP_DAY * 2;
+    //     } else if (bed <= SLEEP_DAY/2 && wake >= bed) {
+    //     // 취침시각 다음날 오전, 일어난 시각 다음날 오전 또는 오후 (ex. 00:30~08:30)
+    //     bed += SLEEP_DAY;
+    //     wake += SLEEP_DAY;
+    //     }
+    //     // 취침시각 전날 오후, 일어난 시각 전날 오후 (ex. 21:00~23:30)는 변화 없으므로 그냥 return
+    //
+    //     return [bed, wake];
+    //
+    // }
 
     const SLEEP_DAY = 1440; // 24시간
 
-    // [bedtime, waketime] -> [normBed, normWake] 변환
-    function normalizeSleepTime(bed, wake) {
-
-        // [bedtime, waketime] return 하기
-
-        if (bed >= SLEEP_DAY/2 && wake < bed) {
-            // 취침시각 전날 오후, 일어난 시각 다음날 오전 (ex. 21:00~08:00)
-            wake += SLEEP_DAY;
-        } else if (bed < SLEEP_DAY/2 && wake < bed) {
-            // 취침시각 다음날 오전, 일어난 시각 다다음날 오전 (ex. 03:00~01:15)
-            bed += SLEEP_DAY;
-            wake += SLEEP_DAY * 2;
-        } else if (bed <= SLEEP_DAY/2 && wake >= bed) {
-        // 취침시각 다음날 오전, 일어난 시각 다음날 오전 또는 오후 (ex. 00:30~08:30)
-        bed += SLEEP_DAY;
-        wake += SLEEP_DAY;
-        }
-        // 취침시각 전날 오후, 일어난 시각 전날 오후 (ex. 21:00~23:30)는 변화 없으므로 그냥 return
-
-        return [bed, wake];
-
-    }
-
-    // data: [[normBed, normWake], ...]
-    const normalizedData = data.map(arr => normalizeSleepTime(arr[0], arr[1]));
+    // 백엔드에서 이미 정규화된 데이터가 옴: [[normBed, normWake], ...]
+    const normalizedData = data;
 
     // y축 범위 자동계산 (pad 3시간 : minTime - 3h ~ maxTime + 3h)
     const starts = normalizedData.map(([bed]) => bed);
     const ends   = normalizedData.map(([_, wake]) => wake);
     const padding = 180;
-    const yMin = starts.length > 0 ? Math.max(0, Math.min(...starts) - padding) : 0;
-    const yMax = ends.length > 0 ? Math.min(SLEEP_DAY * 3, Math.max(...ends) + padding) : 0;
+    const yMin = starts.length > 0 ? Math.max(0, Math.min(...starts) - padding) : 720;
+    const yMax = ends.length > 0 ? Math.min(SLEEP_DAY * 3, Math.max(...ends) + padding) : SLEEP_DAY + 720;
 
     // =======================================================
     // === for chart ===
@@ -101,6 +103,7 @@ export default function SleepFloatingBarChart({dates, rawData, chartTitle, chart
 
     const options = {
         responsive: true,
+        maintainAspectRatio: false,
         plugins: {
             legend: { display: false },
             tooltip: {
@@ -132,6 +135,7 @@ export default function SleepFloatingBarChart({dates, rawData, chartTitle, chart
                 beginAtZero: false,
                 ticks: {
                     stepSize: 60, // 60분
+                    precision: 0,
                     maxTicksLimit: 24, // 하루 24시간
                     callback: (value) => formatHM(value),
                 },
@@ -145,9 +149,13 @@ export default function SleepFloatingBarChart({dates, rawData, chartTitle, chart
     // 시각 라벨 포맷: 0~48h 사이여도 항상 00:00~23:59 (실제 시간)로 표기
     function formatHM(value) {
         const h = Math.floor((value % SLEEP_DAY) / 60);
-        const m = value % 60;
+        const m = Math.floor(value % 60);
         return `${h.toString().padStart(2,"0")}:${m.toString().padStart(2,"0")}`;
     }
 
-    return <Bar data={chartData} options={options} />;
+    return (
+        <div style={{height: "95%", margin: "0 auto"}}>
+            <Bar data={chartData} options={options} />
+        </div>
+    );
 }

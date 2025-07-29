@@ -25,6 +25,13 @@ export default function NormalBarChart({ dates, rawData, chartTitle, chartStyle,
         ? rawData.map(value => Number.isNaN(value) ? null : value)
         : [];
 
+    // 최대값 계산, null과 undefined 제외
+    const validData = data.filter(v => typeof v === "number" && true);
+    const maxDuration = validData.length > 0 ? Math.max(...validData) : 0;
+
+    // y축 최대값 설정 : maxDuration > 360이면 maxDuration + 60, 아니면 360
+    const yMax = maxDuration >= 360 ? maxDuration + 60 : 360;
+
     const chartData = {
         labels: dates,
         datasets: [
@@ -38,6 +45,7 @@ export default function NormalBarChart({ dates, rawData, chartTitle, chartStyle,
 
     const options = {
         responsive: true,
+        maintainAspectRatio: false,
         plugins: {
             legend: { display: false },
             tooltip: {
@@ -68,11 +76,16 @@ export default function NormalBarChart({ dates, rawData, chartTitle, chartStyle,
                 },
                 grid: {
                     display: false
-                }
+                },
+                max: yMax
             }
         }
     };
-    return <Bar data={chartData} options={options} />;
+    return (
+        <div style={{height: "95%", margin: "0 auto"}}>
+            <Bar data={chartData} options={options} />
+        </div>
+    );
 }
 
 function formatMinutes(min) {

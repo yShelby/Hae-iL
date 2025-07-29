@@ -10,7 +10,7 @@ import styled from "styled-components";
 const CalendarWrapper = styled.div`
   width: ${({ width }) => width || "420px"};
   height: ${({ height }) => height || "auto"};
-  margin: 0 auto;
+  //margin: 0 auto;
   background: #fff;
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.08);

@@ -17,4 +17,17 @@ public interface SleepLogRepository extends JpaRepository<SleepLog, Long> {
     @Query("SELECT s.sleepDate FROM SleepLog s WHERE s.user.userId = :userId AND FUNCTION('YEAR', s.sleepDate) = :year AND FUNCTION('MONTH', s.sleepDate) = :month")
     List<LocalDate> findActiveDatesByUserIdAndYearMonth(@Param("userId") Integer userId, @Param("year") int year, @Param("month") int month);
     List<SleepLog> findAllByUserUserIdAndSleepDateBetween(Integer userId, LocalDate start, LocalDate end);
+
+    // 차트용 조회 쿼리
+    @Query("""
+            SELECT s.sleepDate, s.bedtime, s.waketime
+            FROM SleepLog s
+            WHERE s.user.userId = :userId
+            AND s.sleepDate BETWEEN :startDate AND :endDate
+            ORDER BY s.sleepDate ASC
+            """)
+    List<Object[]> findSleepDataForChart(@Param("userId") Integer userId,
+                                         @Param("startDate") LocalDate startDate,
+                                         @Param("endDate") LocalDate endDate);
+
 }

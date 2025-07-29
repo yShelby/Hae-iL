@@ -28,4 +28,18 @@ public interface MoodEntryRepository extends JpaRepository<MoodEntry, Long> {
             @Param("endDate") LocalDate endDate
     );
 
+    // 차트용 데이터 조회
+    @Query("""
+            SELECT d.diaryDate, m.moodScore
+            FROM MoodEntry m JOIN m.diary d
+            WHERE d.user.userId = :userId
+            AND d.diaryDate BETWEEN :startDate AND :endDate
+            ORDER BY d.diaryDate
+            """)
+    List<Object[]> findMoodScoresForChart(
+            @Param("userId") Integer userId,
+            @Param("startDate") LocalDate startDate,
+            @Param("endDate") LocalDate endDate
+    );
+
 }

@@ -11,9 +11,11 @@ import {useCheckLogin} from "@/hooks/useCheckLogin.js";
 import './css/widget.css';
 import Input from "@shared/styles/Input.jsx";
 import Button from "@shared/styles/Button.jsx";
+import {useAuth} from "@shared/context/AuthContext.jsx";
 
 export default function ExerciseWidget({date, onDataChange}) {
     const checkLogin = useCheckLogin();
+    const { user } = useAuth();
     const [loading, setLoading] = useState(false);
     const [data, setData] = useState(null);
     const [editing, setEditing] = useState(true);
@@ -26,6 +28,14 @@ export default function ExerciseWidget({date, onDataChange}) {
     // 날짜 바뀔 때 데이터 로드
     useEffect(() => {
         if (!date) return;
+        // 로그인 안 되어 있으면 로딩 끄고 바로 종료
+        if (!user) {
+            setLoading(false);
+            setData(null);
+            setEditing(true);
+            setForm({ exerciseType: '', duration: '', intensity: '' });
+            return;
+        }
         setLoading(true);
 
         fetchExerciseByDate(date)

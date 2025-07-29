@@ -32,6 +32,10 @@ export default function LineChart({ dates, rawData, chartTitle, chartStyle, char
         ? rawData.map(value => Number.isNaN(value) ? null : value)
         : [];
 
+    console.log("rawdata:" + rawData);
+    console.log("dates:" + dates);
+    console.log("chartTitle:" + chartTitle);
+
     // === Animation ===
     // 전체 애니메이션 시간(ms)
     const totalDuration = 300;
@@ -86,6 +90,7 @@ export default function LineChart({ dates, rawData, chartTitle, chartStyle, char
 
     const options = useMemo(() => ({
         responsive: true,
+        maintainAspectRatio: false,
         spanGaps: true,
         animation,
         plugins: {
@@ -123,7 +128,7 @@ export default function LineChart({ dates, rawData, chartTitle, chartStyle, char
 
 
 
-    return <Line data={chartData} options={options} />;
+    return <Line data={chartData} options={options} redraw />;
 };
 
 

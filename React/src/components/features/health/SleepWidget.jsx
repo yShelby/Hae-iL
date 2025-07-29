@@ -10,10 +10,11 @@ import {useCheckLogin} from "@/hooks/useCheckLogin.js";
 import {showToast} from "@shared/UI/Toast.jsx";
 import Button from "@shared/styles/Button.jsx";
 import Input from "@shared/styles/Input.jsx";
+import {useAuth} from "@shared/context/AuthContext.jsx";
 
 export default function SleepWidget({date, onDataChange}) {
     const checkLogin = useCheckLogin();
-
+    const { user } = useAuth();
     const [loading, setLoading] = useState(false);
     const [data, setData] = useState(null);
     const [editing, setEditing] = useState(true);
@@ -24,6 +25,13 @@ export default function SleepWidget({date, onDataChange}) {
 
     useEffect(() => {
         if (!date) return;
+        if (!user) {
+            setData(null);
+            setEditing(true);
+            setForm({ bedtime: '', waketime: '' });
+            setLoading(false);
+            return;
+        }
         setLoading(true);
 
         fetchSleepByDate(date)

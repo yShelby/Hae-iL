@@ -4,7 +4,6 @@
     display:flex;
     flex-direction: column;
     align-items: center;
-    padding-top: 10px;
     margin: 10px;
 }
 .timeline-controls {
@@ -55,8 +54,8 @@
 
 /* 개별 카드 */
 .timeline-card {
-    width: 85px;
-    height: 85px;
+    width: 80px;
+    height: 80px;
     border-radius: 30%;
     background-color: #FFF;
     box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.25);

@@ -62,7 +62,7 @@ public class MyUserDetailService implements UserDetailsService {
                 user.getUserId(),          // 유저 고유 ID
                 user.getNickname(),        // 닉네임
                 user.getProfileImage(),    // 프로필 이미지 경로 또는 URL
-                user.getThemeId() != null ? user.getThemeId() : null,         // 테마 아이디 (사용자 선호)
+                user.getThemeName() != null ? user.getThemeName() : null,         // 테마 이름(사용자 선호)
                 user.getLastLoginAt() != null ? user.getLastLoginAt() : null,     // 마지막 로그인 시간
                 user.getCreatedAt() != null ? user.getCreatedAt() : null        // 계정 생성일
             );

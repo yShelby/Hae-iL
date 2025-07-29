@@ -33,8 +33,10 @@ import SelfDiagnosis from "@features/selfDiagnosis/SelflDiagnosis.jsx";
 import MonthlyPage from "@pages/MonthlyPage.jsx";
 import RecommendLayout from "@/layouts/RecommendLayout.jsx";
 import Charts from "@pages/Charts.jsx";
-import LegalCopyright from "@pages/LegalCopyright.jsx";
-import LegalPrivacyPolicy from "@pages/LegalPrivacyPolicy.jsx";
+import LegalCopyright from "@features/settings/LegalCopyright.jsx";
+import LegalPrivacyPolicy from "@features/settings/LegalPrivacyPolicy.jsx";
+import SettingsLayout from "@/layouts/SettingsLayout.jsx";
+import SettingsPage from "@pages/SettingsPage.jsx";
 
 /**
  * ✨ [추가] 애니메이션과 라우팅을 실제로 처리하는 내부 컴포넌트
@@ -102,10 +104,15 @@ const AnimatedRoutes = () => {
                         </Route>
                         <Route path={"movie"} element={<RecommendLayout />}/>
                     </Route>
-                    {/* 캘린더 페이지 라우트 */}
-                    <Route path="calendar" element={<Calendar />} />
+                    {/*/!* 캘린더 페이지 라우트 *!/*/}
+                    {/*<Route path="calendar" element={<Calendar />} />*/}
                     {/* 차트 페이지 라우트 */}
                     <Route path="charts" element={<Charts/>}/>
+
+                    {/* 환경설정 라우트 */}
+                    <Route path="settings" element={<SettingsLayout />}>
+                        <Route index element={<SettingsPage/>}/>
+                    </Route>
                 </Route>
             </Routes>
         </AnimatePresence>

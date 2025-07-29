@@ -28,7 +28,7 @@ public class CustomUser extends User {
     private final Integer userId;
     private final String nickname;
     private final String profileImage;
-    private final Integer themeId;
+    private final String themeName;
     private final LocalDateTime lastLoginAt;
     private final LocalDateTime createdAt;
 
@@ -39,7 +39,7 @@ public class CustomUser extends User {
             Integer userId,
             String nickname,
             String profileImage,
-            Integer themeId,
+            String themeName,
             LocalDateTime lastLoginAt,
             LocalDateTime createdAt ) {
         super(email, password, authorities);
@@ -47,7 +47,7 @@ public class CustomUser extends User {
         this.userId = userId;
         this.nickname = nickname;
         this.profileImage = profileImage;
-        this.themeId = themeId;
+        this.themeName = themeName;
         this.lastLoginAt = lastLoginAt;
         this.createdAt = createdAt;
     }
