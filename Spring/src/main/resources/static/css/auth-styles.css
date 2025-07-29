@@ -1,5 +1,6 @@
 /* @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap'); */
 @import './font.css';
+@import './global.css';
 
 :root {
     /* --primary-color: #3498db; */
@@ -17,7 +18,7 @@
 
 body {
     font-family: 'NPSfont-Bold', sans-serif;
-    background-color: var(--background-color);
+    background-image: var(--border-gradient);
     color: var(--text-color);
     margin: 0;
     display: flex;
@@ -29,9 +30,9 @@ body {
 }
 
 .container {
-    background-color: var(--light-color);
+    background-color: rgba(255, 255, 255, 0.8);
     padding: 40px;
-    border-radius: 12px;
+    border-radius: 30px;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
     width: 100%;
     max-width: 480px; /* Adjusted for forms with more fields */
@@ -43,13 +44,14 @@ h2 {
     color: var(--primary-color);
     margin-top: 0;
     margin-bottom: 10px;
-    font-weight: 700;
+    font-family: 'NPSfont-Bold', sans-serif;
 }
 
 .description {
     color: #777;
     margin-bottom: 30px;
-    font-size: 15px;
+    font-family: 'NPSfont', sans-serif;
+    font-size: 14px;
 }
 
 /* Added label styles for register page */
@@ -72,6 +74,7 @@ input[type="url"] { /* Added input[type="url"] */
     border: 1px solid var(--border-color);
     border-radius: 8px;
     font-size: 16px;
+    font-family: 'pretend', sans-serif;
     box-sizing: border-box;
     transition: border-color 0.3s, box-shadow 0.3s;
 }
@@ -90,14 +93,42 @@ button {
     width: 100%;
     padding: 7px 16px;
     border: none;
-    border-radius: 8px;
-    background-color: var(--primary-color);
-    color: var(--light-color);
     font-size: 16px;
     font-weight: 500;
     cursor: pointer;
     transition: background-color 0.3s;
     margin-top: 10px;
+}
+
+.button2 {
+    position: relative;
+    width: 100%;
+    height: 35px;
+    background: var(--border-gradient);
+    border-radius: 10px;
+    font-family: 'Tmoney RoundWind', sans-serif;
+    font-size: 12px;
+    color: var(--primary-color);
+    box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.25);
+    overflow: hidden;
+    background: transparent;
+}
+.button2::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--border-gradient);
+    opacity: 0.3;
+    z-index: 0;
+    border-radius: 10px;
+}
+.button2 :focus {
+    color: #FFF;
+    box-shadow: 0 0 0 1px rgba(0, 123, 255, 0.25);
+}
+.button2 > * {
+    position: relative;
+    z-index: 1;
 }
 
 button:hover {
@@ -164,13 +195,22 @@ button:disabled {
 }
 .input-group input {
     flex-grow: 1;
+    font-family: 'pretend', sans-serif;
 }
 .input-group button {
     width: auto;
     flex-shrink: 0;
     padding: 12px 20px;
     margin-top: 0;
+    font-family: 'NPSfont', sans-serif;
+    height: auto;
 }
+
+ .input-password {
+     font-family: 'pretend', sans-serif;
+     content: '';
+     inset: 0;
+ }
 
 
 /* Modal Styles */
