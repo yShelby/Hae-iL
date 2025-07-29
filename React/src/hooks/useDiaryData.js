@@ -41,6 +41,7 @@ export const useDiaryData = () => {
     // selectedDate가 바뀔 때마다 자동으로 해당 일기 데이터 불러오기
     useEffect(() => {
         if (selectedDate) {
+            setDiaryForDate(null);
             fetchDiaryForDate(selectedDate);
         }
     }, [selectedDate, fetchDiaryForDate]);
@@ -51,10 +52,12 @@ export const useDiaryData = () => {
         fetchDiaryForDate(selectedDate);
     }, [selectedDate, fetchDiaryForDate]);
 
+    const selectedDiaryId = diaryForDate?.diaryId || null;
 
     return {
         user,
         selectedDate,
+        selectedDiaryId,
         setSelectedDate,
         diaryForDate,
         isLoading,

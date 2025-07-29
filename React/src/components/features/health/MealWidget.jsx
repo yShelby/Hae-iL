@@ -10,10 +10,11 @@ import {useCheckLogin} from "@/hooks/useCheckLogin.js";
 import {showToast} from "@shared/UI/Toast.jsx";
 import Input from "@shared/styles/Input.jsx";
 import Button from "@shared/styles/Button.jsx";
+import {useAuth} from "@shared/context/AuthContext.jsx";
 
 export default function MealWidget({date, onDataChange}) {
     const checkLogin = useCheckLogin();
-
+    const { user } = useAuth();
     const [loading, setLoading] = useState(false);
     const [data, setData] = useState(null);
     const [editing, setEditing] = useState(true);
@@ -26,6 +27,14 @@ export default function MealWidget({date, onDataChange}) {
 
     useEffect(() => {
         if (!date) return;
+        if (!user) {
+            setLoading(false);
+            setData(null);
+            setEditing(true);
+            setForm({ breakfast: '', lunch: '', dinner: '', snack: '' });
+            return;
+        }
+
         setLoading(true);
 
         fetchMealByDate(date)

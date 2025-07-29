@@ -21,13 +21,18 @@ const DiaryLayout = () => {
         user,
         selectedDate,
         setSelectedDate,
+        selectedDiaryId,
         diaryForDate: initialDiary,
         isLoading: isDiaryLoading,
         handleDiaryUpdated,
     } = useDiaryData();
 
-    const [selectedDiaryId, setSelectedDiaryId] = useState(null); // 선택된 일기 ID 상태
     const [emotionRefreshKey, setEmotionRefreshKey] = useState(0); // 감정 분석 새로고침 키
+    const [diaryIdForMood, setDiaryIdForMood] = useState(null);
+
+    useEffect(() => {
+        setDiaryIdForMood(selectedDiaryId);
+    }, [selectedDiaryId]);
 
     // URL에서 날짜가 있으면 selectedDate를 업데이트
      useEffect(() => {
@@ -49,10 +54,6 @@ const DiaryLayout = () => {
     const handleDataChange = () => {
         refetchTimeline?.();
     };
-
-    useEffect(() => {
-        setSelectedDiaryId(initialDiary?.diaryId ?? null);
-    }, [initialDiary]);
 
     // 감정 분석 결과가 수정되었을 때 호출하는 함수
     const handleEmotionUpdated = () => {
@@ -81,7 +82,7 @@ const DiaryLayout = () => {
                 <div className={"left-panel-1"}>
                         <MoodPage
                             refreshKey={emotionRefreshKey} // 갱신 키 전달
-                            selectedDiaryId={selectedDiaryId}
+                            selectedDiaryId={diaryIdForMood}
                         />
                         <GalleryThumbnail />
                 </div>
@@ -89,7 +90,7 @@ const DiaryLayout = () => {
                 <div className={"center-panel"}>
                     <Outlet context={{
                         initialDiary,
-                        setSelectedDiaryId,
+                        // setSelectedDiaryId,
                         selectedDate, // 자식 컴포넌트(DiaryWritePage)가 현재 날짜를 알 수 있도록 전달
                         setSelectedDate, // 날짜 변경 함수 추가
                         isLoading: isDiaryLoading, // 일기 로딩 상태 전달

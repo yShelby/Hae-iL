@@ -134,8 +134,7 @@ button {
         background: var(--primary-color);
         color: var(--sidebar-text);
     }
-    .login-box .login-btn:hover {
-        border: 2px solid #fff;
+    .login-box .login-btn:hover {        border: 2px solid #fff;
         background: #fcd2d3;
     }
 

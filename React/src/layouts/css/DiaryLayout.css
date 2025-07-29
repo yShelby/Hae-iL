@@ -7,7 +7,7 @@
     flex-direction: column;
     display: flex;
     align-items: center;
-    gap: 40px;
+    gap: 15px;
 }
 
 .timeline-container {
@@ -29,25 +29,25 @@
 }
 .left-panel-1 {
     width: 185px;
-    height: 610px;
+    height: 580px;
     flex-direction: column;
-    gap: 20px;
+    gap: 10px;
     font-faimily: 'NPS Font', 'sans-serif';
     font-size: 14px;
     display: flex;
 }
 .center-panel {
     width: 500px;
-    height: 610px;
+    height: 580px;
     overflow-y: auto;
 }
 
 .right-panel-1 {
     width: 204px;
-    height: 610px;
+    height: 580px;
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 10px;
 }
 
 /*.three-column-layout {*/

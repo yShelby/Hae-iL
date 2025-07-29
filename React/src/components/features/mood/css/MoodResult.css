@@ -10,10 +10,10 @@
 
 .mood-results {
     width: 180px;
-    height: 406px;
+    height: 390px;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    gap: 10px;
 }
 .mood-wrapper {
     width: 100%;
