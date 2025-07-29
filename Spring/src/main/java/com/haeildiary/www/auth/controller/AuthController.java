@@ -283,7 +283,7 @@ public class AuthController {
         return "auth/my-page.html";
     }
 
-    // 1️⃣4️⃣ 마이페이지 - 비밀번호 변경 처리
+    // 1️⃣4️⃣ 환경설정 - 비밀번호 재설정 요청처리
     @PostMapping("/my-page/change-password")
     @ResponseBody
     public Map<String, Object> changePassword(@RequestBody ChangePWRequestDto dto,

@@ -341,7 +341,7 @@ public class UserService {
         return user;
     }
 
-    // 1️⃣4️⃣ 비밀번호 변경: 현재 비밀번호 검증 → 새 비밀번호 저장
+    // 1️⃣4️⃣ 비밀번호 재설정 : 현재 비밀번호 검증 → 새 비밀번호 저장
     @Transactional
     public void changePassword(String email, String currentPassword, String newPassword) {
         UserEntity user = userRepository.findByEmail(email)

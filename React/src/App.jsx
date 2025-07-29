@@ -33,8 +33,8 @@ import SelfDiagnosis from "@features/selfDiagnosis/SelflDiagnosis.jsx";
 import MonthlyPage from "@pages/MonthlyPage.jsx";
 import RecommendLayout from "@/layouts/RecommendLayout.jsx";
 import Charts from "@pages/Charts.jsx";
-import LegalCopyright from "@pages/LegalCopyright.jsx";
-import LegalPrivacyPolicy from "@pages/LegalPrivacyPolicy.jsx";
+import LegalCopyright from "@features/settings/LegalCopyright.jsx";
+import LegalPrivacyPolicy from "@features/settings/LegalPrivacyPolicy.jsx";
 import SettingsLayout from "@/layouts/SettingsLayout.jsx";
 import SettingsPage from "@pages/SettingsPage.jsx";
 

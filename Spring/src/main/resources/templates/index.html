@@ -30,7 +30,7 @@
 
         <!-- 로그인 상태일 때 -->
         <div th:if="${session.user != null}" class="user-info">
-            <a th:href="@{/my-page}" style="text-decoration: none; color: inherit;">
+            <a href="#" class="text-decoration: none; color: inherit; cursor: pointer">
                 <!-- 프로필 이미지 표시 -->
                 <img th:if="${session.user.profileImage != null and session.user.profileImage != ''}"
                      th:src="@{'https://haeil-gallery-images-garamink.s3.ap-northeast-2.amazonaws.com/' + ${session.user.profileImage}}"
@@ -224,6 +224,6 @@
 </script>
 
 <!-- React 앱 번들 스크립트 -->
-<script type="module" src="/js/index-BNH-OSdE.js"></script>
+<script type="module" src="/js/index-Bq5xZs_j.js"></script>
 </body>
 </html>
