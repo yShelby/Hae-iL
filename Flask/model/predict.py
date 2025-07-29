@@ -1,9 +1,12 @@
 #  감정 분석 코드 파일
-from Flask.model.ai_name import tokenizer_6, model_6, device, tokenizer_2C, model_2C
+from sympy import Integer
+
+from model.ai_name import tokenizer_6, model_6, device, tokenizer_2C, model_2C
 from model.utils import label2mood_6
 import torch
 
 def predict_polarity(text):
+
     inputs = tokenizer_2C(text, return_tensors="pt", truncation=True, padding=True)
     # 인풋딕셔너리에 토크나이저_2C로 토큰화한 데이터를 넣는다.
     # 텍스트를 받아와 파이토치로 텐서화를 시키고 길면 자르고 모라자련 공백으로 채운다
@@ -42,7 +45,8 @@ def predict_polarity(text):
     else:
         print("부정 판단")
         return "부정", polarity_probs, pos_prob, neg_prob
-    
+
+# 세부감정 라벨 6
 def predict_6_moods(text, top_k=3):
     inputs = tokenizer_6(text, return_tensors="pt", padding=True, truncation=True, max_length=512)
     inputs = {k: v.to(device) for k, v in inputs.items()}
@@ -52,6 +56,7 @@ def predict_6_moods(text, top_k=3):
     top_idx = probs.argsort()[::-1][:top_k]
     return [(label2mood_6[idx], round(float(probs[idx]), 2)) for idx in top_idx], probs
 
+# 긍정/부정
 def two_stage_mood_classification(text):
     # polarity, polarity_probs = predict_polarity(text)
     polarity, polarity_probs, pos_prob, neg_prob = predict_polarity(text)
@@ -74,6 +79,8 @@ def two_stage_mood_classification(text):
             "labels": top_labels,
             "label_probs": label_probs.tolist()  # 리스트로 변환해서 반환
         }
+
+
 
 # if __name__ == "__main__":
 #     text = input("분석할 문장을 입력하세요: ")

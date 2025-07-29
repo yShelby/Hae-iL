@@ -2,8 +2,6 @@ import json
 import os
 
 from .rules.repetition_rules_v1 import REPETITION_RULES
-from .preprocessing_logic.whitespace_replacer import _whitespace_replacer
-from .preprocessing_logic.sentence_splitter import _sentence_splitter
 from .preprocessing_logic.repeated_remover import _repeated_remover
 from .preprocessing_logic.morpheme_tagger import _morpheme_tagger
 
@@ -42,28 +40,11 @@ with open(dict_path, 'r', encoding='utf-8') as f:
     
 #=====================================#
     
-def extract_mood_with_dict(json_text) -> dict:
-    
-    # json str -> dict 형태로 변경
-    editor_json = json.loads(json_text)
-    
-    # 순수 텍스트 추출
-    diary_text = "\n".join(
-    text_obj.get("text", "")
-    for block in editor_json.get("content", [])
-    for text_obj in block.get("content", [])
-    if text_obj.get("type") == "text"
-)
-    
-    #=====================================#  
-        
+def extract_mood_with_dict(sentences) -> dict:
+
+    # =====================================#
+
     # 1. 일기 텍스트 전처리 (start : str)
-
-    # text 전체 공백 처리
-    diary_text = _whitespace_replacer(diary_text)
-
-    # 1. 문장 분리 실행
-    sentences = _sentence_splitter(diary_text)
 
     # 결과 리스트
     results_preprocess = []
