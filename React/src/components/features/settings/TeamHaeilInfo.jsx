@@ -28,9 +28,17 @@ function TeamHaeilInfo() {
         {
             id: 3,
             img: '/images/members/developer_3.png',
-            name: "류예슬",
+            name: "류예슬 [총괄]",
             position: "프로젝트 메니저",
-            role: "role",
+            role: [
+                "기획",
+                "아키텍처",
+                "ERD 및 데이터 플로우",
+                "감성사전 정제 및 라벨 선정",
+                "자가진단 컨텐츠 및 백엔드 담당",
+                "차트 페이지 담당",
+                "일정 조율 및 발표",
+            ],
             email: "email",
         },
         {
@@ -68,7 +76,7 @@ function TeamHaeilInfo() {
                             height: '100%',
                         }}>
                             <p style={{margin: 0}}>이 름 : {member.name}</p>
-                            <p style={{margin: 0}}>직 책 : {member.position}</p>
+                            {/*<p style={{margin: 0}}>직 책 : {member.position}</p>*/}
                             <p style={{margin: 0}}>담당 업무 : {member.role}</p>
                             <p style={{margin: 0}}>이메일 : {member.email}</p>
                         </div>

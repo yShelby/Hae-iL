@@ -1,7 +1,8 @@
 # 라벨과 커스텀 태그파일
 
 label2mood_6 = {
-    0: "분노", 1: "불안", 2: "당황", 3: "기쁨", 4: "슬픔", 5: "상처"
+    # 0: "분노", 1: "불안", 2: "당황", 3: "기쁨", 4: "슬픔", 5: "상처"
+    0: "분노/짜증", 1: "불안/걱정", 2: "중립/기타", 3: "기쁨/행복", 4: "슬픔/우울", 5: "슬픔/우울"
 }
 
 mood_to_tags_map = {
@@ -35,3 +36,29 @@ custom_combinations = {
     ("가난한 불우한", "희생된", "억울한"): ["#부당한현실", "#불공정"],
     ("질투하는", "배신당한", "열등감"): ["#질투심폭발", "#자존감회복필요"]
 }
+
+# 512 토큰 이내에서 문장 청크, 그 후 다음 분석을 진행할 때 이전 문장을 포함하여 분석.
+def split_with_overlap(sentences, tokenizer, max_tokens=512, overlap=1):
+    batches = []
+    start_idx = 0
+    while start_idx < len(sentences):
+        current_len = 0
+        end_idx = start_idx
+        # 토큰 누적 계산
+        while end_idx < len(sentences):
+            sent_len = len(tokenizer.tokenize(sentences[end_idx]))
+            if current_len + sent_len > max_tokens:
+                break
+            current_len += sent_len
+            end_idx += 1
+
+        # end_idx 기준 청크 모으기
+        chunk = sentences[start_idx:end_idx]
+        batches.append(" ".join(chunk))
+
+        # 다음 청크 시작점: end_idx - overlap (중복 문장 포함)
+        start_idx = max(end_idx - overlap, 0)
+        if end_idx == len(sentences):
+            break
+
+    return batches

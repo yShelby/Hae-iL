@@ -19,7 +19,7 @@ export default function ThemeProvider({ children, initialTheme = 'theme1' }) {
         root.style.setProperty('--primary-color', colors.main)
         root.style.setProperty('--primary-color-rgb', colors.rgb);
         root.style.setProperty('--sidebar-text', theme.sideText)
-        root.style.setProperty('--main-bg', colors.background)
+        // root.style.setProperty('--main-bg', colors.background)
         root.style.setProperty('--border-radius-main', theme.borderRadius)
         root.style.setProperty('--shadow-main', theme.shadow)
         root.style.setProperty('--border-gradient', colors.gradient);

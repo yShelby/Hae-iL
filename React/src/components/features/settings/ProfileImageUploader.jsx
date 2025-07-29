@@ -28,9 +28,10 @@ function ProfileImageUploader() {
         // 이미지 미리보기 설정
         const reader = new FileReader();
         reader.onloadend = () => {
+
             setPreviewUrl(reader.result);
         };
-        reader.readAsDataURL(file);
+            reader.readAsDataURL(file);
 
         setUploading(true);
 
@@ -72,10 +73,10 @@ function ProfileImageUploader() {
 
             if (updateRes.ok && updateData.success) {
                 showToast.success('프로필 이미지가 성공적으로 변경되었습니다.');
-                setUser(prev => ({ ...prev, profileImage: s3ObjectKey }));
-                setPreviewUrl(null);  // 프리뷰 초기화 (실제 URL로 변경되어 보여짐)
-                setTimeout(()=>{
-                    window.location.reload();
+                    setUser(prev => ({ ...prev, profileImage: s3ObjectKey }));
+                    setPreviewUrl(null);  // 프리뷰 초기화 (실제 URL로 변경되어 보여짐)
+                    setTimeout(()=>{
+                        window.location.reload();
                 }, 1000); // 1초 딜레이 후 새로고침
             } else {
                 throw new Error(updateData.message || '프로필 이미지 업데이트 실패');

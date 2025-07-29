@@ -23,7 +23,6 @@ function SettingsPage() {
             <div className="settings-page" style={{
                     display: 'flex', flexWrap: 'wrap',
                     width:'100vw', height:'auto',
-                    backgroundColor: 'lightgray',
             }}>
                 <h2>환경설정</h2>
                 <div className={'box A'} style={organizingBox}>
@@ -77,7 +76,7 @@ function SettingsPage() {
         <div className="settings-page" style={{
             display: 'flex', flexWrap: 'wrap',
             width:'100vw', height:'auto',
-            backgroundColor: 'lightgray',
+            // backgroundColor: 'lightgray',
         }}>
                 {/*<h2>my info</h2>*/}
                 <div className={'box A'} style={organizingBox}>
@@ -146,5 +145,4 @@ const organizingBox = {
     minWidth: '150px',Width: 'auto', minHeight: '50px', maxHeight: '500px',
     marginLeft: '10rem',
     border: '3px dotted violet',
-    backgroundColor: 'rgb(255 255 255 /0.15)',
 };

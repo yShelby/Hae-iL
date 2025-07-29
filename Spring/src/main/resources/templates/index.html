@@ -106,7 +106,7 @@
                             <path d="M16 7h4" />
                         </svg>
                         <span class="menu nps18px-container">윤슬조각</span></a></li>
-                    <li><a class="menu" th:onclick="|window.triggerReactNavigation('/chart')|">
+                    <li><a class="menu" th:onclick="|window.triggerReactNavigation('/charts')|">
                         <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"
                               fill="none"  stroke="currentColor"  stroke-width="1.5"  stroke-linecap="round"  stroke-linejoin="round"
                               class="icon icon-tabler icons-tabler-outline icon-tabler-chart-pie"><path stroke="none" d="M0 0h24v24H0z" fill="none"/>
@@ -114,7 +114,7 @@
                             <path d="M15 3.5a9 9 0 0 1 5.5 5.5h-4.5a1 1 0 0 1 -1 -1v-4.5" />
                         </svg>
                         <span class="menu nps18px-container">바닷자락</span></a></li>
-                    <li><a class="menu" th:onclick="|window.triggerReactNavigation('/setting')|">
+                    <li><a class="menu" th:onclick="|window.triggerReactNavigation('/settings')|">
                         <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"
                               fill="none"  stroke="currentColor"  stroke-width="1.5"  stroke-linecap="round"  stroke-linejoin="round"
                               class="icon icon-tabler icons-tabler-outline icon-tabler-settings"><path stroke="none" d="M0 0h24v24H0z" fill="none"/>
@@ -209,7 +209,10 @@
             email: /*[[${session.user?.email}]]*/ null,
             nickname: /*[[${session.user?.nickname}]]*/ null,
             name: /*[[${session.user?.name}]]*/ null,
-            profileImage: /*[[${session.user?.profileImage}]]*/ null
+            profileImage: /*[[${session.user?.profileImage}]]*/ null,
+            initialEmotion: /*[[${session.user?.initialEmotion}]]*/ null,
+            initialGenre: /*[[${session.user?.initialGenre}]]*/ null,
+            themeName: /*[[${session.user?.themeName}]]*/ null
         };
     /*]]>*/
 
@@ -323,56 +326,6 @@
             console.error("React navigation function is not yet available on window.haeIlHistory.");
         }
     };
-</script>
-
-<!-- 메인 GNB 마우스 동작 -->
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-
-        const sidebar = document.querySelector('.sidebar');
-        const mainBox = document.querySelector('.main-content');
-        const reactRoot = document.getElementById('react-root');
-
-        let isCollapsed = false;
-
-<!--        sidebar.addEventListener('mouseleave', function() {-->
-<!--           collapseSidebar();-->
-<!--        });-->
-        sidebar.addEventListener('mouseenter', function() {
-           expandSidebar();
-        });
-
-        document.addEventListener('click', function(event) {
-            const inSidebar = sidebar.contains(event.target);
-            const inReactZone = event.target.closest('[data-react-zone]');
-
-            if(!inSidebar) {
-                collapseSidebar();
-            };
-        });
-
-        sidebar.addEventListener('click', function (event) {
-
-            if (isCollapsed) {
-                expandSidebar();
-            }
-        });
-
-        function collapseSidebar() {
-            sidebar.classList.add('menu-collapse');
-<!--            mainBox.classList.add('menu-collapse');-->
-            reactRoot.classList.add('menu-collapse');
-            isCollapsed = true;
-        };
-
-        function expandSidebar() {
-            sidebar.classList.remove('menu-collapse');
-<!--            mainBox.classList.remove('menu-collapse');-->
-            reactRoot.classList.remove('menu-collapse');
-            isCollapsed = false;
-        };
-
-    });
 </script>
 
 <!-- React 앱 번들 스크립트 -->

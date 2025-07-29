@@ -165,9 +165,9 @@ export default function MoodResult({ result }) {
                 <div className="mood-details">
                     <div className="doughnut-chart" style={{ position: 'relative' }}>
                         <Doughnut data={chartData} options={chartOptions} plugins={[centerPercentagePlugin]} />
-                    </div>
-                    <div className="percentage-box" style={{font: chartStyle.perFont, color: getNameAndColorForMood(selectedMood.label).color}}>
-                    {displayPercent}
+                        <div className="percentage-box" style={{font: chartStyle.perFont, color: getNameAndColorForMood(selectedMood.label).color}}>
+                            {displayPercent}
+                        </div>
                     </div>
 
                     {selectedMood.moodType && ( /* moodType이 존재할 때만 렌더링 */
@@ -209,22 +209,22 @@ const chartStyle = {
     etc : '중립 | 기타',
 
     // color
-    joyColor : '#fbc02d',
-    angerColor : '#e53935',
-    anxietyColor : '#8e24aa',
-    sadnessColor : '#1e88e5',
-    boredomColor : '#90a4ae',
-    comfortColor : '#43a047',
-    etcColor : '#ee3',
+    joyColor : '#fbc4d6',
+    angerColor : '#fa7373',
+    anxietyColor : '#ceb2fa',
+    sadnessColor : '#5e84ff',
+    boredomColor : '#99bbcf',
+    comfortColor : '#77d17b',
+    etcColor : '#9a9a9a',
 
     // hover borderColor
-    joyHBC : '#fbc02d',
-    angerHBC : '#e53935',
-    anxietyHBC : '#8e24aa',
-    sadnessHBC : '#1e88e5',
-    boredomHBC : '#90a4ae',
-    comfortHBC : '#43a047',
-    etcHBC : '#ee3',
+    joyHBC : '#fbc4d6',
+    angerHBC : '#fa7373',
+    anxietyHBC : '#ceb2fa',
+    sadnessHBC : '#5e84ff',
+    boredomHBC : '#99bbcf',
+    comfortHBC : '#77d17b',
+    etcHBC : '#9a9a9a',
 }
 
 // === animation 조절 ===

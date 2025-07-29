@@ -19,6 +19,7 @@ export default function RadarChart({previousData, rawData, chartStyleThis, chart
         ? rawData.map(value => Number.isNaN(value) ? null : value)
         : [];
 
+
     // === 1. 공통 라벨/총점 ===
     const LABELS = ['불안', '우울', '스트레스'];
     const MAX_SCORES = [27, 21, 40];
