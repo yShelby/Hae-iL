@@ -1,11 +1,17 @@
+import './css/LegalCopyright.css'
+import Button from "@shared/styles/Button.jsx";
+
 export default function LegalCopyright({ open, onClose }){
 
-        if(!open) return null;
+    if(!open) return null;
 
-        return(
-            <div className='modal-overlay' style={overlayStyle}>
-                <div className='modal-content' style={contentStyle}>
-                        <div className={"legal-copyright"}>
+    return(
+        <div className='modal-overlay' style={overlayStyle}>
+            <div className='modal-content' style={contentStyle}>
+                <button onClick={onClose} className="modal-close-button">
+                    &times; {/* HTML 엔티티로 X 표시 */}
+                </button>
+                <div className={"legal-copyright"}>
 
                     <h3> 저작권 및 지적재산권 관련 법령 </h3>
 
@@ -184,20 +190,20 @@ export default function LegalCopyright({ open, onClose }){
         ④ 삭제 <2009. 4. 22.>
         ⑤ 삭제 <2009. 4. 22.>`}</p>
 
-                    </div>
-                    <button onClick={onClose} style={{border: '2px solid grey', padding: '1rem 1.5rem', backgroundColor: 'olive',color: '#fff'}}> 닫기 </button>
                 </div>
-          </div>
+                <Button variant="button1" onClick={onClose}> 닫기 </Button>
+            </div>
+        </div>
     )
 }
 const overlayStyle = {
-        position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh',
-        backgroundColor: 'rgba(0,0,0,0.4)',
-        display: 'flex', justifyContent: 'center', alignItems: 'center',
-        zIndex: 9999
+    position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh',
+    backgroundColor: 'rgba(0,0,0,0.4)',
+    display: 'flex', justifyContent: 'center', alignItems: 'center',
+    zIndex: 9999
 };
 
 const contentStyle = {
-        backgroundColor: 'white', padding: '1.5rem',
-        borderRadius: '8px', width: '750px', maxHeight: '80vh', overflowY: 'auto'
+    backgroundColor: 'white', padding: '1.5rem',
+    borderRadius: '8px', width: '750px', maxHeight: '80vh', overflowY: 'auto'
 };

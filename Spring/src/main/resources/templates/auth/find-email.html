@@ -112,7 +112,7 @@
       window.recaptchaVerifier.render().then(() => {
           window.recaptchaVerifier.verify();
       }).catch(error => {
-          resultDiv.className = 'error';
+          resultDiv.className = 'error error-phone';
           resultDiv.innerHTML = 'reCAPTCHA 렌더링에 실패했습니다. 페이지를 새로고침하고 다시 시도해주세요.';
           console.error(error);
       });
@@ -129,7 +129,7 @@
               resultDiv.innerHTML = '인증번호가 발송되었습니다.';
           })
           .catch(function(error) {
-              resultDiv.className = 'error';
+              resultDiv.className = 'error error-phone';
               resultDiv.innerHTML = '인증번호 발송 실패: ' + error.message;
               console.error(error);
           });

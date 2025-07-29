@@ -1,0 +1,94 @@
+.legal-copyright, .legal-privacy {
+    padding: 10px; /* 내부 여백 */
+    line-height: 1.6; /* 줄 간격 */
+    font-family: Arial, sans-serif; /* 기본 폰트 설정 */
+    color: #333; /* 기본 텍스트 색상 */
+}
+
+.legal-copyright h3,
+.legal-privacy h3 {
+    font-size: 24px;
+    color: #1a1a1a;
+    margin-bottom: 20px;
+    text-align: center;
+    border-bottom: 2px solid #eee; /* 제목 아래 구분선 */
+    padding-bottom: 10px;
+}
+
+.legal-copyright h4,
+.legal-privacy h4{
+    font-size: 20px;
+    color: #2a2a2a;
+    margin-top: 25px;
+    margin-bottom: 15px;
+    border-left: 5px solid var(--primary-color); /* 카테고리 제목 강조 */
+    border-right: 5px solid var(--primary-color);
+    padding-left: 10px;
+}
+
+.legal-copyright h5,
+.legal-privacy h5{
+    font-size: 16px;
+    color: #444;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.legal-copyright p,
+.legal-privacy p{
+    font-size: 14px;
+    margin-bottom: 15px;
+    text-align: justify; /* 양쪽 정렬 */
+    white-space: pre-wrap; /* HTML에서 줄 바꿈 유지 */
+}
+
+/* 닫기 버튼 스타일 */
+.close-modal-button {
+    margin-top: 20px; /* 상단 여백 */
+    width: 100%; /* 너비 100% */
+    padding: 12px 20px; /* 패딩 */
+    border: 2px solid grey; /* 테두리 */
+    background-color: olive; /* 배경색 */
+    color: #fff; /* 글자색 */
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 5px; /* 둥근 모서리 */
+    cursor: pointer; /* 마우스 오버 시 포인터 */
+    transition: background-color 0.3s ease, border-color 0.3s ease; /* 호버 전환 효과 */
+}
+
+.close-modal-button:hover {
+    background-color: darkolivegreen; /* 호버 시 색상 변경 */
+    border-color: #555;
+}
+
+.close-modal-button:active {
+    background-color: #4a5a2a; /* 클릭 시 색상 변경 */
+}
+
+.modal-close-button {
+    position: sticky;
+    top: 10px;
+    left: 100%;
+    font-size: 24px;
+    font-weight: bold;
+    color: #888;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+    opacity: 0.7;
+    transition: opacity 0.2s ease;
+    z-index: 10; /* content 위에 표시 */
+}
+
+.modal-close-button:hover {
+    opacity: 1;
+    color: #333;
+}
+
+.modal-close-button:focus {
+    outline: none;
+}

@@ -1,4 +1,6 @@
 // import "@pages/css/LegalPage.css";
+import './css/LegalCopyright.css'
+import Button from "@shared/styles/Button.jsx";
 
 export default function LegalPrivacyPolicy({ open, onClose}) {
         if(!open) return null;
@@ -6,6 +8,9 @@ export default function LegalPrivacyPolicy({ open, onClose}) {
         return(
             <div className='modal-overlay' style={overlayStyle}>
                     <div className='modal-content' style={contentStyle}>
+                            <button onClick={onClose} className="modal-close-button">
+                                    &times; {/* HTML 엔티티로 X 표시 */}
+                            </button>
                             <div className={"legal-privacy"}>
                                     <h3> 개인정보처리방침 관련 법령 </h3>
 
@@ -400,7 +405,7 @@ export default function LegalPrivacyPolicy({ open, onClose}) {
     [제39조의9에서 이동, 종전 제39조의7은 삭제 <2023. 3. 14.>]`}
                                     </p>
                             </div>
-                            <button onClick={onClose} style={{border: '2px solid grey', padding: '1rem 1.5rem', backgroundColor: 'olive',color: '#fff'}}> 닫기 </button>
+                            <Button variant="button1" onClick={onClose} > 닫기 </Button>
                     </div>
             </div>
         );

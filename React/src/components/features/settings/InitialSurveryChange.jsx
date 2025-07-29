@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@shared/context/AuthContext.jsx';
 import { showToast } from '@shared/UI/Toast.jsx';
+import Button from "@shared/styles/Button.jsx";
 
 // 회원가입 폼과 동일한 항목 리스트, 이후 유지 보수를 위해 API에서 불러오도록 개선
 const GENRES = [
-    "액션", "모험", "코미디", "애니메이션", "범죄", "다큐멘터리", "드라마",
-    "가족", "판타지", "역사", "공포", "음악", "미스터리", "로맨스", "SF",
-    "스릴러", "전쟁", "서부"
+    "액션", "모험", "애니메이션", "범죄", "코미디", "드라마", "역사",
+    "가족","다큐멘터리", "공포", "판타지", "로맨스", "음악", "SF", "미스터리",
+    "전쟁", "서부", "스릴러",
 ];
 
 const EMOTIONS = [
@@ -117,8 +118,8 @@ function InitialSurveyChange({ open, onClose, onSaved }) {
             <div className="modal-content" style={contentStyle}>
                 <h3>초기 설문 정보 수정</h3>
 
-                <div>
-                    <strong>좋아하는 영화 장르</strong>
+                <div style={initialboxStyle}>
+                    <div><strong>좋아하는 영화 장르</strong></div>
                     <div style={checkboxContainerStyle}>
                         {GENRES.map((genre) => (
                             <label key={genre} style={checkboxLabelStyle}>
@@ -133,8 +134,10 @@ function InitialSurveyChange({ open, onClose, onSaved }) {
                     </div>
                 </div>
 
-                <div style={{ marginTop: '1rem' }}>
+                <div style={{ marginTop: '1rem', ...initialboxStyle }}>
+                    <div>
                     <strong>최근 자주 느낀 감정</strong>
+                    </div>
                     <div style={checkboxContainerStyle}>
                         {EMOTIONS.map((emotion) => (
                             <label key={emotion} style={checkboxLabelStyle}>
@@ -150,18 +153,18 @@ function InitialSurveyChange({ open, onClose, onSaved }) {
                 </div>
 
                 {validationError && (
-                    <div style={{ color: "red", marginTop: "0.5rem", marginBottom: "1rem" }}>
+                    <div style={{ color: "red", marginTop: "0.5rem", marginBottom: "1rem", fontSize : '0.9rem' }}>
                         {validationError}
                     </div>
                 )}
 
                 <div style={{ marginTop: '1.5rem', textAlign: 'right' }}>
-                    <button onClick={onClose} disabled={saving} style={{ marginRight: '1rem' }}>
+                    <Button variant="button2" onClick={onClose} disabled={saving} style={{ width : '55px', height:'35px', marginRight: '1rem' }}>
                         취소
-                    </button>
-                    <button onClick={handleSave} disabled={saving}>
+                    </Button>
+                    <Button variant="button2" onClick={handleSave} disabled={saving} style={{ width : '55px', height:'35px' }}>
                         {saving ? '저장 중...' : '저장하기'}
-                    </button>
+                    </Button>
                 </div>
             </div>
         </div>
@@ -177,16 +180,21 @@ const overlayStyle = {
 
 const contentStyle = {
     backgroundColor: 'white', padding: '1.5rem',
-    borderRadius: '8px', width: '400px', maxHeight: '80vh', overflowY: 'auto'
+    borderRadius: '30px', width: '400px', maxHeight: '80vh', overflowY: 'auto'
 };
 
 const checkboxContainerStyle = {
-    display: 'flex', flexWrap: 'wrap', gap: '0.8rem', marginTop: '0.5rem'
+    display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.8rem', marginTop: '0.5rem'
 };
 
 const checkboxLabelStyle = {
     flexBasis: '50%',
     userSelect: 'none'
 };
+
+const initialboxStyle = {
+    display: 'flex', flexDirection: 'column', gap: '0.5rem', border: '2px solid transparent', backgroundImage: 'linear-gradient(white, white), var(--border-gradient)',
+backgroundOrigin: 'border-box', backgroundClip: 'padding-box, border-box', borderRadius: '30px', padding: '10px'
+}
 
 export default InitialSurveyChange;
