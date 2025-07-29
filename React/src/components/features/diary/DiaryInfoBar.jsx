@@ -8,16 +8,21 @@ import React from 'react';
 import './css/DiaryInfoBar.css';
 
 const DiaryInfoBar = ({ selectedDate, initialDiary }) => {
-    // 1. 전달받은 selectedDate (선택된 날짜) 출력
-    // 2. initialDiary가 존재하고 diaryId가 있으면, 해당 일기 ID도 화면에 함께 표시
+    // 날짜 포맷 변환 함수: "2025-07-28" → "2025년 7월 28일"
+    const formatDateToKorean = (dateStr) => {
+        if (!dateStr) return '';
+        const [year, month, day] = dateStr.split('-');
+        return `${year}년 ${parseInt(month)}월 ${parseInt(day)}일`;
+    };
+
     return (
         <div className="info-bar">
-            {/* 1️⃣ 선택된 날짜 표시 */}
-            <h3>{selectedDate}</h3>
+            {/* 1️⃣ 선택된 날짜 표시 (한국어 형식) */}
+            <h3>{formatDateToKorean(selectedDate)}</h3>
 
-            {/* 2️⃣ 일기 데이터가 있으면 Diary ID 출력 */}
+            {/* 2️⃣ 일기 데이터가 있으면 "3번째 일기" 형태로 출력 */}
             {initialDiary && initialDiary.diaryId && (
-                <span>Diary ID: {initialDiary.diaryId}</span>
+                <span>{initialDiary.diaryId}번째 일기</span>
             )}
         </div>
     );

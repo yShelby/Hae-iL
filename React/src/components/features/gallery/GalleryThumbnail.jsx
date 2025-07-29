@@ -3,7 +3,7 @@ import {useEffect, useState} from "react";
 import {useGallery} from "@features/gallery/GalleryContext.jsx";
 import {fetchGalleryImagesAPI} from "@api/galleryApi.js";
 
-const DEFAULT_THUMBNAIL = '/images/Thumbnail.JPG';
+const DEFAULT_THUMBNAIL = '/images/thumbnail.png';
 
 const GalleryThumbnail = () => {
     const [thumbnailUrl, setThumbnailUrl] = useState(DEFAULT_THUMBNAIL);

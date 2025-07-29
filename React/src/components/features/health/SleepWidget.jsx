@@ -8,6 +8,8 @@ import {
 } from '@/api/sleepApi.js';
 import {useCheckLogin} from "@/hooks/useCheckLogin.js";
 import {showToast} from "@shared/UI/Toast.jsx";
+import Button from "@shared/styles/Button.jsx";
+import Input from "@shared/styles/Input.jsx";
 
 export default function SleepWidget({date, onDataChange}) {
     const checkLogin = useCheckLogin();
@@ -32,8 +34,10 @@ export default function SleepWidget({date, onDataChange}) {
                         bedtime: res.bedtime || '',
                         waketime: res.waketime || '',
                     });
+                    setEditing(false);
                 } else {
                     setForm({bedtime: '', waketime: ''});
+                    setEditing(true);
                 }
             })
             .catch(console.error)
@@ -100,49 +104,59 @@ export default function SleepWidget({date, onDataChange}) {
 
     return (
         <div className="widget sleep-widget">
-            <h4>💤 수면 ({date})</h4>
+            <h4>수면 기록</h4>
 
             {loading && <p>로딩 중...</p>}
 
             {!loading && !editing && data && (
-                <>
-                    <p>취침 시간: {data.bedtime}</p>
-                    <p>기상 시간: {data.waketime}</p>
-                    <p>수면 시간: {data.totalHours} 시간</p>
-                    <button onClick={() => setEditing(true)}>수정하기</button>
-                    <button onClick={handleDelete}>삭제하기</button>
-                </>
+                <div>
+                    <div className={"sleep-details"}>
+                        <p>취침 시간: {data.bedtime}</p>
+                        <p>기상 시간: {data.waketime}</p>
+                        <p>수면 시간: {data.totalHours} 시간</p>
+                    </div>
+                    <div style={{ display :'flex', justifyContent: 'center'}}>
+                        <Button variant={"button2"} onClick={() => setEditing(true)}>수정</Button>
+                        <Button variant={"button2"} onClick={handleDelete}>삭제</Button>
+                    </div>
+                </div>
             )}
 
             {!loading && (editing || !data) && (
                 <div>
-                    <label>
-                        취침 시간:
-                        <input
-                            name="bedtime"
-                            type="time"
-                            value={form.bedtime}
-                            onChange={handleChange}
-                        />
-                    </label>
-                    <label>
-                        기상 시간:
-                        <input
-                            name="waketime"
-                            type="time"
-                            value={form.waketime}
-                            onChange={handleChange}
-                        />
-                    </label>
-                    <button onClick={handleSave}>저장</button>
-                    <button onClick={() => {
-                        if (!checkLogin()) return;
-                        setEditing(false);
-                        if (!data) {
-                            setForm({bedtime: '', waketime: ''});
-                        }
-                    }}>취소
-                    </button>
+                    <div style={{marginBottom: '10px'}}>
+                        <label className="inline-label">
+                            <span>취침 </span>
+                            <Input
+                                name="bedtime"
+                                type="time"
+                                value={form.bedtime}
+                                onChange={handleChange}
+                                placeholder="취침 시간"
+                            />
+                        </label>
+                        <label className="inline-label">
+                            <span>기상 </span>
+                            <Input
+                                name="waketime"
+                                type="time"
+                                value={form.waketime}
+                                onChange={handleChange}
+                            />
+                        </label>
+                    </div>
+                    <div style={{ display :'flex', justifyContent: 'center'}}>
+                        <Button variant={"button2"} onClick={handleSave}>저장</Button>
+                        <Button variant={"button2"} onClick={() => {
+                            if (!checkLogin()) return;
+                            setEditing(false);
+                            if (!data) {
+                                setForm({bedtime: '', waketime: ''});
+                            }
+                        }}>취소
+                        </Button>
+                    </div>
+
                 </div>
             )}
         </div>

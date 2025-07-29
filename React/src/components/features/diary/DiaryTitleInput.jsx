@@ -6,6 +6,7 @@
  * ================================================================= */
 import React from 'react';
 import './css/DiaryTitleInput.css';
+import Input from "@shared/styles/Input.jsx";
 
 const DiaryTitleInput = ({ title, setTitle }) => {
     // 1️⃣ 상위 컴포넌트에서 전달받은 현재 제목 값(title)을 input의 value로 설정 (제어 컴포넌트)
@@ -13,12 +14,13 @@ const DiaryTitleInput = ({ title, setTitle }) => {
     // 3️⃣ 이벤트 핸들러에서 e.target.value (입력된 문자열)를 setTitle 함수를 통해 상위 상태로 전달 → 상위 컴포넌트의 title 상태가 갱신됨
     return (
         <div className="input-group">
-            <input
+            <Input
                 type="text"
                 value={title} // 1. 현재 제목 값을 input에 바인딩
                 onChange={(e) => setTitle(e.target.value)} // 2-3. 입력 변화 감지 및 상위 상태 업데이트
                 placeholder="제목을 입력하세요" // 사용자 안내 텍스트
-                className="title-input" // CSS 클래스
+                // className="title-input" // CSS 클래스
+                style={{ width: '100%', height: '40px', fontSize: '16px', color: 'var(--primary-color)' }}
             />
         </div>
     );
