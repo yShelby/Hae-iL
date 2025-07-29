@@ -18,6 +18,7 @@
 
     /* 공통 색상 변수 (초기값은 theme1 기준) */
     --primary-color: #393E75;
+    --primary-color-rgb: 57, 62, 117;
     --sidebar-text: #fff;
     --border-gradient: linear-gradient(45deg, #98ADDA, #FCD2D3);
     --primary-hover: #2980b9;
@@ -29,6 +30,7 @@
     /* 기타 */
     --border-radius-main: 30px;
     --font-family-base: 'NPSfont', sans-serif;
+
 
 }
 
