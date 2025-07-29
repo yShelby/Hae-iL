@@ -9,9 +9,13 @@ import {
 import {showToast} from "@shared/UI/Toast.jsx";
 import {useCheckLogin} from "@/hooks/useCheckLogin.js";
 import './css/widget.css';
+import Input from "@shared/styles/Input.jsx";
+import Button from "@shared/styles/Button.jsx";
+import {useAuth} from "@shared/context/AuthContext.jsx";
 
 export default function ExerciseWidget({date, onDataChange}) {
     const checkLogin = useCheckLogin();
+    const { user } = useAuth();
     const [loading, setLoading] = useState(false);
     const [data, setData] = useState(null);
     const [editing, setEditing] = useState(true);
@@ -24,6 +28,14 @@ export default function ExerciseWidget({date, onDataChange}) {
     // 날짜 바뀔 때 데이터 로드
     useEffect(() => {
         if (!date) return;
+        // 로그인 안 되어 있으면 로딩 끄고 바로 종료
+        if (!user) {
+            setLoading(false);
+            setData(null);
+            setEditing(true);
+            setForm({ exerciseType: '', duration: '', intensity: '' });
+            return;
+        }
         setLoading(true);
 
         fetchExerciseByDate(date)
@@ -35,8 +47,10 @@ export default function ExerciseWidget({date, onDataChange}) {
                         duration: res.duration || '',
                         intensity: res.intensity || ''
                     });
+                    setEditing(false);
                 } else {
                     setForm({exerciseType: '', duration: '', intensity: ''});
+                    setEditing(true);
                 }
             })
             .catch(console.error)
@@ -91,6 +105,7 @@ export default function ExerciseWidget({date, onDataChange}) {
             await deleteExercise(data.exerciseId);
             setData(null);
             setEditing(true);
+            setForm({exerciseType: '', duration: '', intensity: ''});
             showToast.success('운동 기록이 삭제되었습니다!');
             onDataChange?.(); // 타임라인 데이터 다시 불러오기
         } catch (err) {
@@ -103,30 +118,34 @@ export default function ExerciseWidget({date, onDataChange}) {
 
     return (
         <div className="widget exercise-widget">
-            <h4>🏋️ 운동 ({date})</h4>
+            <h4>운동기록</h4>
 
             {loading && <p>로딩 중...</p>}
 
             {!loading && !editing && data && (
                 <div>
-                    <p>종류: {data.exerciseType}</p>
-                    <p>시간: {data.duration}분</p>
-                    <p>강도: {data.intensity}</p>
-                    <button onClick={() => setEditing(true)}>수정하기</button>
-                    <button onClick={handleDelete}>삭제하기</button>
+                    <div className={"exercise-details"}>
+                        <p>종류: {data.exerciseType}</p>
+                        <p>시간: {data.duration}분</p>
+                        <p>강도: {data.intensity}</p>
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'center' }}>
+                        <Button variant={'button2'} onClick={() => setEditing(true)}>수정</Button>
+                        <Button variant={'button2'} onClick={handleDelete}>삭제</Button>
+                    </div>
                 </div>
             )}
 
             {!loading && (editing || !data) && (
                 <div>
-                    <input
+                    <Input
                         name="exerciseType"
                         type="text"
                         placeholder="운동 종류"
                         value={form.exerciseType}
                         onChange={handleChange}
                     />
-                    <input
+                    <Input
                         name="duration"
                         type="number"
                         placeholder="운동 시간(분)"
@@ -142,14 +161,16 @@ export default function ExerciseWidget({date, onDataChange}) {
                             <option value="높음">높음</option>
                         </select>
                     </label>
-                    <button onClick={handleSave}>저장</button>
-                    <button onClick={() => {
-                        if (!checkLogin()) return;
-                        setEditing(false);
-                        if (!data) {
-                            setForm({ exerciseType: '', duration: '', intensity: '' });
-                        }
-                    }}>취소</button>
+                    <div style={{ display :'flex', justifyContent: 'center'}}>
+                        <Button variant={'button2'} onClick={handleSave}>저장</Button>
+                        <Button variant={'button2'} onClick={() => {
+                            if (!checkLogin()) return;
+                            setEditing(false);
+                            if (!data) {
+                                setForm({ exerciseType: '', duration: '', intensity: '' });
+                            }
+                        }}>취소</Button>
+                    </div>
                 </div>
             )}
         </div>

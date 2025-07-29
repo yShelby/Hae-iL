@@ -29,6 +29,7 @@
     /* 기타 */
     --border-radius-main: 30px;
     --font-family-base: 'NPSfont', sans-serif;
+
 }
 
 /* 박스 크기 테두리까지 포함 */
@@ -78,7 +79,6 @@ input, textarea, select {
     font-family: inherit;
     font-size: 1rem;
     outline: none;
-    border: 1px solid #ccc;
     border-radius: var(--border-radius-main);
     padding: 0.5rem;
 }
@@ -106,4 +106,14 @@ input, textarea, select {
     --sidebar-text: var(--theme3-side-text);
     --border-gradient: var(--theme3-gradient);
     background-image: var(--theme3-gradient);
+}
+
+.nps16px-container {
+    line-height: 24px;
+    padding-top: calc((24px - 1em) / 2);
+}
+
+.nps18px-container {
+    line-height: 26px;
+    padding-top: calc((26px - 18px) / 2);
 }

@@ -1,3 +1,5 @@
+import './css/RecommendText.css'
+
 function RecommendText({emotion}){
 
     const List = [
@@ -65,7 +67,7 @@ function RecommendText({emotion}){
     };
 
     return(
-        <div>
+        <div className={"movie-text-box"}>
             <p className={"today-movie"}>오늘의 추천 영화</p>
             <p className={"recommend-text"}>"{textChoice(emotion)}"</p>
         </div>
