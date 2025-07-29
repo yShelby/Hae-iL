@@ -24,7 +24,6 @@
 body {
   font-family: var(--font-family-base);
   margin: 0;
-  background-image: var(--theme1-gradient);
 }
 button {
     min-width: 10px;
@@ -67,7 +66,6 @@ button {
         font-family: 'Pretendard';
          width: 85%;
          height: 250px;
-        box-shadow: var(--shadow-main);
     }
     .header .login-form {
         display: flex;flex-direction: column;gap: 10px;

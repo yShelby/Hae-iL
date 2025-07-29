@@ -97,15 +97,14 @@ const AnimatedRoutes = () => {
                                 </>
                             }/>
                         </Route>
-                        {/* 한달너울 페이지 라우트 */}
+                        {/* monthly 페이지 라우트 */}
                         <Route path="monthly" element={<MonthlyLayout/>}>
                             <Route index element={<MonthlyPage />} />
 
                         </Route>
                         <Route path={"movie"} element={<RecommendLayout />}/>
                     </Route>
-                    {/*/!* 캘린더 페이지 라우트 *!/*/}
-                    {/*<Route path="calendar" element={<Calendar />} />*/}
+
                     {/* 차트 페이지 라우트 */}
                     <Route path="charts" element={<Charts/>}/>
 
@@ -113,6 +112,7 @@ const AnimatedRoutes = () => {
                     <Route path="settings" element={<SettingsLayout />}>
                         <Route index element={<SettingsPage/>}/>
                     </Route>
+
                 </Route>
             </Routes>
         </AnimatePresence>
