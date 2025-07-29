@@ -138,11 +138,15 @@
     border-bottom-color: #ED8991;
 }
 
-.recommendTab .tabButton .icon {
-    width: calc(34 / 1150 * 100vw);
-    height: calc(29 / 820 * 100vh);
-    transition: color 0.3s ease;
+.recommendTab button {
+    height: 100%;
 }
+
+/*.recommendTab .tabButton .icon {*/
+/*    width: calc(34 / 1150 * 100vw);*/
+/*    height: calc(29 / 820 * 100vh);*/
+/*    transition: color 0.3s ease;*/
+/*}*/
 
 .recommendTab .tabButton.active::after {
     content: '';
