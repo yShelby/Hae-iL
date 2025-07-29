@@ -1,3 +1,9 @@
+.react-datepicker{
+    position: relative;
+    left: 60%;
+    top: 44px;
+}
+
 .journal-form {
     display: flex;
     flex-direction: column;
@@ -29,8 +35,8 @@
 .form-group input,
 .form-group textarea {
     padding: 12px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
+    /*border: 1px solid #ccc;*/
+    border-radius: 30px;
     font-size: 15px;
     transition: border-color 0.2s;
     box-sizing: border-box;
@@ -64,9 +70,9 @@
 
     /* 다른 입력 필드와 디자인 통일 */
     padding: 12px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    font-size: 15px;
+    border: 1px solid var(--border-gradient);
+    border-radius: 30px;
+    font-size: 14px;
     transition: border-color 0.2s;
     box-sizing: border-box;
 }
@@ -223,6 +229,7 @@
     align-items: center;
     gap: 8px; /* 이모지와 텍스트 사이 간격 */
     transition: background-color 0.1s ease;
+    background-color: #fff;
     color: #333; /* 기본 텍스트 색상 */
 }
 

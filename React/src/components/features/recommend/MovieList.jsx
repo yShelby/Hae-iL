@@ -148,7 +148,7 @@ function MovieList({ movies, onDisLike}) {
                                         className={"dislikeIcon"}
                                     />
                                 )}
-                                <span className={"dislikeText"}>한 달 동안 추천하지 않기</span>
+                                <span className={"dislikeText"}> 한 달 동안 추천하지 않기</span>
                             </div>
                             {/* DisLikeModal과 관련된 JSX는 제거 */}
 
