@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react';
 import {getJournalById} from '@api/journalApi';
 import {FaStar} from 'react-icons/fa';
 import './css/JournalViewer.css';
+import Button from "@shared/styles/Button.jsx";
 
 export const JournalViewer = ({journalId, onEdit, onDelete, initialData}) => {
     const [journal, setJournal] = useState(null);
@@ -73,8 +74,8 @@ export const JournalViewer = ({journalId, onEdit, onDelete, initialData}) => {
 
             {/* 🛠 수정/삭제 버튼 (콜백은 부모에서 전달) */}
             <div className="viewer-actions">
-                <button onClick={onEdit} className={"btn edit-btn"}>수정</button>
-                <button onClick={onDelete} className={"btn delete-btn"}>삭제</button>
+                <Button variant="button2" type="submit" onClick={onEdit} className={"btn edit-btn"}>수정</Button>
+                <Button variant="button2" type="button" onClick={onDelete} className={"btn delete-btn"}>삭제</Button>
             </div>
         </div>
     );

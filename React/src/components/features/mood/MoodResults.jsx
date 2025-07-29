@@ -37,6 +37,7 @@ export default function MoodResult({ result }) {
                 moodType: getNameAndColorForMood(maxItem.mood_type).moodType,
                 percentage: maxItem.percentage
             });
+            console.log("디테일 : ",details)
         }
     }, [details]);
 

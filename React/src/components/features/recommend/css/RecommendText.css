@@ -1,0 +1,19 @@
+.movie-text-bos {
+    position: absolute;
+    left: 55px;
+    top: 50px;
+    width: 840px;
+    height: 80px;
+}
+
+.today-movie{
+    font-family: 'NPSfont-Bold', sans-serif;
+    font-size: 32px;
+    color: var(--primary-color);
+}
+
+.movie-text {
+    font-family: 'NPSfont', sans-serif;
+    font-size: 24px;
+    color: var(--primary-color);
+}

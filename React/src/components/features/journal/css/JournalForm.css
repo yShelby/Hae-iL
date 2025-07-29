@@ -1,14 +1,23 @@
+.react-datepicker{
+    position: relative;
+    left: 60%;
+    top: 44px;
+}
+
 .journal-form {
     display: flex;
     flex-direction: column;
-    gap: 20px;
     flex-grow: 1; /* Editor 컨테이너 내에서 남은 공간을 모두 차지 */
+    /*align-items: center;*/
+    width: 80%;
+    height: calc(620 / 710 * 100%);
 }
 
 .form-group {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    width: 100%;
+    align-items: center;
 }
 
 /* 내용(textarea)을 담는 그룹이 유동적으로 늘어나도록 설정 */
@@ -20,25 +29,27 @@
 
 .form-group label {
     font-weight: 600;
-    font-size: 16px;
+    font-family: 'NPSfont', sans-serif;
 }
 
 .form-group input,
-.form-group textarea,
-.form-group select {
+.form-group textarea {
     padding: 12px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
+    /*border: 1px solid #ccc;*/
+    border-radius: 30px;
     font-size: 15px;
     transition: border-color 0.2s;
     box-sizing: border-box;
+    width: 100%;
+    height: 40px;
+    margin-bottom: 15px;
 }
 
 .form-group input:focus,
 .form-group textarea:focus,
 .form-group select:focus {
     outline: none;
-    border-color: #3498db;
+    border-color: var(--primary-color);
 }
 
 /* DatePicker와 Label을 감싸는 컨테이너 */
@@ -59,16 +70,16 @@
 
     /* 다른 입력 필드와 디자인 통일 */
     padding: 12px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    font-size: 15px;
+    border: 1px solid var(--border-gradient);
+    border-radius: 30px;
+    font-size: 14px;
     transition: border-color 0.2s;
     box-sizing: border-box;
 }
 
 /* 마우스를 올렸을 때 테두리 색상 변경 */
 .custom-date-label:hover {
-    border-color: #3498db;
+    border-color: var(--primary-color);
 }
 
 /* 달력 아이콘 스타일 */
@@ -106,13 +117,15 @@
 .form-group textarea {
     flex-grow: 1;
     resize: vertical;
-    min-height: 150px;
+    min-height: 200px;
+    padding: 20px 25px;
 }
 
 .rating-group {
     display: flex;
     align-items: center;
     gap: 4px;
+    flex: 5;
 }
 
 .form-actions {
@@ -121,4 +134,126 @@
     gap: 12px;
     margin-top: 16px;
     flex-shrink: 0;
+}
+
+.ratingLabel{
+    flex: 1;
+    margin: 10px;
+    text-align: center;
+}
+
+.categoryArating{
+    display: flex;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.categoryLabel {
+    flex: 1;
+    margin: 10px;
+    text-align: center;
+}
+
+.categorySelecter{
+    flex: 5;
+}
+
+/* 기존 .categorySelecter 관련 CSS는 모두 제거하거나 이 스타일로 대체합니다. */
+
+/* 커스텀 드롭다운 컨테이너 */
+.form-group.category-select-wrapper {
+    position: relative; /* 드롭다운 목록의 absolute 위치 기준점 */
+    flex-grow: 1; /* flex item으로 공간을 채우도록 */
+    /* width: calc(34 / 300 * 100%);  이전에 사용했던 비율을 여기에 적용하거나, 고정 너비 지정 */
+    min-width: 120px; /* 너무 줄어들지 않도록 최소 너비 */
+    margin-bottom: 0; /* form-group의 기본 margin-bottom이 있다면 여기에 0 설정 */
+}
+
+/* 현재 선택된 값을 표시하는 영역 (버튼처럼 클릭 가능) */
+.custom-select-display {
+    height: 40px; /* 원하는 높이로 조절 */
+    font-size: 16px; /* 원하는 폰트 크기로 조절 */
+    line-height: 40px; /* 텍스트 세로 중앙 정렬 */
+    padding: 0 12px; /* 좌우 패딩 */
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* 텍스트와 화살표를 양쪽 끝으로 */
+    /*border: 1px solid #ccc;*/
+    /*border-radius: 5px;*/
+    /*background-color: #fff;*/
+    cursor: pointer;
+    white-space: nowrap; /* 텍스트 줄바꿈 방지 */
+    transition: all 0.2s ease; /* 모든 속성 변화에 애니메이션 */
+    box-sizing: border-box; /* 패딩과 테두리를 너비/높이에 포함 */
+    color: #333; /* 기본 텍스트 색상 */
+    /*margin-right: 20px;*/
+}
+
+/* 드롭다운이 열렸을 때의 현재 선택된 값 영역 스타일 */
+.custom-select-display.open {
+    border-color: #888; /* 열렸을 때 테두리 색상 변경 */
+    border-bottom-left-radius: 0; /* 목록과 연결되도록 아래쪽 둥근 모서리 제거 */
+    border-bottom-right-radius: 0;
+}
+
+/* 드롭다운 화살표 스타일 */
+.custom-select-display .dropdown-arrow {
+    margin-left: 10px;
+    font-size: 12px;
+}
+
+/* 드롭다운 목록 */
+.custom-select-options {
+    position: absolute;
+    top: 100%; /* .custom-select-display 바로 아래에 위치 */
+    /*left: 31%;*/
+    /*width: 50%; !* 부모 너비와 동일하게 *!*/
+    /*max-height: 160px; !* 목록이 길어지면 스크롤바 생성 *!*/
+    /*overflow-y: auto;*/
+    /*border: 1px solid #ccc;*/
+    /*border-top: none; !* 상단 테두리 없애서 display와 연결된 것처럼 보이게 *!*/
+    /*border-radius: 0 0 5px 5px;*/
+    /*background-color: #fff;*/
+    z-index: 10; /* 다른 요소 위에 오도록 */
+    list-style: none; /* 기본 리스트 스타일 제거 */
+    padding: 0;
+    margin: 0;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+/* 각 목록 항목 */
+.custom-select-option-item {
+    padding: 8px 12px; /* 항목 내부 패딩 */
+    font-size: 16px; /* 항목 폰트 크기 */
+    cursor: pointer;
+    display: flex; /* 이모지 아이콘 정렬 */
+    align-items: center;
+    gap: 8px; /* 이모지와 텍스트 사이 간격 */
+    transition: background-color 0.1s ease;
+    background-color: #fff;
+    color: #333; /* 기본 텍스트 색상 */
+}
+
+.custom-select-option-item:hover {
+    background-color: #f0f0f0; /* 호버 시 배경색 */
+}
+
+/* 선택된 항목 스타일 */
+.custom-select-option-item.active {
+    background-color: #e0e0e0; /* 선택된 항목 배경색 */
+    font-weight: bold;
+    color: #000;
+}
+
+
+/*!* --- 기존 폼 그룹들의 flex 배치 --- *!*/
+/*.form-group-flex {*/
+/*    display: flex;*/
+/*    gap: 20px; !* 카테고리와 별점 그룹 사이의 간격 *!*/
+/*    align-items: flex-end; !* 하단 정렬 *!*/
+/*    margin-bottom: 15px; !* 전체 그룹 아래 여백 *!*/
+/*}*/
+
+.input{
+    height: 100%;
 }

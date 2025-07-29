@@ -80,7 +80,7 @@ const JournalEditor = ({ journalId, onSaveSuccess, onCancel }) => {
     // Form 컴포넌트 렌더링, 초기값과 제출 상태 등 props 전달
     return (
         <div className="journal-editor-container">
-            <h2 className="editor-title">{isEditMode ? '저널 수정' : '새 저널 작성'}</h2>
+            {/*<h2 className="editor-title">{isEditMode ? '저널 수정' : '새 저널 작성'}</h2>*/}
             <JournalForm
                 // key={journalId || 'new-journal'} // journalId 변경 시 Form 강제 리셋용 key
                 key={draftKey} // [수정] key를 draftKey로 변경
