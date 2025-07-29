@@ -1,13 +1,5 @@
-import { Radar } from 'react-chartjs-2';
-import {
-    Chart as ChartJS,
-    RadialLinearScale,
-    PointElement,
-    LineElement,
-    Filler,
-    Tooltip,
-    Legend
-} from 'chart.js';
+import {Radar} from 'react-chartjs-2';
+import {Chart as ChartJS, Filler, Legend, LineElement, PointElement, RadialLinearScale, Tooltip} from 'chart.js';
 
 ChartJS.register(
     RadialLinearScale,
@@ -28,28 +20,21 @@ export default function RadarChart({previousData, rawData, chartStyleThis, chart
         : [];
 
     // === 1. 공통 라벨/총점 ===
-    const LABELS = ['우울', '불안', '스트레스'];
+    const LABELS = ['불안', '우울', '스트레스'];
     const MAX_SCORES = [27, 21, 40];
 
-    // === 2. 100점 환산 함수 ===
-    function normalize(raw, max) {
-        return raw.map((v, i) => (v / max[i]) * 100);
-    }
-    const lastMonthNormalized = normalize(previousData, MAX_SCORES);
-    const thisMonthNormalized = normalize(data, MAX_SCORES);
-
-    // === 3. for chart ===
+    // === 2. for chart ===
     const chartData = {
         labels: LABELS,
         datasets: [
             {
                 label : "이번 달",
-                data: thisMonthNormalized,
+                data: data,
                 ...chartStyleThis
             },
             {
                 label : "지난 달",
-                data: lastMonthNormalized,
+                data: previousData,
                 ...chartStylePrevious
             }
         ]
@@ -57,9 +42,11 @@ export default function RadarChart({previousData, rawData, chartStyleThis, chart
 
     const options = {
         responsive: true,
+        maintainAspectRatio: false,
         plugins: {
             legend: {
                 display: true,
+                position: 'bottom',
                 reverse: true,
                 labels: {
                     usePointStyle: true,       // 포인트 스타일 사용
@@ -90,6 +77,7 @@ export default function RadarChart({previousData, rawData, chartStyleThis, chart
                 },
                 ticks: {
                     stepSize: 20,
+                    backdropColor: 'transparent',
                     callback: (v) => `${v}`,
                 },
                 pointLabels: {
@@ -100,7 +88,7 @@ export default function RadarChart({previousData, rawData, chartStyleThis, chart
     };
 
     return (
-        <div style={{maxWidth: 480, margin: "0 auto"}}>
+        <div style={{height: "95%", margin: "0 auto"}}>
             <Radar data={chartData} options={options}/>
         </div>
     );

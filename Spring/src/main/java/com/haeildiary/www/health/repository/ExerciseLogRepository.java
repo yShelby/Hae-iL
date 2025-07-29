@@ -24,4 +24,18 @@ public interface ExerciseLogRepository extends JpaRepository<ExerciseLog, Long> 
 
     // ✅ 추가: 날짜 범위 운동 기록 조회
     List<ExerciseLog> findAllByUserUserIdAndExerciseDateBetween(Integer userId, LocalDate start, LocalDate end);
+
+    // 차트용 데이터 조회 (날짜와 운동기간만 조회)
+    @Query("""
+            SELECT e.exerciseDate, COALESCE(SUM(e.duration), 0)
+            FROM ExerciseLog e
+            WHERE e.user.userId = :userId
+            AND e.exerciseDate BETWEEN :startDate AND :endDate
+            GROUP BY e.exerciseDate
+            ORDER BY e.exerciseDate
+            """)
+    List<Object[]> findExerciseDurationForChart(@Param("userId") Integer userId,
+                                                @Param("startDate") LocalDate startDate,
+                                                @Param("endDate") LocalDate endDate);
+
 }
