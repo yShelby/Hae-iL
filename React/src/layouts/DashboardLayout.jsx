@@ -6,9 +6,9 @@ const DashboardLayout = () => {
 
     return (
         // dashoboardLayout은 이제 outlet 역할만 수행하도록 변경
-        <main className="dashboard-container">
+        <div className="dashboard-container">
             <Outlet />
-        </main>
+        </div>
     );
 };
 

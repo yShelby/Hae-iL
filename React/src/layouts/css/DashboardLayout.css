@@ -2,11 +2,7 @@
 
 /* --- 대시보드 전체 컨테이너 --- */
 .dashboard-container {
-    display: flex;
-    gap: 24px;
-    width: 100%; /* 부모 요소(MainLayout의 Outlet)에 꽉 차도록 설정 */
-    padding: 24px;
-    background-color: #f4f7fe;
-    box-sizing: border-box; /* 패딩이 크기에 포함되도록 설정 */
     height: 100%;
+    padding: 30px 0 55px 0;
+    box-sizing: border-box; /* 패딩이 크기에 포함되도록 설정 */
 }

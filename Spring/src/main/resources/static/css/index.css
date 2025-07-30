@@ -40,7 +40,7 @@ button {
 
     .header {
         display: flex;justify-content: flex-end;align-items: center;
-        min-width: 250px;
+        /* min-width: 250px;*/
         height: 100vh;
         background: transparent;
     }
@@ -316,7 +316,7 @@ button {
         position: relative;
         width: 80%;
         min-width: 800px;
-        height: 88%;
+        height: 90%;
         min-height: 750px;
 
         border-radius: var(--border-radius-main);

@@ -1,0 +1,52 @@
+/* Weather.css */
+
+.weather-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    gap: 8px;
+    font-family: 'Pretendard', sans-serif;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.weather-location {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #374151;
+}
+
+.weather-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.weather-icon {
+    width: 100px;
+    height: 100px;
+}
+
+.weather-details {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.weather-main-text {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #4B5563;
+    margin: 0;
+}
+
+.weather-temp-current {
+    font-size: 2.25rem;
+    font-weight: 700;
+    color: #1F2937;
+    margin: 0;
+    line-height: 1.1;
+}

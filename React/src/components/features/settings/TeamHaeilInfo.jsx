@@ -1,4 +1,5 @@
 import '../../pages/css/settingpage.css'
+
 function TeamHaeilInfo() {
 
     const memberInfo = [
@@ -57,28 +58,15 @@ function TeamHaeilInfo() {
             {memberInfo.map((member) => {
 
                 return (
-                    <div key={member.id} style={{
-                        display: 'flex',gap: '10px',
-                        width: '350px', padding: "1rem",
-                        border: '1px solid #fff', borderRadius: '25px',
-                    }}>
+                    <div key={member.id}
+                         className={"team-info-wrapper"}>
                         <div className='member-img' style={{
-                            width: '100px',height: '100px',
-                            borderRadius: '50%',
                             backgroundImage: `url(${member.img})`,
-                            backgroundPosition: 'center',
-                            backgroundSize: 'contain',
-                            backgroundRepeat: 'no-repeat',
-                            margin: '15px',
                         }}></div>
-                        <div className='member-info' style={{
-                            display: 'flex', flexDirection: 'column',
-                            justifyContent: 'space-between', alignItems: 'flex-start',gap: '3px',
-                            height: '100%',
-                        }}>
+                        <div className='member-info'>
                             <p style={{margin: 0}}>이 름 : {member.name}</p>
                             {/*<p style={{margin: 0}}>직 책 : {member.position}</p>*/}
-                            <p style={{margin: 0}}>담당 업무 : {member.role}</p>
+                            {/*<p style={{margin: 0}}>담당 업무 : {member.role}</p>*/}
                             <p style={{margin: 0}}>이메일 : {member.email}</p>
                         </div>
                     </div>
