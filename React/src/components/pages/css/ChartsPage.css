@@ -106,9 +106,9 @@
 }
 
 h3, h4{
-    font-family: 'NPS', sans-serif;  /* 폰트 패밀리 */
+    font-family: 'NPSfont', sans-serif;  /* 폰트 패밀리 */
     font-weight: 400;                /* regular */
-    color: #393E75;                  /* 색상 */
+    color: var(--primary-color);                  /* 색상 */
     margin: 0;
 }
 
