@@ -1,3 +1,4 @@
+import '../../pages/css/settingpage.css'
 function TeamHaeilInfo() {
 
     const memberInfo = [
@@ -52,7 +53,7 @@ function TeamHaeilInfo() {
     ]
 
     return (
-        <div style={{display: 'flex',flexWrap: 'wrap',width: '1200px'}}>
+        <div className={"team-info"}>
             {memberInfo.map((member) => {
 
                 return (

@@ -1,0 +1,75 @@
+.organizingBox {
+    display: flex;
+    min-width: 150px;
+    Width: auto;
+    min-height: 50px;
+    max-height: 500px;
+    margin-left: 10rem;
+    border: 3px dotted violet;
+}
+
+.settings-page {
+    display: flex;
+    width: 100%;
+    height: auto;
+    flex-direction: row;
+    position: relative;
+    gap: 25px;
+}
+
+.setting-left {
+    display: flex;
+    flex-direction: column;
+    flex: 2;
+    margin-left: 100px;
+    gap: 25px;
+}
+
+.box-A {
+    display: flex;
+    max-width: 150px;
+    max-height: 500px;
+    border: 3px dotted violet;
+}
+.setting-bottom {
+    display: flex;
+    flex-direction: row-reverse;
+    gap: 25px;
+}
+.box-D {
+    display: flex;
+    min-width: 150px;
+    min-height: 50px;
+    max-height: 500px;
+    border: 3px dotted violet;
+}
+.setting-bottom-left {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.box-B {
+    display: flex;
+    min-width: 150px;
+    min-height: 50px;
+    max-height: 500px;
+    border: 3px dotted violet;
+}
+.box-C {
+
+}
+
+.team-info {
+    display: grid;
+    grid-template-columns: repeat(3, 200px);
+}
+.box-E {
+    display: flex;
+    min-width: 150px;
+    min-height: 50px;
+    max-height: 500px;
+    border: 3px dotted violet;
+    flex-direction: column;
+    flex: 1;
+}

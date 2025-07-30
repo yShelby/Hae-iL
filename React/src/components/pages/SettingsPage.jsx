@@ -20,34 +20,37 @@ function SettingsPage() {
     if (loading) return <div> 로딩 중... </div>
     if (!user) {
         return (
-            <div className="settings-page" style={{
-                    display: 'flex', flexWrap: 'wrap',
-                    width:'100vw', height:'auto',
-            }}>
+            <div className="settings-page" >
                 <h2>환경설정</h2>
-                <div className={'box A'} style={organizingBox}>
-                    <h2>my info</h2>
-                    <div> 로그인이 필요합니다. </div>
+                <div className={"setting-left"}>
+                    <div className={'box-A'}>
+                        <h2>my info</h2>
+                        <div> 로그인이 필요합니다. </div>
+                    </div>
+                    <div className={"setting-bottom"}>
+                        <div className={'box-D'}>
+                            <h2>app themes</h2>
+                            <ThemeSelector />
+                        </div>
+                        <div className={"setting-bottom-left"}>
+                            <div className={'box-B'}>
+                                <h2>hot lines</h2>
+                                <p>
+                                    1577-0199 | 정신건강위기 상담전화 <br/>
+                                    129 | 보건복지콜센터(보건복지부) <br/>
+                                    1393 | 자살상담전화(보건복지부) <br/>
+                                    1588-9191 | 한국생명의전화 <br/>
+                                    1388 | 청소년전화(여성가족부) <br/>
+                                </p>
+                            </div>
+                            <div className={'box-C'}>
+                                <h2>팀 해일</h2>
+                                <TeamHaeilInfo />
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div className={'box D'} style={organizingBox}>
-                    <h2>app themes</h2>
-                    <ThemeSelector />
-                </div>
-                <div className={'box B'} style={organizingBox}>
-                    <h2>hot lines</h2>
-                    <p>
-                        1577-0199 | 정신건강위기 상담전화 <br/>
-                        129 | 보건복지콜센터(보건복지부) <br/>
-                        1393 | 자살상담전화(보건복지부) <br/>
-                        1588-9191 | 한국생명의전화 <br/>
-                        1388 | 청소년전화(여성가족부) <br/>
-                    </p>
-                </div>
-                <div className={'box C'} style={{organizingBox}}>
-                    <h2>팀 해일</h2>
-                    <TeamHaeilInfo />
-                </div>
-                <div className={'box E'} style={organizingBox}>
+                <div className={'box-E'}>
                     <h2> settings </h2>
 
                     <button onClick={() => setIsCopyrightOpen(true)}>
@@ -72,36 +75,38 @@ function SettingsPage() {
 
     return (
         <>
-        <h2>환경설정</h2>
-        <div className="settings-page" style={{
-            display: 'flex', flexWrap: 'wrap',
-            width:'100vw', height:'auto',
-            // backgroundColor: 'lightgray',
-        }}>
+            <h2>환경설정</h2>
+            <div className="settings-page" >
                 {/*<h2>my info</h2>*/}
-                <div className={'box A'} style={organizingBox}>
-                    <ProfileImageUploader />
-                    <UserProfileInfo user={user} />
+                <div className={"setting-left"}>
+                    <div className={'box-A'}>
+                        <ProfileImageUploader />
+                        <UserProfileInfo user={user} />
+                    </div>
+                    <div className={"setting-bottom"}>
+                        <div className={'box-D'}>
+                            <h2>app themes</h2>
+                            <ThemeSelector />
+                        </div>
+                        <div className={"setting-bottom-left"}>
+                            <div className={'box-B'} >
+                                <h2>hot lines</h2>
+                                <p>
+                                    1577-0199 | 정신건강위기 상담전화 <br/>
+                                    129 | 보건복지콜센터(보건복지부) <br/>
+                                    1393 | 자살상담전화(보건복지부) <br/>
+                                    1588-9191 | 한국생명의전화 <br/>
+                                    1388 | 청소년전화(여성가족부) <br/>
+                                </p>
+                            </div>
+                            <div className={'box-C'} style={{display: 'flex', flexWrap: 'wrap',}}>
+                                <h2>팀 해일</h2>
+                                <TeamHaeilInfo />
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div className={'box D'} style={organizingBox}>
-                    <h2>app themes</h2>
-                    <ThemeSelector />
-                </div>
-                <div className={'box B'} style={organizingBox}>
-                    <h2>hot lines</h2>
-                    <p>
-                        1577-0199 | 정신건강위기 상담전화 <br/>
-                        129 | 보건복지콜센터(보건복지부) <br/>
-                        1393 | 자살상담전화(보건복지부) <br/>
-                        1588-9191 | 한국생명의전화 <br/>
-                        1388 | 청소년전화(여성가족부) <br/>
-                    </p>
-                </div>
-                <div className={'box C'} style={{display: 'flex', flexWrap: 'wrap',}}>
-                    <h2>팀 해일</h2>
-                    <TeamHaeilInfo />
-                </div>
-                <div className={'box E'} style={organizingBox}>
+                <div className={'box-E'}>
                     <h2> settings </h2>
                     <ChangePasswordModal />
                     <button onClick={() => setIsSurveyOpen(true)}>
@@ -133,16 +138,9 @@ function SettingsPage() {
                     open={isPrivacyPolicyOpen}
                     onClose={()=> setIsPrivacyPolicyOpen(false)}
                 />
-        </div>
-    </>
+            </div>
+        </>
     );
 }
 
 export default SettingsPage;
-
-const organizingBox = {
-    display: 'flex',
-    minWidth: '150px',Width: 'auto', minHeight: '50px', maxHeight: '500px',
-    marginLeft: '10rem',
-    border: '3px dotted violet',
-};
