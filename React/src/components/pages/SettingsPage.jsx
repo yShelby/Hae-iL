@@ -21,9 +21,9 @@ function SettingsPage() {
     if (!user) {
         return (
             <div className="settings-page" >
-                <h2>환경설정</h2>
+                {/*<h2>환경설정</h2>*/}
                 <div className={"setting-left"}>
-                    <div className={'box-A'}>
+                    <div className={'box-A'} style={{display: "flex", flexDirection: "column"}}>
                         <h2>my info</h2>
                         <div> 로그인이 필요합니다. </div>
                     </div>
@@ -34,7 +34,7 @@ function SettingsPage() {
                         </div>
                         <div className={"setting-bottom-left"}>
                             <div className={'box-B'}>
-                                <h2>hot lines</h2>
+                                <h2>비상연락망</h2>
                                 <p>
                                     1577-0199 | 정신건강위기 상담전화 <br/>
                                     129 | 보건복지콜센터(보건복지부) <br/>
@@ -75,7 +75,7 @@ function SettingsPage() {
 
     return (
         <>
-            <h2>환경설정</h2>
+            {/*<h2>환경설정</h2>*/}
             <div className="settings-page" >
                 {/*<h2>my info</h2>*/}
                 <div className={"setting-left"}>
@@ -90,7 +90,7 @@ function SettingsPage() {
                         </div>
                         <div className={"setting-bottom-left"}>
                             <div className={'box-B'} >
-                                <h2>hot lines</h2>
+                                <h2>비상연락망</h2>
                                 <p>
                                     1577-0199 | 정신건강위기 상담전화 <br/>
                                     129 | 보건복지콜센터(보건복지부) <br/>

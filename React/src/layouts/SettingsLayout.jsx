@@ -4,7 +4,7 @@ import {Outlet} from "react-router-dom";
 const SettingsLayout = () => {
 
     return (
-        <div className="settings-container">
+        <div className="settings-container" style={{width:'100%'}}>
             <Outlet />
         </div>
     );

@@ -7,17 +7,17 @@ function UserProfileInfo({ user }) {
     const emotions = user.initialEmotion || [];
 
     return (
-        <section className="user-profile-info" style={{ marginBottom: '2rem' }}>
+        <section className="user-profile-info" style={{margin: '0 80px', fontSize:'14px'}} >
             {/*<h3>내 정보</h3>*/}
             <div style={{ display: 'flex', alignItems: 'center' }}>
-                <div>
+                <div style={ {display: 'flex', gap: '10px', marginBottom:'10px',flexDirection: 'column'}}>
                     <p><strong>닉네임:</strong> {user.nickname}</p>
                     <p><strong>이메일:</strong> {user.email}</p>
                 </div>
             </div>
 
-            <div style={{ marginBottom: '1rem' }}>
-                <h4>좋아하는 영화 장르</h4>
+            <div style={{ marginBottom: '10px' }}>
+                <p>좋아하는 영화 장르</p>
                 {genres.length > 0 ? (
                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
                         {genres.map((genre, i) => (
@@ -32,7 +32,7 @@ function UserProfileInfo({ user }) {
             </div>
 
             <div>
-                <h4>최근 자주 느낀 감정</h4>
+                <p>최근 자주 느낀 감정</p>
                 {emotions.length > 0 ? (
                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
                         {emotions.map((emotion, i) => (
