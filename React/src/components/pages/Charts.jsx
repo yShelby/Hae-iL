@@ -211,8 +211,8 @@ const gridColor = {
 
 const moodLineStyle = {
     theme1 : {
-        borderColor: "rgba(75,119,255,1)",
-        backgroundColor: "rgba(75,119,255,0.1)",
+        borderColor: "rgba(75,192,192,1)",
+        backgroundColor: "rgba(75,192,192,0.1)",
         fill: "start",
         tension: 0.4,
         pointRadius: 3
@@ -235,23 +235,23 @@ const moodLineStyle = {
 
 const sleepBarStyle = {
     theme1:{
-        backgroundColor: "rgba(198,192,156, 0.5)",
-        borderColor: "rgb(255,182,81)",
-        borderWidth: 2,
+        backgroundColor: "rgba(54, 162, 235, 0.5)",
+        borderColor: "rgba(54, 162, 235, 1)",
+        borderWidth: 3,
         borderSkipped: false,
         borderRadius: 7
     },
     theme2:{
         backgroundColor: "rgba(54, 162, 235, 0.5)",
         borderColor: "rgba(54, 162, 235, 1)",
-        borderWidth: 2,
+        borderWidth: 3,
         borderSkipped: false,
         borderRadius: 7
     },
     theme3:{
         backgroundColor: "rgba(54, 162, 235, 0.5)",
         borderColor: "rgba(54, 162, 235, 1)",
-        borderWidth: 2,
+        borderWidth: 3,
         borderSkipped: false,
         borderRadius: 7
     }
@@ -260,31 +260,31 @@ const sleepBarStyle = {
 
 const exerciseBarStyle = {
     theme1:{
-        backgroundColor: "rgba(255,201,139, 0.5)",
-        borderColor: "rgba(255,201,139, 1)",
-        borderWidth: 2,
+        backgroundColor: "rgba(255, 206, 86, 0.5)",
+        borderColor: "rgba(255, 206, 86, 1)",
+        borderWidth: 3,
         borderRadius: 10
     },
     theme2:{
         backgroundColor: "rgba(255, 206, 86, 0.5)",
         borderColor: "rgba(255, 206, 86, 1)",
-        borderWidth: 2,
+        borderWidth: 3,
         borderRadius: 10
     },
     theme3:{
         backgroundColor: "rgba(255, 206, 86, 0.5)",
         borderColor: "rgba(255, 206, 86, 1)",
-        borderWidth: 2,
+        borderWidth: 3,
         borderRadius: 10
     }
 };
 
 const diagnosisRadarStyle = {
     theme1:{
-        backgroundColor: "rgba(231,151,150,0.15)",
-        borderColor: "rgba(231,151,150,1)",
-        pointBackgroundColor: "rgba(231,151,150,1)",
-        pointBorderColor: "rgba(231,151,150,1)",
+        backgroundColor: "rgba(255,99,132,0.15)",
+        borderColor: "rgba(255,99,132,1)",
+        pointBackgroundColor: "rgba(255,99,132,1)",
+        pointBorderColor: "rgba(255,99,132,1)",
         pointRadius: 2,
         borderWidth: 2
     },
@@ -308,10 +308,10 @@ const diagnosisRadarStyle = {
 
 const previousDiagnosisRadarStyle = {
     theme1:{
-        backgroundColor: "rgba(244,207,199,0.2)",
-        borderColor: "rgba(244,207,199,1)",
-        pointBackgroundColor: "rgba(244,207,199,1)",
-        pointBorderColor: "rgba(244,207,199,1)",
+        backgroundColor: "rgba(54,162,235,0.2)",
+        borderColor: "rgba(54,162,235,1)",
+        pointBackgroundColor: "rgba(54,162,235,1)",
+        pointBorderColor: "rgba(54,162,235,1)",
         pointRadius: 2,
         borderWidth: 2,
         borderDash: [3, 3]

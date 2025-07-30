@@ -1,9 +1,3 @@
-.react-datepicker{
-    position: relative;
-    left: 60%;
-    top: 44px;
-}
-
 .journal-form {
     display: flex;
     flex-direction: column;
