@@ -102,6 +102,11 @@
 .widget p {
     margin: 4px 0;
     font-size: 14px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 1; /* 최대 2줄 표시 */
+    -webkit-box-orient: vertical;
 }
 
 .inline-label {
