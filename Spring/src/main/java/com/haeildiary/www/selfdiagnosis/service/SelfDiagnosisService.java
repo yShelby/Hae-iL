@@ -100,7 +100,7 @@ public class SelfDiagnosisService {
 
                 // === 2. 새 검사 저장 ===
                 // 불안 검사 총점
-                Integer anxietyMax = 27;
+                Integer anxietyMax = 21;
                 // total score를 percentage로 변환
                 Integer anxietyPercentage = CalculateUtil.calculatePercentage(totalScore, anxietyMax);
 
@@ -150,7 +150,7 @@ public class SelfDiagnosisService {
 
                 // === 2. 새 검사 저장 ===
                 // 우울 검사 총점
-                Integer depressionMax = 21;
+                Integer depressionMax = 27;
                 // total score를 percentage로 변환
                 Integer depressionPercentage = CalculateUtil.calculatePercentage(totalScore, depressionMax);
 

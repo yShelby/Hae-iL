@@ -44,6 +44,8 @@ export default function DateNavigator({
         handleChangeLabelFetch(endDate);
     }, [endDate, handleChangeLabelFetch, mode]);
 
+    const today = startOfDay(new Date());
+
     // 이전
     const onPrev = () => {
         const prevEndDate = mode === 'weekly' ? addDays(endDate, -7)
@@ -57,14 +59,19 @@ export default function DateNavigator({
         const nextEndDate = mode === 'weekly' ? addDays(endDate, 7)
             : addMonths(endDate, 1);
 
-        setEndDate(nextEndDate); // Charts 컴포넌트의 endDate 업데이트
+        // 다음 날짜가 오늘 이전이거나 오늘이면 endDate == nextEndDate
+        if (isBefore(nextEndDate, today) || isEqual(nextEndDate, today)) {
+            setEndDate(nextEndDate); // Charts 컴포넌트의 endDate 업데이트
+        } else {
+            // 다음 날짜가 오늘 이후라면 endDate를 오늘로 변경
+            setEndDate(today);
+        }
     };
 
     // 오늘 이후로 이동 금지
+    // 다음 버튼 활성화 조건: 현재 endDate가 오늘이 아닌 경우에만 활성화
     const canGoForward = () => {
-        const nextStart = startOfDay(new Date(endDate));
-        const today = startOfDay(new Date());
-        return isBefore(nextStart, today);
+        return !isEqual(endDate, today);
     };
 
     return (
