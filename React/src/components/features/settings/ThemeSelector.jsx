@@ -2,6 +2,8 @@ import React from 'react';
 import { useTheme } from '@shared/styles/ThemeProvider.jsx';
 import { useAuth } from '@shared/context/AuthContext.jsx';
 import { showToast } from '@shared/UI/Toast.jsx';
+import Button from "@shared/styles/Button.jsx";
+import './css/themeselector.css'
 
 function ThemeSelector() {
     const { themeKey, setThemeKey } = useTheme();
@@ -47,26 +49,37 @@ function ThemeSelector() {
     };
 
     return (
-        <div>
-            <h3>디자인 테마 선택</h3>
-            <button
-                style={{ fontWeight: themeKey === 'theme1' ? 'bold' : 'normal' }}
-                onClick={() => handleThemeChange('theme1')}
-            >
-                테마 1
-            </button>
-            <button
-                style={{ fontWeight: themeKey === 'theme2' ? 'bold' : 'normal', marginLeft: '0.5rem' }}
-                onClick={() => handleThemeChange('theme2')}
-            >
-                테마 2
-            </button>
-            <button
-                style={{ fontWeight: themeKey === 'theme3' ? 'bold' : 'normal', marginLeft: '0.5rem' }}
-                onClick={() => handleThemeChange('theme3')}
-            >
-                테마 3
-            </button>
+        <div className={'theme-select-list'}>
+            <div className={'theme-select-title'}>디자인 테마 선택</div>
+            <div className={'theme-button-box'}>
+                <Button
+                    variant="button3"
+                    style={{ fontWeight: themeKey === 'theme1' ? 'bold' : 'normal', fontFamily:'NPSfont', fontSize:'24px' }}
+                    onClick={() => handleThemeChange('theme1')}
+                    className={"theme-1-change-button"}
+                >
+                    <img src="/images/logo1.png" alt="" style={{width:'54px', height:'45px'}}/>
+                    테마 1
+                </Button>
+                <Button
+                    variant="button3"
+                    style={{ fontWeight: themeKey === 'theme2' ? 'bold' : 'normal', fontFamily:'NPSfont', fontSize:'24px' }}
+                    onClick={() => handleThemeChange('theme2')}
+                    className={"theme-2-change-button"}
+                >
+                    <img src="/images/logo1.png" alt="" style={{width:'54px', height:'45px'}}/>
+                    테마 2
+                </Button>
+                <Button
+                    variant="button3"
+                    style={{ fontWeight: themeKey === 'theme3' ? 'bold' : 'normal', fontFamily:'NPSfont', fontSize:'24px' }}
+                    onClick={() => handleThemeChange('theme3')}
+                    className={"theme-3-change-button"}
+                >
+                    <img src="/images/logo2.png" alt="" style={{width:'54px', height:'45px'}}/>
+                    테마 3
+                </Button>
+            </div>
         </div>
     );
 }

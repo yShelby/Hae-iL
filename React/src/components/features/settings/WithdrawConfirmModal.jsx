@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { showToast } from '@shared/UI/Toast.jsx';
+import Button from "@shared/styles/Button.jsx";
+import {IconLockSquare} from "@tabler/icons-react";
 
 function WithdrawConfirmModal() {
     const [visible, setVisible] = useState(false);
@@ -36,9 +38,15 @@ function WithdrawConfirmModal() {
     };
 
     if (!visible) return (
-        <button onClick={openModal} style={{ color: 'red' }}>
-            회원 탈퇴
-        </button>
+        <div className={'open-password-modal'}>
+            <Button variant="button4" icon={IconLockSquare} onClick={openModal} style={{ marginLeft: '15px'}}>
+                {/*<Button onClick={openModal} style={{ marginBottom: '2rem' }}>*/}
+            </Button>
+            <div style={{flex:'1', textAlign:'center'}}>회원 탈퇴</div>
+        </div>
+        // <button onClick={openModal} style={{ color: 'red' }}>
+        //     회원 탈퇴
+        // </button>
     );
 
     return (
@@ -72,5 +80,9 @@ const modalContentStyle = {
     borderRadius: '8px',
     width: '300px',
 };
+
+const openPasswordModal={
+    width:'230px', height:'60px', backgroundColor:'#fff', display:'flex', alignItems:'center', justifyContent:'space-evenly',
+}
 
 export default WithdrawConfirmModal;

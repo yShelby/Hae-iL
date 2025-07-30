@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { showToast } from '@shared/UI/Toast.jsx';
 import Button from "@shared/styles/Button.jsx";
 import Input from "@shared/styles/Input.jsx";
+import { IconKey } from '@tabler/icons-react';
 
 function ChangePasswordModal() {
     const [visible, setVisible] = useState(false);
@@ -65,9 +66,12 @@ function ChangePasswordModal() {
     };
 
     if (!visible) return (
-        <button onClick={openModal} style={{ marginBottom: '2rem' }}>
-            비밀번호 변경
-        </button>
+        <div className={'open-password-modal'}>
+        <Button variant="button4" icon={IconKey} style={{ marginLeft: '15px'}}>
+        {/*<Button onClick={openModal} style={{ marginBottom: '2rem' }}>*/}
+        </Button>
+            <div style={{flex:'1', textAlign:'center'}}>비밀번호 변경</div>
+        </div>
     );
 
     return (
@@ -158,6 +162,10 @@ const passwordTitleStyle={
 
 const passwordInputStyle={
     flex: '1'
+}
+
+const openPasswordModal={
+    width:'230px', height:'60px', backgroundColor:'#fff', display:'flex', alignItems:'center', justifyContent:'space-evenly', borderRadius: '30px'
 }
 
 export default ChangePasswordModal;

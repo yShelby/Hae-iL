@@ -41,7 +41,6 @@
     min-width: 150px;
     min-height: 50px;
     max-height: 500px;
-    border: 3px dotted violet;
 }
 .setting-bottom-left {
     display: flex;
@@ -54,10 +53,6 @@
     min-width: 150px;
     min-height: 50px;
     max-height: 500px;
-    border: 3px dotted violet;
-}
-.box-C {
-
 }
 
 .team-info {
@@ -67,9 +62,46 @@
 .box-E {
     display: flex;
     min-width: 150px;
+    width: 350px;
     min-height: 50px;
-    max-height: 500px;
-    border: 3px dotted violet;
+    height: 710px;
+    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+    background-color: rgba(255, 255, 255, 0.5);
+    border-top-left-radius: 30px;
+    border-bottom-left-radius: 30px;
+    padding: 50px 10px;
     flex-direction: column;
     flex: 1;
+    align-items: center;
+}
+
+.box-E h2{
+    font-family: 'NPSfont', sans-serif;
+    font-size: 24px;
+    color: var(--primary-color);
+    margin-bottom: 20px;
+    margin-top: 15px;
+}
+
+.set-list{
+    display: flex;
+    gap: 30px;
+    padding: 10px 0;
+    flex-direction: column;
+    margin-top: 30px;
+}
+
+.open-password-modal{
+    width:230px;
+    height:60px;
+    background-color: rgb(255, 255, 255);
+    display:flex;
+    align-items:center;
+    justify-content:space-evenly;
+    border-radius: 30px;
+    box-shadow:0 4px 4px rgba(0, 0, 0, 0.25);
+}
+
+.open-password-modal .button{
+    margin-left: 15px;
 }
