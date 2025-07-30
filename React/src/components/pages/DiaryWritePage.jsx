@@ -202,7 +202,7 @@ const DiaryWritePage = () => {
             {diaryMode === 'empty' && (
                 <div className="placeholder-wrapper">
                     <p className="placeholder-text">오늘의 감정을 기록해보세요!</p>
-                    <Button variant="button2"
+                    <Button variant="button2 start-writing-button"
                             onClick={handleStartWriting}
                             style={{width:'130px', fontSize:'16px'}}
                     >

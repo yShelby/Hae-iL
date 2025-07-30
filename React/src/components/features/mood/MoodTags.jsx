@@ -8,7 +8,7 @@ export default function MoodTags({ tags, scoreTagFade }) {
 
     return (
         <div className="mood-tags-container">
-            <h3>태그</h3>
+            <h1>태그</h1>
             <div className={"tags-box"}>
                 <ul className={`tags-list${scoreTagFade ? ' fade-in' : ''}`}>
                     {tags.map((tag, index) => (

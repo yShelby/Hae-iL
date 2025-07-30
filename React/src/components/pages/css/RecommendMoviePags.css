@@ -37,7 +37,7 @@
     width: 150px;
     height: 35px;
     border-radius: 30px;
-    background-color: #393E75;
+    background-color: rgba(var(--primary-color-rgb), 0.8);
     box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.25);
     font-size: 1.1rem;
     font-weight: 700;
@@ -49,8 +49,9 @@
     grid-area: moviebtn;
 }
 .nextEmotionBtn:hover {
-    background-color: #40a9ff;
-    box-shadow: 0 6px 12px rgba(64,169,255,0.6);
+    background-color: var(--primary-color);
+    border-color: #adb5bd;
+    box-shadow: 0 6px 12px rgba(var(--primary-color-rgb), 0.1);
 }
 
 .movieParent{

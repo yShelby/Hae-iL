@@ -1,7 +1,7 @@
 export const testList = [
     {
         type: "depression",
-        label: "우울 자가진단 테스트",
+        label: "우울 자가진단",
         questions: [
             "일에 대한 흥미나 즐거움이 거의 없다.",
             "기분이 처지거나, 우울하거나 희망이 없다고 느낀다.",
@@ -22,7 +22,7 @@ export const testList = [
     },
     {
         type: "anxiety",
-        label: "불안 자가진단 테스트",
+        label: "불안 자가진단",
         questions: [
             "불안하거나, 초조하거나, 신경이 곤두서는 느낌이 든다.",
             "걱정을 멈추거나 조절하기 어렵다.",
@@ -40,7 +40,7 @@ export const testList = [
         optionMap: [0,0,0,0,0,0,0,1] // 각 문항이 어느 옵션셋을 쓸지 idx 맵핑
     },
     {  type: "stress",
-        label: "스트레스 자가진단 테스트",
+        label: "스트레스 자가진단",
         questions: [
             "지난 한 달 동안, 예상치 못한 일 때문에 속상했던 적이 얼마나 자주 있었나요?",
             "지난 한 달 동안, 인생에서 중요한 일들을 통제할 수 없다고 느꼈던 적이 얼마나 자주 있었나요?",

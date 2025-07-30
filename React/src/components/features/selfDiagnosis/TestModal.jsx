@@ -3,6 +3,7 @@ import "./TestModal.css";
 import {useAuth} from "@shared/context/AuthContext.jsx";
 import {useCheckLogin} from "@/hooks/useCheckLogin.js";
 import {fetchSelfDiagnosisStatus, submitDiagnosis} from "@api/selfDiagnosisApi.js";
+import Button from "@shared/styles/Button.jsx";
 
 
 function TestModal({ test, onClose }) {
@@ -116,29 +117,34 @@ function TestModal({ test, onClose }) {
         return (
             <div className="modal-background">
                 <div className="modal-box">
-                    <button
-                        className="close-btn"
-                        onClick={() => {
-                            setResultData(null);  // 결과 초기화
-                            onClose();            // 모달 닫기
-                        }}
-                    >
-                        x
-                    </button>
-                    <h2>{test.label} 결과</h2>
-                    <div>
-                        <p>진단 결과: {resultData.result ?? "-"}</p>
-                        <p>{test.type}: {resultData.percentage ?? "-"}%</p>
+                    <div className="top-bar">
+                        <button
+                            className="close-btn1"
+                            onClick={() => {
+                                setResultData(null);  // 결과 초기화
+                                onClose();            // 모달 닫기
+                            }}
+                        >
+                            x
+                        </button>
+                        <h3 className={"label-info1"}>{test.label} 결과</h3>
+                    </div>
+                    <div className={"result-box"}>
+                        <div className="result-box-content">
+                            <p style={{paddingBottom:"30px"}}>진단 결과</p>
+                            <p style={{paddingBottom:"8px"}}>{resultData.result ?? "-"}</p>
+                            <p>{test.type}: {resultData.percentage ?? "-"}%</p>
+                        </div>
                         <p>다음 진단 가능일: {resultData.nextAvailableDate ?? "-"}</p>
                     </div>
-                    <button
+                    <Button variant={"button1"} className="submit-btn"
                         onClick={() => {
                             setResultData(null);
                             onClose();
                         }}
                     >
                         닫기
-                    </button>
+                    </Button>
                 </div>
             </div>
         );
@@ -172,14 +178,15 @@ function TestModal({ test, onClose }) {
     return (
         <div className="modal-background">
             <div className="modal-box">
-                <button className="close-btn"
-                        onClick={() => {
-                            setResultData(null);
-                            onClose();}}>
-                    x
-                </button>
-                <h2>{test.label}</h2>
-
+                <div className={"top-bar"}>
+                    <button className="close-btn1"
+                            onClick={() => {
+                                setResultData(null);
+                                onClose();}}>
+                        x
+                    </button>
+                    <h3 className={"label-info1"}>{test.label}</h3>
+                </div>
                 <div className="question-box">
                     <p> {step+1}. {test.questions[step]} </p>
 
@@ -203,14 +210,14 @@ function TestModal({ test, onClose }) {
                 </div>
 
                 <div className="modal-nav">
-                    <button onClick={handlePrev} disabled={step === 0}> 이전 </button>
-                    <button onClick={handleNext} disabled={step === test.questions.length-1}> 다음 </button>
+                    <Button variant={"button2"} onClick={handlePrev} disabled={step === 0}> 이전 </Button>
+                    <Button variant={"button2"} onClick={handleNext} disabled={step === test.questions.length-1}> 다음 </Button>
                 </div>
 
 
                 {step === test.questions.length - 1 &&
-                    <button className="submit-btn"
-                            disabled={!canSubmit || loading} onClick={handleSubmit}> { loading ? '분석 중...' : "제출하기" } </button>
+                    <Button variant={"button1"} className="submit-btn"
+                            disabled={!canSubmit || loading} onClick={handleSubmit}> { loading ? '분석 중...' : "제출하기" } </Button>
                 }
             </div>
         </div>

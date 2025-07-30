@@ -70,7 +70,7 @@
     border-radius: 30px;
     background-color: rgba(255, 255, 255, 0.8);  /* #FFF 80% */
     box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.25);
-    padding: 10px 30px 30px 30px;             /* 내부 여백은 예시, 필요시 조정 */
+    padding: 20px 30px 30px 30px;             /* 내부 여백은 예시, 필요시 조정 */
     box-sizing: border-box;
 }
 
@@ -80,7 +80,7 @@
     border-radius: 30px;
     background-color: rgba(255, 255, 255, 0.8);  /* #FFF 80% */
     box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.25);
-    padding: 10px 30px 30px 30px;             /* 내부 여백은 예시, 필요시 조정 */
+    padding: 20px 30px 30px 30px;             /* 내부 여백은 예시, 필요시 조정 */
     box-sizing: border-box;
 }
 
@@ -106,9 +106,9 @@
 }
 
 h3, h4{
-    font-family: 'NPS', sans-serif;  /* 폰트 패밀리 */
+    font-family: 'NPSfont', sans-serif;  /* 폰트 패밀리 */
     font-weight: 400;                /* regular */
-    color: #393E75;                  /* 색상 */
+    color: var(--primary-color);                  /* 색상 */
     margin: 0;
 }
 

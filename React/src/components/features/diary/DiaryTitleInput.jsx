@@ -13,7 +13,7 @@ const DiaryTitleInput = ({ title, setTitle }) => {
     // 2️⃣ 사용자가 입력 필드에 글자를 입력하면 onChange 이벤트 발생
     // 3️⃣ 이벤트 핸들러에서 e.target.value (입력된 문자열)를 setTitle 함수를 통해 상위 상태로 전달 → 상위 컴포넌트의 title 상태가 갱신됨
     return (
-        <div className="input-group">
+        <div className="input-group" style={{width:'100%'}}>
             <Input
                 type="text"
                 value={title} // 1. 현재 제목 값을 input에 바인딩
