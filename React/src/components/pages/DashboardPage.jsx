@@ -9,6 +9,7 @@ import FortuneCookie from "@features/dashboard/FortuneCookie.jsx";
 import DashboardCalendar from "@features/dashboard/DashboardCalendar.jsx";
 import DailySchedule from "@features/dashboard/DailySchedule.jsx";
 import {fetchWordCloudData} from "@api/wordCloudApi.js";
+import {runPreloadInBackground} from "@features/recommend/runPreloadInBackground.js";
 
 const DashboardPage = () => {
     // 페이지 레벨에서 사용자 정보 및 워드클라우드 관련 모든 상태를 관리
@@ -22,6 +23,34 @@ const DashboardPage = () => {
     // - UI 컴포넌트(WordCloudComp)에는 데이터만 전달하는 것이 FSD 구조에 더 적합
     const [wordData, setWordData] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        if (!user?.id) return;
+
+        const key = `hasPreloadedOnFirstLogin_${user.id}`;
+        const timestampKey = `${key}_timestamp`;
+
+        const savedTimestamp = localStorage.getItem(timestampKey);
+        const now = Date.now();
+
+        // 자정 기준 체크 함수
+        function isPastMidnight(timestamp) {
+            if (!timestamp) return true;
+            const nowDate = new Date();
+            const savedDate = new Date(parseInt(timestamp, 10));
+            const midnightToday = new Date(nowDate.getFullYear(), nowDate.getMonth(), nowDate.getDate());
+            return savedDate < midnightToday;
+        }
+
+        if (
+            !localStorage.getItem(key) ||  // 플래그가 없거나
+            isPastMidnight(savedTimestamp)  // 자정을 넘겼으면
+        ) {
+            localStorage.setItem(key, 'true');
+            localStorage.setItem(timestampKey, now.toString());
+            runPreloadInBackground(false);
+        }
+    }, [user?.id]);
 
     // [수정] user?.id와 refreshKey 의존성 분리
     // 1. 초기 데이터 로딩을 위한 useEffect
