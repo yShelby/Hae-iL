@@ -110,7 +110,7 @@
     /*position: absolute;*/
     /*left: 838px;*/
     /*top: 20px;*/
-    background-color: #5C5C8A;
+    background-color: var(--primary-color);
     padding: 10px 13px 10px 10px;
     width: 400px;
     min-width: 330px;

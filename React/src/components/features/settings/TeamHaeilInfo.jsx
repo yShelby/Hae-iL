@@ -9,7 +9,7 @@ function TeamHaeilInfo() {
             name: "최지호",
             position: "position",
             role: "role",
-            email: "email",
+            email: "choijiho2@gmail.com",
         },
         {
             id: 1,
@@ -17,7 +17,7 @@ function TeamHaeilInfo() {
             name: "김강민",
             position: "position",
             role: "role",
-            email: "email",
+            email: "kingkang5012@naver.com",
         },
         {
             id: 2,
@@ -25,7 +25,7 @@ function TeamHaeilInfo() {
             name: "김문철",
             position: "position",
             role: "role",
-            email: "email",
+            email: "kimancjf89@gmail.com",
         },
         {
             id: 3,
@@ -41,7 +41,7 @@ function TeamHaeilInfo() {
                 "차트 페이지 담당",
                 "일정 조율 및 발표",
             ],
-            email: "email",
+            email: "nornin9014@gmail.com",
         },
         {
             id: 4,
@@ -49,7 +49,7 @@ function TeamHaeilInfo() {
             name: "신다란",
             position: "position",
             role: "role",
-            email: "email",
+            email: "moon.daran.s@gamil.com",
         },
     ]
 

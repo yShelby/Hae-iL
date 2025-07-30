@@ -66,7 +66,7 @@ function ChangePasswordModal() {
     };
 
     if (!visible) return (
-        <div className={'open-password-modal'}>
+        <div className={'open-password-modal'} onClick={openModal}>
         <Button variant="button4" icon={IconKey} style={{ marginLeft: '15px'}}>
         {/*<Button onClick={openModal} style={{ marginBottom: '2rem' }}>*/}
         </Button>

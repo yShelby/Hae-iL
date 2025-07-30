@@ -38,8 +38,8 @@ function WithdrawConfirmModal() {
     };
 
     if (!visible) return (
-        <div className={'open-password-modal'}>
-            <Button variant="button4" icon={IconLockSquare} onClick={openModal} style={{ marginLeft: '15px'}}>
+        <div className={'open-password-modal'} onClick={openModal}>
+            <Button variant="button4" icon={IconLockSquare} style={{ marginLeft: '15px'}}>
                 {/*<Button onClick={openModal} style={{ marginBottom: '2rem' }}>*/}
             </Button>
             <div style={{flex:'1', textAlign:'center'}}>회원 탈퇴</div>

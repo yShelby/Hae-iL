@@ -55,14 +55,14 @@ function SettingsPage() {
                 <div className={'box-E'}>
                     <h2> 계정 관리 </h2>
                     <div className={'set-list'}>
-                        <div className={'open-password-modal'}>
-                            <Button variant="button4" icon={IconInfoCircle} onClick={() => setIsCopyrightOpen(true)}>
+                        <div className={'open-password-modal'} onClick={() => setIsCopyrightOpen(true)}>
+                            <Button variant="button4" icon={IconInfoCircle}>
                                 {/*<Button onClick={openModal} style={{ marginBottom: '2rem' }}>*/}
                             </Button>
                             <div style={{flex:'1', textAlign:'center'}}>서비스 이용 약관</div>
                         </div>
-                        <div className={'open-password-modal'}>
-                            <Button variant="button4" icon={IconLockSquare} onClick={() => setIsPrivacyPolicyOpen(true)}>
+                        <div className={'open-password-modal'} onClick={() => setIsPrivacyPolicyOpen(true)}>
+                            <Button variant="button4" icon={IconLockSquare}>
                                 {/*<Button onClick={openModal} style={{ marginBottom: '2rem' }}>*/}
                             </Button>
                             <div style={{flex:'1', textAlign:'center'}}>개인정보 이용방침</div>
@@ -116,23 +116,23 @@ function SettingsPage() {
                     </div>
                 </div>
                 <div className={'box-E'}>
-                    <h2> settings </h2>
+                    <h2> 계정 관리 </h2>
                     <div className={'set-list'}>
                         <ChangePasswordModal />
-                        <div className={'open-password-modal'}>
-                            <Button variant="button4" icon={IconCheckbox} onClick={() => setIsSurveyOpen(true)}>
+                        <div className={'open-password-modal'} onClick={() => setIsSurveyOpen(true)}>
+                            <Button variant="button4" icon={IconCheckbox}>
                                 {/*<Button onClick={openModal} style={{ marginBottom: '2rem' }}>*/}
                             </Button>
                             <div style={{flex:'1', textAlign:'center'}}>설문 정보 수정하기</div>
                         </div>
-                        <div className={'open-password-modal'}>
-                            <Button variant="button4" icon={IconInfoCircle} onClick={() => setIsCopyrightOpen(true)}>
+                        <div className={'open-password-modal'} onClick={() => setIsCopyrightOpen(true)}>
+                            <Button variant="button4" icon={IconInfoCircle}>
                                 {/*<Button onClick={openModal} style={{ marginBottom: '2rem' }}>*/}
                             </Button>
                             <div style={{flex:'1', textAlign:'center'}}>서비스 이용 약관</div>
                         </div>
-                        <div className={'open-password-modal'}>
-                            <Button variant="button4" icon={IconLockSquare} onClick={() => setIsPrivacyPolicyOpen(true)} >
+                        <div className={'open-password-modal'} onClick={() => setIsPrivacyPolicyOpen(true)} >
+                            <Button variant="button4" icon={IconLockSquare}>
                                 {/*<Button onClick={openModal} style={{ marginBottom: '2rem' }}>*/}
                             </Button>
                             <div style={{flex:'1', textAlign:'center'}}>개인정보 이용방침</div>

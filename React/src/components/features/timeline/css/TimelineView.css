@@ -9,6 +9,7 @@
     align-items: center;
     justify-content: center;
     width: 100%;
+    margin-top: 25px;
 }
 .week-range.clickable {
     cursor: pointer;
