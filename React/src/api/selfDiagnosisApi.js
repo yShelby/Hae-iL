@@ -23,6 +23,7 @@ export async function fetchSelfDiagnosisStatus(year, month) {
  */
 
 export function submitDiagnosis({ totalScore, type }) {
+    console.log(`${type} : ${totalScore}`);
     return apiClient.post(`/api/self-diagnosis/${type}`, {
         totalScore,
     })

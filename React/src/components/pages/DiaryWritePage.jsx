@@ -35,6 +35,7 @@ import {useAuth} from "@shared/context/AuthContext.jsx";
 import {useQuestion} from "@shared/context/QuestionContext.jsx";
 import QuestionDisplay from "@features/diary/QuestionDisplay.jsx";
 import Button from "@shared/styles/Button.jsx";
+import {runPreloadInBackground} from "@features/recommend/runPreloadInBackground.js";
 
 // 🖼️ TipTap Image 확장을 block 요소로 커스터마이징
 const CustomBlockImage = TipTapImage.extend({
@@ -86,6 +87,7 @@ const DiaryWritePage = () => {
     const onActionSuccess = (updatedDiaryOrNull) => {
         onDiaryUpdated?.(); // 캘린더 등 목록 UI 갱신을 위해 호출
         onEmotionUpdated?.(); // 감정 분석 UI 갱신을 위해 호출
+        runPreloadInBackground(false); // 추천 시스템을 위한 백그라운드 프리로드 실행
         onDataChange?.(); // 선택된 날짜의 데이터 변경을 부모 컴포넌트에 알림
         if (updatedDiaryOrNull) { // 저장 또는 수정 성공 시
             setSelectedDiaryId?.(updatedDiaryOrNull.diaryId);
@@ -200,7 +202,7 @@ const DiaryWritePage = () => {
             {diaryMode === 'empty' && (
                 <div className="placeholder-wrapper">
                     <p className="placeholder-text">오늘의 감정을 기록해보세요!</p>
-                    <Button variant="button2"
+                    <Button variant="button2 start-writing-button"
                             onClick={handleStartWriting}
                             style={{width:'130px', fontSize:'16px'}}
                     >

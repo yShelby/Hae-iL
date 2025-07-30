@@ -189,7 +189,7 @@ const chartStyle = {
     chartBorderWidth : 2,
     chartBorderColor: '#fff',
     chartHoverOffset: 15,
-    chartHoverBorderWidth: 3,
+    chartHoverBorderWidth: 2,
 
     //percentage number
     perFont : "bold 30px 'NPSfont'",
@@ -209,21 +209,21 @@ const chartStyle = {
     etc : '중립 | 기타',
 
     // color
-    joyColor : '#fbc4d6',
-    angerColor : '#fa7373',
-    anxietyColor : '#ceb2fa',
-    sadnessColor : '#5e84ff',
+    joyColor : '#ea92b0',
+    angerColor : '#b13e3e',
+    anxietyColor : '#af99ca',
+    sadnessColor : '#617bc1',
     boredomColor : '#99bbcf',
-    comfortColor : '#77d17b',
+    comfortColor : '#7fbc83',
     etcColor : '#9a9a9a',
 
     // hover borderColor
-    joyHBC : '#fbc4d6',
-    angerHBC : '#fa7373',
-    anxietyHBC : '#ceb2fa',
-    sadnessHBC : '#5e84ff',
+    joyHBC : '#ea92b0',
+    angerHBC : '#b13e3e',
+    anxietyHBC : '#af99ca',
+    sadnessHBC : '#617bc1',
     boredomHBC : '#99bbcf',
-    comfortHBC : '#77d17b',
+    comfortHBC : '#7fbc83',
     etcHBC : '#9a9a9a',
 }
 
@@ -293,7 +293,7 @@ const scoreToComment = (mood_score) => {
     } else if (mood_score >= -79 && mood_score <= -50) {
         return "마음이 많이 무겁네요 폭풍 후의 바다처럼... 이런 날도 지나갈 거예요 🚶‍♀️"
     } else {
-        return "많이 힘드셨겠어요 가장 깊은 바다 밑에서도 언젠가는 다시 수면으로 떠오르게 되어 있어요 ⚓"
+        return "많이 힘드신가 봐요... 깊은 바다 밑에 있어도 언젠가는 다시 수면으로 떠오를 거예요 ⚓"
     }
 }
 
