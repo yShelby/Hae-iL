@@ -1,7 +1,10 @@
 package com.haeildiary.www.selfdiagnosis.util;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.time.LocalDate;
 
+@Slf4j
 public class CalculateUtil {
 
     // 퍼센트 계산
@@ -10,8 +13,13 @@ public class CalculateUtil {
             return 0;
         }
 
+        Integer percentageResult = (Integer) (int) Math.round(((double) totalScore / maxScore) * 100);
+
+        log.info("percentage result : {}", percentageResult);
+
         // 총점을 퍼센트로 변환 후 반환
-        return (Integer) (int) Math.round(((double) totalScore / maxScore) * 100);
+        return percentageResult;
+
     }
 
     // 다음 검사일 계산

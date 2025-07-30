@@ -151,6 +151,11 @@ function TestModal({ test, onClose }) {
         answers.forEach((answer, idx) => {
             if (answer === null) return; // 미응답 처리 (안전)
 
+            // 불안, 우울 테스트의 마지막 문항은 점수에 포함하지 않음
+            if ((test.type === "anxiety" || test.type === "depression") && idx === test.questions.length - 1) {
+                return; // 점수 계산 제외
+            }
+
             // 역체점 문항 체크
             if (test.reverseScoreIdx &&
                 test.reverseScoreIdx.includes(idx)) {
