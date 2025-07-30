@@ -4,6 +4,11 @@ import { testList } from "./testData.js"
 import {useCheckLogin} from "@/hooks/useCheckLogin.js";
 import {useSelfDiagnosisStatus} from "@/hooks/useSelfDiagnosisStatus.js";
 import {useAuth} from "@shared/context/AuthContext.jsx";
+import "../../pages/css/MonthlyPage.css"
+import Button from "@shared/styles/Button.jsx";
+import { IconMoodCheck } from '@tabler/icons-react';
+
+
 
 
 function SelfDiagnosis() {
@@ -38,39 +43,48 @@ function SelfDiagnosis() {
 
 
     return (
-        <div style={{marginTop: "3rem",textAlign: "center"}}>
+        <div className="diagnosis-container">
+            <h3>자가 진단 실시하기 </h3>
             {testList.map(({ type, label }) => {
 
                 const status = statusData?.[type];
                 const disabled = status ? !status.available : false;
 
                 return (
-                    <div key={type} style={{ marginBottom: "1rem" }}>
-                        <button
-                            onClick={() => handleOpen(type)}
-                            disabled={disabled}
-                            style={{
-                                cursor : disabled ? "not-allowed" : "pointer",
-                                opacity: disabled ? 0.5 : 1,
-                            }}
-                        >
-                            {label}
-                        </button>
-                        <span style={{ marginLeft: 12, fontSize: 14, color: disabled ? "#888" : "#333"}}>
+                    <div key={type}>
                             {disabled ? (
-                                status?.message ? (
-                                    <div>{status.message}</div>
-                                ) : (
-                                    <div>
-                                        지난 결과 : {status.result ?? '-'}
-                                        {status.percentage !== undefined && `, 감정 수치 ${status.percentage} %`} <br />
-                                        {status.nextAvailableDate ? `${status.nextAvailableDate} 에 진단 가능` : ''}
+                                    <div className="test-box result">
+                                        <div className="test-label">
+                                            <span style={{fontWeight: "bold", fontSize: "14px"}}> 지난 {label} 진단 결과</span>
+                                        </div>
+                                        <div className="last-result">
+                                            <span>
+                                                {status.result ?? '-'}
+                                                {status.percentage !== undefined && `(${label} : ${status.percentage} %)`}
+                                            </span>
+                                                {status.nextAvailableDate ? <span><strong> {status.nextAvailableDate} </strong> 이후 검사 가능</span> : ''}
+                                        </div>
                                     </div>
-                                )
                             ) : (
-                                    `${type} 진단 실행 가능`
+                                <div className="test-box">
+                                    <div className="test-label">
+                                        <span className="test-label">{label} 진단 하기</span>
+                                        <span>{(label === "스트레스") ? "10문항 | 4분" : "8문항 | 3분"}</span>
+                                    </div>
+                                    <Button
+                                        id="test-btn"
+                                        variant="button4"
+                                        icon={IconMoodCheck}
+                                        onClick={() => handleOpen(type)}
+                                        disabled={disabled}
+                                        style={{
+                                            cursor : disabled ? "not-allowed" : "pointer",
+                                            opacity: disabled ? 0.5 : 1,
+                                        }}
+                                    />
+                                </div>
                             )}
-                        </span>
+
                     </div>
                 );
             })}

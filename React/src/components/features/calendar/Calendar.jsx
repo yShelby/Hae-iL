@@ -10,7 +10,6 @@ import styled from "styled-components";
 const CalendarWrapper = styled.div`
   width: ${({ width }) => width || "420px"};
   height: ${({ height }) => height || "auto"};
-  //margin: 0 auto;
   background: #fff;
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.08);
@@ -18,6 +17,7 @@ const CalendarWrapper = styled.div`
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
+    border: 3px dotted cyan;
 `;
 
 function Calendar({
@@ -70,14 +70,16 @@ function Calendar({
     }
 
     return (
-        <CalendarWrapper width={width} height={height}>
+        <CalendarWrapper className="calendar-wrapper" width={width} height={height}>
             <CalendarHead
+                className="calendar-head"
                 onPrev={prevMonth}
                 onToday={goToday}
                 onNext={nextMonth}
                 currentDate={currentDate}
             />
             <CalendarGrid
+                className="calendar-grid"
                 rows={rows}
                 currentDate={currentDate}
                 selectedDate={selectedDate}

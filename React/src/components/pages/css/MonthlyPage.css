@@ -1,0 +1,67 @@
+/* MonthlyLayout.jsx */
+    .monthly-container {
+        height: 100%;
+    }
+
+/* MonthlyPage.jsx */
+    .monthly-page {
+        display: flex;justify-content: flex-end;align-items: center;gap: 5rem;
+        width: 100%;
+        height: 100%;
+    }
+
+    /*.monthly-page  < Calendar> {*/
+    /*    border: 3px dotted cyan;*/
+    /*}*/
+    /*.monthly-page  .diagnosis-container */
+
+    .diagnosis-container {
+        display: flex;flex-direction: column;
+        justify-content: center;align-items: center;gap: 22px;
+        width: 330px;
+        height: 575px;
+        /*border: 3px dotted cyan;*/
+        border-radius: 30px 0 0 30px;
+        background: var(--main-bg);
+        box-shadow: var(--shadow-only);
+    }
+    .diagnosis-container h3 {
+        transform: translateY(-5px);
+    }
+    .diagnosis-container .test-box {
+        display: flex;justify-content: center;align-items: center;gap: 1rem;
+        width: 225px;
+        height: 100px;
+        padding: 15px;
+        border-radius: var(--border-radius-main);
+        background: #fff;
+        font-size: 12px;
+        box-shadow: var(--shadow-only);
+    }
+    .diagnosis-container .test-box.result {
+        display: flex;flex-direction: column;gap: 7px;
+    }
+    .diagnosis-container .test-box.result .last-result {
+        display: flex;flex-direction: column;gap: 5px;
+    }
+    .diagnosis-container .test-label {
+        display: flex;flex-direction: column;justify-content: center;align-items: center;gap: .3rem;
+    }
+    .diagnosis-container #test-btn {
+        display: flex;justify-content: center;align-items: center;
+        width: 64px;height: 64px;
+        border-radius: 25px;
+        background-img: var(--theme1-gradient) !important;
+    }
+    strong { font-weight: bold; }
+
+/* Calendar.jsx*/
+
+    .monthly-calendar .calendar-wrapper {}
+    .monthly-calendar .calendar-head {}
+    .monthly-calendar .calendar-grid {}
+
+/* CalendarHead.jsx */
+
+    .calendar-head .head-container{}
+
