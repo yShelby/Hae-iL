@@ -202,6 +202,19 @@ function RecommendMoviePage(){
     const {preloadRecommendations} = usePreloadRecommendation();
 
     useEffect(() => {
+        if (!user || Object.keys(user).length === 0) {
+            console.log("로그아웃 감지 - 로컬스토리지 삭제 실행");
+            localStorage.removeItem("lastEmotionResult");
+            localStorage.removeItem("cachedMoviesByPage");
+            localStorage.removeItem("cacheTimestamp");
+            localStorage.removeItem("hasPreloadedOnFirstLogin_2");
+            setEmotionResult([]);
+            setMoviesByPage({});
+            setShuffledMoviesByEmotion({});
+        }
+    }, [user]);
+
+    useEffect(() => {
         const initializeData = async () => {
 
             try {
@@ -214,8 +227,21 @@ function RecommendMoviePage(){
                     setMoviesByPage(JSON.parse(storedMoviesByPage));
                 } else {
                     console.warn("⚠️ 로컬 스토리지에 추천 데이터가 없습니다. UI가 비어있을 수 있습니다.");
+                    await preloadRecommendations(true);
+
+                    // 호출 후 로컬스토리지에 저장된 값 다시 불러오기
+                    const refreshedEmotionResult = localStorage.getItem("lastEmotionResult");
+                    const refreshedMoviesByPage = localStorage.getItem("cachedMoviesByPage");
                     setEmotionResult([]);
                     setMoviesByPage({});
+                    if (refreshedEmotionResult && refreshedMoviesByPage) {
+                        setEmotionResult(JSON.parse(refreshedEmotionResult));
+                        setMoviesByPage(JSON.parse(refreshedMoviesByPage));
+                    } else {
+                        console.warn("❌ API 호출 후에도 로컬스토리지가 비어있음");
+                        setEmotionResult([]);
+                        setMoviesByPage({});
+                    }
                 }
             } catch (err) {
                 console.error("로컬 스토리지 데이터 로드 실패", err);
@@ -283,7 +309,7 @@ function RecommendMoviePage(){
         }
     };
 
-
+    if (!user?.id) return;
 
     const nextEmotion = () => {
         setCurrentEmotionIndex((prev) =>
@@ -298,9 +324,10 @@ function RecommendMoviePage(){
     }
 
     return (
-        <div className={"movieParent"}>
+        <div className={"moviePageContainer"}>
             {/*{preLoading && (<LoadingModal />*/}
             {/*)}*/}
+            <div className={"movieParent"}>
             <RecommendTab />
             <div className={"moviePage"}>
                 <RecommendText emotion={currentEmotion} />
@@ -308,6 +335,7 @@ function RecommendMoviePage(){
                 <button className="nextEmotionBtn" onClick={nextEmotion}>
                     다음 추천 보기
                 </button>
+            </div>
             </div>
         </div>
     )

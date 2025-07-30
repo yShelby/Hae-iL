@@ -1,7 +1,8 @@
-.movie-text-bos {
-    position: absolute;
-    left: 55px;
-    top: 50px;
+.movie-text-box {
+    /*position: absolute;*/
+    /*left: 55px;*/
+    /*top: 50px;*/
+    grid-area: comment;
     width: 840px;
     height: 80px;
 }

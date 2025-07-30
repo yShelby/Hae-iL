@@ -13,7 +13,7 @@ const MainLayout = () => {
 
             {/* 🧭 상단 헤더 영역 - 홈 링크 포함 */}
             <header className="app-header">
-                <h1><Link to="/">해일(Haeil) :: 해석하는 감정 일기</Link></h1>
+                <h1><Link to="/"><span>해</span>석하는 감정 <span>일</span>기</Link></h1>
             </header>
             {/* 추가 - <main> 태그로 Outlet을 감싸고 클래스를 부여
                 이유: 헤더를 제외한 나머지 모든 공간을 차지하는 메인 컨텐츠 영역을 명확히 구분하고,

@@ -107,9 +107,9 @@
 }
 
 .recommendTab {
-    position: absolute;
-    left: 838px;
-    top: 20px;
+    /*position: absolute;*/
+    /*left: 838px;*/
+    /*top: 20px;*/
     background-color: #5C5C8A;
     padding: 10px 13px 10px 10px;
     width: 400px;
@@ -165,24 +165,18 @@
     height: 29px;
 }
 
-/*.recommendTab svg.active::after {*/
-/*    content: '';*/
-/*    display: block;*/
-/*    width: 32px;*/
-/*    height: 0;*/
-/*    border-bottom: 3px solid #FB79A2; !* stroke 3px *!*/
-/*    border-radius: 3px; !* round *!*/
-/*    margin-top: 5px; !* 아이콘과 막대 사이 간격 조정 *!*/
-/*}*/
-
 .movieList{
-    position: absolute;
-    left: 55px;
-    top: 155px;
+    /*position: absolute;*/
+    /*left: 55px;*/
+    /*top: 155px;*/
     width: 950px;
     /*height: calc(100% - calc(155 / 680 * 100%) - calc(50 / 680 * 100%));*/
     display: grid;
     grid-template-columns: repeat(3, minmax(265px, 1fr));
+    justify-content: center;
+    align-items: center;
+    align-content: stretch;
+    grid-area: movie;
     gap: 20px 35px;
     padding: 2px;
     cursor: pointer;
