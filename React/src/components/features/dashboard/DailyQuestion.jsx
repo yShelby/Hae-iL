@@ -21,35 +21,36 @@ const DailyQuestion = () => {
 
     const renderContent = () => {
         if (authLoading || (isLoading && !question)) {
-            return <div className="status-text">오늘의 질문 : 로딩 중...</div>;
+            return <p className="status-text">오늘의 질문 : 로딩 중...</p>;
         }
         if (!user) {
-            return <div className="status-text">오늘의 질문 : 로그인 후 질문에 답변해보세요.</div>;
+            return <p className="status-text">오늘의 질문 : 로그인 후 질문에 답변해보세요.</p>;
         }
         return (
-            <div className="question-content-wrapper">
-                <p className="question-text" onClick={handleQuestionClick} title="클릭하여 일기 작성하기">
-                    오늘의 질문 : {question}
-                </p>
-                <button
-                    onClick={(e) => {
-                        e.stopPropagation(); // p 태그의 클릭 이벤트 전파 방지
-                        refreshQuestion(); // Context의 함수 호출
-                    }}
-                    className="btn-refresh"
-                    title="새로운 질문 보기"
-                    disabled={isLoading}
-                >
-                    <FaSyncAlt className={isLoading ? 'rotating' : ''} />
-                </button>
-            </div>
+            <p className="question-text" onClick={handleQuestionClick} title="클릭하여 일기 작성하기">
+                오늘의 질문 : {question}
+            </p>
         );
     };
 
     return (
-        <>
+        <div className="today-question-container" onClick={handleQuestionClick}>
             {renderContent()}
-        </>
+            <button
+                onClick={(e) => {
+                    e.stopPropagation();
+                    if (user) { // 클릭 로직은 여전히 로그인 상태에서만 동작
+                        refreshQuestion();
+                    }
+                }}
+                className={`btn-refresh ${isLoading ? 'is-loading' : ''}`}
+                title={user ? "새로운 질문 보기" : "로그인 후 사용 가능"}
+                // [수정] disabled 속성은 로그인 여부에만 의존하도록 변경
+                disabled={!user}
+            >
+                <FaSyncAlt className={isLoading ? 'spin' : ''} />
+            </button>
+        </div>
     );
 };
 

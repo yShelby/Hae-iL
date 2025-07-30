@@ -7,29 +7,31 @@
 }
 
 .app-header {
+    display: flex;justify-content: center;align-content: center;
+    height: 70px;
+    padding-top: 20px;
     flex-shrink: 0;
-    text-align: center;
-    margin: 30px 0;
 }
 
 .app-header h1 {
-    margin: 0;
-    /*font-size: 1.5rem;*/
-    font-family: 'TmoneyRoundWindExtraBold', sans-serif;
-    font-size: 28px;
+    display: flex;justify-content: center;align-content: center;
+    font-family: 'TmoneyRoundWindExtraBold';
+    font-size: 32px;
     color: var(--primary-color);
 }
-
-.app-header h1 span{
-    font-size: 36px;
+.app-header a {
+    display: block;
+}
+.app-header .point-letter {
+    font-size: 38px;
 }
 
 /* 추가 - MainLayout 내부에서 Outlet이 렌더링되는 메인 컨텐츠 영역
    이유: 헤더를 제외한 나머지 공간을 모두 차지하도록 하여(flex-grow: 1),
         이 안에 렌더링될 DiaryLayout이 꽉 채울 수 있는 명확한 영역을 만든다. */
 .main-content-area {
-    flex-grow: 1;
     display: flex; /* 자식인 DiaryLayout이 높이를 100% 채울 수 있도록 */
     overflow: hidden; /* 내부 스크롤은 자식에게 위임 */
     min-height: 0; /* flex 아이템의 크기가 비정상적으로 커지는 것을 방지 */
+    height: 100%;
 }

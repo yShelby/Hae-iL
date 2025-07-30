@@ -123,7 +123,7 @@ const DashboardCalendar = () => {
     };
 
     return (
-        <div className={"calendar"}>
+        <div className={"dash-calendar"}>
             {renderHeader()}
             {renderDays()}
             {renderCells()}

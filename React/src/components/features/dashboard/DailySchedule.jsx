@@ -39,6 +39,10 @@ const DailySchedule = () => {
                 } catch (e) {
                     console.log("미션 데이터 로딩 중 에러 발생");
                 }
+            }else {
+                // [추가] 비로그인 상태일 때 기존 미션 상태를 초기화
+                // 이유: 로그아웃 후에도 이전 사용자 정보가 화면에 남아있는 것을 방지
+                setMissionStatus({});
             }
             setIsMissionLoading(false);
         };
@@ -79,35 +83,46 @@ const DailySchedule = () => {
         }
     };
 
-    if (authLoading || isMissionLoading) {
-        return <div className="daily-mission-container"><h4>오늘의 일정</h4><div>로딩 중...</div></div>;
-    }
-
+    // [수정] '오늘의 일정' 중앙 위치시키기 위해서 div 추가
     return (
-        <div className="daily-mission-container">
-            <h4 className="title">오늘의 일정</h4>
-            {!user ? (
-                <div className="login-prompt">로그인 후 이용해주세요.</div>
-            ) : (
-                // 모든 미션 완료 시 메시지를 상단에 표시하고, 그 아래에 항상 미션 목록을 보여준다
-                <>
-                    {allMissionsComplete && (
-                        <div className="all-complete-message">오늘의 일정을 모두 완료했습니다!</div>
-                    )}
-                    <ul className="mission-list">
-                        {DAILY_MISSIONS.map((mission) => (
-                            <li key={mission.id} className="mission-item" onClick={() => handleNavigate(mission.id)}>
-                                <div className={`status-icon ${missionStatus[mission.id] ? 'completed' : ""}`}>
-                                    {missionStatus[mission.id] && '✓'}
-                                </div>
-                                <span className={`mission-text ${missionStatus[mission.id] ? 'completed' : ""}`}>
-                                    {mission.text}
-                                </span>
-                            </li>
-                        ))}
-                    </ul>
-                </>
-            )}
+        <div className="daily-schedule-wrapper">
+            <div className="daily-mission-container">
+                <div className="mission-label"></div>
+                <div className="mission-memo-paper">
+                    <div className="mission-list-content">
+                        <h3 className="mission-title">오늘의 일정</h3>
+
+                        {/*
+                          [수정] 로딩 및 로그인 상태에 따른 조건부 렌더링 로직을 여기에 직접 통합
+                          이유: 항상 '오늘의 일정' 제목을 먼저 표시한 후, 그 아래에 로딩 상태,
+                               로그인 여부에 따른 적절한 UI를 보여주기 위한 구조 변경
+                        */}
+                        {authLoading || isMissionLoading ? (
+                            <div className="loading-text">로딩 중...</div>
+                        ) : !user ? (
+                            <div className="login-prompt">로그인 후<br/>이용해주세요.</div>
+                        ) : (
+                            <>
+                                {allMissionsComplete && (
+                                    <div className="all-complete-message">오늘의 일정을 모두 완료했습니다!</div>
+                                )}
+                                <ul className="mission-list">
+                                    {DAILY_MISSIONS.map((mission) => (
+                                        <li key={mission.id} className="mission-item" onClick={() => handleNavigate(mission.id)}>
+                                            <div className={`status-icon ${missionStatus[mission.id] ? 'completed' : ""}`}>
+                                                {missionStatus[mission.id] && '✓'}
+                                            </div>
+                                            <span className={`mission-text ${missionStatus[mission.id] ? 'completed' : ""}`}>
+                                                {mission.text}
+                                            </span>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </>
+                        )}
+                    </div>
+                </div>
+            </div>
         </div>
     );
 };
