@@ -25,9 +25,9 @@ const CATEGORIES = [
     // enum 타입과 매핑하기 위해서 key값을 대문자로 해야 한다
     {key: "ALL", name: "all"},
     {key: "MOVIE", name: "🎬"},
+    {key: "ETC", name: "📺"},
     {key: "BOOK", name: "📖"},
     {key: "MUSIC", name: "🎵"},
-    {key: "ETC", name: "etc"},
 ];
 
 const getTodayString = () => new Date().toISOString().split('T')[0];

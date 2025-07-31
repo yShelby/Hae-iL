@@ -35,7 +35,7 @@ import {Icons} from "@shared/constants/icons.js";
 const CATEGORIES = [
     { key: "ALL", name: "All" },
     { key: "MOVIE", name: <Icons.IconMovie /> },
-    { key: "TV", name: <Icons.IconDeviceTvOld /> },
+    { key: "ETC", name: <Icons.IconDeviceTvOld /> },
     { key: "BOOK", name: <Icons.IconBook /> },
     { key: "MUSIC", name: <Icons.IconMusic /> }
 ];

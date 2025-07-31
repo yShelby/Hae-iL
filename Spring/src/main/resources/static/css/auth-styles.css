@@ -163,6 +163,7 @@ button {
     position: relative;
     z-index: 1;
 }
+#send-temp-password.button2:hover { opacity: 0.7; }
 
 button:hover {
     background-color: var(--primary-hover-color);
@@ -194,7 +195,7 @@ button:disabled {
 }
 
 .links a:hover {
-    color: var(--primary-color);
+    font-size: 15px;
 }
 
 /* Unified message styles */
