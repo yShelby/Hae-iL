@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '@shared/context/AuthContext.jsx';
 import { showToast } from '@shared/UI/Toast.jsx';
 import Button from "@shared/styles/Button.jsx";
+import './css/initialSurveryChange.css'
 
 // 회원가입 폼과 동일한 항목 리스트, 이후 유지 보수를 위해 API에서 불러오도록 개선
 const GENRES = [
@@ -114,15 +115,14 @@ function InitialSurveyChange({ open, onClose, onSaved }) {
     if (!open) return null;
 
     return (
-        <div className="modal-overlay" style={overlayStyle}>
-            <div className="modal-content" style={contentStyle}>
+        <div className="modal-overlay overlay-style">
+            <div className="modal-content content-style">
                 <h3>초기 설문 정보 수정</h3>
-
-                <div style={initialboxStyle}>
-                    <div><strong>좋아하는 영화 장르</strong></div>
-                    <div style={checkboxContainerStyle}>
+                <div className={"genre-wrapper1"}>
+                    <div style={{margin:"10px"}}><strong>좋아하는 영화 장르</strong></div>
+                    <div  className={"genre-list1"}>
                         {GENRES.map((genre) => (
-                            <label key={genre} style={checkboxLabelStyle}>
+                            <label key={genre} className={"genre-option1"}>
                                 <input
                                     type="checkbox"
                                     checked={selectedGenres.includes(genre)}
@@ -134,13 +134,11 @@ function InitialSurveyChange({ open, onClose, onSaved }) {
                     </div>
                 </div>
 
-                <div style={{ marginTop: '1rem', ...initialboxStyle }}>
-                    <div>
-                    <strong>최근 자주 느낀 감정</strong>
-                    </div>
-                    <div style={checkboxContainerStyle}>
+                <div className={"mood-wrapper1"} style={{ marginTop: '1rem'}}>
+                    <div style={{margin:"10px"}}><strong>최근 자주 느낀 감정</strong></div>
+                    <div className={"mood-list1"}>
                         {EMOTIONS.map((emotion) => (
-                            <label key={emotion} style={checkboxLabelStyle}>
+                            <label key={emotion} className={"mood-option1"}>
                                 <input
                                     type="checkbox"
                                     checked={selectedEmotions.includes(emotion)}
@@ -169,32 +167,6 @@ function InitialSurveyChange({ open, onClose, onSaved }) {
             </div>
         </div>
     );
-}
-
-const overlayStyle = {
-    position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh',
-    backgroundColor: 'rgba(0,0,0,0.4)',
-    display: 'flex', justifyContent: 'center', alignItems: 'center',
-    zIndex: 9999
-};
-
-const contentStyle = {
-    backgroundColor: 'white', padding: '1.5rem',
-    borderRadius: '30px', width: '400px', maxHeight: '80vh', overflowY: 'auto'
-};
-
-const checkboxContainerStyle = {
-    display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.8rem', marginTop: '0.5rem'
-};
-
-const checkboxLabelStyle = {
-    flexBasis: '50%',
-    userSelect: 'none'
-};
-
-const initialboxStyle = {
-    display: 'flex', flexDirection: 'column', gap: '0.5rem', border: '2px solid transparent', backgroundImage: 'linear-gradient(white, white), var(--border-gradient)',
-backgroundOrigin: 'border-box', backgroundClip: 'padding-box, border-box', borderRadius: '30px', padding: '10px'
 }
 
 export default InitialSurveyChange;
