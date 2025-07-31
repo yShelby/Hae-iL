@@ -37,33 +37,42 @@ function WithdrawConfirmModal() {
         }
     };
 
-    if (!visible) return (
-        <div className={'open-password-modal'} onClick={openModal}>
-            <Button variant="button4" icon={IconLockSquare} style={{ marginLeft: '15px'}}>
-                {/*<Button onClick={openModal} style={{ marginBottom: '2rem' }}>*/}
-            </Button>
-            <div style={{flex:'1', textAlign:'center'}}>회원 탈퇴</div>
-        </div>
-        // <button onClick={openModal} style={{ color: 'red' }}>
-        //     회원 탈퇴
-        // </button>
-    );
+    // if (!visible) return (
+    //     <div className={'open-password-modal'} onClick={openModal}>
+    //         <Button variant="button4" icon={IconLockSquare} style={{ marginLeft: '15px'}}>
+    //             {/*<Button onClick={openModal} style={{ marginBottom: '2rem' }}>*/}
+    //         </Button>
+    //         <div style={{flex:'1', textAlign:'center'}}>회원 탈퇴</div>
+    //     </div>
+    //     // <button onClick={openModal} style={{ color: 'red' }}>
+    //     //     회원 탈퇴
+    //     // </button>
+    // );
 
     return (
-        <div className="modal-overlay" style={modalOverlayStyle}>
-            <div className="modal-content" style={modalContentStyle}>
-                <h3>회원 탈퇴</h3>
-                <p>정말 해일을 떠나시겠습니까?</p>
-                <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem' }}>
-                    <button onClick={closeModal} disabled={loading}>
-                        취소
-                    </button>
-                    <button onClick={handleWithdraw} disabled={loading} style={{ color: 'red' }}>
-                        탈퇴하기
-                    </button>
+        <>
+            <div className={'open-password-modal'} onClick={openModal}>
+                <Button variant="button4" icon={IconLockSquare} style={{ marginLeft: '15px'}}>
+                    {/*<Button onClick={openModal} style={{ marginBottom: '2rem' }}>*/}
+                </Button>
+                <div style={{flex:'1', textAlign:'center'}}>회원 탈퇴</div>
+            </div>
+            {visible && <div className="modal-overlay" style={modalOverlayStyle}>
+                <div className="modal-content" style={modalContentStyle}>
+                    <h3>회원 탈퇴</h3>
+                    <p>정말 해일을 떠나시겠습니까?</p>
+                    <div style={{display: 'flex', justifyContent: 'flex-end', gap: '1rem'}}>
+                        <button onClick={closeModal} disabled={loading}>
+                            취소
+                        </button>
+                        <button onClick={handleWithdraw} disabled={loading} style={{color: 'red'}}>
+                            탈퇴하기
+                        </button>
+                    </div>
                 </div>
             </div>
-        </div>
+            }
+        </>
     );
 }
 

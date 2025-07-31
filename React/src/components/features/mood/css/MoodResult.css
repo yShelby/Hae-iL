@@ -110,14 +110,15 @@
     background: var(--border-gradient);
     border-radius: 30px;
     box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.25);
-    padding: 25px 20px;
+    padding: 10px;
     color: var('--primary-color');
-    font-size: 14px;
+    font-size: 12px;
     font-family: 'NPSfont', sans-serif;
 }
 
 .tags-box{
-    padding: 10px;
+    padding: 5px;
+    height: 60px;
 }
 
 .tags-list {
@@ -131,9 +132,9 @@
 
 .tag-item {
     background-color: rgba(255, 255, 255, 0.85);
-    padding: 4px 10px;
+    padding: 4px;
     border-radius: 12px;
-    font-size: 14px;
+    font-size: 12px;
     color: var('--primary-color');
 }
 

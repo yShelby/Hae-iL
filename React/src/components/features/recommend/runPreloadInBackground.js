@@ -1,4 +1,4 @@
-import {preloadRecommendationCore} from "@features/recommend/proloadRecommeendationCoree.js";
+import {preloadRecommendationCore} from "@features/recommend/preloadRecommeendationCore.js";
 
 /**
  * 추천 영화 데이터를 백그라운드에서 안전하게 미리 받아와서 로컬스토리지에 캐시하는 유틸

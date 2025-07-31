@@ -65,72 +65,84 @@ function ChangePasswordModal() {
         }
     };
 
-    if (!visible) return (
-        <div className={'open-password-modal'} onClick={openModal}>
-        <Button variant="button4" icon={IconKey} style={{ marginLeft: '15px'}}>
-        {/*<Button onClick={openModal} style={{ marginBottom: '2rem' }}>*/}
-        </Button>
-            <div style={{flex:'1', textAlign:'center'}}>비밀번호 변경</div>
-        </div>
-    );
+    // if (!visible) return (
+    //     <div className={'open-password-modal'} onClick={openModal}>
+    //     <Button variant="button4" icon={IconKey} style={{ marginLeft: '15px'}}>
+    //     {/*<Button onClick={openModal} style={{ marginBottom: '2rem' }}>*/}
+    //     </Button>
+    //         <div style={{flex:'1', textAlign:'center'}}>비밀번호 변경</div>
+    //     </div>
+    // );
 
     return (
-        <div className="modal-overlay" style={modalOverlayStyle}>
-            <div className="modal-content" style={modalContentStyle}>
-                <h3>비밀번호 변경</h3>
-                <form onSubmit={handleSubmit} style={passwordFormStyle}>
-                    <label style={passwordLabelStyle}>
-                        <div style={passwordTitleStyle}>
-                        현재 비밀번호
-                        </div>
-                        <Input
-                            type="password"
-                            value={currentPw}
-                            onChange={e => setCurrentPw(e.target.value)}
-                            required
-                            style={passwordInputStyle}
-                        />
-                    </label>
-                    <label style={passwordLabelStyle}>
-                        <div style={passwordTitleStyle}>
-                        새 비밀번호
-                        </div>
-                        <Input
-                            type="password"
-                            value={newPw}
-                            onChange={e => setNewPw(e.target.value)}
-                            required
-                            minLength={8}
-                            maxLength={20}
-                            placeholder="8~20자 영문, 숫자, 특수문자 조합"
-                            style={passwordInputStyle}
-                        />
-                    </label>
-                    <label style={passwordLabelStyle}>
-                        <div style={passwordTitleStyle}>
-                        새 비밀번호 확인
-                        </div>
-                        <Input
-                            type="password"
-                            value={newPwConfirm}
-                            onChange={e => setNewPwConfirm(e.target.value)}
-                            required
-                            style={passwordInputStyle}
-                        />
-                    </label>
-                    {error && <div className="error" style={{ color: 'red', marginBottom: '1rem', fontSize:'0.9rem' }}>{error}</div>}
-                    <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem' }}>
-                        <Button variant="button2" type="button" onClick={closeModal} disabled={loading} style={{width:'55px', height:'35px'}}>
-                            취소
-                        </Button>
-                        <Button variant="button2" type="submit" disabled={loading} style={{width:'55px', height:'35px'}}>
-                            {loading ? '변경 중...' : '변경하기'}
-                        </Button>
-                    </div>
-                </form>
+        <>
+            <div className={'open-password-modal'} onClick={openModal}>
+                <Button variant="button4" icon={IconKey} style={{ marginLeft: '15px'}}>
+                    {/*<Button onClick={openModal} style={{ marginBottom: '2rem' }}>*/}
+                </Button>
+                <div style={{flex:'1', textAlign:'center'}}>비밀번호 변경</div>
             </div>
-        </div>
-    );
+            { visible && <div className="modal-overlay" style={modalOverlayStyle}>
+                <div className="modal-content" style={modalContentStyle}>
+                    <h3>비밀번호 변경</h3>
+                    <form onSubmit={handleSubmit} style={passwordFormStyle}>
+                        <label style={passwordLabelStyle}>
+                            <div style={passwordTitleStyle}>
+                                현재 비밀번호
+                            </div>
+                            <Input
+                                type="password"
+                                value={currentPw}
+                                onChange={e => setCurrentPw(e.target.value)}
+                                required
+                                style={passwordInputStyle}
+                            />
+                        </label>
+                        <label style={passwordLabelStyle}>
+                            <div style={passwordTitleStyle}>
+                                새 비밀번호
+                            </div>
+                            <Input
+                                type="password"
+                                value={newPw}
+                                onChange={e => setNewPw(e.target.value)}
+                                required
+                                minLength={8}
+                                maxLength={20}
+                                placeholder="8~20자 영문, 숫자, 특수문자 조합"
+                                style={passwordInputStyle}
+                            />
+                        </label>
+                        <label style={passwordLabelStyle}>
+                            <div style={passwordTitleStyle}>
+                                새 비밀번호 확인
+                            </div>
+                            <Input
+                                type="password"
+                                value={newPwConfirm}
+                                onChange={e => setNewPwConfirm(e.target.value)}
+                                required
+                                style={passwordInputStyle}
+                            />
+                        </label>
+                        {error && <div className="error"
+                                       style={{color: 'red', marginBottom: '1rem', fontSize: '0.9rem'}}>{error}</div>}
+                        <div style={{display: 'flex', justifyContent: 'flex-end', gap: '1rem'}}>
+                            <Button variant="button2" type="button" onClick={closeModal} disabled={loading}
+                                    style={{width: '55px', height: '35px'}}>
+                                취소
+                            </Button>
+                            <Button variant="button2" type="submit" disabled={loading}
+                                    style={{width: '55px', height: '35px'}}>
+                                {loading ? '변경 중...' : '변경하기'}
+                            </Button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            }
+        </>
+    )
 }
 
 // 간단 인라인 스타일 (필요하면 CSS 분리)

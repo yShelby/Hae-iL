@@ -16,6 +16,7 @@ import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
 import java.util.List;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Service
@@ -50,7 +51,7 @@ public class TmdbApiClientService {
                 .filter(movie -> !movie.isAdult())
                 .flatMap(movie -> getKeywordsForMovieReactive(movie.getMovieKey())
                         .map(keywords -> {
-                            boolean bannedFound = keywords.stream().anyMatch(bannedKeywords::contains);
+                            boolean bannedFound = keywords.stream().anyMatch(keyword -> containsForbiddenKeyword(keyword, bannedKeywords));
                             return new MovieWithKeywords(movie, bannedFound);
                         }))
                 .filter(mwk -> !mwk.bannedFound)
@@ -83,6 +84,11 @@ public class TmdbApiClientService {
             this.movie = movie;
             this.bannedFound = bannedFound;
         }
+    }
+
+    private boolean containsForbiddenKeyword(String keyword, List<String> bannedKeywords) {
+        return bannedKeywords.stream()
+                .anyMatch(banned -> keyword.toLowerCase().matches(".*\\b"+ Pattern.quote(banned.toLowerCase()) + "\\b.*"));
     }
 
     public MovieDto getMovieCreditsWithDetails(String movieId) {
