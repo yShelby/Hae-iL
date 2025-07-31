@@ -8,22 +8,21 @@ import CalendarGrid from "./CalendarGrid";
 import styled from "styled-components";
 
 const CalendarWrapper = styled.div`
-  width: ${({ width }) => width || "420px"};
-  height: ${({ height }) => height || "auto"};
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  box-sizing: border-box;
-    border: 3px dotted cyan;
+      display: flex;flex-direction: column;align-items: center;justify-content: center;
+      width: ${({ width }) => width || "420px"};
+      height: ${({ height }) => height || "auto"};
+      background: rgb(255 255 255 / 0.5);
+      border-radius: 17px;
+      box-shadow: var(--shadow-only);
+      padding: 10px 10px;
+      box-sizing: border-box;
+    //border: 3px dotted cyan;
 `;
 
 function Calendar({
-                      width = "900px",      // 전체 캘린더 너비
-                      height = "auto",      // 전체 캘린더 높이
-                      cellHeight = "100px"   // 셀 높이
+                      width = "670px",      // 전체 캘린더 너비
+                      height = "100%",      // 전체 캘린더 높이
+                      cellHeight = "85px"   // 셀 높이
                   }) {
     const { user, loading } = useAuth();
     const checkLogin = useCheckLogin();
@@ -72,7 +71,6 @@ function Calendar({
     return (
         <CalendarWrapper className="calendar-wrapper" width={width} height={height}>
             <CalendarHead
-                className="calendar-head"
                 onPrev={prevMonth}
                 onToday={goToday}
                 onNext={nextMonth}
@@ -86,7 +84,7 @@ function Calendar({
                 onSelectDate={handleSelectedDate}
                 calendarEntries={calendarEntries || []}
                 isLoggedIn={!!user}
-                width="800px"         // 캘린더 전체 너비 조절
+                width="100%"         // 캘린더 전체 너비 조절
                 cellHeight={cellHeight}
             />
         </CalendarWrapper>

@@ -9,6 +9,7 @@
 
 .left-column {
     display: flex;flex-direction: column;justify-content: space-between;
+    align-items: center;
     width: 600px;
     height: 100%;
     gap: 30px;
@@ -16,6 +17,7 @@
 
 .right-column {
     display: flex;flex-direction: column;justify-content: space-between;
+    align-items: center;
     width: 445px;
     height: 100%;
     gap: 30px;

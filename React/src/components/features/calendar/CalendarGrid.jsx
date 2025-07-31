@@ -48,18 +48,18 @@ const wavePathsArray = [
 
 const CalendarGridContainer = styled.div`
     width: ${({ width }) => width || "420px"};
-    margin: 0 auto;
-    background: #f0f0f0;
+    height: 100%;
+    //background: #f0f0f0;
     border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    padding: 20px;
+    //box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    padding: 10px 20px;
 `;
 
 const WeekHeader = styled.div`
     display: grid;
     grid-template-columns: repeat(7, 1fr);
     margin-bottom: 8px;
-    color: #888;
+    color: var(--primary-color);
     font-weight: 500;
     font-size: 1rem;
 `;
@@ -97,7 +97,7 @@ function CalendarGrid({
                           selectedDate,
                           onSelectDate,
                           width = "420px",
-                          cellHeight = "60px"
+                          cellHeight = "50px"
                       }) {
 
     // 시간 상태
@@ -229,6 +229,7 @@ function CalendarGrid({
                                     width: today ? "32%" : "23%", height: today ? "32%" : "23%",
                                     border: today ? "5px dotted magenta" : "none",
                                     borderRadius: "50%",
+                                    paddingTop: "1px",
                                     marginBottom: "33%",
                                     backgroundColor: entry ? "rgba(255,246,229,0.75)" : "transparent",
                                     color: "#393E75",
