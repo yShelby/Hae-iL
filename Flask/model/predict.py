@@ -59,6 +59,7 @@ def predict_6_moods(text, top_k=3):
 # 긍정/부정
 def two_stage_mood_classification(text):
     # polarity, polarity_probs = predict_polarity(text)
+
     polarity, polarity_probs, pos_prob, neg_prob = predict_polarity(text)
     print(f"polarity: {polarity}, polarity_probs: {polarity_probs}")
     top_labels, label_probs = predict_6_moods(text)

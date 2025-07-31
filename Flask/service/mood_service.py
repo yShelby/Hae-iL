@@ -42,7 +42,7 @@ class MoodDiaryService:
             try: # AI LLM 모델 호출
                 # raise Exception("ai LLM 파인튜닝 중")
 
-                result = two_stage_mood_classification(sentences)
+                result = two_stage_mood_classification(json_text) # 이후 청크 로직 재수정
                 result_dict = extract_mood_with_dict(sentences)
 
                 polarity = result.get("polarity_result", 0)
