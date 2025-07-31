@@ -155,6 +155,7 @@ button {
     .profile-box {
       display: flex; flex-direction: column;align-items: center;gap: 16px;
       font-family: 'Pretendard';
+      cursor: pointer;
     }
 
         /* 프로필 이미지 */

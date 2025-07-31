@@ -22,7 +22,7 @@ const YearMonth = styled.div`
 
 function CalendarHead({ onPrev, onToday, onNext, currentDate }) {
     return (
-        <HeadContainer>
+        <HeadContainer className="head-container">
             <ButtonGroup>
                 <button onClick={onPrev}>이전</button>
                 <button onClick={onToday}>이번 달</button>

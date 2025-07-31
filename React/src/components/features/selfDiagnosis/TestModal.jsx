@@ -118,6 +118,7 @@ function TestModal({ test, onClose }) {
             <div className="modal-background">
                 <div className="modal-box">
                     <div className="top-bar">
+                        <h3 className={"label-info1"}>{test.label} 자가 진단 결과</h3>
                         <button
                             className="close-btn1"
                             onClick={() => {
@@ -127,13 +128,12 @@ function TestModal({ test, onClose }) {
                         >
                             x
                         </button>
-                        <h3 className={"label-info1"}>{test.label} 결과</h3>
                     </div>
                     <div className={"result-box"}>
                         <div className="result-box-content">
                             <p style={{paddingBottom:"30px"}}>진단 결과</p>
                             <p style={{paddingBottom:"8px"}}>{resultData.result ?? "-"}</p>
-                            <p>{test.type}: {resultData.percentage ?? "-"}%</p>
+                            <p>{test.label}: {resultData.percentage ?? "-"}%</p>
                         </div>
                         <p>다음 진단 가능일: {resultData.nextAvailableDate ?? "-"}</p>
                     </div>
@@ -185,7 +185,7 @@ function TestModal({ test, onClose }) {
                                 onClose();}}>
                         x
                     </button>
-                    <h3 className={"label-info1"}>{test.label}</h3>
+                    <h3 className={"label-info1"}>{test.label} 자가 진단</h3>
                 </div>
                 <div className="question-box">
                     <p> {step+1}. {test.questions[step]} </p>
@@ -204,7 +204,7 @@ function TestModal({ test, onClose }) {
                     </div>
                     {alertMsg && (
                         <div className="alert-message">
-                            답변이 완료되지 않았습니다.
+                            <span>답변이 완료되지 않았습니다.</span>
                         </div>
                     )}
                 </div>
