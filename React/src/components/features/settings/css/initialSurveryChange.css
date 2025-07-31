@@ -1,0 +1,68 @@
+.genre-wrapper1, .mood-wrapper1 {
+    margin: 20px;
+    background-image: linear-gradient(white, white), var(--border-gradient);
+    background-origin: border-box;
+    background-clip: padding-box, border-box;
+    border: 2px solid transparent;
+    border-radius: 30px;
+}
+
+.genre-list1 {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 5px;
+    justify-content: center;
+    margin: 10px;
+}
+
+.mood-list1 {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 35px;
+    justify-content: center;
+    margin: 10px;
+}
+
+.genre-option1, .mood-option1 {
+    position: relative;
+    display: inline-block;
+    padding: 8px 8px;
+    border-radius: 20px;
+    background-color: rgba(var(--primary-color-rgb), 0.1);
+    color: var(--primary-color);
+    cursor: pointer;
+    user-select: none;
+    font-size: 14px;
+    transition: background-color 0.3s, color 0.3s;
+    border: 1px solid transparent;
+}
+/* 체크박스 숨김 */
+.genre-option1 input[type="checkbox"], .mood-option1 input[type="checkbox"] {
+    display: none;
+}
+/* 체크된 input을 포함한 label의 스타일 변경 */
+.genre-option1:has(input[type="checkbox"]:checked), .mood-option1:has(input[type="checkbox"]:checked) {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.overlay-style {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0,0,0,0.4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.content-style {
+    background-color: white;
+    padding: 1.5rem;
+    border-radius: 30px;
+    width: 500px;
+    overflow-y: auto;
+}

@@ -111,7 +111,7 @@
     /*left: 838px;*/
     /*top: 20px;*/
     background-color: var(--primary-color);
-    padding: 10px 13px 10px 10px;
+    padding: 10px 13px 0 10px;
     width: 400px;
     min-width: 330px;
     height: 48px;
