@@ -5,23 +5,44 @@
 
 /* MonthlyPage.jsx */
     .monthly-page {
-        display: flex;justify-content: flex-end;align-items: center;gap: 5rem;
+        display: flex;justify-content: center;align-items: center;gap: 5%;
         width: 100%;
-        height: 100%;
+        min-height: 700px;
+        height: auto;
     }
 
     /*.monthly-page  < Calendar> {*/
     /*    border: 3px dotted cyan;*/
     /*}*/
-    /*.monthly-page  .diagnosis-container */
+
+
+    /* CalendarHead.jsx */
+
+    .current-month-text {
+        display: flex;flex-direction: column;justify-content: center;align-items: center;gap: 0.25rem;
+    }
+    .current-month-text {cursor: pointer;}
+    .current-month-text:hover {opacity: 0.7;font-size: 15px;}
+
+    .head-btn {
+        display: flex;justify-content: center;align-items: center;
+        width: 30px;height: 30px;
+        background: none;
+    }
+    .head-btn>.button-icon { color: var(--primary-color); }
+    .head-btn>.button-icon:hover {opacity: 0.7; }
+
+
+
+/*.monthly-page  .diagnosis-container */
 
     .diagnosis-container {
         display: flex;flex-direction: column;
         justify-content: center;align-items: center;gap: 22px;
         width: 330px;
-        height: 575px;
+        height: 550px;
         /*border: 3px dotted cyan;*/
-        border-radius: 30px 0 0 30px;
+        border-radius: 30px;
         background: var(--main-bg);
         box-shadow: var(--shadow-only);
     }
@@ -34,7 +55,7 @@
         height: 100px;
         padding: 15px;
         border-radius: var(--border-radius-main);
-        background: #fff;
+        background: rgb(255 255 255 / 0.85);
         font-size: 12px;
         box-shadow: var(--shadow-only);
     }
@@ -60,8 +81,3 @@
     .monthly-calendar .calendar-wrapper {}
     .monthly-calendar .calendar-head {}
     .monthly-calendar .calendar-grid {}
-
-/* CalendarHead.jsx */
-
-    .calendar-head .head-container{}
-
