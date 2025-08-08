@@ -37,6 +37,7 @@ import LegalCopyright from "@features/settings/LegalCopyright.jsx";
 import LegalPrivacyPolicy from "@features/settings/LegalPrivacyPolicy.jsx";
 import SettingsLayout from "@/layouts/SettingsLayout.jsx";
 import SettingsPage from "@pages/SettingsPage.jsx";
+import { updateGnbHighlightDelayed } from "@shared/utils/updateGnbHighlight.js";
 
 /**
  * ✨ [추가] 애니메이션과 라우팅을 실제로 처리하는 내부 컴포넌트
@@ -58,6 +59,10 @@ const AnimatedRoutes = () => {
 
     // [추가] AnimatePresence가 최상위 경로 변경(예: /diary -> /journal)에만 반응하도록 key를 수정
     const topLevelKey = location.pathname.split('/')[1] || 'root';
+
+    React.useEffect(() => {
+        updateGnbHighlightDelayed(location.pathname);
+    }, [location.pathname]);
 
     return (
         // AnimatePresence는 자식 컴포넌트가 DOM에서 제거될 때 퇴장 애니메이션을 실행 가능
