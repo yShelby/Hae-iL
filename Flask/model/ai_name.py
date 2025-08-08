@@ -5,13 +5,13 @@ import torch
 
 model_name = "WhitePeak/bert-base-cased-Korean-sentiment"
 
-tokenizer_2C = AutoTokenizer.from_pretrained(model_name)
+tokenizer_2C = AutoTokenizer.from_pretrained(model_name) # Max_length : 512 tokens
 model_2C = AutoModelForSequenceClassification.from_pretrained(model_name)
 model_2C.eval()
 
 checkpoint_dir_6 = "Jinuuuu/KoELECTRA_fine_tunning_emotion"
 
-tokenizer_6 = AutoTokenizer.from_pretrained(checkpoint_dir_6)
+tokenizer_6 = AutoTokenizer.from_pretrained(checkpoint_dir_6) # Max_length : 512 tokens
 model_6 = AutoModelForSequenceClassification.from_pretrained(checkpoint_dir_6)
 model_6.eval()
 

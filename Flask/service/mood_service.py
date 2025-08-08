@@ -1,12 +1,14 @@
 import json
 import time
 
-from dictionary.processing import extract_mood_with_dict
-from model.predict import two_stage_mood_classification
-from model.tags import make_tags_prob_and_map
-from model.utils import mood_to_tags_map, custom_combinations
 from dictionary.preprocessing_logic.whitespace_replacer import _whitespace_replacer
 from dictionary.preprocessing_logic.sentence_splitter import _sentence_splitter
+from model.chunk_logic.ai_chunker import _ai_chunker
+from model.chunk_logic.ai_weighted_calculator import _ai_weighted_calculator
+
+from dictionary.processing import extract_mood_with_dict
+from model.tags import make_tags_prob_and_map
+from model.utils import mood_to_tags_map, custom_combinations
 
 class MoodDiaryService:
     @staticmethod
@@ -29,7 +31,7 @@ class MoodDiaryService:
         # 문장 분리 실행
         sentences = _sentence_splitter(diary_text)
 
-        print(sentences)
+        print(f"sentences : {sentences}")
 
         #==================================================#
 
@@ -39,31 +41,48 @@ class MoodDiaryService:
 
         while retry_count < max_retries:
 
+            start_time = time.time()  # 시작 시간 기록
+
             try: # AI LLM 모델 호출
                 # raise Exception("ai LLM 파인튜닝 중")
 
-                result = two_stage_mood_classification(json_text) # 이후 청크 로직 재수정
+                # text chunking
+                chunks, tokens, total_token = _ai_chunker(sentences) # 512토큰 미만으로 청킹된 문장 리스트, 토큰수 리스트, 총 토큰수 추출
+                print(f"tokens : {tokens}, total_tokens : {total_token}")
+
+                # AI LLM 분석 (가중치 : 토큰 수)
+                result = _ai_weighted_calculator(chunks, tokens, total_token)
+                # 사전 분석 (태그 추출 목적)
                 result_dict = extract_mood_with_dict(sentences)
 
+                # AI LLM 감정 점수 및 라벨 추출
                 polarity = result.get("polarity_result", 0)
-                labels = result.get("labels", []) # tuple 형태
-                tags = result_dict.get("tag", []) # 사전
+                labels = result.get("labels", [])
 
-                # 기존 커스터마이징 tag
-                # tags = make_tags_prob_and_map(detailed_moods, mood_to_tags_map, threshold=0.1)
-                # sentiment_probs = result.get("sentiment_probs", {})
-                # top3_moods = tuple([emo for emo, _ in detailed_moods[:3]])
-                # custom_tags = custom_combinations.get(top3_moods, [])
+                # 사전을 이용한 태그 추출
+                tags = result_dict.get("tag", [])
+
+                    #======================================#
+                    # 기존 커스터마이징 tag
+                    # tags = make_tags_prob_and_map(detailed_moods, mood_to_tags_map, threshold=0.1)
+                    # sentiment_probs = result.get("sentiment_probs", {})
+                    # top3_moods = tuple([emo for emo, _ in detailed_moods[:3]])
+                    # custom_tags = custom_combinations.get(top3_moods, [])
+                    # ======================================#
 
                 return_result = {
                     "mood_score" : polarity,
-                    "details" : [{"mood_type": label, "percentage":round(prob * 100, 2)} for label, prob in labels],
+                    "details" : labels,
                     "tags": tags,
                     # "sentiment_probs": sentiment_probs,
                     # "custom_tags": custom_tags
                 }
 
-                print(return_result)
+                print(f"return result : {return_result}")
+
+                end_time = time.time()  # 끝 시간 기록
+                elapsed_time = end_time - start_time  # 경과 시간(초)
+                print(f"분석 소요 시간: {elapsed_time:.3f}초")
 
                 return return_result
 

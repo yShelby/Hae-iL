@@ -1,17 +1,13 @@
 # label의 Percentage 계산 및 보정 함수
-def _percentage_calculator(labels_count : list[tuple[str, int]]) -> list[dict] :
-    
-    # Percentage 계산
-    total_count = sum(count for _, count in labels_count)
-    
+def _percentage_calculator(labels : list[tuple[str, int]], total : int) -> list[dict] :
+
     # label 결과 생성
     labels_result = [
         {
         "label" : label,
-        # "count" : count,
-        "percentage" : round((count/total_count) * 100)
+        "percentage" : round((value/total) * 100)
         } 
-        for label, count in labels_count]
+        for label, value in labels]
     
     # Percentage 보정
     total_percentage = sum([item["percentage"] for item in labels_result]) #전체 percentage 합계

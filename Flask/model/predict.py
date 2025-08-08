@@ -7,18 +7,25 @@ import torch
 
 def predict_polarity(text):
 
+    # 인풋딕셔너리에 토크나이저_2C로 토큰화한 데이터를 넣음
+    # 텍스트를 받은 후
+        # 파이토치로 텐서화(return_tensors="pt")
+        # 길면 자름 (truncation=True)
+        # 모자라면 공백으로 채움 (padding=True)
     inputs = tokenizer_2C(text, return_tensors="pt", truncation=True, padding=True)
-    # 인풋딕셔너리에 토크나이저_2C로 토큰화한 데이터를 넣는다.
-    # 텍스트를 받아와 파이토치로 텐서화를 시키고 길면 자르고 모라자련 공백으로 채운다
+
+    # 인풋에 담겨진 목록의 키와 밸류값을 디바이스에 옮겨 담기
     inputs = {k: v.to(device) for k, v in inputs.items()}
-    # 인풋에 담겨진 목록의 키와 밸류값을 디바이스에 옮겨 담는다.
+
     with torch.no_grad():
-        logits = model_2C(**inputs).logits
         # 모델에 넘겨서 분석결과 받기
-    probs = torch.softmax(logits, dim=1).squeeze().cpu().numpy()
+        logits = model_2C(**inputs).logits
+
     # 분석결과의 1차원인 열 부분을 대상으로 계산하여 확률로 변환
-    # 스퀴즈로 의미없는 1차원을 제거하여
-    # cpu로 담아서 넘파이배열 로 변경
+        # 스퀴즈로 의미없는 1차원을 제거하여
+        # cpu로 담아서 넘파이 배열로 변경
+    probs = torch.softmax(logits, dim=1).squeeze().cpu().numpy()
+
     print(f"로짓로짓: {logits}")
     print(f"프롭프롭: {probs}")
     
@@ -56,14 +63,14 @@ def predict_6_moods(text, top_k=3):
     top_idx = probs.argsort()[::-1][:top_k]
     return [(label2mood_6[idx], round(float(probs[idx]), 2)) for idx in top_idx], probs
 
-# 긍정/부정
+# 긍정/부정 & 세부 라벨
 def two_stage_mood_classification(text):
     # polarity, polarity_probs = predict_polarity(text)
 
     polarity, polarity_probs, pos_prob, neg_prob = predict_polarity(text)
-    print(f"polarity: {polarity}, polarity_probs: {polarity_probs}")
+    print(f"predict.py :: polarity: {polarity}, polarity_probs: {polarity_probs}")
     top_labels, label_probs = predict_6_moods(text)
-    print(f"top_labels: {top_labels}")
+    print(f"predict.py ::top_labels: {top_labels}")
     polarity_result = int(round((pos_prob - neg_prob)*100, 0))
     
         # 여기 mood_probs는 numpy.ndarray임
@@ -77,8 +84,8 @@ def two_stage_mood_classification(text):
                 "neg_prob": float(neg_prob)
             },
             "polarity_result" : polarity_result,
-            "labels": top_labels,
-            "label_probs": label_probs.tolist()  # 리스트로 변환해서 반환
+            "labels": top_labels, # tuple (label, percentage)
+            "label_probs": label_probs
         }
 
 

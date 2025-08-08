@@ -37,10 +37,10 @@ def _large_dataset_handler(results_mood : list[dict], labels_count: list[tuple[s
         neutral_labels_count.append((neutral_label, neutral_count)) # 기존의 레이블 리스트에 추가
         neutral_labels_count.sort(key=lambda token:token[1], reverse=True) # count를 빈도순으로 재정렬
         
-        labels_result = _percentage_calculator(neutral_labels_count) ##### label 결과
+        labels_result = _percentage_calculator(neutral_labels_count, neutral_threshold) ##### label 결과
             
     # 2. 해당이 없는 경우
     else : 
-        labels_result = _percentage_calculator(labels_count) ##### label 결과
+        labels_result = _percentage_calculator(labels_count, labels_count_sum) ##### label 결과
 
     return polarity_result, labels_result, tags_result

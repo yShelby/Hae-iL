@@ -33,6 +33,7 @@ def _small_dataset_handler(results_mood : list[dict], p_threshold_sa : int, p_th
     labels = [item["label"] for item in last_sen] # 라벨 전체 리스트
     last_labels_count = Counter(labels).most_common()[:top_label-1] # 라벨 카운트, 최빈도 순부터 최대 3개까지 출력
     top_labels = set([label for label, _ in last_labels_count]) # 최빈도 라벨 이름 리스트
+    total_count = sum(count for _, count in last_labels_count) # total_count 계산
 
     # tag    
     tags = [item["tag"] for item in last_sen if item["label"] in top_labels] # 태그 전체 리스트
@@ -40,7 +41,7 @@ def _small_dataset_handler(results_mood : list[dict], p_threshold_sa : int, p_th
     
     # 결과 생성
     polarity_result = _polarity_calculator(polarities, p_threshold_sa, p_threshold_sb) # polarity 계산
-    labels_result = _percentage_calculator(last_labels_count) # Percentage 계산 및 보정 후 결과 생성
+    labels_result = _percentage_calculator(last_labels_count, total_count) # Percentage 계산 및 보정 후 결과 생성
     tags_result = [tag for tag, _ in last_tags_count] # 태그 도출
     
     return polarity_result, labels_result, tags_result
