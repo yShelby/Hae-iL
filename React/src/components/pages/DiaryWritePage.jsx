@@ -79,6 +79,13 @@ const DiaryWritePage = () => {
 
     // 📄 제목/날씨 등 폼 상태 관리 훅
     const {diaryState, setField} = useDiaryForm(initialDiary);
+    const weatherEmojiMap = {
+        '맑음': '☀️',
+        '흐림': '☁️',
+        '비': '🌧️',
+        '눈': '❄️',
+        '바람': '💨',
+    };
 
     // ☁️ 이미지 업로드 훅 (에디터 연동 + S3 전송 준비)
     const {handleImageUpload, uploadPendingImagesToS3} = useImageUpload(editor);
@@ -216,7 +223,9 @@ const DiaryWritePage = () => {
                 <div className={"diary-view-wrapper"}>
                     <div className={"title-weather-wrapper"}>
                         <h3>{initialDiary.title}</h3>
-                        <span>🌦 {initialDiary.weather || '날씨 없음'}</span>
+                        <span>
+                            {weatherEmojiMap[initialDiary.weather] || ''}{initialDiary.weather || '날씨 없음'}
+                        </span>
                     </div>
                     <div className="diary-content">
                         {/* TipTap JSON을 HTML로 렌더링 */}

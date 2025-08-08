@@ -43,7 +43,7 @@
 .tiptap-editor-content p.is-editor-empty:first-child::before {
     content: attr(data-placeholder);
     float: left;
-    color: #ffffff;
+    color: #bdc3c7;
     pointer-events: none;
     height: 0;
 }

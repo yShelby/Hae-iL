@@ -22,7 +22,7 @@ const QuestionDisplay = ({ question }) => {
     return (
         <div className="question-display-container">
             <Button variant="button1" className="custom">
-                <span className="question-text-in-diary">{question}</span>
+                <span className="question-text-in-diary">오늘의 질문 : {question}</span>
                 <button
                     onClick={handleRefresh}
                     className="btn-refresh-in-diary"

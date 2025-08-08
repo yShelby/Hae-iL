@@ -21,7 +21,7 @@ function MoodPage({ selectedDiaryId, refreshKey  }) {
         setError(null);
 
         if (!user || !selectedDiaryId) {
-            setLoading(false);
+            // setLoading(false);
             return;
         }
 
@@ -61,10 +61,25 @@ function MoodPage({ selectedDiaryId, refreshKey  }) {
     //     tags: ["#행복", "#여유", "#밝음"]}
     // );
 
-    // 1) 로딩 중인 경우
+    // 1) selectedDiaryId가 없으면(=일기 없음) → '일기 작성 안내' 메시지 보여주기
+    if (!selectedDiaryId) {
+        return (
+            <>
+                <div className="mood-wrapper">
+                    <p>일기를 작성해주세요.</p>
+                </div>
+                <div className="mood-tags-container">
+                    <div className="tags-box">
+                        <p>일기 작성 후 태그를 확인해보세요!</p>
+                    </div>
+                </div>
+            </>
+        );
+    }
+    // 2) 로딩 중인 경우
     if (loading) return <p>분석 결과 불러오는 중...</p>;
 
-    // 2) 에러가 있는 경우
+    // 3) 에러가 있는 경우
     if (error) {
         return (
             <>
@@ -80,21 +95,6 @@ function MoodPage({ selectedDiaryId, refreshKey  }) {
         );
     }
 
-    // 3) selectedDiaryId가 없으면(=일기 없음) → '일기 작성 안내' 메시지 보여주기
-    if (!selectedDiaryId) {
-        return (
-            <>
-                <div className="mood-wrapper">
-                    <p>일기를 작성해주세요.</p>
-                </div>
-                <div className="mood-tags-container">
-                    <div className="tags-box">
-                        <p>일기 작성 후 태그를 확인해보세요!</p>
-                    </div>
-                </div>
-            </>
-        );
-    }
     // 4) 감정 분석 결과가 있을 때만 보여주기
     if (hasValidMoodResult) {
         return <MoodResult result={moodResult} />;
