@@ -65,7 +65,20 @@ function MoodPage({ selectedDiaryId, refreshKey  }) {
     if (loading) return <p>분석 결과 불러오는 중...</p>;
 
     // 2) 에러가 있는 경우
-    if (error) return <p style={{ color: "red" }}>{error}</p>;
+    if (error) {
+        return (
+            <>
+                <div className="mood-wrapper">
+                    <p style={{ padding: '0 20px' }}>{error}</p>
+                </div>
+                <div className="mood-tags-container">
+                    <div className="tags-box">
+                        <p>다시 시도해주세요!</p>
+                    </div>
+                </div>
+            </>
+        );
+    }
 
     // 3) selectedDiaryId가 없으면(=일기 없음) → '일기 작성 안내' 메시지 보여주기
     if (!selectedDiaryId) {
