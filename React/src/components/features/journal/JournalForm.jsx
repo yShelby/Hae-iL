@@ -1,7 +1,6 @@
 import "./css/JournalForm.css";
 import {forwardRef, useCallback, useEffect, useState} from "react";
-import {FaCalendarAlt, FaRegStar, FaStar} from "react-icons/fa";
-import Rating from "react-rating";
+import {FaCalendarAlt, FaRegStar, FaStar, FaStarHalfAlt} from "react-icons/fa";
 import {showToast} from "@shared/UI/Toast.jsx";
 import DatePicker, {registerLocale} from "react-datepicker";
 import ko from "date-fns/locale/ko";
@@ -54,12 +53,15 @@ CustomDateButton.displayName = 'CustomDateButton';
 export const JournalForm = (
     {onSubmit, onCancel, initialData, isSubmitting, draftKey}) => { // 의존성 추가
     // [추가] 저널 임시 저장 스토어 연동
-    const { drafts, setDraft } = useJournalDraftStore();
+    const {drafts, setDraft} = useJournalDraftStore();
     const draft = drafts[draftKey]; // 현재 저널의 임시 데이터
 
     // Form은 자신의 UI 상태(formData)를 직접 관리
     const [formData, setFormData] = useState(getInitialFormData());
     const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState(false);
+
+    // [추가] - 마우스 호버 상태를 추적하기 위한 새로운 상태
+    const [hoverRating, setHoverRating] = useState(0);
 
     // 부모로부터 받은 initialData가 변경될 때마다 Form의 상태를 동기화
     useEffect(() => {
@@ -78,7 +80,9 @@ export const JournalForm = (
         // 작성 모드라면 초기값으로 폼 리셋
         else {
             // 새 작성 모드: 임시 데이터가 있으면 사용, 없으면 초기값
-            setFormData(draft || getInitialFormData());
+            // setFormData(draft || getInitialFormData());
+            // [수정] - 일단 임시저장 안되도록 수정
+            setFormData(getInitialFormData());
         }
     }, [initialData, draft, draftKey]); // 의존성 추가
 
@@ -92,24 +96,22 @@ export const JournalForm = (
     const handleChange = (e) => {
         const {name, value} = e.target;
         // setFormData(prev => ({...prev, [name]: value}));
-        updateFormAndDraft({ ...formData, [name]: value });
+        updateFormAndDraft({...formData, [name]: value});
     };
 
     // 별점 선택 변경 시 상태 업데이트
     const handleRatingChange = (rate) => {
         // setFormData(prev => ({...prev, rating: rate}));
-        updateFormAndDraft({ ...formData, rating: rate });
+        updateFormAndDraft({...formData, rating: rate});
     };
 
     const handleDateChange = (date) => {
         // date가 null이거나 undefined가 아닌, 유효한 Date 객체일 때만 실행
         if (date) {
-            // setFormData(prev => ({
-            //     ...prev,
-            //     journalDate: date.toISOString().split('T')[0]
-            // }));
-            updateFormAndDraft({ ...formData,
-                journalDate: date.toISOString().split('T')[0] });
+            updateFormAndDraft({
+                ...formData,
+                journalDate: date.toISOString().split('T')[0]
+            });
         }
         // 만약 날짜가 지워져서 null이 들어온 경우, 아무 작업도 하지 않아 이전 값을 유지하거나
         // 혹은 기본값으로 설정 가능. 여기서는 이전 값을 유지하도록 한다
@@ -117,7 +119,7 @@ export const JournalForm = (
 
     // 커스텀 드롭다운에서 카테고리 선택 시
     const handleCategorySelect = (categoryKey) => {
-        updateFormAndDraft({ ...formData, category: categoryKey });
+        updateFormAndDraft({...formData, category: categoryKey});
         setIsCategoryDropdownOpen(false); // 선택 후 드롭다운 닫기
     };
 
@@ -137,17 +139,11 @@ export const JournalForm = (
             {/* 제목 입력 필드 */}
             <div className="form-group">
                 <label htmlFor="title"></label>
-                <Input type="text" id="title" name="title" placeholder={"제목"} value={formData.title} onChange={handleChange} required/>
+                <Input type="text" id="title" name="title" placeholder={"제목"} value={formData.title}
+                       onChange={handleChange} required/>
             </div>
 
-            <div className={"categoryArating"}>
-                {/* 카테고리 선택 필드 */}
-                {/*<div className="form-group">*/}
-                {/*    <label htmlFor="category" className={"categoryLabel"}>카테고리</label>*/}
-                {/*    <select id="category" name="category" placeholder={"카테고리"} value={formData.category} className={"categorySelecter"} onChange={handleChange}>*/}
-                {/*        {CATEGORIES.map(cat => <option key={cat.key} value={cat.key}>{cat.name}</option>)}*/}
-                {/*    </select>*/}
-                {/*</div>*/}
+            <div className={"categoryRating"}>
                 <div className="form-group category-select-wrapper">
                     <label htmlFor="category" className={"categoryLabel"}>카테고리</label>
                     <div
@@ -176,15 +172,56 @@ export const JournalForm = (
                 {/* 별점 선택 컴포넌트 */}
                 <div className="form-group rating-plus">
                     <label className={"ratingLabel"}>별점</label>
-                    <div className="rating-group">
-                        <Rating
-                            key={initialData ? initialData.id : 'new'} // initialData 변경 시 컴포넌트 리셋
-                            fractions={2} // 0.5 단위 평가 가능
-                            initialRating={formData.rating}
-                            onChange={handleRatingChange}
-                            emptySymbol={<FaRegStar size={24} color={"e0e0e0"}/>}
-                            fullSymbol={<FaStar size={24} color={"f1c40f"}/>}
-                        />
+                    {/*<div className="rating-group">*/}
+                    {/*    <Rating*/}
+                    {/*        // key={initialData ? initialData.id : 'new'} // initialData 변경 시 컴포넌트 리셋*/}
+                    {/*        // [수정] - 반별이 반영되도록 key 수정*/}
+                    {/*        key={`${initialData ? initialData.id : 'new'}-${formData.rating}`}*/}
+                    {/*        fractions={2} // 0.5 단위 평가 가능*/}
+                    {/*        initialRating={formData.rating}*/}
+                    {/*        onChange={handleRatingChange}*/}
+                    {/*        emptySymbol={<FaRegStar size={24} color={"e0e0e0"}/>}*/}
+                    {/*        fullSymbol={<FaStar size={24} color={"f1c40f"}/>}*/}
+                    {/*        [추가] - 반쪽 별 아이콘을 표시하기 위한 속성 추가 */}
+                    {/*        placeholderSymbol={<FaStarHalfAlt size={24} color={"f1c40f"}/>}*/}
+                    {/*    />*/}
+                    {/*</div>*/}
+                    <div className="rating-group" style={{display: 'flex', alignItems: 'center'}}>
+                        {/* [수정] - <Rating> 컴포넌트를 완전히 대체하는 커스텀 별점 로직 */}
+                        {[1, 2, 3, 4, 5].map((starIndex) => {
+                            // 호버 상태를 우선으로, 아니면 실제 저장된 별점을 기준으로 표시
+                            const displayRating = hoverRating || formData.rating;
+
+                            let icon;
+                            const fullStars = Math.floor(displayRating);
+                            const hasHalfStar = displayRating % 1 !== 0;
+
+                            if (starIndex <= fullStars) {
+                                icon = <FaStar size={24} color="#f1c40f"/>;
+                            } else if (starIndex === fullStars + 1 && hasHalfStar) {
+                                icon = <FaStarHalfAlt size={24} color="#f1c40f"/>;
+                            } else {
+                                icon = <FaRegStar size={24} color="#e0e0e0"/>;
+                            }
+
+                            return (
+                                <div key={starIndex}
+                                     style={{display: 'inline-block', position: 'relative', cursor: 'pointer'}}>
+                                    {icon}
+                                    {/* 각 별 위에 보이지 않는 클릭 영역을 2개(왼쪽/오른쪽) 만든다. */}
+                                    <div
+                                        style={{ position: 'absolute', left: 0, top: 0, width: '50%', height: '100%', zIndex: 2 }}
+                                        onMouseEnter={() => setHoverRating(starIndex - 0.5)}
+                                        onClick={() => handleRatingChange(starIndex - 0.5)}
+                                    />
+                                    <div
+                                        style={{ position: 'absolute', left: '50%', top: 0, width: '50%', height: '100%', zIndex: 2 }}
+                                        onMouseEnter={() => setHoverRating(starIndex)}
+                                        onClick={() => handleRatingChange(starIndex)}
+                                    />
+                                </div>
+                            );
+                        })}
                     </div>
                 </div>
             </div>

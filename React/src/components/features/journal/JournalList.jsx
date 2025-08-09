@@ -18,7 +18,11 @@ export const JournalList = ({category, onItemSelect, user, selectedJournalId, re
         // 데이터 로딩 시작
         setLoading(true);
         getJournals(category)
-            .then(data => setJournals(data)) // 성공 시 목록 상태 업데이트
+            .then(data => {
+                const sortedData = [...data]
+                    .sort((a, b) => new Date(b.journalDate) - new Date(a.journalDate));
+                setJournals(sortedData);
+            })
             .catch(() => setError("데이터를 불러오는 데 실패했습니다.")) // 실패 시 에러 상태 설정
             .finally(() => setLoading(false)); // 완료 후 로딩 상태 해제
     }, [category, user, refreshKey]);
