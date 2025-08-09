@@ -84,7 +84,8 @@ export default function LineChart({ dates, rawData, chartTitle, chartStyle, char
         datasets: [{
             label: chartTitle,
             data,
-            ...chartStyle
+            ...chartStyle,
+            clip: false, // 96점 이상일 때 선, 포인트 잘림 방지
         }]
     }), [dates, data, chartTitle]);
 

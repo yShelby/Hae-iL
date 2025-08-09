@@ -77,28 +77,28 @@ export default function Charts() {
     }, [fetchData]);
 
     // === 더미 데이터 (실제 데이터 로딩 전까지 사용) ===
-    // // 감정 점수 데이터 (dummy) - 주간 / 월간 길이에 맞춰 slice 처리
-    // const displayMoodData = moodDataForChart.length > 0
-    //     ? moodDataForChart
-    //     : (isWeekly ? dummyData.weeklyScores : dummyData.monthlyScores);
-    //
-    // // 수면 및 운동 데이터도 날짜 배열 길이 맞추기
-    // const displaySleepData = sleepDataForChart.length > 0
-    //     ? sleepDataForChart
-    //     : dummyData.sleepData;
-    //
-    // const displayExerciseData = exerciseDataForChart.length > 0
-    //     ? exerciseDataForChart
-    //     : dummyData.exerciseData;
-    //
-    // // 자가진단 데이터
-    // const displayLastMonthData = lastMonthData.length > 0
-    //     ? lastMonthData
-    //     : dummyData.lastMonthData;
-    //
-    // const displayThisMonthData = thisMonthData.length > 0
-    //     ? thisMonthData
-    //     : dummyData.thisMonthData;
+    // 감정 점수 데이터 (dummy) - 주간 / 월간 길이에 맞춰 slice 처리
+    const displayMoodData = moodDataForChart.length > 0
+        ? moodDataForChart
+        : (isWeekly ? dummyData.weeklyScores : dummyData.monthlyScores);
+
+    // 수면 및 운동 데이터도 날짜 배열 길이 맞추기
+    const displaySleepData = sleepDataForChart.length > 0
+        ? sleepDataForChart
+        : dummyData.sleepData;
+
+    const displayExerciseData = exerciseDataForChart.length > 0
+        ? exerciseDataForChart
+        : dummyData.exerciseData;
+
+    // 자가진단 데이터
+    const displayLastMonthData = lastMonthData.length > 0
+        ? lastMonthData
+        : dummyData.lastMonthData;
+
+    const displayThisMonthData = thisMonthData.length > 0
+        ? thisMonthData
+        : dummyData.thisMonthData;
 
     // =========================================
     // === 차트 기본 스타일 ===
@@ -133,6 +133,7 @@ export default function Charts() {
                                 key={mode + JSON.stringify(moodDataForChart)}  // mode 바뀌거나 데이터 바뀌면 새 컴포넌트 마운트
                                 dates={weeklyLabels}
                                 rawData={moodDataForChart}
+                                // rawData={dummyData.weeklyScores} //더미데이터
                                 chartTitle="주간 기분 변화"
                                 chartStyle={moodLineStyle[themeKey]}
                                 chartFontSize={chartFontSize.weeklyLineStyle}
@@ -143,6 +144,7 @@ export default function Charts() {
                                 key={mode + JSON.stringify(moodDataForChart)}  // mode 바뀌거나 데이터 바뀌면 새 컴포넌트 마운트
                                 dates={monthlyLabels}
                                 rawData={moodDataForChart}
+                                // rawData={dummyData.monthlyScores} //더미데이터
                                 chartTitle="월간 기분 변화"
                                 chartStyle={moodLineStyle[themeKey]}
                                 chartFontSize={chartFontSize.monthlyLineStyle}
@@ -161,6 +163,7 @@ export default function Charts() {
                             <FloatingBarChart
                                 dates={weeklyLabels}
                                 rawData={sleepDataForChart}
+                                // rawData={dummyData.sleepData} //더미데이터
                                 chartTitle={"주간 수면 시간"}
                                 chartStyle={sleepBarStyle[themeKey]}
                                 chartFontSize={chartFontSize.sleepBarStyle}
@@ -173,6 +176,7 @@ export default function Charts() {
                             <NormalBarChart
                                 dates={weeklyLabels}
                                 rawData={exerciseDataForChart}
+                                // rawData={dummyData.exerciseData} //더미데이터
                                 chartTitle={"주간 운동 시간"}
                                 chartStyle={exerciseBarStyle[themeKey]}
                                 chartFontSize={chartFontSize.exerciseBarStyle}
@@ -186,6 +190,8 @@ export default function Charts() {
                             <RadarChart
                                 previousData={lastMonthData}
                                 rawData={thisMonthData}
+                                // previousData={dummyData.lastMonthData} //더미데이터
+                                // rawData={dummyData.thisMonthData} //더미데이터
                                 chartStyleThis={diagnosisRadarStyle[themeKey]}
                                 chartStylePrevious={previousDiagnosisRadarStyle[themeKey]}
                                 chartFontSize={chartFontSize.diagnosisRadarStyle}
@@ -211,22 +217,22 @@ const gridColor = {
 
 const moodLineStyle = {
     theme1 : {
-        borderColor: "rgba(75,192,192,1)",
-        backgroundColor: "rgba(75,192,192,0.1)",
+        borderColor: "rgba(108,92,231,0.5)",
+        backgroundColor: "rgba(108,92,231,0.1)",
         fill: "start",
         tension: 0.4,
         pointRadius: 3
     },
     theme2 : {
-        borderColor: "rgba(75,192,192,1)",
-        backgroundColor: "rgba(75,192,192,0.1)",
+        borderColor: "rgba(74,144,226,0.5)",
+        backgroundColor: "rgba(74,144,226,0.1)",
         fill: "start",
         tension: 0.4,
         pointRadius: 3
     },
     theme3 : {
-        borderColor: "rgba(75,192,192,1)",
-        backgroundColor: "rgba(75,192,192,0.1)",
+        borderColor: "rgb(38,208,206,0.5)",
+        backgroundColor: "rgba(38,208,206,0.3)",
         fill: "start",
         tension: 0.4,
         pointRadius: 3
@@ -235,22 +241,22 @@ const moodLineStyle = {
 
 const sleepBarStyle = {
     theme1:{
-        backgroundColor: "rgba(54, 162, 235, 0.5)",
-        borderColor: "rgba(54, 162, 235, 1)",
+        borderColor: "rgba(116,185,255,0.7)",
+        backgroundColor: "rgba(116,185,255,0.5)",
         borderWidth: 3,
         borderSkipped: false,
         borderRadius: 7
     },
     theme2:{
-        backgroundColor: "rgba(54, 162, 235, 0.5)",
-        borderColor: "rgba(54, 162, 235, 1)",
+        borderColor: "rgba(126,214,223,0.7)",
+        backgroundColor: "rgba(126,214,223, 0.5)",
         borderWidth: 3,
         borderSkipped: false,
         borderRadius: 7
     },
     theme3:{
-        backgroundColor: "rgba(54, 162, 235, 0.5)",
-        borderColor: "rgba(54, 162, 235, 1)",
+        borderColor: "rgba(50,204,117,0.7)",
+        backgroundColor: "rgba(50,204,117,0.5)",
         borderWidth: 3,
         borderSkipped: false,
         borderRadius: 7
@@ -260,20 +266,20 @@ const sleepBarStyle = {
 
 const exerciseBarStyle = {
     theme1:{
-        backgroundColor: "rgba(255, 206, 86, 0.5)",
-        borderColor: "rgba(255, 206, 86, 1)",
+        borderColor: "rgba(255,172,205,0.7)",
+        backgroundColor: "rgba(255,172,205, 0.5)",
         borderWidth: 3,
         borderRadius: 10
     },
     theme2:{
-        backgroundColor: "rgba(255, 206, 86, 0.5)",
-        borderColor: "rgba(255, 206, 86, 1)",
+        borderColor: "rgba(165,168,239,0.7)",
+        backgroundColor: "rgba(165,168,239,0.5)",
         borderWidth: 3,
         borderRadius: 10
     },
     theme3:{
-        backgroundColor: "rgba(255, 206, 86, 0.5)",
-        borderColor: "rgba(255, 206, 86, 1)",
+        borderColor: "rgba(255,206,86,0.7)",
+        backgroundColor: "rgba(255,206,86,0.5)",
         borderWidth: 3,
         borderRadius: 10
     }
@@ -281,26 +287,26 @@ const exerciseBarStyle = {
 
 const diagnosisRadarStyle = {
     theme1:{
-        backgroundColor: "rgba(255,99,132,0.15)",
-        borderColor: "rgba(255,99,132,1)",
-        pointBackgroundColor: "rgba(255,99,132,1)",
-        pointBorderColor: "rgba(255,99,132,1)",
+        borderColor: "rgba(253,121,168,0.9)",
+        backgroundColor: "rgba(253,121,168,0.15)",
+        pointBackgroundColor: "rgba(253,121,168,1)",
+        pointBorderColor: "rgba(253,121,168,1)",
         pointRadius: 2,
         borderWidth: 2
     },
     theme2:{
-        backgroundColor: "rgba(255,99,132,0.15)",
-        borderColor: "rgba(255,99,132,1)",
-        pointBackgroundColor: "rgba(255,99,132,1)",
-        pointBorderColor: "rgba(255,99,132,1)",
+        borderColor: "rgba(148,112,234,0.9)",
+        backgroundColor: "rgba(148,112,234,0.15)",
+        pointBackgroundColor: "rgba(148,112,234,1)",
+        pointBorderColor: "rgba(148,112,234,1)",
         pointRadius: 2,
         borderWidth: 2
     },
     theme3:{
-        backgroundColor: "rgba(255,99,132,0.15)",
-        borderColor: "rgba(255,99,132,1)",
-        pointBackgroundColor: "rgba(255,99,132,1)",
-        pointBorderColor: "rgba(255,99,132,1)",
+        borderColor: "rgba(255,162,100,0.9)",
+        backgroundColor: "rgba(255,162,100,0.15)",
+        pointBackgroundColor: "rgba(255,162,100,1)",
+        pointBorderColor: "rgba(255,162,100,1)",
         pointRadius: 2,
         borderWidth: 2
     }
@@ -308,28 +314,28 @@ const diagnosisRadarStyle = {
 
 const previousDiagnosisRadarStyle = {
     theme1:{
-        backgroundColor: "rgba(54,162,235,0.2)",
-        borderColor: "rgba(54,162,235,1)",
-        pointBackgroundColor: "rgba(54,162,235,1)",
-        pointBorderColor: "rgba(54,162,235,1)",
+        borderColor: "rgba(127,168,228,0.9)",
+        backgroundColor: "rgba(127,168,228,0.2)",
+        pointBackgroundColor: "rgba(127,168,228,1)",
+        pointBorderColor: "rgba(127,168,228,1)",
         pointRadius: 2,
         borderWidth: 2,
         borderDash: [3, 3]
     },
     theme2:{
-        backgroundColor: "rgba(54,162,235,0.2)",
-        borderColor: "rgba(54,162,235,1)",
-        pointBackgroundColor: "rgba(54,162,235,1)",
-        pointBorderColor: "rgba(54,162,235,1)",
+        borderColor: "rgba(108,172,175,0.9)",
+        backgroundColor: "rgba(108,172,175,0.2)",
+        pointBackgroundColor: "rgba(108,172,175,1)",
+        pointBorderColor: "rgba(108,172,175,1)",
         pointRadius: 2,
         borderWidth: 2,
         borderDash: [3, 3]
     },
     theme3:{
-        backgroundColor: "rgba(54,162,235,0.2)",
-        borderColor: "rgba(54,162,235,1)",
-        pointBackgroundColor: "rgba(54,162,235,1)",
-        pointBorderColor: "rgba(54,162,235,1)",
+        borderColor: "rgba(135,197,179,0.9)",
+        backgroundColor: "rgba(135,197,179,0.2)",
+        pointBackgroundColor: "rgba(135,197,179,1)",
+        pointBorderColor: "rgba(135,197,179,1)",
         pointRadius: 2,
         borderWidth: 2,
         borderDash: [3, 3]
@@ -347,39 +353,39 @@ const chartFontSize = {
 
 //======= 보조 함수 =======
 
-// function timeStringToMinutes(timeStr) {
-//     const [hourStr, minuteStr] = timeStr.split(':');
-//     const hours = parseInt(hourStr, 10);
-//     const minutes = parseInt(minuteStr, 10);
-//     return hours * 60 + minutes;
-// }
-//
-// // sleepDataInMinutes 함수: bedtime, waketime 문자열 배열을 분 단위 배열로 변환
-// function sleepDataInMinutes(rawArray) {
-//     return rawArray.map(({ bedtime, waketime }) => [
-//         timeStringToMinutes(bedtime),
-//         timeStringToMinutes(waketime)
-//     ]);
-// }
+function timeStringToMinutes(timeStr) {
+    const [hourStr, minuteStr] = timeStr.split(':');
+    const hours = parseInt(hourStr, 10);
+    const minutes = parseInt(minuteStr, 10);
+    return hours * 60 + minutes;
+}
+
+// sleepDataInMinutes 함수: bedtime, waketime 문자열 배열을 분 단위 배열로 변환
+function sleepDataInMinutes(rawArray) {
+    return rawArray.map(({ bedtime, waketime }) => [
+        timeStringToMinutes(bedtime),
+        timeStringToMinutes(waketime)
+    ]);
+}
 
 //======= 더미 데이터 =======
 
 // 랜덤 데이터
-// const random = Array.from({ length: 30 }, () => Math.floor(Math.random() * 201) - 100);
-//
-// const dummyData = {
-//     monthlyScores: random,
-//     weeklyScores: random.slice(-7),
-//     sleepData: sleepDataInMinutes([
-//         { bedtime: "01:00", waketime: "08:30" },
-//         { bedtime: "21:30", waketime: "07:50" },
-//         { bedtime: "01:15", waketime: "09:00" },
-//         { bedtime: "23:00", waketime: "08:00" },
-//         { bedtime: "01:45", waketime: "09:15" },
-//         { bedtime: "17:50", waketime: "23:30" },
-//         { bedtime: "01:20", waketime: "08:10" }
-//     ]),
-//     exerciseData: Array.from({ length: 7 }, () => Math.floor(Math.random() * 201)),
-//     lastMonthData: [15, 12, 18],
-//     thisMonthData: [9, 7, 26]
-// };
+const random = Array.from({ length: 30 }, () => Math.floor(Math.random() * 201) - 100);
+
+const dummyData = {
+    monthlyScores: random,
+    weeklyScores: random.slice(-7),
+    sleepData: sleepDataInMinutes([
+        { bedtime: "01:00", waketime: "08:30" },
+        { bedtime: "21:30", waketime: "07:50" },
+        { bedtime: "01:15", waketime: "09:00" },
+        { bedtime: "23:00", waketime: "08:00" },
+        { bedtime: "01:45", waketime: "09:15" },
+        { bedtime: "17:50", waketime: "23:30" },
+        { bedtime: "01:20", waketime: "08:10" }
+    ]),
+    exerciseData: Array.from({ length: 7 }, () => Math.floor(Math.random() * 201)),
+    lastMonthData: [15, 12, 18],
+    thisMonthData: [9, 7, 26]
+};
