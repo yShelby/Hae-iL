@@ -128,7 +128,24 @@ export default function LineChart({ dates, rawData, chartTitle, chartStyle, char
 
 
 
-    return <Line data={chartData} options={options} redraw />;
+    return <Line data={chartData} options={options} plugins={[zeroLinePlugin]} redraw />;
 };
 
+// ======== 0선 점선 플러그인 ========
+const zeroLinePlugin = {
+    id: 'zeroLine',
+    beforeDraw(chart) {
+        const { ctx, scales: { x, y } } = chart;
+        const yZero = y.getPixelForValue(0);
 
+        ctx.save();
+        ctx.beginPath();
+        ctx.setLineDash([2, 4]); // 점선 패턴
+        ctx.strokeStyle = 'rgba(191,191,191,0.9)'; // 선 색상
+        ctx.lineWidth = 0.5;
+        ctx.moveTo(x.left, yZero);
+        ctx.lineTo(x.right, yZero);
+        ctx.stroke();
+        ctx.restore();
+    }
+};

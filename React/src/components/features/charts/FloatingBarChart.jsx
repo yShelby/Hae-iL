@@ -37,8 +37,8 @@ export default function SleepFloatingBarChart({dates, rawData, chartTitle, chart
     const filteredStarts = starts.filter(v => v !== null); // null 제외
     const filteredEnds = ends.filter(v => v !== null); // null 제외
 
-    const yMin = filteredStarts.length > 0 ? Math.max(0, Math.min(...filteredStarts) - padding) : 720;
-    const yMax = filteredEnds.length > 0 ? Math.min(SLEEP_DAY * 3, Math.max(...filteredEnds) + padding) : SLEEP_DAY + 720;
+    const yMin = filteredStarts.length > 0 ? Math.max(0, Math.min(...filteredStarts) - padding) : 0;
+    const yMax = filteredEnds.length > 0 ? Math.min(SLEEP_DAY * 3, Math.max(...filteredEnds) + padding) : 720;
 
     // =======================================================
     // === for chart ===
