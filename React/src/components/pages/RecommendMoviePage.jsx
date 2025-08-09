@@ -14,6 +14,7 @@ function RecommendMoviePage(){
     const [currentEmotionIndex, setCurrentEmotionIndex] = useState(0);
     const [shuffledMoviesByEmotion, setShuffledMoviesByEmotion] = useState({});
     const isPreloading = useRef(false);
+    const [movies, setMovies] = useState([]);
 
     const {preloadRecommendations} = usePreloadRecommendation();
 
@@ -76,18 +77,24 @@ function RecommendMoviePage(){
 
     const currentEmotion = emotionResult[currentEmotionIndex] || "알 수 없음";
 
-    const movies = shuffledMoviesByEmotion[currentEmotion] || [];
+    // const movies = shuffledMoviesByEmotion[currentEmotion] || [];
+
+    useEffect(() => {
+        const current = emotionResult[currentEmotionIndex] || "알 수 없음";
+        const newMovies = shuffledMoviesByEmotion[current] || [];
+        setMovies(newMovies);
+    }, [currentEmotionIndex, shuffledMoviesByEmotion, emotionResult]);
 
     const handleDislike = async (movieKey) => {
         setShuffledMoviesByEmotion(prev => {
 
             const newShuffled = { ...prev };
 
-            if (!newShuffled[currentEmotion]) return prev;
+            if (!newShuffled[emotionResult[currentEmotionIndex]]) return prev;
 
-            newShuffled[currentEmotion] = newShuffled[currentEmotion].filter(
-                movie => movie.id !== movieKey
-            );
+            for (const emotion in newShuffled) {
+                newShuffled[emotion] = newShuffled[emotion].filter(movie => movie.id !== movieKey);
+            }
 
             // 2) 로컬스토리지에 저장된 moviesByPage도 업데이트
             const storedMovies = JSON.parse(localStorage.getItem("cachedMoviesByPage") || "{}");
@@ -95,6 +102,8 @@ function RecommendMoviePage(){
                 storedMovies[key] = storedMovies[key].filter(movie => movie.id !== movieKey);
             }
             localStorage.setItem("cachedMoviesByPage", JSON.stringify(storedMovies));
+
+            setMoviesByPage(storedMovies);
 
             return newShuffled;
         });
@@ -124,7 +133,7 @@ function RecommendMoviePage(){
                 <div className={"movieParent"}>
                     <RecommendTab />
                     <div className={"moviePage"}>
-                        <RecommendText emotion={currentEmotion} />
+                        <RecommendText emotion={emotionResult[currentEmotionIndex] || "알 수 없음"} />
                         <MovieList movies={movies} emotion={currentEmotion} onDisLike={handleDislike} />
                         <button className="nextEmotionBtn" onClick={nextEmotion}>
                             다음 추천 보기
