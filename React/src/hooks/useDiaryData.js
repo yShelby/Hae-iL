@@ -1,5 +1,5 @@
 import {useState, useCallback, useEffect} from 'react';
-import { useNavigate } from 'react-router-dom';
+import {useNavigate, useParams} from 'react-router-dom';
 import { useAuth } from '@shared/context/AuthContext.jsx';
 import { showToast } from '@shared/UI/Toast.jsx';
 import { fetchDiaryByDateAPI } from '@api/diaryApi.js';
@@ -8,8 +8,12 @@ import { formatDateToString } from '@shared/utils/dateUtils.js';
 export const useDiaryData = () => {
     const { user } = useAuth();
     const navigate = useNavigate();
+    const { date: urlDate } = useParams()
 
-    const [selectedDate, setSelectedDate] = useState(formatDateToString(new Date()));
+    const initialDate = urlDate || formatDateToString(new Date());
+    const [selectedDate, setSelectedDate] = useState(initialDate);
+
+    // const [selectedDate, setSelectedDate] = useState(formatDateToString(new Date()));
     const [diaryForDate, setDiaryForDate] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
 

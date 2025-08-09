@@ -63,6 +63,11 @@ const DiaryLayout = () => {
         // 선택된 일기 데이터도 다시 가져오기
         handleDiaryUpdated();
     };
+
+    useEffect(() => {
+        handleEmotionUpdated();
+    }, [selectedDate]);
+
     return (
 
         <div className="diary-wrapper">
@@ -81,14 +86,17 @@ const DiaryLayout = () => {
             <div className={"diary-body"}>
                 <div className={"left-panel-1"}>
                         <MoodPage
+                            key={selectedDate}
                             refreshKey={emotionRefreshKey} // 갱신 키 전달
-                            selectedDiaryId={diaryIdForMood}
+                            selectedDiaryId={selectedDiaryId}
                         />
                         <GalleryThumbnail />
                 </div>
 
                 <div className={"center-panel"}>
-                    <Outlet context={{
+                    <Outlet
+                        key={selectedDate}
+                        context={{
                         initialDiary,
                         // setSelectedDiaryId,
                         selectedDate, // 자식 컴포넌트(DiaryWritePage)가 현재 날짜를 알 수 있도록 전달
