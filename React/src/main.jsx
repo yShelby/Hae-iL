@@ -35,15 +35,6 @@ function AppWithTheme() {
 
     if (loading) return <div>로딩중...</div>;
 
-    // // user 가 없거나 loading 중 = 기본값 (theme1)
-    // const initialTheme = React.useMemo(() => {
-    //     if (!user?.themeName) return 'theme1'; // default
-    //     // DB theme_1 -> theme1 형태 변환
-    //     return user.themeName.replace('_', '');
-    // }, [user]);
-    //
-    //     if (loading) return <div>로딩중...</div>;
-
     return (
         <ThemeProvider initialTheme={initialTheme}>
             <GalleryProvider>  {/* 갤러리 상태 전역 관리*/}

@@ -35,7 +35,7 @@ function ThemeSelector() {
                 const data = await res.json();
 
                 if (res.ok && data.success) {
-                    showToast.success('테마가 변경되었습니다.');
+                    showToast.success('사용자 테마가 변경되었습니다.');
                     setUser(prev => prev ? { ...prev, themeName: themeMap[selectedThemeKey] } : prev);
                 } else {
                     throw new Error(data.message || '테마 저장 실패');
@@ -46,42 +46,9 @@ function ThemeSelector() {
             }
         } else {
             // 로그인 X → 로컬스토리지만 저장
-            showToast.success('테마가 변경되었습니다. (로그인 시 서버에 저장됩니다)');
+            showToast.success('브라우저 테마가 변경되었습니다.');
         }
     };
-
-    // const handleThemeChange = async (selectedThemeKey) => {
-    //     // 로그인 상관 없이 테마 변경 및 저장 가능 - 로컬 스토리지 사용
-    //     // if (!user) {
-    //     //     showToast.error('로그인이 필요합니다.');
-    //     //     return;
-    //     // }
-    //
-    //     try {
-    //         // 1. 서버에 themeName 저장 요청
-    //         const res = await fetch('/api/user/theme', {
-    //             method: 'PUT',
-    //             credentials: 'include',
-    //             headers: { 'Content-Type': 'application/json' },
-    //             body: JSON.stringify({ themeName: themeMap[selectedThemeKey] }),
-    //         });
-    //         const data = await res.json();
-    //
-    //         if (res.ok && data.success) {
-    //             // 2. 전역 테마 변경
-    //             setThemeKey(selectedThemeKey);
-    //             showToast.success('테마가 변경되었습니다.');
-    //
-    //             // 3. AuthContext 내 사용자 state에도 반영
-    //             setUser(prev => prev ? { ...prev, themeName: themeMap[selectedThemeKey] } : prev);
-    //         } else {
-    //             throw new Error(data.message || '테마 저장 실패');
-    //         }
-    //     } catch (error) {
-    //         console.error('테마 변경 오류:', error);
-    //         showToast.error(`테마 변경 실패: ${error.message}`);
-    //     }
-    // };
 
     return (
         <div className={'theme-select-list'}>
