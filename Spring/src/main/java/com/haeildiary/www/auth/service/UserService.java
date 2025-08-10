@@ -476,5 +476,25 @@ public class UserService {
             user.setThemeName(themeName);
             userRepository.save(user);
     }
+    // 테마 변경 실시간 세션 업데이트
 
+    @Transactional
+    public void updateSessionUserInfo(Integer userId) {
+        UserEntity updatedUser = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+
+        UserEntity sessionUser = new UserEntity();
+        sessionUser.setUserId(updatedUser.getUserId());
+        sessionUser.setEmail(updatedUser.getEmail());
+        sessionUser.setNickname(updatedUser.getNickname());
+        sessionUser.setName(updatedUser.getName());
+        sessionUser.setProfileImage(updatedUser.getProfileImage());
+        sessionUser.setLastLoginAt(updatedUser.getLastLoginAt());
+        sessionUser.setCreatedAt(updatedUser.getCreatedAt());
+        sessionUser.setStatus(updatedUser.getStatus());
+        sessionUser.setEncryptedPhoneNumber(updatedUser.getEncryptedPhoneNumber());
+        sessionUser.setThemeName(updatedUser.getThemeName());
+
+        session.setAttribute("user", sessionUser);
+    }
 }

@@ -1,5 +1,5 @@
 // 📦 React 및 DOM 렌더링 관련 라이브러리
-import React, {useContext} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import ReactDOM from 'react-dom/client';
 import {BrowserRouter} from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -14,14 +14,35 @@ import ThemeProvider from "@shared/styles/ThemeProvider.jsx";
 function AppWithTheme() {
     const { user, loading } = useAuth();
 
-    // user 가 없거나 loading 중 = 기본값 (theme1)
-    const initialTheme = React.useMemo(() => {
-        if (!user?.themeName) return 'theme1'; // default
-        // DB theme_1 -> theme1 형태 변환
-        return user.themeName.replace('_', '');
-    }, [user]);
+    // SSR에서 html 클래스값 읽기 (초기값)
+    const ssrClass = typeof window !== "undefined" ? document.documentElement.className : null;
 
-        if (loading) return <div>로딩중...</div>;
+    // useState로 상태 관리: 유저 데이터 바뀔 때 themeKey에 반영할 용도
+    const [initialTheme, setInitialTheme] = useState(() => {
+        if (ssrClass && /^theme[123]$/.test(ssrClass)) return ssrClass;
+        if (user?.themeName) return user.themeName.replace('_', '');
+        return "theme1";
+    });
+
+    // 사용자 상태가 바뀔 때마다 themeName이 다르면 업데이트
+    useEffect(() => {
+        if (!user?.themeName) return;
+        const newTheme = user.themeName.replace('_', '');
+        if (newTheme !== initialTheme) {
+            setInitialTheme(newTheme);
+        }
+    }, [user?.themeName]);
+
+    if (loading) return <div>로딩중...</div>;
+
+    // // user 가 없거나 loading 중 = 기본값 (theme1)
+    // const initialTheme = React.useMemo(() => {
+    //     if (!user?.themeName) return 'theme1'; // default
+    //     // DB theme_1 -> theme1 형태 변환
+    //     return user.themeName.replace('_', '');
+    // }, [user]);
+    //
+    //     if (loading) return <div>로딩중...</div>;
 
     return (
         <ThemeProvider initialTheme={initialTheme}>

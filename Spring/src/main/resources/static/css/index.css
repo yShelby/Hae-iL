@@ -71,9 +71,9 @@ button {
         display: flex;flex-direction: column;gap: 10px;
          width: 100%;
          padding: 15px 25px;
-         border: 1px solid rgba(255 255 255 / 0.85);
+         border: 2px solid rgba(255 255 255 / 0.95);
         border-radius: var(--border-radius-main);
-        background-image: var(--theme1-gradient);
+        background-image: var(--border-gradient);
     }
     .login-form {
         display: flex;flex-direction: column;align-items: center;gap: 10px;
@@ -138,14 +138,14 @@ button {
 
     .login-box .register-btn {
         width: 100%;
-        background: rgb(255 255 255 / 0.25);
+        background: rgb(255 255 255 / 0.45);
         border: 2px solid var(--primary-color);
         font-size: 1rem;
         font-weight: bold;
         color: var(--primary-color);
     }
     .login-box .register-btn:hover {
-        background-image: var(--theme1-gradient);
+        background-image: var(--border-gradient);
         border: 2px solid #fff;
     }
 
