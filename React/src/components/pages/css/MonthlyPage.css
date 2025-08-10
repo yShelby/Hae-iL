@@ -61,9 +61,14 @@
     }
     .diagnosis-container .test-box.result {
         display: flex;flex-direction: column;gap: 7px;
+        align-items: center;justify-content: center;
     }
     .diagnosis-container .test-box.result .last-result {
         display: flex;flex-direction: column;gap: 5px;
+        align-items: center;justify-content: center;
+    }
+    .diagnosis-container .test-box.result .last-result span {
+        text-align: center;
     }
     .diagnosis-container .test-label {
         display: flex;flex-direction: column;justify-content: center;align-items: center;gap: .3rem;
