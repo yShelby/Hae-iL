@@ -114,7 +114,7 @@ export default function Charts() {
                 {/* 차트 부분 */}
                 <div className={"upper-chart"}>
                     <div className={"title-button"}>
-                    <h3>주간/월간 감정 트래킹 차트</h3>
+                    <h3>주간/월간 감정</h3>
                         <div className={"button-only"}>
                             {/* 이전, 다음 날짜 호출하는 화살표 (< / >) */}
                             <DateNavigator
