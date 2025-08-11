@@ -34,7 +34,7 @@ public class TmdbApiClientService {
     }
 
     public List<MovieDto> searchMoviesByGenre(Integer genreCode) {
-        List<String> bannedKeywords = List.of("softcore", "pink film", "adult", "sex");
+        List<String> bannedKeywords = List.of("softcore", "pink film", "adult", "sex", "lgbt", "lesbian", "gay");
 
         // 비동기 스트림을 block()으로 동기 변환해서 리턴
         return webClient.get()
