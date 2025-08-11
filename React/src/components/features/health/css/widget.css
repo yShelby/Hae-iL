@@ -13,18 +13,16 @@
 .widget * {
     font-family: 'Pretendard', sans-serif !important;
 }
-.exercise-widget {
-    height: 180px;
+.exercise-widget, .sleep-widget {
+    height: 25%;
 }
-.sleep-widget {
-    height: 180px;
-}
+
 .meal-widget {
-    height: 226px;
+    height: 30%;
 }
 .widget h4 {
     margin-top: 0;
-    font-size: 16px;
+    font-size: 12px;
     font-weight: 600;
     color: var(--primary-color);
     margin-bottom: 5px;
@@ -36,15 +34,17 @@
 .widget select {
     width: 100%;
     padding: 6px 8px;
-    margin-bottom: 8px;
+    margin-bottom: 4px;
     box-sizing: border-box;
+    font-size: 12px;
+    height: 15px;
 }
 
 .widget select {
     border-radius: 10px;
     border: 1px solid transparent;
     background-color: white;
-    font-size: 14px;
+    font-size: 12px;
     color: rgba(var(--primary-color-rgb), 0.6);
 
     /* 그림자 */
@@ -55,9 +55,8 @@
     background-origin: border-box;
     background-clip: padding-box, border-box;
 
-    padding: 4px 10px;
+    padding: 1px 4px;
     line-height: 1.5;
-    height: 24px;
 }
 .widget select option {
     font-size: 14px;
@@ -73,10 +72,11 @@
 
 
 .widget button {
-    font-size: 14px;
+    font-size: 12px;
     cursor: pointer;
     margin-right: 6px;
     transition: background-color 0.2s, border-color 0.2s;
+    min-height: 20px;
 }
 
 .widget button:hover {
@@ -100,8 +100,7 @@
 }
 
 .widget p {
-    margin: 4px 0;
-    font-size: 14px;
+    font-size: 12px;
     overflow: hidden;
     text-overflow: ellipsis;
     display: -webkit-box;

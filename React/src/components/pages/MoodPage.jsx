@@ -64,7 +64,7 @@ function MoodPage({ selectedDiaryId, refreshKey  }) {
     // 1) selectedDiaryId가 없으면(=일기 없음) → '일기 작성 안내' 메시지 보여주기
     if (!selectedDiaryId) {
         return (
-            <>
+            <div className={"mood-results"}>
                 <div className="mood-wrapper">
                     <p>일기를 작성해주세요.</p>
                 </div>
@@ -73,7 +73,7 @@ function MoodPage({ selectedDiaryId, refreshKey  }) {
                         <p>일기 작성 후 태그를 확인해보세요!</p>
                     </div>
                 </div>
-            </>
+            </div>
         );
     }
     // 2) 로딩 중인 경우
@@ -82,7 +82,7 @@ function MoodPage({ selectedDiaryId, refreshKey  }) {
     // 3) 에러가 있는 경우
     if (error) {
         return (
-            <>
+            <div className={"mood-results"}>
                 <div className="mood-wrapper">
                     <p style={{ padding: '0 20px' }}>{error}</p>
                 </div>
@@ -91,7 +91,7 @@ function MoodPage({ selectedDiaryId, refreshKey  }) {
                         <p>다시 시도해주세요!</p>
                     </div>
                 </div>
-            </>
+            </div>
         );
     }
 
@@ -101,7 +101,7 @@ function MoodPage({ selectedDiaryId, refreshKey  }) {
     }
 
     return (
-        <>
+        <div className={"mood-results"}>
             <div className="mood-wrapper">
                 <p>일기를 작성해주세요.</p>
             </div>
@@ -110,7 +110,7 @@ function MoodPage({ selectedDiaryId, refreshKey  }) {
                     <p>일기 작성 후 태그를 확인해보세요!</p>
                 </div>
             </div>
-        </>
+        </div>
     );
 }
 

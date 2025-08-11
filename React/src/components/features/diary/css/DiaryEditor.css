@@ -4,9 +4,9 @@
     flex-direction: column;
     flex-grow: 1;
     border: 1px solid #dcdcdc;
-    border-radius: 30px;
+    border-radius: 15px;
     overflow: hidden; /* 둥근 모서리 밖으로 내용이 나가지 않도록 함 */
-    max-height: 400px;
+    max-height: 350px;
     width: 100%;
 }
 

@@ -17,14 +17,15 @@
 }
 .question-text-in-diary{
     flex: 1;
+    padding: 5px;
 }
 .custom {
-    padding-top: 0 !important;
     display: inline-flex;
     align-items: center;
     justify-content: space-around;
     font-size: 12px;
     height: 40px !important;
+    padding: 20px;
 }
 
 .question-content-wrapper {
@@ -37,7 +38,6 @@
     border: none;
     cursor: pointer;
     transition: color 0.2s, transform 0.2s;
-    flex: 0.1;
 }
 
 .btn-refresh-in-diary:hover {
