@@ -105,6 +105,8 @@ public class MovieController {
     public ResponseEntity<MovieListResponse> refreshRecommendation(
             @AuthenticationPrincipal CustomUser customUser) {
 
+        log.info("refreshRecommendation API 호출됨");
+
         if (customUser == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
@@ -116,6 +118,10 @@ public class MovieController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
+        log.info("사용자 조회 성공. userId: {}", user.getUserId());
+        log.info("user 초기 감정: {}", user.getInitialEmotion());
+        log.info("user 초기 장르: {}", user.getInitialGenre());
+
         // 오늘 일기 감정 가져오기
         List<MoodDetail> todayMoods = List.of();
         Optional<DiaryEntity> todayDiary = diaryRepository.findByUserUserIdAndDiaryDate(user.getUserId(), LocalDate.now());
@@ -123,16 +129,26 @@ public class MovieController {
             todayMoods = moodDetailRepository.findByDiaryDiaryId(todayDiary.get().getDiaryId());
         }
 
+        log.info("오늘 일기 감정 개수: {}", todayMoods.size());
+        todayMoods.forEach(mood -> log.info("오늘 감정: {}", mood.getMoodType()));
+
         boolean containsNeutralOrEtc = todayMoods.stream()
                 .anyMatch(mood -> "중립/기타".equals(mood.getMoodType()));
+
+        log.info("중립/기타 포함 여부: {}", containsNeutralOrEtc);
 
         MovieListResponse response;
 
             if (!todayMoods.isEmpty() && !containsNeutralOrEtc) {
+                log.info("recommendByMoodService.recommendByTodayDiaryWeighted 호출");
                 response = recommendByMoodService.recommendByTodayDiaryWeighted(user);
             } else {
+                log.info("recommendByInitialService.recommendByInitialSurvey 호출");
                 response = recommendByInitialService.recommendByInitialSurvey(user);
             }
+
+        log.info("추천 결과 받아옴. combinedResults 개수: {}", response.getCombinedResults().size());
+        log.info("resultsByEmotion 키: {}", response.getResultsByEmotion().keySet());
             // 캐시에 감정 데이터 업데이트
             moodCacheService.updateCachedMoods(user.getUserId(), todayMoods);
             recommendationCacheService.updateCachedRecommendation(user.getUserId(), response);

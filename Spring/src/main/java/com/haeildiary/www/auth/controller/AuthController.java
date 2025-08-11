@@ -453,7 +453,7 @@ public class AuthController {
     @ResponseBody
     public ResponseEntity<Map<String, Object>> updateThemeName(
             @RequestBody Map<String, String> request,
-            @AuthenticationPrincipal CustomUser customUser) {
+            @AuthenticationPrincipal CustomUser customUser, HttpSession session) {
 
         Map<String, Object> response = new HashMap<>();
 
@@ -475,6 +475,8 @@ public class AuthController {
 
             userService.updateThemeName(customUser.getUserId(), themeName);
 
+            // 세션 사용자 정보도 최신 UserEntity로 갱신
+            userService.updateSessionUserInfo(customUser.getUserId());
                 response.put("success", true);
                 response.put("message", "테마가 성공적으로 업데이트 되었습니다.");
             return ResponseEntity.ok(response);

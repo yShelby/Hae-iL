@@ -60,7 +60,7 @@ function SelfDiagnosis() {
                                         <div className="last-result">
                                             <span>
                                                 {status.result ?? '-'}
-                                                {status.percentage !== undefined && `(${label} : ${status.percentage} %)`}
+                                                {status.percentage !== undefined && ` (${status.percentage} %)`}
                                             </span>
                                                 {status.nextAvailableDate ? <span><strong> {status.nextAvailableDate} </strong> 이후 검사 가능</span> : ''}
                                         </div>

@@ -81,9 +81,9 @@ public class SecurityConfig {
         http.authorizeHttpRequests((authorize)-> authorize
 //               .requestMatchers("/**").permitAll() // 항상 허용
                 .requestMatchers("/", "/login/jwt","/need-login", "/register", "/register/newUser",
-                        "/reissue", "/find-email", "/find-email/verify", "/find-password", "/find-password/send", "/find-password/login",
-                        "/api/s3/profile-presigned-url", "/diary", "/diary/**", "/movie",
-                        "/api/dashboard", "/api/dashboard/**", "/calendar", "/calendar/**" // dashboard, calendar 접근 권한 추가
+                        "/reissue", "/find-email", "/find-email/**", "/find-password", "/find-password/**", "/find-password/**",
+                        "/api/s3/profile-presigned-url", "/diary", "/diary/**", "/movie", "/movie/**",
+                        "/api/dashboard", "/api/dashboard/**", "/monthly", "/monthly/**", "/charts", "/charts/**", "/settings", "/settings/**" // 각 페이지 접근 권한 추가
                 ).permitAll() // 인증 불필요 경로
                 // 경로 image -> images로 수정
                 .requestMatchers("/fonts/**", "/css/**","/js/**","/images/**").permitAll() // 정적 리소스 허용

@@ -37,6 +37,7 @@ public class RecommendByInitialService {
         List<EmotionGenreMapEntity> genreWeights = generateGenreWeightsFromInitialSurvey(initEmo, initGenres);
         List<MovieDto> combinedResults = recommendByGenreWeights(genreWeights, user)
                 .stream()
+                .filter(movie -> !movie.isAdult())
                 .limit(10)
                 .collect(Collectors.toList());
 
@@ -49,6 +50,7 @@ public class RecommendByInitialService {
 
             List<MovieDto> recommendedMovies = recommendByGenreWeights(weightsForEmotion, user)
                     .stream()
+                    .filter(movie -> !movie.isAdult())
                     .limit(10)
                     .collect(Collectors.toList());
 
@@ -104,6 +106,10 @@ public class RecommendByInitialService {
 
         distinct.values().forEach(m ->
                 m.setTrailerUrl(tmdbApiClientService.getMovieTrailer(String.valueOf(m.getMovieKey()))));
+
+        for (MovieDto m: distinct.values()) {
+            log.info("영화: {} / 성인 여부: {}", m.getTitle(), m.isAdult());
+        }
 
         return new ArrayList<>(distinct.values());
     }

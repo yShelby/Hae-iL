@@ -29,8 +29,11 @@ export default function NormalBarChart({ dates, rawData, chartTitle, chartStyle,
     const validData = data.filter(v => typeof v === "number" && true);
     const maxDuration = validData.length > 0 ? Math.max(...validData) : 0;
 
-    // y축 최대값 설정 : maxDuration > 360이면 maxDuration + 60, 아니면 360
-    const yMax = maxDuration >= 360 ? maxDuration + 60 : 360;
+    // y축 최대값 설정 : 30분 단위로 yMax 설정 (ex. 40 -> yMax : 60, 70 -> yMax : 90 // 단, 30 -> yMax : 60으로 표기), 기본값 120
+    const step = 30;
+    const valMax = Math.max(...validData);
+    const padding = Math.ceil(valMax/step) * step;
+    const yMax = maxDuration > 0 ? (valMax/step) !== 0 ? padding : padding + step : 120;
 
     const chartData = {
         labels: dates,

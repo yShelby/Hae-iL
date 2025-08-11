@@ -126,18 +126,22 @@ function ProfileImageUploader() {
     return (
         <section className="profile-image-uploader" style={{ display: "flex", flexDirection:"column" }}>
             {/*<h3>프로필 이미지 수정</h3>*/}
-            <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'column', gap:'10px' }}>
+            <div style={{ display: 'flex', justifyContent: 'center',alignItems: 'center', flexDirection: 'column', gap:'10px' }}>
                 {imageUrl ? (
                     <img
                         src={imageUrl}
                         alt="프로필"
                         width={136}
                         height={136}
-                        style={{ objectFit: 'cover', borderRadius: '50%', marginRight: '1rem' }}
+                        style={{ objectFit: '100%', borderRadius: '50%', marginRight: '1rem' }}
                     />
                 ) : (
                     <div
                         style={{
+                            backgroundImage: `url(/images/default-profile.png)`,
+                            backgroundSize: '70%',
+                            backgroundRepeat: 'no-repeat',
+                            backgroundPosition: 'center center',
                             width: 136,
                             height: 136,
                             backgroundColor: 'rgba(var(--primary-color-rgb), 0.5)',

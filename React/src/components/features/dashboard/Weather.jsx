@@ -97,9 +97,9 @@ const Weather = () => {
     const formattedDate = getFormattedDate();
 
     // 날씨 정보와 배경 동기화 로직
-    // weatherResonse 가 있을 때만 backgroundClass 계산, 없으면 기본값
-    const weatherMain = weatherResponse?.main;
-    const backgroundClass = weatherMain ? getBackgroundClass(weatherMain) : "clear";
+    // weatherResponse 가 있을 때만 backgroundClass 계산, 없으면 기본값
+    const weatherMain = weatherResponse?.data.main;
+    const backgroundClass = weatherMain ? getBackgroundClass(weatherMain) : "dust";
 
 
     return (
