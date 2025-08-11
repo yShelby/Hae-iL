@@ -109,34 +109,36 @@ const JournalPage = () => {
         switch (viewMode.mode) {
             case 'create':
                 return (
-                    <Motion.div key={viewKey} {...rightPanelAnimation} style={{height:"100%"}}>
+                    <Motion.div key={viewKey} {...rightPanelAnimation} style={{height: "100%"}}>
                         <JournalEditor onSaveSuccess={handleSuccess} onCancel={handleCancel}/>
                     </Motion.div>
                 );
             case 'edit':
                 return (
-                    <Motion.div key={viewKey} {...rightPanelAnimation} style={{height:"100%"}}>
+                    <Motion.div key={viewKey} {...rightPanelAnimation} style={{height: "100%"}}>
                         <JournalEditor journalId={viewMode.journalId} onSaveSuccess={handleSuccess}
                                        onCancel={handleCancel}/>
                     </Motion.div>
                 );
             case 'view':
                 return (
-                    <Motion.div key={viewKey} {...rightPanelAnimation} style={{height:"100%"}}>
+                    <Motion.div key={viewKey} {...rightPanelAnimation} style={{height: "100%"}}>
                         <JournalViewer
                             journalId={viewMode.journalId}
                             initialData={selectedJournalData}
                             onEdit={handleSwitchToEdit}
                             onDelete={handleDeleteRequest}
+                            onClose={handleCancel} /* 수정 버튼 추가 */
                         />
                     </Motion.div>
                 );
             default:
                 return (
-                    <Motion.div key="placeholder" {...rightPanelAnimation} style={{height:"100%"}}>
+                    <Motion.div key="placeholder" {...rightPanelAnimation} style={{height: "100%"}}>
                         <div className="journal-placeholder">
                             <p>새로운 기록을 작성하거나<br/>목록에서 수정할 항목을 선택해주세요.</p>
-                            <Button variant="button2" type="button" onClick={handleCreate} className={"creatBtn"} active>작성하기</Button>
+                            <Button variant="button2" type="button" onClick={handleCreate} className={"creatBtn"}
+                                    active>작성하기</Button>
                         </div>
                     </Motion.div>
                 );
@@ -149,19 +151,22 @@ const JournalPage = () => {
                 {/* 왼쪽 패널: 저널 목록 */}
                 <div className="left-panel">
                     {/*<div className="panel-header">*/}
-                        {/*<h1 className="panel-title">나의 저널 기록</h1>*/}
-                        <FilterByCategory
-                            selectedCategory={selectedCategory}
-                            onSelectCategory={setSelectedCategory}
-                        />
-                    {/*</div>*/}
-                    <JournalList
-                        key={refreshKey}
-                        category={selectedCategory}
-                        onItemSelect={handleItemSelect}
-                        selectedJournalId={viewMode.journalId}
-                        user={user}
+                    {/*<h1 className="panel-title">나의 저널 기록</h1>*/}
+                    <FilterByCategory
+                        selectedCategory={selectedCategory}
+                        onSelectCategory={setSelectedCategory}
                     />
+                    {/*</div>*/}
+                    {/* [추가] 스크롤 제어를 위해 div 추가 */}
+                    <div className="journal-list-wrapper">
+                        <JournalList
+                            key={refreshKey}
+                            category={selectedCategory}
+                            onItemSelect={handleItemSelect}
+                            selectedJournalId={viewMode.journalId}
+                            user={user}
+                        />
+                    </div>
                 </div>
                 {/* 오른쪽 패널: 상태에 따라 다른 내용 표시 */}
                 <div className="right-panel">

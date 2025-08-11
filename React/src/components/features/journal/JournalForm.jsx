@@ -80,9 +80,9 @@ export const JournalForm = (
         // 작성 모드라면 초기값으로 폼 리셋
         else {
             // 새 작성 모드: 임시 데이터가 있으면 사용, 없으면 초기값
-            // setFormData(draft || getInitialFormData());
+            setFormData(draft || getInitialFormData());
             // [수정] - 일단 임시저장 안되도록 수정
-            setFormData(getInitialFormData());
+            // setFormData(getInitialFormData());
         }
     }, [initialData, draft, draftKey]); // 의존성 추가
 

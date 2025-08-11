@@ -4,7 +4,7 @@ import {FaStar} from 'react-icons/fa';
 import './css/JournalViewer.css';
 import Button from "@shared/styles/Button.jsx";
 
-export const JournalViewer = ({journalId, onEdit, onDelete, initialData}) => {
+export const JournalViewer = ({journalId, onEdit, onDelete, onClose, initialData}) => {
     const [journal, setJournal] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -76,6 +76,7 @@ export const JournalViewer = ({journalId, onEdit, onDelete, initialData}) => {
             <div className="viewer-actions">
                 <Button variant="button2" type="submit" onClick={onEdit} className={"btn edit-btn"}>수정</Button>
                 <Button variant="button2" type="button" onClick={onDelete} className={"btn delete-btn"}>삭제</Button>
+                <Button variant="button2" type="button" onClick={onClose}>닫기</Button>
             </div>
         </div>
     );
