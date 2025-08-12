@@ -119,7 +119,7 @@ function SettingsPage() {
                         </div>
                     </div>
                 </div>
-                <div className={'box-E'}>
+                <div className={'box-E'} style={{justifyContent: 'space-evenly'}}>
                     <h2> 계정 관리 </h2>
                     <div className={'set-list'}>
                         <ChangePasswordModal />
