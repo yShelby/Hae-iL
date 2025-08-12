@@ -25,7 +25,7 @@ function SettingsPage() {
             <div className="settings-page" >
                 {/*<h2>환경설정</h2>*/}
                 <div className={"setting-left"}>
-                    <div className={'box-A'} style={{display: "flex", flexDirection: "column"}}>
+                    <div className={'box-A'}>
                         <h2>my info</h2>
                         <div> 로그인이 필요합니다. </div>
                     </div>
@@ -37,13 +37,15 @@ function SettingsPage() {
                         <div className={"setting-bottom-left"}>
                             <div className={'box-B'}>
                                 <h2>비상연락망</h2>
-                                <p>
-                                    1577-0199 | 정신건강위기 상담전화 <br/>
-                                    129 | 보건복지콜센터(보건복지부) <br/>
-                                    1393 | 자살상담전화(보건복지부) <br/>
-                                    1588-9191 | 한국생명의전화 <br/>
-                                    1388 | 청소년전화(여성가족부) <br/>
-                                </p>
+                                <div className={"call-list"}>
+                                    <p>
+                                        1577-0199 | 정신건강위기 상담전화 <br/>
+                                        129 | 보건복지콜센터(보건복지부) <br/>
+                                        1393 | 자살상담전화(보건복지부) <br/>
+                                        1588-9191 | 한국생명의전화 <br/>
+                                        1388 | 청소년전화(여성가족부) <br/>
+                                    </p>
+                                </div>
                             </div>
                             <div className={'box-C'}>
                                 <h2>팀 해일</h2>
@@ -98,17 +100,19 @@ function SettingsPage() {
                             <ThemeSelector />
                         </div>
                         <div className={"setting-bottom-left"}>
-                            <div className={'box-B'} >
+                            <div className={'box-B'}>
                                 <h2>비상연락망</h2>
-                                <p>
-                                    1577-0199 | 정신건강위기 상담전화 <br/>
-                                    129 | 보건복지콜센터(보건복지부) <br/>
-                                    1393 | 자살상담전화(보건복지부) <br/>
-                                    1588-9191 | 한국생명의전화 <br/>
-                                    1388 | 청소년전화(여성가족부) <br/>
-                                </p>
+                                <div className={"call-list"}>
+                                    <p>
+                                        1577-0199 | 정신건강위기 상담전화 <br/>
+                                        129 | 보건복지콜센터(보건복지부) <br/>
+                                        1393 | 자살상담전화(보건복지부) <br/>
+                                        1588-9191 | 한국생명의전화 <br/>
+                                        1388 | 청소년전화(여성가족부) <br/>
+                                    </p>
+                                </div>
                             </div>
-                            <div className={'box-C'} style={{display: 'flex', flexWrap: 'wrap',}}>
+                            <div className={'box-C'}>
                                 <h2>팀 해일</h2>
                                 <TeamHaeilInfo />
                             </div>

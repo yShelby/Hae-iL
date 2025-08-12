@@ -7,7 +7,7 @@ function UserProfileInfo({ user }) {
     const emotions = user.initialEmotion || [];
 
     return (
-        <section className="user-profile-info" style={{margin: '0 80px', fontSize:'14px'}} >
+        <section className="user-profile-info" style={{marginLeft: '2rem', fontSize:'14px'}} >
             {/*<h3>내 정보</h3>*/}
             <div style={{ display: 'flex', alignItems: 'center' }}>
                 <div style={ {display: 'flex', gap: '10px', marginBottom:'10px',flexDirection: 'column'}}>

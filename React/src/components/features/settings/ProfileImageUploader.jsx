@@ -126,14 +126,14 @@ function ProfileImageUploader() {
     return (
         <section className="profile-image-uploader" style={{ display: "flex", flexDirection:"column" }}>
             {/*<h3>프로필 이미지 수정</h3>*/}
-            <div style={{ display: 'flex', justifyContent: 'center',alignItems: 'center', flexDirection: 'column', gap:'10px' }}>
+            <div style={{ display: 'flex', justifyContent: 'center',alignItems: 'center', flexDirection: 'column', gap:'10px', marginTop:'0.5rem' }}>
                 {imageUrl ? (
                     <img
                         src={imageUrl}
                         alt="프로필"
-                        width={136}
-                        height={136}
-                        style={{ objectFit: '100%', borderRadius: '50%', marginRight: '1rem' }}
+                        width={'136'}
+                        height={'136'}
+                        style={{ objectFit: '100%', borderRadius: '50%' }}
                     />
                 ) : (
                     <div
@@ -142,8 +142,8 @@ function ProfileImageUploader() {
                             backgroundSize: '70%',
                             backgroundRepeat: 'no-repeat',
                             backgroundPosition: 'center center',
-                            width: 136,
-                            height: 136,
+                            width: 126,
+                            height: 126,
                             backgroundColor: 'rgba(var(--primary-color-rgb), 0.5)',
                             borderRadius: '50%',
                             display: 'flex',
@@ -165,18 +165,20 @@ function ProfileImageUploader() {
                         onChange={handleFileChange}
                         disabled={uploading}
                     />
-                    <button onClick={() => fileInputRef.current?.click()} disabled={uploading}>
-                        {uploading ? '업로드 중...' : '이미지 변경'}
-                    </button>
-                    {user?.profileImage && (
-                        <button
-                            onClick={handleDelete}
-                            disabled={uploading}
-                            style={{ marginLeft: '1rem', color: 'red' }}
-                        >
-                            이미지 삭제
+                    <div style={{ display:'flex', gap: '0.7rem' }}>
+                        <button onClick={() => fileInputRef.current?.click()} disabled={uploading}>
+                            {uploading ? '업로드 중...' : '이미지 변경'}
                         </button>
-                    )}
+                        {user?.profileImage && (
+                            <button
+                                onClick={handleDelete}
+                                disabled={uploading}
+                                style={{ color: 'red' }}
+                            >
+                                이미지 삭제
+                            </button>
+                        )}
+                    </div>
                 </div>
             </div>
         </section>
