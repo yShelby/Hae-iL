@@ -133,6 +133,7 @@
     border-bottom-left-radius: 30px;
     padding: 50px 10px;
     flex-direction: column;
+    justify-content: space-evenly;
     align-items: center;
     flex: 1;
 }
