@@ -28,7 +28,7 @@
 .theme-button-box{
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 3vh;
 }
 
 .theme-1-change-button,
