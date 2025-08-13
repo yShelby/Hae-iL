@@ -13,10 +13,11 @@ const JournalEditor = ({ journalId, onSaveSuccess, onCancel }) => {
     // 중복 제출 방지를 위한 isSubmitting 상태는 Editor가 관리
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    // [추가] 임시 저장을 위한 고유 키를 정의. 수정 모드일 때는 journalId, 새 작성일 때는 'new'를 사용
-    const draftKey = journalId || 'new';
-    // [추가] 스토어에서 clearDraft 함수를 가져온다.
-    const { clearDraft } = useJournalDraftStore();
+    // [임시저장 기능 비활성화]
+    // // [추가] 임시 저장을 위한 고유 키를 정의. 수정 모드일 때는 journalId, 새 작성일 때는 'new'를 사용
+    // const draftKey = journalId || 'new';
+    // // [추가] 스토어에서 clearDraft 함수를 가져온다.
+    // const { clearDraft } = useJournalDraftStore();
 
     // 편집 모드일 경우, journalId를 기반으로 기존 데이터를 불러와 초기값으로 설정
     // 새 작성 모드일 경우 기본값을 세팅
@@ -33,13 +34,14 @@ const JournalEditor = ({ journalId, onSaveSuccess, onCancel }) => {
                 })
                 .finally(() => setIsLoading(false));
         } else {
+            // [수정] - 임시저장을 사용할 경우 setInitialData(...) 모두 주석 처리
             // 새 작성 모드에서는 initialData를 null로 설정하여 JournalForm이 임시 데이터를 사용하도록 유도
-            // setInitialData({
-            //     title: '',
-            //     content: '',
-            //     rating: 2.5, // 기본 별점 설정
-            //     journalDate: new Date().toISOString().split('T')[0], // 오늘 날짜
-            // });
+            setInitialData({
+                title: '',
+                content: '',
+                rating: 2.5, // 기본 별점 설정
+                journalDate: new Date().toISOString().split('T')[0], // 오늘 날짜
+            });
         }
     }, [journalId, isEditMode, onCancel]);
 
@@ -54,10 +56,11 @@ const JournalEditor = ({ journalId, onSaveSuccess, onCancel }) => {
         try {
             const response = await apiCall();
             // 수정 - API 응답에서 ID만 추출하는 대신, 응답으로 받은 저널 객체 전체를 onSaveSuccess 콜백으로 전달
-            // 이렇게 하면 부모 컴포넌트가 이 데이터를 바로 Viewer에게 넘겨줄 수 있습니다.
+            // 이렇게 하면 부모 컴포넌트가 이 데이터를 바로 Viewer에게 넘겨줄 수 있다.
             onSaveSuccess(response); // 저널 객체 전체를 전달
             showToast.success(`저널이 성공적으로 ${isEditMode ? '수정' : '등록'}되었습니다.`);
-            clearDraft(draftKey); // [추가] 저장 성공 시 임시 데이터를 삭제
+            // [임시저장 비활성화]
+            // clearDraft(draftKey); // [추가] 저장 성공 시 임시 데이터를 삭제
         } catch (error) {
             showToast.error(`저장 중 오류가 발생했습니다.`);
         } finally {
@@ -65,11 +68,12 @@ const JournalEditor = ({ journalId, onSaveSuccess, onCancel }) => {
         }
     };
 
-    // [추가] 닫기 버튼 클릭 시 임시 데이터를 삭제하고 부모의 onCancel 함수를 호출하는 핸들러
-    const handleCancel = useCallback(() => {
-        clearDraft(draftKey); // 임시 데이터 삭제
-        onCancel(); // 부모 컴포넌트의 닫기 로직 실행
-    }, [draftKey, clearDraft, onCancel]);
+    // [임시저장 기능 비활성화] - 닫기 버튼 클릭 시 임시 데이터 삭제 핸들러
+    // // [추가] 닫기 버튼 클릭 시 임시 데이터를 삭제하고 부모의 onCancel 함수를 호출하는 핸들러
+    // const handleCancel = useCallback(() => {
+    //     clearDraft(draftKey); // 임시 데이터 삭제
+    //     onCancel(); // 부모 컴포넌트의 닫기 로직 실행
+    // }, [draftKey, clearDraft, onCancel]);
 
 
     // 데이터 로딩 중일 때 로딩 메시지 출력
@@ -81,15 +85,17 @@ const JournalEditor = ({ journalId, onSaveSuccess, onCancel }) => {
     return (
         <div className="journal-editor-container">
             {/*<h2 className="editor-title">{isEditMode ? '저널 수정' : '새 저널 작성'}</h2>*/}
+            {/* [임시저장 비활성화] - key와 onCancel을 [수정]을 사용 시 임시저장, 아닐 시 임시저장 x
+                + draftKey 도 사용 시 임시저장 */}
             <JournalForm
-                // key={journalId || 'new-journal'} // journalId 변경 시 Form 강제 리셋용 key
-                key={draftKey} // [수정] key를 draftKey로 변경
+                key={journalId || 'new-journal'} // journalId 변경 시 Form 강제 리셋용 key
+                // key={draftKey} // [수정] key를 draftKey로 변경
                 onSubmit={handleSubmit}
-                // onCancel={onCancel}
-                onCancel={handleCancel} // [수정] 임시 데이터를 삭제하는 핸들러로 교체
+                onCancel={onCancel}
+                // onCancel={handleCancel} // [수정] 임시 데이터를 삭제하는 핸들러로 교체
                 initialData={initialData}
                 isSubmitting={isSubmitting} // Form의 버튼 상태를 제어하기 위해 전달
-                draftKey={draftKey} // [추가] Form이 임시 데이터를 찾을 수 있도록 draftKey 전달
+                // draftKey={draftKey} // [추가] Form이 임시 데이터를 찾을 수 있도록 draftKey 전달
             />
         </div>
     );

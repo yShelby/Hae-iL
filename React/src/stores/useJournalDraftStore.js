@@ -13,26 +13,27 @@ const useJournalDraftStore = create(
             // drafts: { [journalId | 'new']: { title, content, rating, ... } }
             drafts: {},
 
-            // 특정 저널의 임시 저장 데이터 업데이트/생성
-            setDraft: (id, data) => set((state) => ({
-                drafts: {
-                    ...state.drafts,
-                    [id]: {
-                        ...(state.drafts[id] || {}), // 기존 데이터 유지 및 덮어쓰기
-                        ...data,
-                    },
-                },
-            })),
-
-            // 특정 저널의 임시 저장 데이터 삭제 (저장 또는 닫기 시 호출)
-            clearDraft: (id) => set((state) => {
-                const newDrafts = { ...state.drafts };
-                delete newDrafts[id];
-                return { drafts: newDrafts };
-            }),
-
-            // 모든 임시 저장 데이터 초기화
-            clearAllDrafts: () => set({ drafts: {} }),
+            // [임시저장 기능 비활성화]
+            // // 특정 저널의 임시 저장 데이터 업데이트/생성
+            // setDraft: (id, data) => set((state) => ({
+            //     drafts: {
+            //         ...state.drafts,
+            //         [id]: {
+            //             ...(state.drafts[id] || {}), // 기존 데이터 유지 및 덮어쓰기
+            //             ...data,
+            //         },
+            //     },
+            // })),
+            //
+            // // 특정 저널의 임시 저장 데이터 삭제 (저장 또는 닫기 시 호출)
+            // clearDraft: (id) => set((state) => {
+            //     const newDrafts = { ...state.drafts };
+            //     delete newDrafts[id];
+            //     return { drafts: newDrafts };
+            // }),
+            //
+            // // 모든 임시 저장 데이터 초기화
+            // clearAllDrafts: () => set({ drafts: {} }),
         }),
         {
             name: 'journal-draft-storage', // sessionStorage에 저장될 고유 키
