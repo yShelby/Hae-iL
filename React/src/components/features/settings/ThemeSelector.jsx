@@ -60,7 +60,7 @@ function ThemeSelector() {
                     onClick={() => handleThemeChange('theme1')}
                     className={"theme-1-change-button"}
                 >
-                    <img src="/images/logo1.png" alt="" style={{width:'54px', height:'45px'}}/>
+                    <img src="/images/logo1.png" alt="" style={{width:'3rem', height:'2.5rem'}}/>
                     테마 1
                 </Button>
                 <Button
@@ -69,7 +69,7 @@ function ThemeSelector() {
                     onClick={() => handleThemeChange('theme2')}
                     className={"theme-2-change-button"}
                 >
-                    <img src="/images/logo1.png" alt="" style={{width:'54px', height:'45px'}}/>
+                    <img src="/images/logo1.png" alt="" style={{width:'3rem', height:'2.5rem'}}/>
                     테마 2
                 </Button>
                 <Button
@@ -78,7 +78,7 @@ function ThemeSelector() {
                     onClick={() => handleThemeChange('theme3')}
                     className={"theme-3-change-button"}
                 >
-                    <img src="/images/logo2.png" alt="" style={{width:'54px', height:'45px'}}/>
+                    <img src="/images/logo2.png" alt="" style={{width:'3rem', height:'2.5rem'}}/>
                     테마 3
                 </Button>
             </div>

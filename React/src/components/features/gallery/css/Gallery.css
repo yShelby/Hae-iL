@@ -64,11 +64,11 @@
     cursor: pointer;
     transition: box-shadow 0.2s ease;
     width: 180px;
-    height: 180px;
+    height: 20%;
     border-radius: 30px;
     box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.25);
     background: var(--border-gradient);
-    padding: 25px;
+    padding: 20px 25px;
 }
 
 .gallery-thumbnail-wrapper:hover {
@@ -77,10 +77,10 @@
 
 .gallery-thumbnail-image {
     width: 130px;
-    height: 130px;
-    border-radius: 30px;
+    height: 100%;
+    border-radius: 10px;
     object-fit: cover;
-    background-color: rgba(255, 255, 255, 0.85);
+    /*background-color: rgba(255, 255, 255, 0.85);*/
     /*display: flex;*/
     /*justify-content: center;*/
     /*align-items: center;*/

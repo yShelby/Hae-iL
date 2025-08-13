@@ -5,7 +5,7 @@
     font-size: 18px;
     padding: 20px 30px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-    height: 100%;
+    height: 82%;
     overflow: hidden;
     display: flex;
     flex-direction: column;
@@ -54,7 +54,7 @@
 .diary-content-wrapper {
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    gap: 10px;
     flex-grow: 1;
     min-height: 0;
     overflow-y: auto;
@@ -65,8 +65,7 @@
     display: flex;
     justify-content: space-between; /* 제목과 날씨를 양 끝으로 배치 */
     align-items: center;
-    gap: 1rem;
-    flex-shrink: 0; /* 높이 고정 */
+    flex-shrink: 0;
 }
 
 /* 버튼 그룹 스타일 */
@@ -74,9 +73,8 @@
     display: flex;
     justify-content: flex-end;
     gap: 1rem;
-    margin-right: 1rem;
-    margin-bottom: 10px;
     flex-shrink: 0; /* 높이 고정 */
+    margin: 10px;
 }
 .button-group button:hover {
     background-color: #e9ecef;
@@ -86,16 +84,16 @@
 /* 추가 - 날씨 선택기와 질문 표시기를 나란히 배치하기 위한 컨테이너 */
 .diary-meta-container {
     flex-wrap: wrap;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
 }
 
 .diary-readonly-content {
     background-color: rgba(var(--primary-color-rgb), 0.1);
     padding: 1rem;
     border-radius: 8px;
-    margin: 10px 0;
+    margin-top: 10px;
     white-space: pre-wrap;
-    max-height: 300px;
+    max-height: 200px;
     font-size: 14px;
     line-height: 1.6;
     overflow-y: auto;
@@ -103,7 +101,7 @@
 
 .diary-view-wrapper {
     height: 80%;
-    padding: 1.5rem;
+    padding: 20px;
     background: #fff;
     border-radius: 30px;
 }

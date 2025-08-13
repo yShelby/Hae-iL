@@ -2,9 +2,13 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-size: 1.25rem;
-    font-weight: 600;
-    color: var(--primary-color);
+    font-size: 18px;
+    color: rgba(var(--primary-color),0.5);
     /*border-bottom: 1px solid var(--primary-color);*/
     margin-bottom: 1rem;
+    padding: 0 10px;
+}
+
+.info-bar h3 {
+    font-size: 18px;
 }

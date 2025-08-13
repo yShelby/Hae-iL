@@ -90,7 +90,7 @@ import { IconHome2 } from '@tabler/icons-react';
 /* 버튼 4 : 테마 그라디언트 배경 + 아이콘 - 자가진단, 계정관리 */
 .button4 {
     width: 70px;
-    height: 70px;
+    height: 100%;
     border-radius: 30px;
     background-image: var(--border-gradient);
     color: #FFF;

@@ -132,7 +132,7 @@ export default function SleepWidget({date, onDataChange}) {
 
             {!loading && (editing || !data) && (
                 <div>
-                    <div style={{marginBottom: '10px'}}>
+                    <div style={{marginBottom: '5px'}}>
                         <label className="inline-label">
                             <span>취침 </span>
                             <Input

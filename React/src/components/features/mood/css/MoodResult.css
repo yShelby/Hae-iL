@@ -10,21 +10,22 @@
 
 .mood-results {
     width: 180px;
-    height: 390px;
+    height: 60%;
     display: flex;
     flex-direction: column;
     gap: 10px;
 }
 .mood-wrapper {
     width: 100%;
+    height: 75%;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 286px;
     border-radius: 30px;
     background: var(--border-gradient);
     box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.25);
+    padding: 10px;
 }
 
 .mood-score {
@@ -49,7 +50,7 @@
     flex-direction: column;
     align-items: center;
     width: 141px;
-    height: 165px;
+    height: 75%;
     border-radius: 30px;
     background-color: rgba(255, 255, 255, 0.85);
 }
@@ -65,10 +66,11 @@
     justify-content: center;
     align-items: center;
     width: 141px;
-    height: 141px;
+    height: 80%;
 }
 
 .percentage-box {
+    font: bold 26px NPSfont, sans-serif !important;
     position: absolute;
     top: 55%;
     left: 51%;
@@ -102,7 +104,7 @@
 /* Tag 스타일 */
 .mood-tags-container {
     width: 100%;
-    height: 100px;
+    height: 25%;
     display: flex;
     flex-direction: column;
     align-items: center;
